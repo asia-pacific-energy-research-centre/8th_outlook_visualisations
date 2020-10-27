@@ -25,9 +25,7 @@ source activate ./env
 ### You're now ready to execute the scripts
 
 #### 6. The first script to execute is in 8th_outlook_visualisations\workflow\scripts\1_historical_to_projected
-It is called OSeMOSYS_to_EGEDA.py and will take the results files you saved in step 2 above and bolt them to the EGEDA historical data
-
-Execute at command prompt:
+Execute OSeMOSYS_to_EGEDA.py at command prompt:
 
 python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA.py
 
