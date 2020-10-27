@@ -2,7 +2,7 @@
 
 # NB: see generic readme (below these seven steps) for tips on working with github repositories
 
-1. Clone ‘8th_outlook_repository’ from the asia-pacific-energy-research-centre Github
+1. Clone ‘8th_outlook_visualisations’ from the asia-pacific-energy-research-centre Github
         You can clone this repository to wherever you want on your personal computer
 
 2.	In your newly cloned repository (8th_outlook_visualisations), you need to save some relevant input data in the ‘data’ folder
