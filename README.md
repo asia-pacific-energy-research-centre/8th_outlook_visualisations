@@ -17,15 +17,14 @@
         conda env create --prefix ./env --file ./workflow/environment.yml 
 
 5. Activate the conda environment
-        source activate ./env   OR 
-        conda activate ./env
+        source activate ./env   
 
 # You're now ready to execute the scripts
 
 6. The first script to execute is in 8th_outlook_visualisations\workflow\scripts\1_historical_to_projected
         It is called OSeMOSYS_to_EGEDA.py and will take the results files you saved in step 2 above and bolt them to the EGEDA historical data
-
-        Run this script from the command line with the command: python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA.py
+        Execute at command prompt:
+        python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA.py
 
         Check that this has executed correctly by looking in the folder C:\Users\mathew.horne\Projects\8th_outlook_visualisations\data\4_Joined
         There should be a newly created csv file 'OSeMOSYS_to_EGEDA.csv'
