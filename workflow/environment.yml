@@ -1,0 +1,22 @@
+name: null
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.7
+  - jupyterlab
+  - matplotlib
+  - pandas
+  - pyarrow
+  - xlrd
+  - plotly
+  - seaborn
+  - bokeh
+  - pyviz::panel
+  - nodejs
+  - hvplot
+  - jupyter-panel-proxy
+  - openpyxl
+  - XlsxWriter
