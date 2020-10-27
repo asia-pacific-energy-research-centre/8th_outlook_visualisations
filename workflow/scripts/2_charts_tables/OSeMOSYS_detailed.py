@@ -15,7 +15,7 @@ import pdb
 # NB: this directory is different to when operating in jupyter notebook
 # Directory is directory as defined in git bash rather than where script is saved
 
-path_output = '../../data/3_OSeMOSYS_output'
+path_output = './data/3_OSeMOSYS_output'
 
 # They're csv files so use a wild card (*) to grab the filenames
 OSeMOSYS_filenames = glob.glob(path_output + "/*.xlsx")
@@ -61,7 +61,7 @@ OSeMOSYS_years = list(range(2017, max_year + 1))
 # NB again, the directory to the HEX colours depends on the working directory you define in git bash or at the command prompt
 # If in Jupyter lab, the address assumes you start in the folder that the jupyter notebook is saved in
 
-colours = pd.read_excel('../../data/2_Mapping_and_other/colour_template_7th.xlsx')
+colours = pd.read_excel('./data/2_Mapping_and_other/colour_template_7th.xlsx')
 colours_hex = colours['hex']
 
 ###############################################################################################################
@@ -268,7 +268,7 @@ for economy in use_df1['REGION'].unique():
     # Electric vehicles
 
     # Define directory
-    script_dir = '../../results/' + month_year + '/OSeMOSYS_detailed/'
+    script_dir = './results/' + month_year + '/OSeMOSYS_detailed/'
     results_dir = os.path.join(script_dir, 'economy_breakdown/', economy)
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
