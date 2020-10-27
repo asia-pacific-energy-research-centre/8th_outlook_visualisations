@@ -17,17 +17,22 @@ Save OSeMOSYS results, (e.g. ‘08_JPN_results_v1.0.xlsx’, ‘11_MEX_results_v
 This requires the cd command to navigate to the appropriate folder executed at the command prompt (e.g. using gitbash)
 
 #### 4. Create the python environment once you’re in the new working directory
+```bash
 conda env create --prefix ./env --file ./workflow/environment.yml 
+```
 
 #### 5. Activate the conda environment
-source activate ./env   
+```bash
+source activate ./env
+```
 
 ### You're now ready to execute the scripts
 
 #### 6. The first script to execute is in 8th_outlook_visualisations\workflow\scripts\1_historical_to_projected
-Execute OSeMOSYS_to_EGEDA.py at command prompt:
 
+```bash
 python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA.py
+```
 
 Check that this has executed correctly by looking in the folder C:\Users\mathew.horne\Projects\8th_outlook_visualisations\data\4_Joined
 
@@ -36,9 +41,10 @@ There should be a newly created csv file 'OSeMOSYS_to_EGEDA.csv'
 #### 7. When you've run step 6 you can run the charting scripts contained in 8th_outlook_visualisations\workflow\scripts\2_charts_tables
 There are currently four scripts in this folder. 
 
-Example for running TPES: 
+Example for running TPES
+```bash
 python ./workflow/scripts/2_charts_tables/TPES_economy.py
-
+```
 This will create TPES charts and tables in 8th_outlook_visualisations\results
 
 ### Template details
