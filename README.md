@@ -36,9 +36,10 @@ There should be a newly created csv file 'OSeMOSYS_to_EGEDA.csv'
 #### 7. When you've run step 6 you can run the charting scripts contained in 8th_outlook_visualisations\workflow\scripts\2_charts_tables
 There are currently four scripts in this folder. 
 
-Run them just like above. For example, to run TPES, at the command prompt, execute: python ./workflow/scripts/2_charts_tables/TPES_economy.py
+Example for running TPES: 
+python ./workflow/scripts/2_charts_tables/TPES_economy.py
 
-This will create TPES charts and tables in this folder: 8th_outlook_visualisations\results
+This will create TPES charts and tables in 8th_outlook_visualisations\results
 
 ### Template details
 
