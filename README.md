@@ -28,6 +28,8 @@ source activate ./env
 
 #### 6. The first script to execute is in 8th_outlook_visualisations\workflow\scripts\1_historical_to_projected
 
+NB: this needs to be run every time, as it takes the new results you've output and bolts them to EGEDA 
+
 ```bash
 python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA.py
 ```
