@@ -1,5 +1,19 @@
 ## Instructions for charting osemosys results
 
+## 0. Before you begin
+
+You will need several software programs on your computer:
+
+[Visual Studio Code](https://code.visualstudio.com/) – this is a text editor that makes it easy to modify the configuration files (more on this later).
+
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) – this is a package manager for Python. We create a specific environment (set of programs and their versions) to run the code. You want the Python 3.8 version. During installation, the installer will ask if you want to add conda to the default PATH variable. Select **YES**.
+
+[GitHub Desktop](https://desktop.github.com/) – an easy way to grab code from GitHub. You will need to create a free account.
+
+[Windows Terminal](https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab) – *Optional*. A modern command line terminal for Windows. You can use the built in Command Prompt too.
+
+The following instructions assume you have installed Visual Studio Code, Miniconda, and GitHub Desktop.
+
 #### 1. Clone ‘8th_outlook_visualisations’ from the asia-pacific-energy-research-centre Github
 You can clone this repository to wherever you want on your personal computer
 
@@ -15,6 +29,8 @@ Save OSeMOSYS results, (e.g. ‘08_JPN_results_v1.0.xlsx’, ‘11_MEX_results_v
 This requires the cd command to navigate to the appropriate folder executed at the command prompt (e.g. using gitbash)
 
 #### 4. Create the python environment once you’re in the new working directory
+
+NB: You only need to do this once. i.e. once you've cloned the repository and created the environment with the command below, the environment is created and ready to activate (as per step 5)
 ```bash
 conda env create --prefix ./env --file ./workflow/environment.yml 
 ```
