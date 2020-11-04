@@ -301,222 +301,231 @@ for economy in use_df1['REGION'].unique():
     worksheet1.write(0, 0, economy + ' Agriculture OSeMOSYS output by fuel and by technology', cell_format1)
 
     # Create a ag fuel area chart
-    agfuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    agfuel_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    agfuel_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    agfuel_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
-        
-    agfuel_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    agfuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    agfuel_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ag_fuel_rows):
-        agfuel_chart1.add_series({
-            'name':       [economy + '_ag_use', chart_height + i + 1, 1],
-            'categories': [economy + '_ag_use', chart_height, 2, chart_height, ag_fuel_cols - 1],
-            'values':     [economy + '_ag_use', chart_height + i + 1, 2, chart_height + i + 1, ag_fuel_cols - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet1.insert_chart('B3', agfuel_chart1)
 
-    # Create a ag fuel line chart 
-    agfuel_chart2 = workbook.add_chart({'type': 'line'})
-    agfuel_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
+    if ag_fuel_rows > 0:
+        agfuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        agfuel_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
     
-    agfuel_chart2.set_chartarea({
-        'border': {'none': True}
-    })
+        agfuel_chart1.set_chartarea({
+            'border': {'none': True}
+        })
     
-    agfuel_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
-        
-    agfuel_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        agfuel_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
         
-    agfuel_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
+        agfuel_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
         
-    agfuel_chart2.set_title({
-        'none': True
-    })
+        agfuel_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+        
+        agfuel_chart1.set_title({
+            'none': True
+        })
     
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ag_fuel_rows):
-        agfuel_chart2.add_series({
-            'name':       [economy + '_ag_use', chart_height + i + 1, 1],
-            'categories': [economy + '_ag_use', chart_height, 2, chart_height, ag_fuel_cols - 1],
-            'values':     [economy + '_ag_use', chart_height + i + 1, 2, chart_height + i + 1, ag_fuel_cols - 1],
-            'line':       {'color': colours_hex[i], 'width': 1}
-        })    
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ag_fuel_rows):
+            agfuel_chart1.add_series({
+                'name':       [economy + '_ag_use', chart_height + i + 1, 1],
+                'categories': [economy + '_ag_use', chart_height, 2, chart_height, ag_fuel_cols - 1],
+                'values':     [economy + '_ag_use', chart_height + i + 1, 2, chart_height + i + 1, ag_fuel_cols - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
         
-    worksheet1.insert_chart('J3', agfuel_chart2)
+        worksheet1.insert_chart('B3', agfuel_chart1)
+
+        # Create a ag fuel line chart 
+        agfuel_chart2 = workbook.add_chart({'type': 'line'})
+        agfuel_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+    
+        agfuel_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        agfuel_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        agfuel_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        agfuel_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        agfuel_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ag_fuel_rows):
+            agfuel_chart2.add_series({
+                'name':       [economy + '_ag_use', chart_height + i + 1, 1],
+                'categories': [economy + '_ag_use', chart_height, 2, chart_height, ag_fuel_cols - 1],
+                'values':     [economy + '_ag_use', chart_height + i + 1, 2, chart_height + i + 1, ag_fuel_cols - 1],
+                'line':       {'color': colours_hex[i], 'width': 1}
+            })    
+            
+        worksheet1.insert_chart('J3', agfuel_chart2)
+
+    else:
+        pass
 
     # Create a agriculture tech area chart
-    agsector_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    agsector_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    agsector_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    agsector_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if ag_tech_rows > 0:
+        agsector_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        agsector_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    agsector_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        agsector_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        agsector_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        agsector_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        agsector_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        agsector_chart1.set_title({
+            'none': True
+        })
         
-    agsector_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    agsector_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ag_tech_rows):
-        agsector_chart1.add_series({
-            'name':       [economy + '_ag_use', chart_height + ag_fuel_rows + i + 4, 0],
-            'categories': [economy + '_ag_use', chart_height + ag_fuel_rows + 3, 2, chart_height + ag_fuel_rows + 3, ag_tech_cols - 1],
-            'values':     [economy + '_ag_use', chart_height + ag_fuel_rows + i + 4, 2, chart_height + ag_fuel_rows + i + 4, ag_tech_cols - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet1.insert_chart('R3', agsector_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ag_tech_rows):
+            agsector_chart1.add_series({
+                'name':       [economy + '_ag_use', chart_height + ag_fuel_rows + i + 4, 0],
+                'categories': [economy + '_ag_use', chart_height + ag_fuel_rows + 3, 2, chart_height + ag_fuel_rows + 3, ag_tech_cols - 1],
+                'values':     [economy + '_ag_use', chart_height + ag_fuel_rows + i + 4, 2, chart_height + ag_fuel_rows + i + 4, ag_tech_cols - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet1.insert_chart('R3', agsector_chart1)
 
-    # Create a ag fuel line chart 
-    agsector_chart2 = workbook.add_chart({'type': 'line'})
-    agsector_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    agsector_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    agsector_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+        # Create a ag fuel line chart 
+        agsector_chart2 = workbook.add_chart({'type': 'line'})
+        agsector_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    agsector_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        agsector_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        agsector_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        agsector_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        agsector_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        agsector_chart2.set_title({
+            'none': True
+        })
         
-    agsector_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    agsector_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ag_tech_rows):
-        agsector_chart2.add_series({
-            'name':       [economy + '_ag_use', chart_height + ag_fuel_rows + i + 4, 0],
-            'categories': [economy + '_ag_use', chart_height + ag_fuel_rows + 3, 2, chart_height + ag_fuel_rows + 3, ag_tech_cols - 1],
-            'values':     [economy + '_ag_use', chart_height + ag_fuel_rows + i + 4, 2, chart_height + ag_fuel_rows + i + 4, ag_tech_cols - 1],
-            'line':       {'color': colours_hex[i], 'width': 1}
-        })    
-        
-    worksheet1.insert_chart('Z3', agsector_chart2)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ag_tech_rows):
+            agsector_chart2.add_series({
+                'name':       [economy + '_ag_use', chart_height + ag_fuel_rows + i + 4, 0],
+                'categories': [economy + '_ag_use', chart_height + ag_fuel_rows + 3, 2, chart_height + ag_fuel_rows + 3, ag_tech_cols - 1],
+                'values':     [economy + '_ag_use', chart_height + ag_fuel_rows + i + 4, 2, chart_height + ag_fuel_rows + i + 4, ag_tech_cols - 1],
+                'line':       {'color': colours_hex[i], 'width': 1}
+            })    
+            
+        worksheet1.insert_chart('Z3', agsector_chart2)
+
+    else: 
+        pass
 
     ############################################################################################################################
 
@@ -535,222 +544,230 @@ for economy in use_df1['REGION'].unique():
     worksheet2.write(0, 0, economy + ' Buildings OSeMOSYS output by fuel and by technology', cell_format1)
 
     # Create a bld fuel area chart
-    bldfuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    bldfuel_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    bldfuel_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    bldfuel_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if bld_fuel_rows > 0:
+        bldfuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        bldfuel_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    bldfuel_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        bldfuel_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        bldfuel_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        bldfuel_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        bldfuel_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        bldfuel_chart1.set_title({
+            'none': True
+        })
         
-    bldfuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    bldfuel_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(bld_fuel_rows):
-        bldfuel_chart1.add_series({
-            'name':       [economy + '_bld_use', chart_height + i + 1, 1],
-            'categories': [economy + '_bld_use', chart_height, 2, chart_height, bld_fuel_cols - 1],
-            'values':     [economy + '_bld_use', chart_height + i + 1, 2, chart_height + i + 1, bld_fuel_cols - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet2.insert_chart('B3', bldfuel_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(bld_fuel_rows):
+            bldfuel_chart1.add_series({
+                'name':       [economy + '_bld_use', chart_height + i + 1, 1],
+                'categories': [economy + '_bld_use', chart_height, 2, chart_height, bld_fuel_cols - 1],
+                'values':     [economy + '_bld_use', chart_height + i + 1, 2, chart_height + i + 1, bld_fuel_cols - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet2.insert_chart('B3', bldfuel_chart1)
 
-    # Create a bld fuel line chart 
-    bldfuel_chart2 = workbook.add_chart({'type': 'line'})
-    bldfuel_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    bldfuel_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    bldfuel_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+        # Create a bld fuel line chart 
+        bldfuel_chart2 = workbook.add_chart({'type': 'line'})
+        bldfuel_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    bldfuel_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        bldfuel_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        bldfuel_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        bldfuel_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        bldfuel_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        bldfuel_chart2.set_title({
+            'none': True
+        })
         
-    bldfuel_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    bldfuel_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(bld_fuel_rows):
-        bldfuel_chart2.add_series({
-            'name':       [economy + '_bld_use', chart_height + i + 1, 1],
-            'categories': [economy + '_bld_use', chart_height, 2, chart_height, bld_fuel_cols - 1],
-            'values':     [economy + '_bld_use', chart_height + i + 1, 2, chart_height + i + 1, bld_fuel_cols - 1],
-            'line':       {'color': colours_hex[i], 'width': 1}
-        })    
-        
-    worksheet2.insert_chart('J3', bldfuel_chart2)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(bld_fuel_rows):
+            bldfuel_chart2.add_series({
+                'name':       [economy + '_bld_use', chart_height + i + 1, 1],
+                'categories': [economy + '_bld_use', chart_height, 2, chart_height, bld_fuel_cols - 1],
+                'values':     [economy + '_bld_use', chart_height + i + 1, 2, chart_height + i + 1, bld_fuel_cols - 1],
+                'line':       {'color': colours_hex[i], 'width': 1}
+            })    
+            
+        worksheet2.insert_chart('J3', bldfuel_chart2)
+
+    else:
+        pass
 
     # Create a Buildings tech area chart
-    bldtech_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    bldtech_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    bldtech_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    bldtech_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
-        
-    bldtech_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    bldtech_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    bldtech_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(bld_tech_rows):
-        bldtech_chart1.add_series({
-            'name':       [economy + '_bld_use', chart_height + bld_fuel_rows + i + 4, 0],
-            'categories': [economy + '_bld_use', chart_height + bld_fuel_rows + 3, 2, chart_height + bld_fuel_rows + 3, bld_tech_cols - 1],
-            'values':     [economy + '_bld_use', chart_height + bld_fuel_rows + i + 4, 2, chart_height + bld_fuel_rows + i + 4, bld_tech_cols - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet2.insert_chart('R3', bldtech_chart1)
+    if bld_tech_rows > 0:
+        bldtech_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        bldtech_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
 
-    # Create a bld fuel line chart 
-    bldtech_chart2 = workbook.add_chart({'type': 'line'})
-    bldtech_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    bldtech_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    bldtech_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
-        
-    bldtech_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        bldtech_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+
+        bldtech_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    bldtech_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    bldtech_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(bld_tech_rows):
-        bldtech_chart2.add_series({
-            'name':       [economy + '_bld_use', chart_height + bld_fuel_rows + i + 4, 0],
-            'categories': [economy + '_bld_use', chart_height + bld_fuel_rows + 3, 2, chart_height + bld_fuel_rows + 3, bld_tech_cols - 1],
-            'values':     [economy + '_bld_use', chart_height + bld_fuel_rows + i + 4, 2, chart_height + bld_fuel_rows + i + 4, bld_tech_cols - 1],
-            'line':       {'color': colours_hex[i], 'width': 1}
-        })    
-        
-    worksheet2.insert_chart('Z3', bldtech_chart2)
+        })
+            
+        bldtech_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        bldtech_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        bldtech_chart1.set_title({
+            'none': True
+        })
+
+        # Configure the series of the chart from the dataframe data.
+        for i in range(bld_tech_rows):
+            bldtech_chart1.add_series({
+                'name':       [economy + '_bld_use', chart_height + bld_fuel_rows + i + 4, 0],
+                'categories': [economy + '_bld_use', chart_height + bld_fuel_rows + 3, 2, chart_height + bld_fuel_rows + 3, bld_tech_cols - 1],
+                'values':     [economy + '_bld_use', chart_height + bld_fuel_rows + i + 4, 2, chart_height + bld_fuel_rows + i + 4, bld_tech_cols - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet2.insert_chart('R3', bldtech_chart1)
+
+        # Create a bld fuel line chart 
+        bldtech_chart2 = workbook.add_chart({'type': 'line'})
+        bldtech_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+
+        bldtech_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+
+        bldtech_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        bldtech_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        bldtech_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        bldtech_chart2.set_title({
+            'none': True
+        })
+
+        # Configure the series of the chart from the dataframe data.
+        for i in range(bld_tech_rows):
+            bldtech_chart2.add_series({
+                'name':       [economy + '_bld_use', chart_height + bld_fuel_rows + i + 4, 0],
+                'categories': [economy + '_bld_use', chart_height + bld_fuel_rows + 3, 2, chart_height + bld_fuel_rows + 3, bld_tech_cols - 1],
+                'values':     [economy + '_bld_use', chart_height + bld_fuel_rows + i + 4, 2, chart_height + bld_fuel_rows + i + 4, bld_tech_cols - 1],
+                'line':       {'color': colours_hex[i], 'width': 1}
+            })    
+            
+        worksheet2.insert_chart('Z3', bldtech_chart2)
+
+    else:
+        pass
 
     ####################################################################################################################################
 
@@ -770,222 +787,230 @@ for economy in use_df1['REGION'].unique():
     worksheet3.set_row(chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + 9, None, header_format)
     worksheet3.write(0, 0, economy + ' Transport OSeMOSYS output by modalities', cell_format1)
 
-    # Create a transport fuel line chart 
-    trnmodal_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    trnmodal_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    trnmodal_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    trnmodal_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    # Create a transport fuel line chart
+    if trn_ag1_rows > 0: 
+        trnmodal_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        trnmodal_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    trnmodal_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        trnmodal_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        trnmodal_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        trnmodal_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        trnmodal_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        trnmodal_chart1.set_title({
+            'none': True
+        })
         
-    trnmodal_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
+        # Configure the series of the chart from the dataframe data.
+        for i in range(trn_ag1_rows):
+            trnmodal_chart1.add_series({
+                'name':       [economy + '_trn_use', chart_height + i + 1, 0],
+                'categories': [economy + '_trn_use', chart_height, 2, chart_height, trn_ag1_cols - 1],
+                'values':     [economy + '_trn_use', chart_height + i + 1, 2, chart_height + i + 1, trn_ag1_cols - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet3.insert_chart('B3', trnmodal_chart1)
+
+        # Create a transport fuel line chart 
+        trnmodal_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        trnmodal_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    trnmodal_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(trn_ag1_rows):
-        trnmodal_chart1.add_series({
-            'name':       [economy + '_trn_use', chart_height + i + 1, 0],
-            'categories': [economy + '_trn_use', chart_height, 2, chart_height, trn_ag1_cols - 1],
-            'values':     [economy + '_trn_use', chart_height + i + 1, 2, chart_height + i + 1, trn_ag1_cols - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
+        trnmodal_chart2.set_chartarea({
+            'border': {'none': True}
+        })
         
-    worksheet3.insert_chart('B3', trnmodal_chart1)
+        trnmodal_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        trnmodal_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        trnmodal_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        trnmodal_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(trn_ag1_years_rows):
+            trnmodal_chart2.add_series({
+                'name':       [economy + '_trn_use', chart_height + trn_ag1_rows + i + 4, 0],
+                'categories': [economy + '_trn_use', chart_height + trn_ag1_rows + 3, 2, chart_height + trn_ag1_rows + 3, trn_ag1_years_cols - 1],
+                'values':     [economy + '_trn_use', chart_height + trn_ag1_rows + i + 4, 2, chart_height + trn_ag1_rows + i + 4, trn_ag1_years_cols - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet3.insert_chart('J3', trnmodal_chart2)
+
+    else:
+        pass
 
     # Create a transport fuel line chart 
-    trnmodal_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    trnmodal_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    trnmodal_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    trnmodal_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
+    if trn_ag2_rows > 0:
+        trnmodal_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        trnmodal_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    trnmodal_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        trnmodal_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        trnmodal_chart3.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        trnmodal_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        trnmodal_chart3.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        trnmodal_chart3.set_title({
+            'none': True
+        })
         
-    trnmodal_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    trnmodal_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(trn_ag1_years_rows):
-        trnmodal_chart2.add_series({
-            'name':       [economy + '_trn_use', chart_height + trn_ag1_rows + i + 4, 0],
-            'categories': [economy + '_trn_use', chart_height + trn_ag1_rows + 3, 2, chart_height + trn_ag1_rows + 3, trn_ag1_years_cols - 1],
-            'values':     [economy + '_trn_use', chart_height + trn_ag1_rows + i + 4, 2, chart_height + trn_ag1_rows + i + 4, trn_ag1_years_cols - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet3.insert_chart('J3', trnmodal_chart2)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(trn_ag2_rows):
+            trnmodal_chart3.add_series({
+                'name':       [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + i + 7, 0],
+                'categories': [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + 6, 2, chart_height + trn_ag1_rows + trn_ag1_years_rows + 6, trn_ag2_cols - 1],
+                'values':     [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + i + 7, 2, chart_height + trn_ag1_rows + trn_ag1_years_rows + i + 7, trn_ag2_cols - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet3.insert_chart('R3', trnmodal_chart3)
 
-    # Create a transport fuel line chart 
-    trnmodal_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    trnmodal_chart3.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    trnmodal_chart3.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    trnmodal_chart3.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+        # Create a transport fuel line chart 
+        trnmodal_chart4 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        trnmodal_chart4.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    trnmodal_chart3.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        trnmodal_chart4.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        trnmodal_chart4.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        trnmodal_chart4.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        trnmodal_chart4.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        trnmodal_chart4.set_title({
+            'none': True
+        })
         
-    trnmodal_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    trnmodal_chart3.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(trn_ag2_rows):
-        trnmodal_chart3.add_series({
-            'name':       [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + i + 7, 0],
-            'categories': [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + 6, 2, chart_height + trn_ag1_rows + trn_ag1_years_rows + 6, trn_ag2_cols - 1],
-            'values':     [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + i + 7, 2, chart_height + trn_ag1_rows + trn_ag1_years_rows + i + 7, trn_ag2_cols - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet3.insert_chart('R3', trnmodal_chart3)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(trn_ag2_years_rows):
+            trnmodal_chart4.add_series({
+                'name':       [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + i + 10, 0],
+                'categories': [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + 9, 2, chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + 9, trn_ag2_years_cols - 1],
+                'values':     [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + i + 10, 2, chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + i + 10, 
+                                trn_ag2_years_cols - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet3.insert_chart('Z3', trnmodal_chart4)
 
-    # Create a transport fuel line chart 
-    trnmodal_chart4 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    trnmodal_chart4.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    trnmodal_chart4.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    trnmodal_chart4.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
-        
-    trnmodal_chart4.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    trnmodal_chart4.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    trnmodal_chart4.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(trn_ag2_years_rows):
-        trnmodal_chart4.add_series({
-            'name':       [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + i + 10, 0],
-            'categories': [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + 9, 2, chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + 9, trn_ag2_years_cols - 1],
-            'values':     [economy + '_trn_use', chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + i + 10, 2, chart_height + trn_ag1_rows + trn_ag1_years_rows + trn_ag2_rows + i + 10, 
-                            trn_ag2_years_cols - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet3.insert_chart('Z3', trnmodal_chart4)
+    else:
+        pass
 
     writer.save()
 
