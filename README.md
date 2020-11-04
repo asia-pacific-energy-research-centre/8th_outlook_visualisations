@@ -28,6 +28,8 @@ source activate ./env
 
 #### 6. The first script to execute is in 8th_outlook_visualisations\workflow\scripts\1_historical_to_projected
 
+NB: this needs to be run every time, as it takes the new results you've output and bolts them to EGEDA 
+
 ```bash
 python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA.py
 ```
@@ -39,10 +41,27 @@ There should be a newly created csv file 'OSeMOSYS_to_EGEDA.csv'
 #### 7. When you've run step 6 you can run the charting scripts contained in 8th_outlook_visualisations\workflow\scripts\2_charts_tables
 There are currently four scripts in this folder. 
 
-Example for running TPES
+For running FED
+```bash
+python ./workflow/scripts/2_charts_tables/FED_tfc_economy.py
+```
+
+For running TPES
 ```bash
 python ./workflow/scripts/2_charts_tables/TPES_economy.py
 ```
-This will create TPES charts and tables in 8th_outlook_visualisations\results
+
+For running Transformation
+```bash
+python ./workflow/scripts/2_charts_tables/Transformation_economy.py
+```
+
+For running some OSeMOSYS specific outputs (not mapped to EGEDA):
+```bash
+python ./workflow/scripts/2_charts_tables/OSeMOSYS_detailed.py
+```
+
+
+These will create charts and tables in 8th_outlook_visualisations\results
 
 
