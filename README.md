@@ -1,6 +1,6 @@
 ## Instructions for charting osemosys results
 
-## 0. Before you begin
+#### 0. Before you begin
 
 You will need several software programs on your computer:
 
