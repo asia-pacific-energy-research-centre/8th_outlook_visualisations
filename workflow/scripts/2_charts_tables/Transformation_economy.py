@@ -298,7 +298,7 @@ for economy in power_df1['economy'].unique():
 
     refinery_df1 = refownsup_df1[(refownsup_df1['economy'] == economy) &
                                  (refownsup_df1['Sector'] == 'REF') & 
-                                 (refownsup_df1['FUEL'].isin(Ref_input))]
+                                 (refownsup_df1['FUEL'].isin(Ref_input))].copy()
 
     refinery_df1['Transformation'] = 'Input to refinery'
     refinery_df1 = refinery_df1[['FUEL', 'Transformation'] + OSeMOSYS_years]
@@ -311,7 +311,7 @@ for economy in power_df1['economy'].unique():
 
     refinery_df2 = refownsup_df1[(refownsup_df1['economy'] == economy) &
                                  (refownsup_df1['Sector'] == 'REF') & 
-                                 (refownsup_df1['FUEL'].isin(Ref_output))]
+                                 (refownsup_df1['FUEL'].isin(Ref_output))].copy()
 
     refinery_df2['Transformation'] = 'Output from refinery'
     refinery_df2 = refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years]
@@ -411,112 +411,120 @@ for economy in power_df1['economy'].unique():
     worksheet1.write(0, 0, economy + ' transformation use fuel', cell_format1)
 
     # Create a use by fuel area chart
-    usefuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    usefuel_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    usefuel_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    usefuel_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if nrows1 > 0:
+        usefuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        usefuel_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    usefuel_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        usefuel_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        usefuel_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        usefuel_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        usefuel_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        usefuel_chart1.set_title({
+            'none': True
+        })
         
-    usefuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    usefuel_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(nrows1):
-        usefuel_chart1.add_series({
-            'name':       [economy + '_use_fuel', chart_height + i + 1, 0],
-            'categories': [economy + '_use_fuel', chart_height, 2, chart_height, ncols1 - 1],
-            'values':     [economy + '_use_fuel', chart_height + i + 1, 2, chart_height + i + 1, ncols1 - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet1.insert_chart('B3', usefuel_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(nrows1):
+            usefuel_chart1.add_series({
+                'name':       [economy + '_use_fuel', chart_height + i + 1, 0],
+                'categories': [economy + '_use_fuel', chart_height, 2, chart_height, ncols1 - 1],
+                'values':     [economy + '_use_fuel', chart_height + i + 1, 2, chart_height + i + 1, ncols1 - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet1.insert_chart('B3', usefuel_chart1)
+
+    else:
+        pass
 
     # Create a use column chart
-    usefuel_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    usefuel_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    usefuel_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    usefuel_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
-        
-    usefuel_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    usefuel_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    usefuel_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for i in range(nrows2):
-        usefuel_chart2.add_series({
-            'name':       [economy + '_use_fuel', chart_height + nrows1 + i + 4, 0],
-            'categories': [economy + '_use_fuel', chart_height + nrows1 + 3, 2, chart_height + nrows1 + 3, ncols2 - 1],
-            'values':     [economy + '_use_fuel', chart_height + nrows1 + i + 4, 2, chart_height + nrows1 + i + 4, ncols2 - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
+    if nrows2 > 0:
+        usefuel_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        usefuel_chart2.set_size({
+            'width': 500,
+            'height': 300
         })
+        
+        usefuel_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        usefuel_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        usefuel_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        usefuel_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        usefuel_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(nrows2):
+            usefuel_chart2.add_series({
+                'name':       [economy + '_use_fuel', chart_height + nrows1 + i + 4, 0],
+                'categories': [economy + '_use_fuel', chart_height + nrows1 + 3, 2, chart_height + nrows1 + 3, ncols2 - 1],
+                'values':     [economy + '_use_fuel', chart_height + nrows1 + i + 4, 2, chart_height + nrows1 + i + 4, ncols2 - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })
 
-    worksheet1.insert_chart('J3', usefuel_chart2)
+        worksheet1.insert_chart('J3', usefuel_chart2)
+
+    else:
+        pass
 
     ############################# Next sheet: Production of electricity by technology ##################################
     
@@ -530,112 +538,120 @@ for economy in power_df1['economy'].unique():
     worksheet2.write(0, 0, economy + ' electricity production by technology', cell_format1)
     
     # Create a electricity production area chart
-    prodelec_bytech_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    prodelec_bytech_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    prodelec_bytech_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    prodelec_bytech_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if nrows3 > 0:
+        prodelec_bytech_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        prodelec_bytech_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    prodelec_bytech_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'TWh',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        prodelec_bytech_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        prodelec_bytech_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        prodelec_bytech_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'TWh',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        prodelec_bytech_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        prodelec_bytech_chart1.set_title({
+            'none': True
+        })
         
-    prodelec_bytech_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    prodelec_bytech_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(nrows3):
-        prodelec_bytech_chart1.add_series({
-            'name':       [economy + '_prodelec_bytech', chart_height + i + 1, 0],
-            'categories': [economy + '_prodelec_bytech', chart_height, 2, chart_height, ncols3 - 1],
-            'values':     [economy + '_prodelec_bytech', chart_height + i + 1, 2, chart_height + i + 1, ncols3 - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet2.insert_chart('B3', prodelec_bytech_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(nrows3):
+            prodelec_bytech_chart1.add_series({
+                'name':       [economy + '_prodelec_bytech', chart_height + i + 1, 0],
+                'categories': [economy + '_prodelec_bytech', chart_height, 2, chart_height, ncols3 - 1],
+                'values':     [economy + '_prodelec_bytech', chart_height + i + 1, 2, chart_height + i + 1, ncols3 - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet2.insert_chart('B3', prodelec_bytech_chart1)
+
+    else: 
+        pass
 
     # Create a industry subsector FED chart
-    prodelec_bytech_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    prodelec_bytech_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    prodelec_bytech_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    prodelec_bytech_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
+    if nrows4 > 0:
+        prodelec_bytech_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        prodelec_bytech_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    prodelec_bytech_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'TWh',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        prodelec_bytech_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        prodelec_bytech_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        prodelec_bytech_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'TWh',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        prodelec_bytech_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        prodelec_bytech_chart2.set_title({
+            'none': True
+        })
         
-    prodelec_bytech_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    prodelec_bytech_chart2.set_title({
-        'none': True
-    })
+        # Configure the series of the chart from the dataframe data.
+        for i in range(nrows4):
+            prodelec_bytech_chart2.add_series({
+                'name':       [economy + '_prodelec_bytech', chart_height + nrows3 + i + 4, 0],
+                'categories': [economy + '_prodelec_bytech', chart_height + nrows3 + 3, 2, chart_height + nrows3 + 3, ncols4 - 1],
+                'values':     [economy + '_prodelec_bytech', chart_height + nrows3 + i + 4, 2, chart_height + nrows3 + i + 4, ncols4 - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet2.insert_chart('J3', prodelec_bytech_chart2)
     
-    # Configure the series of the chart from the dataframe data.
-    for i in range(nrows4):
-        prodelec_bytech_chart2.add_series({
-            'name':       [economy + '_prodelec_bytech', chart_height + nrows3 + i + 4, 0],
-            'categories': [economy + '_prodelec_bytech', chart_height + nrows3 + 3, 2, chart_height + nrows3 + 3, ncols4 - 1],
-            'values':     [economy + '_prodelec_bytech', chart_height + nrows3 + i + 4, 2, chart_height + nrows3 + i + 4, ncols4 - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet2.insert_chart('J3', prodelec_bytech_chart2)
+    else:
+        pass
 
     #################################################################################################################################################
 
@@ -652,163 +668,175 @@ for economy in power_df1['economy'].unique():
     worksheet3.write(0, 0, economy + ' refining', cell_format1)
 
     # Create ainput refining line chart
-    refinery_chart1 = workbook.add_chart({'type': 'line'})
-    refinery_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    refinery_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    refinery_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
+    if nrows5 > 0:
+        refinery_chart1 = workbook.add_chart({'type': 'line'})
+        refinery_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    refinery_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        refinery_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        refinery_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        refinery_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        refinery_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        refinery_chart1.set_title({
+            'none': True
+        })
         
-    refinery_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    refinery_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(nrows5):
-        refinery_chart1.add_series({
-            'name':       [economy + '_refining', chart_height + i + 1, 0],
-            'categories': [economy + '_refining', chart_height, 2, chart_height, ncols5 - 1],
-            'values':     [economy + '_refining', chart_height + i + 1, 2, chart_height + i + 1, ncols5 - 1],
-            'line':       {'color': colours_hex[i + 3],
-                           'width': 1.25}
-        })    
-        
-    worksheet3.insert_chart('B3', refinery_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(nrows5):
+            refinery_chart1.add_series({
+                'name':       [economy + '_refining', chart_height + i + 1, 0],
+                'categories': [economy + '_refining', chart_height, 2, chart_height, ncols5 - 1],
+                'values':     [economy + '_refining', chart_height + i + 1, 2, chart_height + i + 1, ncols5 - 1],
+                'line':       {'color': colours_hex[i + 3],
+                            'width': 1.25}
+            })    
+            
+        worksheet3.insert_chart('B3', refinery_chart1)
+
+    else:
+        pass
 
     # Create an output refining line chart
-    refinery_chart2 = workbook.add_chart({'type': 'line'})
-    refinery_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    refinery_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    refinery_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
+    if nrows6 > 0:
+        refinery_chart2 = workbook.add_chart({'type': 'line'})
+        refinery_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    refinery_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        refinery_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        refinery_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        refinery_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        refinery_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        refinery_chart2.set_title({
+            'none': True
+        })
         
-    refinery_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    refinery_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(nrows6):
-        refinery_chart2.add_series({
-            'name':       [economy + '_refining', chart_height + nrows5 + i + 4, 0],
-            'categories': [economy + '_refining', chart_height + nrows5 + 3, 2, chart_height + nrows5 + 3, ncols6 - 1],
-            'values':     [economy + '_refining', chart_height + nrows5 + i + 4, 2, chart_height + nrows5 + i + 4, ncols6 - 1],
-            'line':       {'color': colours_hex[i],
-                           'width': 1}
-        })    
-        
-    worksheet3.insert_chart('J3', refinery_chart2)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(nrows6):
+            refinery_chart2.add_series({
+                'name':       [economy + '_refining', chart_height + nrows5 + i + 4, 0],
+                'categories': [economy + '_refining', chart_height + nrows5 + 3, 2, chart_height + nrows5 + 3, ncols6 - 1],
+                'values':     [economy + '_refining', chart_height + nrows5 + i + 4, 2, chart_height + nrows5 + i + 4, ncols6 - 1],
+                'line':       {'color': colours_hex[i],
+                            'width': 1}
+            })    
+            
+        worksheet3.insert_chart('J3', refinery_chart2)
+
+    else: 
+        pass
 
     # Create refinery output column stacked
-    refinery_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    refinery_chart3.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    refinery_chart3.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    refinery_chart3.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
+    if nrows7 > 0:
+        refinery_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        refinery_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    refinery_chart3.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        refinery_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        refinery_chart3.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        refinery_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        refinery_chart3.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        refinery_chart3.set_title({
+            'none': True
+        })
         
-    refinery_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    refinery_chart3.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(nrows7):
-        refinery_chart3.add_series({
-            'name':       [economy + '_refining', chart_height + nrows5 + nrows6 + i + 7, 0],
-            'categories': [economy + '_refining', chart_height + nrows5 + nrows6 + 6, 2, chart_height + nrows5 + nrows6 + 6, ncols7 - 1],
-            'values':     [economy + '_refining', chart_height + nrows5 + nrows6 + i + 7, 2, chart_height + nrows5 + nrows6 + i + 7, ncols7 - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet3.insert_chart('R3', refinery_chart3)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(nrows7):
+            refinery_chart3.add_series({
+                'name':       [economy + '_refining', chart_height + nrows5 + nrows6 + i + 7, 0],
+                'categories': [economy + '_refining', chart_height + nrows5 + nrows6 + 6, 2, chart_height + nrows5 + nrows6 + 6, ncols7 - 1],
+                'values':     [economy + '_refining', chart_height + nrows5 + nrows6 + i + 7, 2, chart_height + nrows5 + nrows6 + i + 7, ncols7 - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet3.insert_chart('R3', refinery_chart3)
+
+    else:
+        pass
 
     ############################# Next sheet: Power capacity ##################################
     
@@ -822,112 +850,120 @@ for economy in power_df1['economy'].unique():
     worksheet4.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
     
     # Create a electricity production area chart
-    pow_cap_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    pow_cap_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    pow_cap_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    pow_cap_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if nrows8 > 0:
+        pow_cap_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        pow_cap_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    pow_cap_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'GW',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        pow_cap_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        pow_cap_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        pow_cap_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'GW',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        pow_cap_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        pow_cap_chart1.set_title({
+            'none': True
+        })
         
-    pow_cap_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    pow_cap_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(nrows8):
-        pow_cap_chart1.add_series({
-            'name':       [economy + '_pow_capacity', chart_height + i + 1, 0],
-            'categories': [economy + '_pow_capacity', chart_height, 1, chart_height, ncols8 - 1],
-            'values':     [economy + '_pow_capacity', chart_height + i + 1, 1, chart_height + i + 1, ncols8 - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet4.insert_chart('B3', pow_cap_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(nrows8):
+            pow_cap_chart1.add_series({
+                'name':       [economy + '_pow_capacity', chart_height + i + 1, 0],
+                'categories': [economy + '_pow_capacity', chart_height, 1, chart_height, ncols8 - 1],
+                'values':     [economy + '_pow_capacity', chart_height + i + 1, 1, chart_height + i + 1, ncols8 - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet4.insert_chart('B3', pow_cap_chart1)
+
+    else:
+        pass
 
     # Create a industry subsector FED chart
-    pow_cap_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    pow_cap_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    pow_cap_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    pow_cap_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
+    if nrows9 > 0:
+        pow_cap_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        pow_cap_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    pow_cap_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'GW',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        pow_cap_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        pow_cap_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        pow_cap_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'GW',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        pow_cap_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        pow_cap_chart2.set_title({
+            'none': True
+        })
         
-    pow_cap_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    pow_cap_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(nrows9):
-        pow_cap_chart2.add_series({
-            'name':       [economy + '_pow_capacity', chart_height + nrows8 + i + 4, 0],
-            'categories': [economy + '_pow_capacity', chart_height + nrows8 + 3, 1, chart_height + nrows8 + 3, ncols9 - 1],
-            'values':     [economy + '_pow_capacity', chart_height + nrows8 + i + 4, 1, chart_height + nrows8 + i + 4, ncols9 - 1],
-            'fill':       {'color': colours_hex[i]},
-            'border':     {'none': True}
-        })    
-        
-    worksheet4.insert_chart('J3', pow_cap_chart2)    
+        # Configure the series of the chart from the dataframe data.
+        for i in range(nrows9):
+            pow_cap_chart2.add_series({
+                'name':       [economy + '_pow_capacity', chart_height + nrows8 + i + 4, 0],
+                'categories': [economy + '_pow_capacity', chart_height + nrows8 + 3, 1, chart_height + nrows8 + 3, ncols9 - 1],
+                'values':     [economy + '_pow_capacity', chart_height + nrows8 + i + 4, 1, chart_height + nrows8 + i + 4, ncols9 - 1],
+                'fill':       {'color': colours_hex[i]},
+                'border':     {'none': True}
+            })    
+            
+        worksheet4.insert_chart('J3', pow_cap_chart2)
+
+    else:
+        pass    
 
     writer.save()
 

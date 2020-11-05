@@ -199,7 +199,7 @@ for economy in Economy_codes:
 
     exports_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
                               (EGEDA_years['item_code_new'] == '3_exports') & 
-                              (EGEDA_years['fuel_code'].isin(Required_fuels))]
+                              (EGEDA_years['fuel_code'].isin(Required_fuels))].copy()
 
     # Change export values to positive rather than negative
 

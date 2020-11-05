@@ -57,6 +57,13 @@ interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', '
 
 aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
 
+# Now aggregate all the results for APEC
+
+APEC = aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+APEC['REGION'] = 'APEC'
+
+aggregate_df1 = aggregate_df1.append(APEC).reset_index(drop = True)
+
 # Get maximum year column to build data frame below
 year_columns = []
 
@@ -129,12 +136,13 @@ for region in aggregate_df1['REGION'].unique():
     interim_df1 = interim_df1.groupby(['item_code_new', 'fuel_code']).sum().reset_index()
 
     # Change export data to negative values
-    exports_bunkers = interim_df1[interim_df1['item_code_new'].isin(['3_exports', '4_1_international_marine_bunkers', '4_2_international_aviation_bunkers'])]
+    exports_bunkers = interim_df1[interim_df1['item_code_new'].isin(['3_exports', '4_1_international_marine_bunkers', '4_2_international_aviation_bunkers'])]\
+        .set_index(['item_code_new', 'fuel_code'])
     everything_else = interim_df1[~interim_df1['item_code_new'].isin(['3_exports', '4_1_international_marine_bunkers', '4_2_international_aviation_bunkers'])]
 
-    s = exports_bunkers.select_dtypes(include=[np.number]) * -1
-    exports_bunkers[s.columns] = s
-    interim_df1 = exports_bunkers.append(everything_else)
+    exports_bunkers = exports_bunkers * -1
+    exports_bunkers = exports_bunkers.reset_index()
+    interim_df1 = everything_else.append(exports_bunkers)
 
     ########################### Aggregate fuel_code for new variables ###################################
 
@@ -215,14 +223,17 @@ for region in aggregate_df1['REGION'].unique():
     # Now append economy dataframe to communal data frame 
     aggregate_df2 = aggregate_df2.append(interim_df6)
     
+key_variables = ['economy', 'fuel_code', 'item_code_new']
 
-aggregate_df2 = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years]
+# aggregate_df2 = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years]
+aggregate_df2 = aggregate_df2.loc[:, key_variables + OSeMOSYS_years]
 
 # Now load the EGEDA_years data frame
 EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2020_June_22_wide_years_PJ.csv')
 
 # Remove 2017 which is already in the EGEDA historical
-aggregate_df2_tojoin = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years[1:]]
+# aggregate_df2_tojoin = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years[1:]]
+aggregate_df2_tojoin = aggregate_df2.loc[:, key_variables + OSeMOSYS_years[1:]]
 
 # Join EGEDA historical to OSeMOSYS results
 Joined_df = EGEDA_years.merge(aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')

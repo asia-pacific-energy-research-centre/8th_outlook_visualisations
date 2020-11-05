@@ -210,9 +210,9 @@ for economy in Economy_codes:
     ncols12 = bld_df2.shape[1]
 
     bld_df3 = bld_df1[(bld_df1['fuel_code'] == '12_total') &
-                      (bld_df1['item_code_new'].isin(['15_1_1_commerce_and_public_services', '15_1_2_residential']))]
+                      (bld_df1['item_code_new'].isin(['15_1_1_commerce_and_public_services', '15_1_2_residential']))].copy()
 
-    bld_df3.loc[bld_df3['item_code_new'] == '15_1_1_commerce_and_public_services', 'item_code_new'] = 'Services'
+    bld_df3.loc[bld_df3['item_code_new'] == '15_1_1_commerce_and_public_services', 'item_code_new'] = 'Services' 
     bld_df3.loc[bld_df3['item_code_new'] == '15_1_2_residential', 'item_code_new'] = 'Residential'
 
     nrows13 = bld_df3.shape[0]
@@ -301,7 +301,7 @@ for economy in Economy_codes:
     # Second transport data frame that provides a breakdown of the different transport modalities
     transport_df2 = EGEDA_years[(EGEDA_years['economy'] == economy) &
                                (EGEDA_years['item_code_new'].isin(Transport_modal)) &
-                               (EGEDA_years['fuel_code'].isin(['12_total']))]
+                               (EGEDA_years['fuel_code'].isin(['12_total']))].copy()
     
     transport_df2.loc[transport_df2['item_code_new'] == '14_1_domestic_air_transport', 'item_code_new'] = 'Aviation'
     transport_df2.loc[transport_df2['item_code_new'] == '14_2_road', 'item_code_new'] = 'Road'
