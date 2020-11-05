@@ -128,12 +128,16 @@ for economy in use_df1['REGION'].unique():
 
     bld_fuel.loc[bld_fuel['FUEL'] == '1_1_1_coking_coal', 'FUEL'] = 'Coking coal'
     bld_fuel.loc[bld_fuel['FUEL'] == '1_3_lignite', 'FUEL'] = 'Lignite'
+    bld_fuel.loc[bld_fuel['FUEL'] == '4_3_jet_fuel', 'FUEL'] = 'Jet fuel'
+    bld_fuel.loc[bld_fuel['FUEL'] == '4_4_other_kerosene', 'FUEL'] = 'Other kerosene'
     bld_fuel.loc[bld_fuel['FUEL'] == '4_5_gas_diesel_oil', 'FUEL'] = 'Gas diesel oil'
     bld_fuel.loc[bld_fuel['FUEL'] == '4_7_lpg', 'FUEL'] = 'LPG'
     bld_fuel.loc[bld_fuel['FUEL'] == '5_1_natural_gas', 'FUEL'] = 'Natural gas'
     bld_fuel.loc[bld_fuel['FUEL'] == '8_3_geothermal_heat', 'FUEL'] = 'Geothermal'
     bld_fuel.loc[bld_fuel['FUEL'] == '8_4_solar_heat', 'FUEL'] = 'Solar heat'
+    bld_fuel.loc[bld_fuel['FUEL'] == '9_3_charcoal', 'FUEL'] = 'Charcoal'
     bld_fuel.loc[bld_fuel['FUEL'] == '9_4_other_biomass', 'FUEL'] = 'Biomass'
+    bld_fuel.loc[bld_fuel['FUEL'] == '9_5_biogas', 'FUEL'] = 'Biogas'
     bld_fuel.loc[bld_fuel['FUEL'] == '10_electricity_Dx', 'FUEL'] = 'Electricity'
     bld_fuel.loc[bld_fuel['FUEL'] == '11_heat', 'FUEL'] = 'Heat'
 
@@ -208,7 +212,12 @@ for economy in use_df1['REGION'].unique():
     trn_ship['Mode'] = 'Marine'
     trn_ship = trn_ship.groupby(['Mode'], as_index = False)[OSeMOSYS_years].sum().assign(FUEL = 'All')
 
-    trn_ag1 = pd.DataFrame().append([trn_af, trn_ap, trn_bunk, trn_railf, trn_railp, trn_roadf, trn_roadp, trn_ship])[['Mode', 'FUEL'] + OSeMOSYS_years].reset_index(drop = True)
+    trn_nonspec = trn_df1[trn_df1['TECHNOLOGY'].str.contains('_nonspecified_')].reset_index(drop = True)
+    trn_nonspec['Mode'] = 'Non-specified'
+    trn_nonspec = trn_nonspec.groupby(['Mode'], as_index = False)[OSeMOSYS_years].sum().assign(FUEL = 'All')
+
+    trn_ag1 = pd.DataFrame().append([trn_af, trn_ap, trn_bunk, trn_railf, trn_railp, trn_roadf, trn_roadp, trn_ship, trn_nonspec])\
+        [['Mode', 'FUEL'] + OSeMOSYS_years].reset_index(drop = True)
 
     trn_ag1_rows = trn_ag1.shape[0]
     trn_ag1_cols = trn_ag1.shape[1]
@@ -253,7 +262,10 @@ for economy in use_df1['REGION'].unique():
 
     # Marine from aggregation above
 
-    trn_ag2 = pd.DataFrame().append([trn_air, trn_bunk, trn_rail, trn_2w, trn_bus, trn_lv, trn_lt, trn_ht, trn_ship])[['Mode', 'FUEL'] + OSeMOSYS_years].reset_index(drop = True)
+    # Transport non-specified from aggregation above
+
+    trn_ag2 = pd.DataFrame().append([trn_air, trn_bunk, trn_rail, trn_2w, trn_bus, trn_lv, trn_lt, trn_ht, trn_ship, trn_nonspec])\
+        [['Mode', 'FUEL'] + OSeMOSYS_years].reset_index(drop = True)
 
     trn_ag2_rows = trn_ag2.shape[0]
     trn_ag2_cols = trn_ag2.shape[1]
