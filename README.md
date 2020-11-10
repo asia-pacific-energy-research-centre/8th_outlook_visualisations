@@ -19,14 +19,17 @@ You can clone this repository to wherever you want on your personal computer
 
 #### 2. In your newly cloned repository (8th_outlook_visualisations), you need to save some relevant input data in the ‘data’ folder
 
-Save ‘EGEDA_2020_June_22_wide_years_PJ.csv’ in 8th_outlook_visualisations/data/1_EGEDA/
+Save ‘EGEDA_2020_June_22_wide_years_PJ.csv’ in 8th_outlook_visualisations/data/1_EGEDA/ 
+  (available in 'Charts and tables' teams folder)
 
 Save ‘colour_template_7th.xlsx’ and ‘OSeMOSYS mapping.xlsx’ in 8th_outlook_visualisations/data/2_Mapping_and_other/
+  (available in 'Charts and tables' teams folder)
 
 Save OSeMOSYS results, (e.g. ‘08_JPN_results_v1.0.xlsx’, ‘11_MEX_results_v1.2.xlsx’) in 8th_outlook_visualisations/data/3_OSeMOSYS_output/
+  (note: 'results' needs to be lowercase)
 
 #### 3. At the command prompt, navigate so that the ‘root’ directory is the 8th_outlook_visualisations folder
-This requires the cd command to navigate to the appropriate folder executed at the command prompt (e.g. using gitbash)
+This requires the cd command to navigate to the appropriate folder executed at the command prompt (e.g. using gitbash or windows command line)
 
 #### 4. Create the python environment once you’re in the new working directory
 
@@ -37,7 +40,7 @@ conda env create --prefix ./env --file ./workflow/environment.yml
 
 #### 5. Activate the conda environment
 ```bash
-source activate ./env
+conda activate ./env
 ```
 
 ### You're now ready to execute the scripts
