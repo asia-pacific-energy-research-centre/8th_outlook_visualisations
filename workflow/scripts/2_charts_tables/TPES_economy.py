@@ -54,6 +54,7 @@ chart_height = 18 # number of excel rows before the data is written
 col_chart_years = ['2000', '2010', '2017', '2020', '2030', '2040', '2050']
 
 TPES_agg_fuels = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
+TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
 
 # Total Primary Energy Supply fuel breakdown for each economy
 
@@ -171,8 +172,8 @@ for economy in Economy_codes:
     coal = imports_df1[imports_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                           item_code_new = '2_imports')
     
-    oil = imports_df1[imports_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
-                                                                                                        item_code_new = '2_imports')
+    # oil = imports_df1[imports_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+    #                                                                                                     item_code_new = '2_imports')
     
     renewables = imports_df1[imports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                       item_code_new = '2_imports')
@@ -182,11 +183,13 @@ for economy in Economy_codes:
     
     imports_df1 = imports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
+    imports_df1.loc[imports_df1['fuel_code'] == '3_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+    imports_df1.loc[imports_df1['fuel_code'] == '4_petroleum_products', 'fuel_code'] = 'Petroleum products'
     imports_df1.loc[imports_df1['fuel_code'] == '5_gas', 'fuel_code'] = 'Gas'
     imports_df1.loc[imports_df1['fuel_code'] == '7_nuclear', 'fuel_code'] = 'Nuclear'
 
-    imports_df1 = imports_df1[imports_df1['fuel_code'].isin(TPES_agg_fuels)]\
-        .set_index('fuel_code').loc[TPES_agg_fuels].reset_index()\
+    imports_df1 = imports_df1[imports_df1['fuel_code'].isin(TPES_agg_trade)]\
+        .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(imports_df1.loc[:, '2000':])]
 
     nrows8 = imports_df1.shape[0]
@@ -208,8 +211,8 @@ for economy in Economy_codes:
     coal = exports_df1[exports_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                           item_code_new = '3_exports')
     
-    oil = exports_df1[exports_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
-                                                                                                        item_code_new = '3_exports')
+    # oil = exports_df1[exports_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+    #                                                                                                     item_code_new = '3_exports')
     
     renewables = exports_df1[exports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                       item_code_new = '3_exports')
@@ -219,11 +222,13 @@ for economy in Economy_codes:
     
     exports_df1 = exports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
+    exports_df1.loc[exports_df1['fuel_code'] == '3_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+    exports_df1.loc[exports_df1['fuel_code'] == '4_petroleum_products', 'fuel_code'] = 'Petroleum products'
     exports_df1.loc[exports_df1['fuel_code'] == '5_gas', 'fuel_code'] = 'Gas'
     exports_df1.loc[exports_df1['fuel_code'] == '7_nuclear', 'fuel_code'] = 'Nuclear'
 
-    exports_df1 = exports_df1[exports_df1['fuel_code'].isin(TPES_agg_fuels)]\
-        .set_index('fuel_code').loc[TPES_agg_fuels].reset_index()\
+    exports_df1 = exports_df1[exports_df1['fuel_code'].isin(TPES_agg_trade)]\
+        .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(exports_df1.loc[:, '2000':])]
 
     nrows9 = exports_df1.shape[0]
@@ -767,7 +772,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for fuel in ['Coal', 'Oil', 'Gas', 'Other fuels']:
+    for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Other fuels']:
         i = imports_df1[imports_df1['fuel_code'] == fuel].index[0]
         imports_line.add_series({
             'name':       [economy + '_TPES_components_I', chart_height + nrows3 + i + 4, 0],
@@ -876,7 +881,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for fuel in ['Coal', 'Oil', 'Gas', 'Other fuels']:
+    for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Other fuels']:
         i = exports_df1[exports_df1['fuel_code'] == fuel].index[0]
         exports_line.add_series({
             'name':       [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 0],
