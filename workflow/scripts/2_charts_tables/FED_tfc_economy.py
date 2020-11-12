@@ -45,7 +45,11 @@ Heat_others_fuels = list(Fuels[[50, 66, 69, 70, 75, 77]])
 
 # Need to amend this to reflect demarcation between modern renewables and traditional biomass renewables 
 
-Renewables_fuels = list(Fuels[[49, 51, 61, 62, 63, 64, 65, 68]])
+Renewables_fuels = list(Fuels[[49, 51, 61, 62, 63, 64, 65, 68, 70]])
+
+Modern_renew_primary = list(Fuels[[49, 51, 65, 68, 70]])
+
+Modern_renew_FED = list(Fuels[[49, 51, 65, 68, 70]])
 
 Sectors_tfc = list(Items[[64, 78, 86, 87, 88, 89, 90, 91]])
 
