@@ -1026,4 +1026,6 @@ for economy in use_df1['REGION'].unique():
 
     writer.save()
 
+print('Bling blang blaow, you have some OSeMOSYS detailed charts now')
+
     

@@ -184,7 +184,7 @@ Ref_output = ['4_1_1_motor_gasoline', '4_1_2_aviation_gasoline', '4_10_other_pet
 coal_cap = ['POW_Black_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_CHP_COAL_PP', 'POW_Other_Coal_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP']
 gas_cap = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
 oil_cap = ['POW_Diesel_PP', 'POW_FuelOil_PP']
-nuclear_cap = ['POW_Nuclear_PP']
+nuclear_cap = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
 hydro_cap = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_TIDAL_PP']
 bio_cap = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP']
 wind_cap = ['POW_Wind_PP', 'POW_WindOff_PP']
@@ -970,5 +970,7 @@ for economy in power_df1['economy'].unique():
         pass    
 
     writer.save()
+
+print('Bling blang blaow, you have some Transformation charts now')
 
 

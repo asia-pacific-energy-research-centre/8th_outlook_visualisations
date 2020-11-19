@@ -233,10 +233,13 @@ EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2020_June_22_wide_years_PJ.csv')
 
 # Remove 2017 which is already in the EGEDA historical
 # aggregate_df2_tojoin = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years[1:]]
-aggregate_df2_tojoin = aggregate_df2.loc[:, key_variables + OSeMOSYS_years[1:]]
+# aggregate_df2_tojoin = aggregate_df2.loc[:, key_variables + OSeMOSYS_years[1:]] # New line below keeps 2017 in OSeMOSYS
+aggregate_df2_tojoin = aggregate_df2.loc[:, key_variables + OSeMOSYS_years]
 
-# Join EGEDA historical to OSeMOSYS results
-Joined_df = EGEDA_years.merge(aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+# Join EGEDA historical to OSeMOSYS results (line below removes 2017 from historical)
+Joined_df = EGEDA_years.iloc[:, :-1].merge(aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 Joined_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA.csv', index = False)
+
+print('OSeMOSYS_to_EGEDA.csv file successfully created')
 
 
