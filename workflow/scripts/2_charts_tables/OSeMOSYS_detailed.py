@@ -188,9 +188,11 @@ for economy in use_df1['REGION'].unique():
     trn_ap['Mode'] = 'Air passenger'
     trn_ap = trn_ap.groupby(['Mode'], as_index = False)[OSeMOSYS_years].sum().assign(FUEL = 'All')
 
-    trn_bunk = trn_df1[trn_df1['TECHNOLOGY'].str.contains('bunkers')].reset_index(drop = True)
-    trn_bunk['Mode'] = 'Bunkers'
-    trn_bunk = trn_bunk.groupby(['Mode'], as_index = False)[OSeMOSYS_years].sum().assign(FUEL = 'All')
+    # No more bunkers in Transport
+
+    # trn_bunk = trn_df1[trn_df1['TECHNOLOGY'].str.contains('bunkers')].reset_index(drop = True)
+    # trn_bunk['Mode'] = 'Bunkers'
+    # trn_bunk = trn_bunk.groupby(['Mode'], as_index = False)[OSeMOSYS_years].sum().assign(FUEL = 'All')
 
     trn_railf = trn_df1[trn_df1['TECHNOLOGY'].str.contains('rail_freight')].reset_index(drop = True)
     trn_railf['Mode'] = 'Rail freight'
@@ -216,7 +218,7 @@ for economy in use_df1['REGION'].unique():
     trn_nonspec['Mode'] = 'Non-specified'
     trn_nonspec = trn_nonspec.groupby(['Mode'], as_index = False)[OSeMOSYS_years].sum().assign(FUEL = 'All')
 
-    trn_ag1 = pd.DataFrame().append([trn_af, trn_ap, trn_bunk, trn_railf, trn_railp, trn_roadf, trn_roadp, trn_ship, trn_nonspec])\
+    trn_ag1 = pd.DataFrame().append([trn_af, trn_ap, trn_railf, trn_railp, trn_roadf, trn_roadp, trn_ship, trn_nonspec])\
         [['Mode', 'FUEL'] + OSeMOSYS_years].reset_index(drop = True)
 
     trn_ag1_rows = trn_ag1.shape[0]
@@ -264,7 +266,7 @@ for economy in use_df1['REGION'].unique():
 
     # Transport non-specified from aggregation above
 
-    trn_ag2 = pd.DataFrame().append([trn_air, trn_bunk, trn_rail, trn_2w, trn_bus, trn_lv, trn_lt, trn_ht, trn_ship, trn_nonspec])\
+    trn_ag2 = pd.DataFrame().append([trn_air, trn_rail, trn_2w, trn_bus, trn_lv, trn_lt, trn_ht, trn_ship, trn_nonspec])\
         [['Mode', 'FUEL'] + OSeMOSYS_years].reset_index(drop = True)
 
     trn_ag2_rows = trn_ag2.shape[0]
