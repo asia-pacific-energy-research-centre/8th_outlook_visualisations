@@ -179,6 +179,8 @@ Ref_input = ['3_1_crude_oil', '3_x_NGLs']
 Ref_output = ['4_1_1_motor_gasoline', '4_1_2_aviation_gasoline', '4_10_other_petroleum_products', '4_2_naphtha', '4_3_jet_fuel',
               '4_4_other_kerosene', '4_5_gas_diesel_oil', '4_6_fuel_oil', '4_7_lpg', '4_8_refinery_gas_not_liq', '4_9_ethane']
 
+Ref_new_output = ['411_from_ref', '412_from_ref', '42_from_ref', '43_from_ref', '44_from_ref', '45_from_ref', '46_from_ref', '47_from_ref', '48_from_ref', '49_from_ref', '410_from_ref']
+
 # Capacity vectors
     
 coal_cap = ['POW_Black_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_CHP_COAL_PP', 'POW_Other_Coal_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP']
@@ -315,22 +317,22 @@ for economy in power_df1['economy'].unique():
 
     refinery_df2 = refownsup_df1[(refownsup_df1['economy'] == economy) &
                                  (refownsup_df1['Sector'] == 'REF') & 
-                                 (refownsup_df1['FUEL'].isin(Ref_output))].copy()
+                                 (refownsup_df1['FUEL'].isin(Ref_new_output))].copy()
 
     refinery_df2['Transformation'] = 'Output from refinery'
     refinery_df2 = refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years]
 
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_1_1_motor_gasoline', 'FUEL'] = 'Motor gasoline'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_1_2_aviation_gasoline', 'FUEL'] = 'Aviation gasoline'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_2_naphtha', 'FUEL'] = 'Naphtha'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_3_jet_fuel', 'FUEL'] = 'Jet fuel'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_4_other_kerosene', 'FUEL'] = 'Other kerosene'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_5_gas_diesel_oil', 'FUEL'] = 'Gas diesel oil'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_6_fuel_oil', 'FUEL'] = 'Fuel oil'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_7_lpg', 'FUEL'] = 'LPG'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_8_refinery_gas_not_liq', 'FUEL'] = 'Refinery gas'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_9_ethane', 'FUEL'] = 'Ethane'
-    refinery_df2.loc[refinery_df2['FUEL'] == '4_10_other_petroleum_products', 'FUEL'] = 'Other'
+    refinery_df2.loc[refinery_df2['FUEL'] == '411_from_ref', 'FUEL'] = 'Motor gasoline'
+    refinery_df2.loc[refinery_df2['FUEL'] == '412_from_ref', 'FUEL'] = 'Aviation gasoline'
+    refinery_df2.loc[refinery_df2['FUEL'] == '42_from_ref', 'FUEL'] = 'Naphtha'
+    refinery_df2.loc[refinery_df2['FUEL'] == '43_from_ref', 'FUEL'] = 'Jet fuel'
+    refinery_df2.loc[refinery_df2['FUEL'] == '44_from_ref', 'FUEL'] = 'Other kerosene'
+    refinery_df2.loc[refinery_df2['FUEL'] == '45_from_ref', 'FUEL'] = 'Gas diesel oil'
+    refinery_df2.loc[refinery_df2['FUEL'] == '46_from_ref', 'FUEL'] = 'Fuel oil'
+    refinery_df2.loc[refinery_df2['FUEL'] == '47_from_ref', 'FUEL'] = 'LPG'
+    refinery_df2.loc[refinery_df2['FUEL'] == '48_from_ref', 'FUEL'] = 'Refinery gas'
+    refinery_df2.loc[refinery_df2['FUEL'] == '49_from_ref', 'FUEL'] = 'Ethane'
+    refinery_df2.loc[refinery_df2['FUEL'] == '410_from_ref', 'FUEL'] = 'Other'
 
     refinery_df2['FUEL'] = pd.Categorical(
         refinery_df2['FUEL'], 
