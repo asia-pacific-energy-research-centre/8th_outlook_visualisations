@@ -37,7 +37,7 @@ Coal_fuels = list(Fuels[[0, 9]])
 
 Oil_fuels = list(Fuels[[17, 24]])
 
-Other_fuels = list(Fuels[[66, 69, 75, 76, 77]])
+Other_fuels = list(Fuels[[66, 69, 75]])
 
 Renewables_fuels = list(Fuels[[49, 51, 61, 62, 63, 64, 65, 68, 70]])
 
