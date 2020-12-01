@@ -231,6 +231,72 @@ aggregate_df2 = aggregate_df2.loc[:, key_variables + OSeMOSYS_years]
 # Now load the EGEDA_years data frame
 EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2020_June_22_wide_years_PJ.csv')
 
+########################### Special amendment to EGEDA historical ############################
+
+# HONG KONG imported electricity shifts to both Nuclear and Hydro in a 75:25 split
+
+# Hydro
+
+EGEDA_hkc_hydro = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
+                                (EGEDA_years['fuel_code'] == '6_hydro') &
+                                (EGEDA_years['item_code_new'] == '1_indigenous_production')].copy()
+
+EGEDA_hkc_elec_imports = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
+                                (EGEDA_years['fuel_code'] == '10_electricity') &
+                                (EGEDA_years['item_code_new'] == '2_imports')].copy()
+
+EGEDA_hkc_elec_imports[EGEDA_hkc_elec_imports.select_dtypes(include = ['number']).columns] *= 0.25
+
+append1 = EGEDA_hkc_hydro.append(EGEDA_hkc_elec_imports).reset_index(drop = True)
+d = append1.dtypes
+
+append1.loc[44002] = append1.sum(numeric_only = True)
+append1.astype(d)
+
+append1.loc[44002, 'economy'] = append1.loc[0, 'economy']
+append1.loc[44002, 'fuel_code'] = append1.loc[0, 'fuel_code']
+append1.loc[44002, 'item_code_new'] = append1.loc[0, 'item_code_new']
+
+append1 = append1.drop([0, 1])
+
+EGEDA_years = append1.combine_first(EGEDA_years)
+
+# Nuclear
+
+EGEDA_hkc_nuclear = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
+                                (EGEDA_years['fuel_code'] == '7_nuclear') &
+                                (EGEDA_years['item_code_new'] == '1_indigenous_production')].copy()
+
+EGEDA_hkc_elec_imports = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
+                                (EGEDA_years['fuel_code'] == '10_electricity') &
+                                (EGEDA_years['item_code_new'] == '2_imports')].copy()
+
+EGEDA_hkc_elec_imports[EGEDA_hkc_elec_imports.select_dtypes(include = ['number']).columns] *= 0.75
+
+append2 = EGEDA_hkc_nuclear.append(EGEDA_hkc_elec_imports).reset_index(drop = True)
+d = append2.dtypes
+
+append2.loc[44100] = append2.sum(numeric_only = True)
+append2.astype(d)
+
+append2.loc[44100, 'economy'] = append2.loc[0, 'economy']
+append2.loc[44100, 'fuel_code'] = append2.loc[0, 'fuel_code']
+append2.loc[44100, 'item_code_new'] = append2.loc[0, 'item_code_new']
+
+append2 = append2.drop([0, 1])
+
+EGEDA_years = append2.combine_first(EGEDA_years)
+
+# Now change electricity imports to zero
+
+EGEDA_hkc_elec_imports = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
+                                (EGEDA_years['fuel_code'] == '10_electricity') &
+                                (EGEDA_years['item_code_new'] == '2_imports')].copy()
+
+EGEDA_hkc_elec_imports[EGEDA_hkc_elec_imports.select_dtypes(include = ['number']).columns] *= 0
+
+EGEDA_years = EGEDA_hkc_elec_imports.combine_first(EGEDA_years)
+
 # Remove 2017 which is already in the EGEDA historical
 # aggregate_df2_tojoin = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years[1:]]
 # aggregate_df2_tojoin = aggregate_df2.loc[:, key_variables + OSeMOSYS_years[1:]] # New line below keeps 2017 in OSeMOSYS
