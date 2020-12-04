@@ -153,7 +153,7 @@ refownsup_df1 = refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet', 'Sector
 
 coal_fuel = ['1_x_coal_thermal', '1_3_lignite']
 oil_fuel = ['4_5_gas_diesel_oil', '4_6_fuel_oil']
-other_fuel = ['10_electricity', '9_7_municipal_solid_waste', '9_9_x_blackliquor', '8_1_geothermal_power', '9_4_other_biomass']
+other_fuel = ['10_electricity', '10_electricity_import', '9_7_municipal_solid_waste', '9_9_x_blackliquor', '8_1_geothermal_power', '9_4_other_biomass']
 solar_fuel = ['8_2_4_solar', '8_2_1_photovoltaic']
 
 use_agg_fuels = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Solar', 'Wind', 'Other']
@@ -167,7 +167,7 @@ oil_tech = ['POW_Diesel_PP', 'POW_FuelOil_PP']
 chp_tech = ['POW_CHP_PP', 'POW_Ultra_CHP_PP', 'POW_CHP_COAL_PP']
 other_tech = ['POW_Geothermal_PP', 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP']
 hydro_tech = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP']
-im_tech = ['POW_IMPORTS_PP']
+im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
 solar_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
 wind_tech = ['POW_WindOff_PP', 'POW_Wind_PP']
 
