@@ -151,9 +151,9 @@ refownsup_df1 = refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet', 'Sector
 
 # FUEL aggregations for UseByTechnology
 
-coal_fuel = ['1_x_coal_thermal', '1_3_lignite']
-oil_fuel = ['4_5_gas_diesel_oil', '4_6_fuel_oil']
-other_fuel = ['10_electricity', '10_electricity_import', '9_7_municipal_solid_waste', '9_9_x_blackliquor', '8_1_geothermal_power', '9_4_other_biomass']
+coal_fuel = ['1_x_coal_thermal', '1_3_lignite', '2_coal_products']
+oil_fuel = ['4_5_gas_diesel_oil','4_2_naphtha', '4_6_fuel_oil', '3_1_crude_oil', '4_7_lpg', '4_8_refinery_gas_not_liq', '4_10_other_petroleum_products',]
+other_fuel = ['10_electricity', '10_electricity_import','9_6_industrial_waste','9_7_municipal_solid_waste', '9_9_x_blackliquor', '8_1_geothermal_power', '9_4_other_biomass']
 solar_fuel = ['8_2_4_solar', '8_2_1_photovoltaic']
 
 use_agg_fuels = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Solar', 'Wind', 'Other']
@@ -163,7 +163,7 @@ use_agg_fuels = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Solar', 'Wind', 'Oth
 coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_Ultra_BituCoal_PP']
 storage_tech = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
 gas_tech = ['POW_CCGT_PP', 'POW_OCGT_PP']
-oil_tech = ['POW_Diesel_PP', 'POW_FuelOil_PP']
+oil_tech = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP']
 chp_tech = ['POW_CHP_PP', 'POW_Ultra_CHP_PP', 'POW_CHP_COAL_PP']
 other_tech = ['POW_Geothermal_PP', 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP']
 hydro_tech = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP']
@@ -185,7 +185,7 @@ Ref_new_output = ['411_from_ref', '412_from_ref', '42_from_ref', '43_from_ref', 
     
 coal_cap = ['POW_Black_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_CHP_COAL_PP', 'POW_Other_Coal_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP']
 gas_cap = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
-oil_cap = ['POW_Diesel_PP', 'POW_FuelOil_PP']
+oil_cap = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP']
 nuclear_cap = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
 hydro_cap = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_TIDAL_PP']
 bio_cap = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP']
