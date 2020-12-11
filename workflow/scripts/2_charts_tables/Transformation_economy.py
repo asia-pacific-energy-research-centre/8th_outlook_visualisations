@@ -164,14 +164,16 @@ coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'P
 storage_tech = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
 gas_tech = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
 oil_tech = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
-bio_tech = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP']
+bio_tech = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP']
 nuclear_tech = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
 chp_tech = ['POW_CHP_PP']
-other_tech = ['POW_Geothermal_PP', 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP', 'POW_HEAT_COKE_HP']
+other_tech = ['POW_Geothermal_PP', 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP']
 hydro_tech = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP']
 im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
 solar_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
 wind_tech = ['POW_WindOff_PP', 'POW_Wind_PP']
+
+# POW_EXPORT_ELEC_PP need to work this in
 
 prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 'Storage', 'Other', 'CHP', 'Imports']
 
@@ -187,14 +189,14 @@ Ref_new_output = ['411_from_ref', '412_from_ref', '42_from_ref', '43_from_ref', 
     
 coal_cap = ['POW_Black_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_CHP_COAL_PP', 'POW_Other_Coal_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP']
 gas_cap = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
-oil_cap = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP']
+oil_cap = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
 nuclear_cap = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
-hydro_cap = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_TIDAL_PP']
-bio_cap = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP']
+hydro_cap = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP']
+bio_cap = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP']
 wind_cap = ['POW_Wind_PP', 'POW_WindOff_PP']
 solar_cap = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
 storage_cap = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
-other_cap = ['POW_CHP_PP', 'POW_Geothermal_PP', 'POW_WasteToEnergy_PP', 'POW_IMPORTS_PP', 'POW_IPP_PP']
+other_cap = ['POW_CHP_PP', 'POW_Geothermal_PP', 'POW_WasteToEnergy_PP', 'POW_IPP_PP', 'POW_TIDAL_PP']
 # 'POW_HEAT_HP' not in electricity capacity
 transmission_cap = ['POW_Transmission']
 
