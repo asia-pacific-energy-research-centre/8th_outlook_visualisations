@@ -239,7 +239,7 @@ EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2020_June_22_wide_years_PJ.csv')
 
 EGEDA_hkc_hydro = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
                                 (EGEDA_years['fuel_code'] == '6_hydro') &
-                                (EGEDA_years['item_code_new'] == '1_indigenous_production')].copy()
+                                (EGEDA_years['item_code_new'] == '2_imports')].copy()
 
 EGEDA_hkc_elec_imports = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
                                 (EGEDA_years['fuel_code'] == '10_electricity') &
@@ -250,12 +250,14 @@ EGEDA_hkc_elec_imports[EGEDA_hkc_elec_imports.select_dtypes(include = ['number']
 append1 = EGEDA_hkc_hydro.append(EGEDA_hkc_elec_imports).reset_index(drop = True)
 d = append1.dtypes
 
-append1.loc[44002] = append1.sum(numeric_only = True)
+# locate index of row to overwrite
+
+append1.loc[EGEDA_hkc_hydro.index[0]] = append1.sum(numeric_only = True)
 append1.astype(d)
 
-append1.loc[44002, 'economy'] = append1.loc[0, 'economy']
-append1.loc[44002, 'fuel_code'] = append1.loc[0, 'fuel_code']
-append1.loc[44002, 'item_code_new'] = append1.loc[0, 'item_code_new']
+append1.loc[EGEDA_hkc_hydro.index[0], 'economy'] = append1.loc[0, 'economy']
+append1.loc[EGEDA_hkc_hydro.index[0], 'fuel_code'] = append1.loc[0, 'fuel_code']
+append1.loc[EGEDA_hkc_hydro.index[0], 'item_code_new'] = append1.loc[0, 'item_code_new']
 
 append1 = append1.drop([0, 1])
 
@@ -265,7 +267,7 @@ EGEDA_years = append1.combine_first(EGEDA_years)
 
 EGEDA_hkc_nuclear = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
                                 (EGEDA_years['fuel_code'] == '7_nuclear') &
-                                (EGEDA_years['item_code_new'] == '1_indigenous_production')].copy()
+                                (EGEDA_years['item_code_new'] == '2_imports')].copy()
 
 EGEDA_hkc_elec_imports = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
                                 (EGEDA_years['fuel_code'] == '10_electricity') &
@@ -276,12 +278,12 @@ EGEDA_hkc_elec_imports[EGEDA_hkc_elec_imports.select_dtypes(include = ['number']
 append2 = EGEDA_hkc_nuclear.append(EGEDA_hkc_elec_imports).reset_index(drop = True)
 d = append2.dtypes
 
-append2.loc[44100] = append2.sum(numeric_only = True)
+append2.loc[EGEDA_hkc_nuclear.index[0]] = append2.sum(numeric_only = True)
 append2.astype(d)
 
-append2.loc[44100, 'economy'] = append2.loc[0, 'economy']
-append2.loc[44100, 'fuel_code'] = append2.loc[0, 'fuel_code']
-append2.loc[44100, 'item_code_new'] = append2.loc[0, 'item_code_new']
+append2.loc[EGEDA_hkc_nuclear.index[0], 'economy'] = append2.loc[0, 'economy']
+append2.loc[EGEDA_hkc_nuclear.index[0], 'fuel_code'] = append2.loc[0, 'fuel_code']
+append2.loc[EGEDA_hkc_nuclear.index[0], 'item_code_new'] = append2.loc[0, 'item_code_new']
 
 append2 = append2.drop([0, 1])
 
@@ -310,7 +312,13 @@ EGEDA_hkc_hydro_tpes.loc[3, 'economy'] = '06_HKC'
 EGEDA_hkc_hydro_tpes.loc[3, 'fuel_code'] = '6_hydro'
 EGEDA_hkc_hydro_tpes.loc[3, 'item_code_new'] = '6_total_primary_energy_supply'
 
-EGEDA_hkc_hydro_tpes = EGEDA_hkc_hydro_tpes.rename(index = {3: 44010})
+# Find index for hydro TPES hkc
+
+index1 = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
+                                (EGEDA_years['fuel_code'] == '6_hydro') &
+                                (EGEDA_years['item_code_new'] == '6_total_primary_energy_supply')].copy().index[0]
+
+EGEDA_hkc_hydro_tpes = EGEDA_hkc_hydro_tpes.rename(index = {3: index1})
 
 EGEDA_hkc_hydro_tpes = EGEDA_hkc_hydro_tpes.drop([0, 1, 2])
 
@@ -327,7 +335,13 @@ EGEDA_hkc_nuclear_tpes.loc[3, 'economy'] = '06_HKC'
 EGEDA_hkc_nuclear_tpes.loc[3, 'fuel_code'] = '7_nuclear'
 EGEDA_hkc_nuclear_tpes.loc[3, 'item_code_new'] = '6_total_primary_energy_supply'
 
-EGEDA_hkc_nuclear_tpes = EGEDA_hkc_nuclear_tpes.rename(index = {3: 44108})
+# Find index for nuclear TPES hkc
+
+index2 = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
+                                (EGEDA_years['fuel_code'] == '7_nuclear') &
+                                (EGEDA_years['item_code_new'] == '6_total_primary_energy_supply')].copy().index[0]
+
+EGEDA_hkc_nuclear_tpes = EGEDA_hkc_nuclear_tpes.rename(index = {3: index2})
 
 EGEDA_hkc_nuclear_tpes = EGEDA_hkc_nuclear_tpes.drop([0, 1, 2])
 
@@ -344,7 +358,13 @@ EGEDA_hkc_elec_tpes.loc[3, 'economy'] = '06_HKC'
 EGEDA_hkc_elec_tpes.loc[3, 'fuel_code'] = '10_electricity'
 EGEDA_hkc_elec_tpes.loc[3, 'item_code_new'] = '6_total_primary_energy_supply'
 
-EGEDA_hkc_elec_tpes = EGEDA_hkc_elec_tpes.rename(index = {3: 46656})
+# Find index for elec TPES hkc
+
+index3 = EGEDA_years[(EGEDA_years['economy'] == '06_HKC') & 
+                                (EGEDA_years['fuel_code'] == '10_electricity') &
+                                (EGEDA_years['item_code_new'] == '6_total_primary_energy_supply')].copy().index[0]
+
+EGEDA_hkc_elec_tpes = EGEDA_hkc_elec_tpes.rename(index = {3: index3})
 
 EGEDA_hkc_elec_tpes = EGEDA_hkc_elec_tpes.drop([0, 1, 2])
 
