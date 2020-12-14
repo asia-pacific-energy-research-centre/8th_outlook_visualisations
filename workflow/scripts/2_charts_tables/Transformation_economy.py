@@ -153,7 +153,7 @@ refownsup_df1 = refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet', 'Sector
 
 coal_fuel = ['1_x_coal_thermal', '1_3_lignite', '2_coal_products']
 oil_fuel = ['4_5_gas_diesel_oil','4_2_naphtha', '4_6_fuel_oil', '3_1_crude_oil', '4_7_lpg', '4_8_refinery_gas_not_liq', '4_10_other_petroleum_products',]
-other_fuel = ['10_electricity', '10_electricity_import','9_6_industrial_waste','9_7_municipal_solid_waste', '9_9_x_blackliquor', '8_1_geothermal_power', '9_4_other_biomass']
+other_fuel = ['10_electricity', '10_electricity_import','9_6_industrial_waste', '9_7_1_municipal_solid_waste_renewable','9_7_2_municipal_solid_waste_nonrenewable', '9_9_x_blackliquor', '8_1_geothermal_power', '9_4_other_biomass']
 solar_fuel = ['8_2_4_solar', '8_2_1_photovoltaic']
 
 use_agg_fuels = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Solar', 'Wind', 'Other']
