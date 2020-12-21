@@ -772,7 +772,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Other fuels']:
+    for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = imports_df1[imports_df1['fuel_code'] == fuel].index[0]
         imports_line.add_series({
             'name':       [economy + '_TPES_components_I', chart_height + nrows3 + i + 4, 0],
@@ -881,7 +881,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Other fuels']:
+    for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = exports_df1[exports_df1['fuel_code'] == fuel].index[0]
         exports_line.add_series({
             'name':       [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 0],
