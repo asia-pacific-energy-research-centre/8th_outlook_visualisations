@@ -14,7 +14,7 @@ from pandas import ExcelWriter
 
 # Import the recently created data frame that joins OSeMOSYS results to EGEDA historical 
 
-EGEDA_years = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA.csv')
+EGEDA_years = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018.csv')
 
 # Define unique values for economy, fuels, and items columns
 
@@ -33,43 +33,60 @@ month_year = pd.to_datetime('today').strftime('%B_%Y')
 
 # Subsets for impending df builds
 
-First_level_fuels = list(Fuels[[0, 9, 17, 24, 45, 49, 50, 51, 60, 76, 77, 78, 79]])
+First_level_fuels = ['1_coal', '2_coal_products', '5_oil_shale_and_oil_sands', '6_crude_oil_and_ngl', '7_petroleum_products',
+                     '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass',
+                     '16_others', '17_electricity', '18_heat', '19_total', '20_total_renewables', '21_modern_renewables']
 
-Required_fuels = list(Fuels[[0, 9, 17, 24, 45, 49, 50, 51, 61, 62, 63, 64, 65, 66, 68, 69, 70, 75, 76, 77, 78, 79]])
+Required_fuels = ['1_coal', '2_coal_products', '5_oil_shale_and_oil_sands', '6_crude_oil_and_ngl', '7_petroleum_products',
+                  '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass',
+                  '16_1_biogas', '16_2_industrial_waste', '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable',
+                  '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels', '16_9_other_sources',
+                  '16_x_hydrogen', '17_electricity', '18_heat', '19_total', '20_total_renewables', '21_modern_renewables']
 
-Coal_fuels = list(Fuels[[0, 9]])
+Coal_fuels = ['1_coal', '2_coal_products', '3_peat', '4_peat_products']
 
-Oil_fuels = list(Fuels[[17, 24]])
+Oil_fuels = ['6_crude_oil_and_ngl', '7_petroleum_products', '5_oil_shale_and_oil_sands']
 
-Heat_others_fuels = list(Fuels[[50, 66, 69, 75, 77]])
+Heat_others_fuels = ['9_nuclear', '16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_9_other_sources', '18_heat']
 
 # Need to amend this to reflect demarcation between modern renewables and traditional biomass renewables 
 
-Renewables_fuels = list(Fuels[[49, 51, 61, 62, 63, 64, 65, 68, 70]])
+Renewables_fuels = ['10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass', '16_1_biogas', 
+                    '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                    '16_8_other_liquid_biofuels']
 
-Modern_renew_primary = list(Fuels[[49, 51, 65, 68, 70]])
+# Modern_renew_primary = to be completed
 
-Modern_renew_FED = list(Fuels[[49, 51, 65, 68, 70]])
+# Modern_renew_FED = to be completed
 
-Sectors_tfc = list(Items[[64, 78, 86, 87, 88, 89, 90, 91]])
+Sectors_tfc = ['14_industry_sector', '15_transport_sector', '16_1_commercial_and_public_services', '16_2_residential',
+               '16_3_agriculture', '16_4_fishing', '16_5_nonspecified_others', '17_nonenergy_use']
 
-Buildings_items = list(Items[[86, 87]])
+Buildings_items = ['16_1_commercial_and_public_services', '16_2_residential']
 
-Ag_items = list(Items[[88, 89]])
+Ag_items = ['16_3_agriculture', '16_4_fishing']
 
-Subindustry = list(Items[[64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77]])
+Subindustry = ['14_industry_sector', '14_1_iron_and_steel', '14_2_chemical_incl_petrochemical', '14_3_non_ferrous_metals',
+               '14_4_nonmetallic_mineral_products', '14_5_transportation_equipment', '14_6_machinery', '14_7_mining_and_quarrying',
+               '14_8_food_beverages_and_tobacco', '14_9_pulp_paper_and_printing', '14_10_wood_and_wood_products', 
+               '14_11_construction', '14_12_textiles_and_leather', '14_13_nonspecified_industry']
 
-Transport_fuels = list(Fuels[[25, 26, 27, 33, 46, 71, 72, 35, 76, 29, 34, 2, 6, 8, 9, 38]])
+Transport_fuels = ['1_1_coking_coal', '1_5_lignite', '1_x_coal_thermal', '2_coal_products', '7_1_motor_gasoline', '7_2_aviation_gasoline',
+                   '7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_7_gas_diesel_oil', '7_8_fuel_oil', '7_9_lpg',
+                   '7_x_other_petroleum_products', '8_1_natural_gas', '16_5_biogasoline', '16_6_biodiesel',
+                   '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels', '17_electricity'] 
 
 Transport_fuels_agg = ['Diesel', 'Gasoline', 'LPG', 'Gas', 'Jet fuel', 'Electricity', 'Renewables', 'Other']
 
-Renew_fuel = list(Fuels[[71, 72]])
+Renew_fuel = ['16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels']
 
-Other_fuel = list(Fuels[[34, 2, 6, 8, 9, 38]])
+Other_fuel = ['7_8_fuel_oil', '1_1_coking_coal', '1_5_lignite', '1_x_coal_thermal', '2_coal_products', '7_x_other_petroleum_products']
 
-Other_industry = list(Items[[69, 70, 72, 74, 75, 76]])
+Other_industry = ['14_5_transportation_equipment', '14_6_machinery', '14_8_food_beverages_and_tobacco', '14_10_wood_and_wood_products',
+                  '14_11_construction', '14_12_textiles_and_leather']
 
-Transport_modal = list(Items[[79, 80, 81, 82, 83, 84]])
+Transport_modal = ['15_1_domestic_air_transport', '15_2_road', '15_3_rail', '15_4_domestic_navigation', '15_5_pipeline_transport',
+                   '15_6_nonspecified_transport']
 
 Transport_modal_agg = ['Aviation', 'Road', 'Rail' ,'Marine', 'Pipeline', 'Non-specified']
 
@@ -100,7 +117,7 @@ for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
     # First data frame construction: FED by fuels
     econ_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                          (EGEDA_years['item_code_new'].isin(['11_total_final_consumption'])) &
+                          (EGEDA_years['item_code_new'].isin(['12_total_final_consumption'])) &
                           (EGEDA_years['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
     
     #nrows1 = econ_df1.shape[0]
@@ -109,24 +126,24 @@ for economy in Economy_codes:
     # Now build aggregate variables of the first level fuels in EGEDA
 
     coal = econ_df1[econ_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
-                                                                                                             item_code_new = '11_total_final_consumption')
+                                                                                                             item_code_new = '12_total_final_consumption')
     
     oil = econ_df1[econ_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
-                                                                                                             item_code_new = '11_total_final_consumption')
+                                                                                                             item_code_new = '12_total_final_consumption')
     
     renewables = econ_df1[econ_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
-                                                                                                                           item_code_new = '11_total_final_consumption')
+                                                                                                                           item_code_new = '12_total_final_consumption')
     
     heat_others = econ_df1[econ_df1['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
-                                                                                                                             item_code_new = '11_total_final_consumption')
+                                                                                                                             item_code_new = '12_total_final_consumption')
 
     # Fed fuel data frame 1 (data frame 6)
 
     fedfuel_df1 = econ_df1.append([coal, oil, renewables, heat_others])[['fuel_code',
                                                                          'item_code_new'] + list(econ_df1.loc[:, '2000':])].reset_index(drop = True)
 
-    fedfuel_df1.loc[fedfuel_df1['fuel_code'] == '5_gas', 'fuel_code'] = 'Gas'
-    fedfuel_df1.loc[fedfuel_df1['fuel_code'] == '10_electricity', 'fuel_code'] = 'Electricity'
+    fedfuel_df1.loc[fedfuel_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    fedfuel_df1.loc[fedfuel_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
     fedfuel_df1 = fedfuel_df1[fedfuel_df1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
 
@@ -141,7 +158,7 @@ for economy in Economy_codes:
     # Second data frame construction: FED by sectors
     econ_df2 = EGEDA_years[(EGEDA_years['economy'] == economy) &
                         (EGEDA_years['item_code_new'].isin(Sectors_tfc)) &
-                        (EGEDA_years['fuel_code'].isin(['12_total']))].loc[:,'fuel_code':].reset_index(drop = True)
+                        (EGEDA_years['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True)
 
     econ_df2 = econ_df2[['fuel_code', 'item_code_new'] + list(econ_df2.loc[:,'2000':])]
     
@@ -150,20 +167,20 @@ for economy in Economy_codes:
 
     # Now build aggregate sector variables
     
-    buildings = econ_df2[econ_df2['item_code_new'].isin(Buildings_items)].groupby(['fuel_code']).sum().assign(fuel_code = '12_total',
+    buildings = econ_df2[econ_df2['item_code_new'].isin(Buildings_items)].groupby(['fuel_code']).sum().assign(fuel_code = '19_total',
                                                                                                               item_code_new = 'Buildings')
     
-    agriculture = econ_df2[econ_df2['item_code_new'].isin(Ag_items)].groupby(['fuel_code']).sum().assign(fuel_code = '12_total',
+    agriculture = econ_df2[econ_df2['item_code_new'].isin(Ag_items)].groupby(['fuel_code']).sum().assign(fuel_code = '19_total',
                                                                                                          item_code_new = 'Agriculture')
     
     # Build aggregate data frame of FED sector
 
     fedsector_df1 = econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(econ_df2.loc[:, '2000':])].reset_index(drop = True)
 
-    fedsector_df1.loc[fedsector_df1['item_code_new'] == '13_industry_sector', 'item_code_new'] = 'Industry'
-    fedsector_df1.loc[fedsector_df1['item_code_new'] == '14_transport_sector', 'item_code_new'] = 'Transport'
-    fedsector_df1.loc[fedsector_df1['item_code_new'] == '16_nonenergy_use', 'item_code_new'] = 'Non-energy'
-    fedsector_df1.loc[fedsector_df1['item_code_new'] == '15_4_nonspecified_others', 'item_code_new'] = 'Non-specified'
+    fedsector_df1.loc[fedsector_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    fedsector_df1.loc[fedsector_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    fedsector_df1.loc[fedsector_df1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    fedsector_df1.loc[fedsector_df1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
     fedsector_df1 = fedsector_df1[fedsector_df1['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
     fedsector_df1 = fedsector_df1[['fuel_code', 'item_code_new'] + list(fedsector_df1.loc[:, '2000':])]
@@ -182,7 +199,7 @@ for economy in Economy_codes:
                          (EGEDA_years['fuel_code'].isin(Required_fuels))]
     
     for fuel in Required_fuels:
-        buildings = bld_df1[bld_df1['fuel_code'] == fuel].groupby(['economy', 'fuel_code']).sum().assign(item_code_new = '15_x_buildings')
+        buildings = bld_df1[bld_df1['fuel_code'] == fuel].groupby(['economy', 'fuel_code']).sum().assign(item_code_new = '16_x_buildings')
         buildings['economy'] = economy
         buildings['fuel_code'] = fuel
         
@@ -193,31 +210,31 @@ for economy in Economy_codes:
     nrows3 = bld_df1.shape[0]
     ncols3 = bld_df1.shape[1]
 
-    bld_df2 = bld_df1[bld_df1['item_code_new'] == '15_x_buildings']
+    bld_df2 = bld_df1[bld_df1['item_code_new'] == '16_x_buildings']
 
-    coal = bld_df2[bld_df2['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal', item_code_new = '15_x_buildings')
+    coal = bld_df2[bld_df2['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal', item_code_new = '16_x_buildings')
     
-    oil = bld_df2[bld_df2['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil', item_code_new = '15_x_buildings')
+    oil = bld_df2[bld_df2['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil', item_code_new = '16_x_buildings')
     
-    renewables = bld_df2[bld_df2['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables', item_code_new = '15_x_buildings')
+    renewables = bld_df2[bld_df2['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables', item_code_new = '16_x_buildings')
     
-    heat_others = bld_df2[bld_df2['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others', item_code_new = '15_x_buildings')
+    heat_others = bld_df2[bld_df2['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others', item_code_new = '16_x_buildings')
 
     bld_df2 = bld_df2.append([coal, oil, renewables, heat_others])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
 
-    bld_df2.loc[bld_df2['fuel_code'] == '5_gas', 'fuel_code'] = 'Gas'
-    bld_df2.loc[bld_df2['fuel_code'] == '10_electricity', 'fuel_code'] = 'Electricity'
+    bld_df2.loc[bld_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    bld_df2.loc[bld_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
     bld_df2 = bld_df2[bld_df2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
 
     nrows12 = bld_df2.shape[0]
     ncols12 = bld_df2.shape[1]
 
-    bld_df3 = bld_df1[(bld_df1['fuel_code'] == '12_total') &
-                      (bld_df1['item_code_new'].isin(['15_1_1_commerce_and_public_services', '15_1_2_residential']))].copy()
+    bld_df3 = bld_df1[(bld_df1['fuel_code'] == '19_total') &
+                      (bld_df1['item_code_new'].isin(Buildings_items))].copy()
 
-    bld_df3.loc[bld_df3['item_code_new'] == '15_1_1_commerce_and_public_services', 'item_code_new'] = 'Services' 
-    bld_df3.loc[bld_df3['item_code_new'] == '15_1_2_residential', 'item_code_new'] = 'Residential'
+    bld_df3.loc[bld_df3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
+    bld_df3.loc[bld_df3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
 
     nrows13 = bld_df3.shape[0]
     ncols13 = bld_df3.shape[1]
@@ -225,20 +242,20 @@ for economy in Economy_codes:
     # Fourth data frame construction: Industry subsector
     ind_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) &
                          (EGEDA_years['item_code_new'].isin(Subindustry)) &
-                         (EGEDA_years['fuel_code'] == '12_total')]
+                         (EGEDA_years['fuel_code'] == '19_total')]
 
     other_industry = ind_df1[ind_df1['item_code_new'].isin(Other_industry)].groupby(['fuel_code']).sum().assign(item_code_new = 'Other',
-                                                                                                                fuel_code = '12_total')
+                                                                                                                fuel_code = '19_total')
 
     ind_df1 = ind_df1.append([other_industry])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
 
-    ind_df1.loc[ind_df1['item_code_new'] == '13_1_iron_and_steel', 'item_code_new'] = 'Iron & steel'
-    ind_df1.loc[ind_df1['item_code_new'] == '13_2_chemical_incl__petrochemical', 'item_code_new'] = 'Chemicals'
-    ind_df1.loc[ind_df1['item_code_new'] == '13_3_nonferrous_metals', 'item_code_new'] = 'Aluminium'
-    ind_df1.loc[ind_df1['item_code_new'] == '13_4_nonmetallic_mineral_products', 'item_code_new'] = 'Non-metallic minerals'  
-    ind_df1.loc[ind_df1['item_code_new'] == '13_7_mining_and_quarrying', 'item_code_new'] = 'Mining'
-    ind_df1.loc[ind_df1['item_code_new'] == '13_9_pulp_paper_and_printing', 'item_code_new'] = 'Pulp & paper'
-    ind_df1.loc[ind_df1['item_code_new'] == '13_13_nonspecified_industry', 'item_code_new'] = 'Non-specified'
+    ind_df1.loc[ind_df1['item_code_new'] == '14_1_iron_and_steel', 'item_code_new'] = 'Iron & steel'
+    ind_df1.loc[ind_df1['item_code_new'] == '14_2_chemical_incl_petrochemical', 'item_code_new'] = 'Chemicals'
+    ind_df1.loc[ind_df1['item_code_new'] == '14_3_non_ferrous_metals', 'item_code_new'] = 'Aluminium'
+    ind_df1.loc[ind_df1['item_code_new'] == '14_4_nonmetallic_mineral_products', 'item_code_new'] = 'Non-metallic minerals'  
+    ind_df1.loc[ind_df1['item_code_new'] == '14_7_mining_and_quarrying', 'item_code_new'] = 'Mining'
+    ind_df1.loc[ind_df1['item_code_new'] == '14_9_pulp_paper_and_printing', 'item_code_new'] = 'Pulp & paper'
+    ind_df1.loc[ind_df1['item_code_new'] == '14_13_nonspecified_industry', 'item_code_new'] = 'Non-specified'
     
     ind_df1 = ind_df1[ind_df1['item_code_new'].isin(Industry_eight)].set_index('item_code_new').loc[Industry_eight].reset_index()
 
@@ -249,26 +266,26 @@ for economy in Economy_codes:
     
     # Fifth data frame construction: Industry by fuel
     ind_df2 = EGEDA_years[(EGEDA_years['economy'] == economy) &
-                         (EGEDA_years['item_code_new'].isin(['13_industry_sector'])) &
+                         (EGEDA_years['item_code_new'].isin(['14_industry_sector'])) &
                          (EGEDA_years['fuel_code'].isin(Required_fuels))]
     
     coal = ind_df2[ind_df2['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal', 
-                                                                                                             item_code_new = '13_industry_sector')
+                                                                                                  item_code_new = '14_industry_sector')
     
     oil = ind_df2[ind_df2['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil', 
-                                                                                                item_code_new = '13_industry_sector')
+                                                                                                item_code_new = '14_industry_sector')
     
     renewables = ind_df2[ind_df2['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables', 
-                                                                                                              item_code_new = '13_industry_sector')
+                                                                                                              item_code_new = '14_industry_sector')
     
     heat_others = ind_df2[ind_df2['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others', 
-                                                                                                                item_code_new = '13_industry_sector')
+                                                                                                                item_code_new = '14_industry_sector')
     
     ind_df2 = ind_df2.append([coal, oil, renewables, heat_others])[['fuel_code', 
                                                                     'item_code_new'] + col_chart_years].reset_index(drop = True)
 
-    ind_df2.loc[ind_df2['fuel_code'] == '5_gas', 'fuel_code'] = 'Gas'
-    ind_df2.loc[ind_df2['fuel_code'] == '10_electricity', 'fuel_code'] = 'Electricity'                                                                    
+    ind_df2.loc[ind_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ind_df2.loc[ind_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'                                                                    
 
     ind_df2 = ind_df2[ind_df2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
     
@@ -277,25 +294,31 @@ for economy in Economy_codes:
 
     # Transport data frame construction: FED by fuels
     transport_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                          (EGEDA_years['item_code_new'].isin(['14_transport_sector'])) &
+                          (EGEDA_years['item_code_new'].isin(['15_transport_sector'])) &
                           (EGEDA_years['fuel_code'].isin(Transport_fuels))]
     
     renewables = transport_df1[transport_df1['fuel_code'].isin(Renew_fuel)].groupby(['economy', 
                                                                                      'item_code_new']).sum().assign(fuel_code = 'Renewables',
-                                                                                                                   item_code_new = '14_transport_sector')
+                                                                                                                   item_code_new = '15_transport_sector')
     
     others = transport_df1[transport_df1['fuel_code'].isin(Other_fuel)].groupby(['economy',
                                                                                  'item_code_new']).sum().assign(fuel_code = 'Other', 
-                                                                                                                item_code_new = '14_transport_sector')
-    
-    transport_df1 = transport_df1.append([renewables, others])[['fuel_code', 'item_code_new'] + list(transport_df1.loc[:, '2000':])].reset_index(drop = True)
+                                                                                                                item_code_new = '15_transport_sector')
 
-    transport_df1.loc[transport_df1['fuel_code'] == '4_1_gasoline', 'fuel_code'] = 'Gasoline'
-    transport_df1.loc[transport_df1['fuel_code'] == '4_5_gas_diesel_oil', 'fuel_code'] = 'Diesel'
-    transport_df1.loc[transport_df1['fuel_code'] == '5_1_natural_gas', 'fuel_code'] = 'Gas'
-    transport_df1.loc[transport_df1['fuel_code'] == '4_7_lpg', 'fuel_code'] = 'LPG'
-    transport_df1.loc[transport_df1['fuel_code'] == '10_electricity', 'fuel_code'] = 'Electricity'
-    transport_df1.loc[transport_df1['fuel_code'] == '4_3_jet_fuel', 'fuel_code'] = 'Jet fuel'
+    trans_gasoline = transport_df1[transport_df1['fuel_code'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline'])]\
+        .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Gasoline', 
+                                                            item_code_new = '15_transport_sector')
+
+    trans_jetfuel = transport_df1[transport_df1['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel'])]\
+        .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Jet fuel', 
+                                                            item_code_new = '15_transport_sector')
+    
+    transport_df1 = transport_df1.append([renewables, trans_gasoline, trans_jetfuel, others])[['fuel_code', 'item_code_new'] + list(transport_df1.loc[:, '2000':])].reset_index(drop = True) 
+
+    transport_df1.loc[transport_df1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Diesel'
+    transport_df1.loc[transport_df1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
+    transport_df1.loc[transport_df1['fuel_code'] == '7_9_lpg', 'fuel_code'] = 'LPG'
+    transport_df1.loc[transport_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
     transport_df1 = transport_df1[transport_df1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
 
@@ -305,14 +328,14 @@ for economy in Economy_codes:
     # Second transport data frame that provides a breakdown of the different transport modalities
     transport_df2 = EGEDA_years[(EGEDA_years['economy'] == economy) &
                                (EGEDA_years['item_code_new'].isin(Transport_modal)) &
-                               (EGEDA_years['fuel_code'].isin(['12_total']))].copy()
+                               (EGEDA_years['fuel_code'].isin(['19_total']))].copy()
     
-    transport_df2.loc[transport_df2['item_code_new'] == '14_1_domestic_air_transport', 'item_code_new'] = 'Aviation'
-    transport_df2.loc[transport_df2['item_code_new'] == '14_2_road', 'item_code_new'] = 'Road'
-    transport_df2.loc[transport_df2['item_code_new'] == '14_3_rail', 'item_code_new'] = 'Rail'
-    transport_df2.loc[transport_df2['item_code_new'] == '14_4_domestic_water_transport', 'item_code_new'] = 'Marine'
-    transport_df2.loc[transport_df2['item_code_new'] == '14_5_pipeline_transport', 'item_code_new'] = 'Pipeline'
-    transport_df2.loc[transport_df2['item_code_new'] == '14_6_nonspecified_transport', 'item_code_new'] = 'Non-specified'
+    transport_df2.loc[transport_df2['item_code_new'] == '15_1_domestic_air_transport', 'item_code_new'] = 'Aviation'
+    transport_df2.loc[transport_df2['item_code_new'] == '15_2_road', 'item_code_new'] = 'Road'
+    transport_df2.loc[transport_df2['item_code_new'] == '15_3_rail', 'item_code_new'] = 'Rail'
+    transport_df2.loc[transport_df2['item_code_new'] == '15_4_domestic_navigation', 'item_code_new'] = 'Marine'
+    transport_df2.loc[transport_df2['item_code_new'] == '15_5_pipeline_transport', 'item_code_new'] = 'Pipeline'
+    transport_df2.loc[transport_df2['item_code_new'] == '15_6_nonspecified_transport', 'item_code_new'] = 'Non-specified'
 
     transport_df2 = transport_df2[transport_df2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
@@ -324,7 +347,7 @@ for economy in Economy_codes:
     # Agriculture data frame
 
     ag_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                         (EGEDA_years['item_code_new'].isin(['15_2_agriculture', '15_3_fishing'])) &
+                         (EGEDA_years['item_code_new'].isin(Ag_items)) &
                          (EGEDA_years['fuel_code'].isin(Required_fuels))].groupby('fuel_code').sum().assign(item_code_new = 'Agriculture').reset_index()
                      
     coal = ag_df1[ag_df1['fuel_code'].isin(Coal_fuels)].groupby('item_code_new').sum().assign(fuel_code = 'Coal', item_code_new = 'Agriculture')
@@ -337,8 +360,8 @@ for economy in Economy_codes:
     
     ag_df1 = ag_df1.append([coal, oil, renewables, heat_others])[['fuel_code', 'item_code_new'] + list(ag_df1.loc[:,'2000':'2050'])].reset_index(drop = True)
 
-    ag_df1.loc[ag_df1['fuel_code'] == '5_gas', 'fuel_code'] = 'Gas'
-    ag_df1.loc[ag_df1['fuel_code'] == '10_electricity', 'fuel_code'] = 'Electricity'                                                                    
+    ag_df1.loc[ag_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ag_df1.loc[ag_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'                                                                    
 
     ag_df1 = ag_df1[ag_df1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
     
