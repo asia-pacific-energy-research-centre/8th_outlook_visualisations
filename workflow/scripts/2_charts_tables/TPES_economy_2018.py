@@ -1037,7 +1037,7 @@ for economy in Economy_codes:
     
     aviation_line.set_chartarea({
         'border': {'none': True}
-    })
+    })s
     
     aviation_line.set_x_axis({
         'name': 'Year',

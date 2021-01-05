@@ -27,7 +27,7 @@ OSeMOSYS_filenames = glob.glob(path_output + "/*.xlsx")
 
 # Read in mapping file
 
-Mapping_file = pd.read_excel(path_mapping + '/OSeMOSYS mapping.xlsx', sheet_name = 'Mapping',  skiprows = 1)
+Mapping_file = pd.read_excel(path_mapping + '/OSeMOSYS mapping.xlsx', sheet_name = 'Mapping_2018',  skiprows = 1)
 
 # Subset the mapping file so that it's just transformation
 
@@ -122,9 +122,9 @@ for region in aggregate_df1['REGION'].unique():
     
 power_df1 = power_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet'] + OSeMOSYS_years]
 
-Map_refownsup = Map_trans[Map_trans['Sector'].isin(['REF', 'SUP', 'OWN'])].reset_index(drop = True)
-
 ################################ REFINERY, OWN USE and SUPPLY TRANSFORMATION SECTOR ############################### 
+
+Map_refownsup = Map_trans[Map_trans['Sector'].isin(['REF', 'SUP', 'OWN'])].reset_index(drop = True)
 
 # Aggregate data based on the Map_power mapping
 
@@ -151,28 +151,51 @@ refownsup_df1 = refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet', 'Sector
 
 # FUEL aggregations for UseByTechnology
 
-coal_fuel = ['1_x_coal_thermal', '1_3_lignite', '2_coal_products']
-oil_fuel = ['4_5_gas_diesel_oil','4_2_naphtha', '4_6_fuel_oil', '3_1_crude_oil', '4_7_lpg', '4_8_refinery_gas_not_liq', '4_10_other_petroleum_products',]
-other_fuel = ['10_electricity', '10_electricity_import','9_6_industrial_waste', '9_7_1_municipal_solid_waste_renewable', '9_7_2_municipal_solid_waste_nonrenewable', 
-              '9_9_x_blackliquor', '8_1_geothermal_power', '9_4_other_biomass']
-solar_fuel = ['8_2_4_solar', '8_2_1_photovoltaic']
+# First aggregation (13 fuels)
+coal_fuel_1 = ['1_x_coal_thermal', '2_coal_products']
+lignite_fuel_1 = ['1_5_lignite']
+oil_fuel_1 = ['7_7_gas_diesel_oil','7_3_naphtha', '7_8_fuel_oil', '6_1_crude_oil', '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_x_other_petroleum_products']
+gas_fuel_1 = ['8_gas']
+nuclear_fuel_1 = ['9_nuclear']
+hydro_fuel_1 = ['10_hydro']
+solar_fuel_1 = ['12_solar']
+wind_fuel_1 = ['14_wind']
+biomass_fuel_1 = ['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_4_black_liquor', '15_5_other_biomass']
+geothermal_fuel_1 = ['11_geothermal']
+other_renew_fuel_1 = ['13_tide_wave_ocean', '16_3_municipal_solid_waste_renewable', '16_1_biogas']
+other_fuel_1 = ['16_4_municipal_solid_waste_nonrenewable', '17_electricity', '18_heat', '16_x_hydrogen', '16_2_industrial_waste']
+# imports_fuel_1 = ['17_electricity_import']
 
-use_agg_fuels = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Solar', 'Wind', 'Other']
+# Second aggreagtion: Oil, Gas, Nuclear, Imports, Other from above and below two new aggregations (7 fuels)
+coal_fuel_2 = ['1_x_coal_thermal', '1_5_lignite', '2_coal_products']
+renewables_fuel_2 = ['10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_1_fuelwood_and_woodwaste', 
+                     '15_2_bagasse', '15_4_black_liquor', '15_5_other_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable']
+
+# Note, 12_1_of_which_photovoltaics is a subset of 12_solar so including will lead to double counting
+
+use_agg_fuels_1 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Nuclear', 'Hydro', 'Solar', 'Wind', 
+                   'Biomass', 'Geothermal', 'Other renewables', 'Other']
+use_agg_fuels_2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other']
 
 # TECHNOLOGY aggregations for ProductionByTechnology
 
 coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
-storage_tech = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
-gas_tech = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
 oil_tech = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
-bio_tech = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP']
+gas_tech = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
 nuclear_tech = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
-chp_tech = ['POW_CHP_PP']
-other_tech = ['POW_Geothermal_PP', 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP']
 hydro_tech = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP']
-im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
 solar_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
 wind_tech = ['POW_WindOff_PP', 'POW_Wind_PP']
+bio_tech = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP']
+geo_tech = ['POW_Geothermal_PP']
+storage_tech = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
+other_tech = ['POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP']
+chp_tech = ['POW_CHP_PP']
+im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
+
+
+
+
 
 # POW_EXPORT_ELEC_PP need to work this in
 
@@ -180,11 +203,12 @@ prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio
 
 # Refinery vectors
 
-Ref_input = ['3_1_crude_oil', '3_x_NGLs']
-Ref_output = ['4_1_1_motor_gasoline', '4_1_2_aviation_gasoline', '4_10_other_petroleum_products', '4_2_naphtha', '4_3_jet_fuel',
-              '4_4_other_kerosene', '4_5_gas_diesel_oil', '4_6_fuel_oil', '4_7_lpg', '4_8_refinery_gas_not_liq', '4_9_ethane']
+Ref_input = ['6_1_crude_oil', '6_x_ngls']
+Ref_output = ['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
+              '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane', '7_x_other_petroleum_products']
 
-Ref_new_output = ['411_from_ref', '412_from_ref', '42_from_ref', '43_from_ref', '44_from_ref', '45_from_ref', '46_from_ref', '47_from_ref', '48_from_ref', '49_from_ref', '410_from_ref']
+Ref_new_output = ['7_1_from_ref', '7_2_from_ref', '7_3_from_ref', '7_jet_from_ref', '7_6_from_ref', '7_7_from_ref',
+                  '7_8_from_ref', '7_9_from_ref', '7_10_from_ref', '7_11_from_ref', '7_other_from_ref']
 
 # Capacity vectors
     
@@ -223,29 +247,57 @@ for economy in power_df1['economy'].unique():
 
     # Now build aggregate variables of the FUELS
 
-    coal = use_df1[use_df1['FUEL'].isin(coal_fuel)].groupby(['economy']).sum().assign(FUEL = 'Coal',
+    # First level aggregations
+    coal = use_df1[use_df1['FUEL'].isin(coal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Coal',
                                                                                       TECHNOLOGY = 'Coal power')
 
-    oil = use_df1[use_df1['FUEL'].isin(oil_fuel)].groupby(['economy']).sum().assign(FUEL = 'Oil',
-                                                                                    TECHNOLOGY = 'Coal power')                                                                                      
+    lignite = use_df1[use_df1['FUEL'].isin(lignite_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Lignite',
+                                                                                              TECHNOLOGY = 'Lignite power')                                                                                      
 
-    other = use_df1[use_df1['FUEL'].isin(other_fuel)].groupby(['economy']).sum().assign(FUEL = 'Other',
-                                                                                        TECHNOLOGY = 'Other power')
+    oil = use_df1[use_df1['FUEL'].isin(oil_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Oil',
+                                                                                    TECHNOLOGY = 'Oil power')
 
-    solar = use_df1[use_df1['FUEL'].isin(solar_fuel)].groupby(['economy']).sum().assign(FUEL = 'Solar',
+    gas = use_df1[use_df1['FUEL'].isin(gas_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Natural gas',
+                                                                                    TECHNOLOGY = 'Gas power')
+
+    nuclear = use_df1[use_df1['FUEL'].isin(nuclear_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Nuclear',
+                                                                                    TECHNOLOGY = 'Nuclear power')
+
+    hydro = use_df1[use_df1['FUEL'].isin(hydro_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Hydro',
+                                                                                    TECHNOLOGY = 'Hydro power')
+
+    solar = use_df1[use_df1['FUEL'].isin(solar_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Solar',
                                                                                         TECHNOLOGY = 'Solar power')
 
-    # Use by fuel data frame 
+    wind = use_df1[use_df1['FUEL'].isin(wind_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Wind',
+                                                                                    TECHNOLOGY = 'Wind power')
 
-    usefuel_df1 = use_df1.append([coal, oil, other, solar])[['FUEL',
-                                                        'TECHNOLOGY'] + OSeMOSYS_years].reset_index(drop = True)
+    geothermal = use_df1[use_df1['FUEL'].isin(geothermal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Geothermal',
+                                                                                    TECHNOLOGY = 'Geothermal power')
 
-    usefuel_df1.loc[usefuel_df1['FUEL'] == '5_1_natural_gas', 'FUEL'] = 'Gas'
-    usefuel_df1.loc[usefuel_df1['FUEL'] == '6_hydro', 'FUEL'] = 'Hydro'
-    usefuel_df1.loc[usefuel_df1['FUEL'] == '7_nuclear', 'FUEL'] = 'Nuclear'
-    usefuel_df1.loc[usefuel_df1['FUEL'] == '8_2_3_wind', 'FUEL'] = 'Wind'
+    biomass = use_df1[use_df1['FUEL'].isin(biomass_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Biomass',
+                                                                                    TECHNOLOGY = 'Biomass power')
 
-    usefuel_df1 = usefuel_df1[usefuel_df1['FUEL'].isin(use_agg_fuels)].set_index('FUEL').loc[use_agg_fuels].reset_index() 
+    other_renew = use_df1[use_df1['FUEL'].isin(other_renew_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Other renewables',
+                                                                                    TECHNOLOGY = 'Other renewable power')
+
+    other = use_df1[use_df1['FUEL'].isin(other_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Other',
+                                                                                        TECHNOLOGY = 'Other power')
+
+    # Second level aggregations
+
+    coal2 = use_df1[use_df1['FUEL'].isin(coal_fuel_2)].groupby(['economy']).sum().assign(FUEL = 'Coal',
+                                                                                      TECHNOLOGY = 'Coal power')
+
+    renew2 = use_df1[use_df1['FUEL'].isin(renewables_fuel_2)].groupby(['economy']).sum().assign(FUEL = 'Renewables',
+                                                                                      TECHNOLOGY = 'Renewables power')
+
+    # Use by fuel data frame number 1
+
+    usefuel_df1 = use_df1.append([coal, lignite, oil, gas, nuclear, hydro, solar, wind, geothermal, biomass, other_renew, other])\
+        [['FUEL', 'TECHNOLOGY'] + OSeMOSYS_years].reset_index(drop = True)
+
+    usefuel_df1 = usefuel_df1[usefuel_df1['FUEL'].isin(use_agg_fuels_1)].set_index('FUEL').loc[use_agg_fuels_1].reset_index() 
 
     usefuel_df1 = usefuel_df1.groupby('FUEL').sum().reset_index()
     usefuel_df1['Transformation'] = 'Input fuel'
@@ -258,6 +310,25 @@ for economy in power_df1['economy'].unique():
 
     nrows2 = usefuel_df2.shape[0]
     ncols2 = usefuel_df2.shape[1]
+
+    # Use by fuel data frame number 1
+
+    usefuel_df3 = use_df1.append([coal2, oil, gas, nuclear, renew2, other])\
+        [['FUEL', 'TECHNOLOGY'] + OSeMOSYS_years].reset_index(drop = True)
+
+    usefuel_df3 = usefuel_df3[usefuel_df3['FUEL'].isin(use_agg_fuels_2)].set_index('FUEL').loc[use_agg_fuels_2].reset_index() 
+
+    usefuel_df3 = usefuel_df3.groupby('FUEL').sum().reset_index()
+    usefuel_df3['Transformation'] = 'Input fuel'
+    usefuel_df3 = usefuel_df3[['FUEL', 'Transformation'] + OSeMOSYS_years]
+
+    nrows10 = usefuel_df3.shape[0]
+    ncols10 = usefuel_df3.shape[1]
+
+    usefuel_df4 = usefuel_df3[['FUEL', 'Transformation'] + col_chart_years]
+
+    nrows11 = usefuel_df4.shape[0]
+    ncols11 = usefuel_df4.shape[1]
 
     # Now build production dataframe
     prodelec_df1 = power_df1[(power_df1['economy'] == economy) &
