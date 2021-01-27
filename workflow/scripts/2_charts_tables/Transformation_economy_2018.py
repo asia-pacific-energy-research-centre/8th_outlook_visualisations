@@ -163,7 +163,7 @@ refownsup_df1 = refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet', 'Sector
 coal_fuel_1 = ['1_x_coal_thermal', '2_coal_products']
 lignite_fuel_1 = ['1_5_lignite']
 oil_fuel_1 = ['7_7_gas_diesel_oil','7_3_naphtha', '7_8_fuel_oil', '6_1_crude_oil', '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_x_other_petroleum_products']
-gas_fuel_1 = ['8_gas']
+gas_fuel_1 = ['8_1_natural_gas']
 nuclear_fuel_1 = ['9_nuclear']
 hydro_fuel_1 = ['10_hydro']
 solar_fuel_1 = ['12_solar']
@@ -200,7 +200,6 @@ storage_tech = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage
 other_tech = ['POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP']
 chp_tech = ['POW_CHP_PP']
 im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
-
 
 
 
@@ -265,7 +264,7 @@ for economy in power_df1['economy'].unique():
                                                                                     TECHNOLOGY = 'Oil power')
 
     gas = use_df1[use_df1['FUEL'].isin(gas_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Gas',
-                                                                                    TECHNOLOGY = 'Gas power')
+                                                                                      TECHNOLOGY = 'Gas power')
 
     nuclear = use_df1[use_df1['FUEL'].isin(nuclear_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Nuclear',
                                                                                     TECHNOLOGY = 'Nuclear power')
