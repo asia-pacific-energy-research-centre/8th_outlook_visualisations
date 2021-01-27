@@ -23,8 +23,18 @@ path_final = './data/4_Joined'
 # OSeMOSYS results files
 OSeMOSYS_filenames = glob.glob(path_output + "/*.xlsx")
 
-# Read in mapping file
-Mapping_file = pd.read_excel(path_mapping + '/OSeMOSYS mapping.xlsx', sheet_name = 'Mapping_2018',  skiprows = 1)
+# New 2018 data variable names 
+
+Mapping_sheets = list(pd.read_excel(path_mapping + '/OSeMOSYS_mapping_2021.xlsx', sheet_name = None).keys())[1:]
+
+Mapping_file = pd.DataFrame()
+
+for sheet in Mapping_sheets:
+    interim_map = pd.read_excel(path_mapping + '/OSeMOSYS_mapping_2021.xlsx', sheet_name = sheet, skiprows = 1)
+    Mapping_file = Mapping_file.append(interim_map).reset_index(drop = True)
+
+# Now moving everything from OSeMOSYS to EGEDA only requires TFC and TPES for now
+
 Mapping_file = Mapping_file[Mapping_file['Balance'].isin(['TFC', 'TPES'])]
 
 # Define unique workbook and sheet combinations
