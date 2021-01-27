@@ -339,7 +339,7 @@ for economy in power_df1['economy'].unique():
     # Now build production dataframe
     prodelec_df1 = power_df1[(power_df1['economy'] == economy) &
                              (power_df1['Sheet'] == 'ProductionByTechnology') &
-                             (power_df1['FUEL'].isin(['10_electricity', '10_electricity_Dx']))].reset_index(drop = True)
+                             (power_df1['FUEL'].isin(['17_electricity', '17_electricity_Dx']))].reset_index(drop = True)
 
     # Now build the aggregations of technology (power plants)
 
@@ -364,7 +364,10 @@ for economy in power_df1['economy'].unique():
     prodelec_bytech_df1['Production'] = 'Electricity'
     prodelec_bytech_df1 = prodelec_bytech_df1[['TECHNOLOGY', 'Production'] + OSeMOSYS_years] 
 
-    prodelec_bytech_df1 = prodelec_bytech_df1[prodelec_bytech_df1['TECHNOLOGY'].isin(prod_agg_tech)].set_index('TECHNOLOGY').loc[prod_agg_tech].reset_index()
+    prodelec_bytech_df1 = prodelec_bytech_df1[prodelec_bytech_df1['TECHNOLOGY'].isin(prod_agg_tech)].\
+        set_index('TECHNOLOGY')
+
+    prodelec_bytech_df1 = prodelec_bytech_df1.loc[prodelec_bytech_df1.index.intersection(prod_agg_tech)].reset_index()
 
     # CHange to TWh from Petajoules
 
@@ -390,8 +393,8 @@ for economy in power_df1['economy'].unique():
     refinery_df1['Transformation'] = 'Input to refinery'
     refinery_df1 = refinery_df1[['FUEL', 'Transformation'] + OSeMOSYS_years]
 
-    refinery_df1.loc[refinery_df1['FUEL'] == '3_1_crude_oil', 'FUEL'] = 'Crude oil'
-    refinery_df1.loc[refinery_df1['FUEL'] == '3_x_NGLs', 'FUEL'] = 'NGLs'
+    refinery_df1.loc[refinery_df1['FUEL'] == '6_1_crude_oil', 'FUEL'] = 'Crude oil'
+    refinery_df1.loc[refinery_df1['FUEL'] == '6_x_ngls', 'FUEL'] = 'NGLs'
 
     nrows5 = refinery_df1.shape[0]
     ncols5 = refinery_df1.shape[1]
@@ -403,17 +406,17 @@ for economy in power_df1['economy'].unique():
     refinery_df2['Transformation'] = 'Output from refinery'
     refinery_df2 = refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years]
 
-    refinery_df2.loc[refinery_df2['FUEL'] == '411_from_ref', 'FUEL'] = 'Motor gasoline'
-    refinery_df2.loc[refinery_df2['FUEL'] == '412_from_ref', 'FUEL'] = 'Aviation gasoline'
-    refinery_df2.loc[refinery_df2['FUEL'] == '42_from_ref', 'FUEL'] = 'Naphtha'
-    refinery_df2.loc[refinery_df2['FUEL'] == '43_from_ref', 'FUEL'] = 'Jet fuel'
-    refinery_df2.loc[refinery_df2['FUEL'] == '44_from_ref', 'FUEL'] = 'Other kerosene'
-    refinery_df2.loc[refinery_df2['FUEL'] == '45_from_ref', 'FUEL'] = 'Gas diesel oil'
-    refinery_df2.loc[refinery_df2['FUEL'] == '46_from_ref', 'FUEL'] = 'Fuel oil'
-    refinery_df2.loc[refinery_df2['FUEL'] == '47_from_ref', 'FUEL'] = 'LPG'
-    refinery_df2.loc[refinery_df2['FUEL'] == '48_from_ref', 'FUEL'] = 'Refinery gas'
-    refinery_df2.loc[refinery_df2['FUEL'] == '49_from_ref', 'FUEL'] = 'Ethane'
-    refinery_df2.loc[refinery_df2['FUEL'] == '410_from_ref', 'FUEL'] = 'Other'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_1_from_ref', 'FUEL'] = 'Motor gasoline'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_2_from_ref', 'FUEL'] = 'Aviation gasoline'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_3_from_ref', 'FUEL'] = 'Naphtha'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_jet_from_ref', 'FUEL'] = 'Jet fuel'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_6_from_ref', 'FUEL'] = 'Other kerosene'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_7_from_ref', 'FUEL'] = 'Gas diesel oil'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_8_from_ref', 'FUEL'] = 'Fuel oil'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_9_from_ref', 'FUEL'] = 'LPG'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_10_from_ref', 'FUEL'] = 'Refinery gas'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_11_from_ref', 'FUEL'] = 'Ethane'
+    refinery_df2.loc[refinery_df2['FUEL'] == '7_other_from_ref', 'FUEL'] = 'Other'
 
     refinery_df2['FUEL'] = pd.Categorical(
         refinery_df2['FUEL'], 
