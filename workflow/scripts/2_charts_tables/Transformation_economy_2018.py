@@ -27,7 +27,15 @@ OSeMOSYS_filenames = glob.glob(path_output + "/*.xlsx")
 
 # Read in mapping file
 
-Mapping_file = pd.read_excel(path_mapping + '/OSeMOSYS mapping.xlsx', sheet_name = 'Mapping_2018',  skiprows = 1)
+# New 2018 data variable names 
+
+Mapping_sheets = list(pd.read_excel(path_mapping + '/OSeMOSYS_mapping_2021.xlsx', sheet_name = None).keys())[1:]
+
+Mapping_file = pd.DataFrame()
+
+for sheet in Mapping_sheets:
+    interim_map = pd.read_excel(path_mapping + '/OSeMOSYS_mapping_2021.xlsx', sheet_name = sheet, skiprows = 1)
+    Mapping_file = Mapping_file.append(interim_map).reset_index(drop = True)
 
 # Subset the mapping file so that it's just transformation
 
@@ -196,7 +204,6 @@ im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
 
 
 
-
 # POW_EXPORT_ELEC_PP need to work this in
 
 prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 'Storage', 'Other', 'CHP', 'Imports']
@@ -257,7 +264,7 @@ for economy in power_df1['economy'].unique():
     oil = use_df1[use_df1['FUEL'].isin(oil_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Oil',
                                                                                     TECHNOLOGY = 'Oil power')
 
-    gas = use_df1[use_df1['FUEL'].isin(gas_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Natural gas',
+    gas = use_df1[use_df1['FUEL'].isin(gas_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Gas',
                                                                                     TECHNOLOGY = 'Gas power')
 
     nuclear = use_df1[use_df1['FUEL'].isin(nuclear_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Nuclear',
@@ -297,7 +304,7 @@ for economy in power_df1['economy'].unique():
     usefuel_df1 = use_df1.append([coal, lignite, oil, gas, nuclear, hydro, solar, wind, geothermal, biomass, other_renew, other])\
         [['FUEL', 'TECHNOLOGY'] + OSeMOSYS_years].reset_index(drop = True)
 
-    usefuel_df1 = usefuel_df1[usefuel_df1['FUEL'].isin(use_agg_fuels_1)].set_index('FUEL').loc[use_agg_fuels_1].reset_index() 
+    usefuel_df1 = usefuel_df1[usefuel_df1['FUEL'].isin(use_agg_fuels_1)].reset_index().set_index('FUEL').loc[use_agg_fuels_1].reset_index() 
 
     usefuel_df1 = usefuel_df1.groupby('FUEL').sum().reset_index()
     usefuel_df1['Transformation'] = 'Input fuel'
