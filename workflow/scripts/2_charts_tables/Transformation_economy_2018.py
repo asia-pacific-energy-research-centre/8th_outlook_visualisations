@@ -367,7 +367,8 @@ for economy in power_df1['economy'].unique():
     prodelec_bytech_df1 = prodelec_bytech_df1[prodelec_bytech_df1['TECHNOLOGY'].isin(prod_agg_tech)].\
         set_index('TECHNOLOGY')
 
-    prodelec_bytech_df1 = prodelec_bytech_df1.loc[prodelec_bytech_df1.index.intersection(prod_agg_tech)].reset_index()
+    prodelec_bytech_df1 = prodelec_bytech_df1.loc[prodelec_bytech_df1.index.intersection(prod_agg_tech)].reset_index()\
+        .rename(columns = {'index': 'TECHNOLOGY'})
 
     # CHange to TWh from Petajoules
 
