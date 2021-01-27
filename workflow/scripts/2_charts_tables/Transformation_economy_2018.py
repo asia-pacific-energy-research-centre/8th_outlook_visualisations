@@ -304,7 +304,7 @@ for economy in power_df1['economy'].unique():
     usefuel_df1 = use_df1.append([coal, lignite, oil, gas, nuclear, hydro, solar, wind, geothermal, biomass, other_renew, other])\
         [['FUEL', 'TECHNOLOGY'] + OSeMOSYS_years].reset_index(drop = True)
 
-    usefuel_df1 = usefuel_df1[usefuel_df1['FUEL'].isin(use_agg_fuels_1)].reset_index().set_index('FUEL').loc[use_agg_fuels_1].reset_index() 
+    usefuel_df1 = usefuel_df1[usefuel_df1['FUEL'].isin(use_agg_fuels_1)].set_index('FUEL').loc[use_agg_fuels_1].reset_index() 
 
     usefuel_df1 = usefuel_df1.groupby('FUEL').sum().reset_index()
     usefuel_df1['Transformation'] = 'Input fuel'
