@@ -72,7 +72,7 @@ Subindustry = ['14_industry_sector', '14_1_iron_and_steel', '14_2_chemical_incl_
                '14_11_construction', '14_12_textiles_and_leather', '14_13_nonspecified_industry']
 
 Transport_fuels = ['1_1_coking_coal', '1_5_lignite', '1_x_coal_thermal', '2_coal_products', '7_1_motor_gasoline', '7_2_aviation_gasoline',
-                   '7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_7_gas_diesel_oil', '7_8_fuel_oil', '7_9_lpg',
+                   '7_x_jet_fuel', '7_7_gas_diesel_oil', '7_8_fuel_oil', '7_9_lpg',
                    '7_x_other_petroleum_products', '8_1_natural_gas', '16_5_biogasoline', '16_6_biodiesel',
                    '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels', '17_electricity'] 
 
@@ -309,7 +309,7 @@ for economy in Economy_codes:
         .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Gasoline', 
                                                             item_code_new = '15_transport_sector')
 
-    trans_jetfuel = transport_df1[transport_df1['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel'])]\
+    trans_jetfuel = transport_df1[transport_df1['fuel_code'].isin(['7_x_jet_fuel'])]\
         .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Jet fuel', 
                                                             item_code_new = '15_transport_sector')
     

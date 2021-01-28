@@ -92,7 +92,7 @@ OSeMOSYS_years = list(range(2017, max_year + 1))
 # First level
 coal_fuels = ['1_1_coking_coal', '1_5_lignite', '1_x_coal_thermal']
 oil_fuels = ['6_1_crude_oil', '6_x_ngls']
-petrol_fuels = ['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil',
+petrol_fuels = ['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil',
                 '7_8_fuel_oil', '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane', '7_x_other_petroleum_products']
 gas_fuels = ['8_1_natural_gas', '8_2_lng', '8_3_gas_works_gas']
 biomass_fuels = ['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_4_black_liquor', '15_5_other_biomass']
@@ -162,10 +162,13 @@ for region in aggregate_df1['REGION'].unique():
     gas = interim_df2[interim_df2['fuel_code'].isin(gas_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '8_gas').reset_index()
 
+    biomass = interim_df2[interim_df2['fuel_code'].isin(biomass_fuels)].groupby(['item_code_new'])\
+        .sum().assign(fuel_code = '15_solid_biomass').reset_index()
+
     others = interim_df2[interim_df2['fuel_code'].isin(other_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '16_others').reset_index()
 
-    interim_df3 = interim_df2.append([coal, oil, petrol, gas, others]).reset_index(drop = True)
+    interim_df3 = interim_df2.append([coal, oil, petrol, gas, biomass, others]).reset_index(drop = True)
 
     # And total fuels
 
