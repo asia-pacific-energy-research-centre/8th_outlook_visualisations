@@ -38,7 +38,7 @@ for sheet in Mapping_sheets:
 Mapping_file = Mapping_file[Mapping_file['Balance'].isin(['TFC', 'TPES'])]
 
 # Define unique workbook and sheet combinations
-Unique_combo = Mapping_file.groupby(['Workbook', 'Sheet']).size().reset_index().loc[:, ['Workbook', 'Sheet']]
+Unique_combo = Mapping_file.groupby(['Workbook', 'Sheet_energy']).size().reset_index().loc[:, ['Workbook', 'Sheet_energy']]
 
 # Determine list of files to read based on the workbooks identified in the mapping file
 file_df = pd.DataFrame()
@@ -57,13 +57,13 @@ aggregate_df1 = pd.DataFrame()
 for i in range(file_df.shape[0]):
     _df = pd.read_excel(file_df.iloc[i, 0], sheet_name = file_df.iloc[i, 2])
     _df['Workbook'] = file_df.iloc[i, 1]
-    _df['Sheet'] = file_df.iloc[i, 2]
+    _df['Sheet_energy'] = file_df.iloc[i, 2]
     aggregate_df1 = aggregate_df1.append(_df) 
 
 interim_df1 = aggregate_df1[aggregate_df1['TIMESLICE'] != 'ONE']
 interim_df2 = aggregate_df1[aggregate_df1['TIMESLICE'] == 'ONE']
 
-interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', 'Sheet']).sum().reset_index()
+interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', 'Sheet_energy']).sum().reset_index()
 
 aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
 
