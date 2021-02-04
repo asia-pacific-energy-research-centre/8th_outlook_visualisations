@@ -552,9 +552,8 @@ for economy in Economy_codes:
     
     worksheet2.insert_chart('J3', em_sector_chart3)
 
-
-
-
     writer.save()
+
+print('Emissions charts are ready for viewing in the results folder')
 
 

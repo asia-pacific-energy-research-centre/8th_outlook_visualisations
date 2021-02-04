@@ -149,7 +149,6 @@ EGEDA_aggregate_sorted = EGEDA_aggregate.sort_values(['economy', 'fuel_code', 'i
 # Write file
 EGEDA_aggregate_sorted.to_csv('./data/1_EGEDA/EGEDA_2018_emissions.csv', index = False)
 
-########################################################################################################################################
-
+print('You are now ready for script 2 of emissions charting')
 
 
