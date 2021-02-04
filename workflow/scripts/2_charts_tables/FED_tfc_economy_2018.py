@@ -473,7 +473,7 @@ for economy in Economy_codes:
 
     ###################### Create another FED chart showing proportional share #################################
 
-    # Create a TPES chart
+    # Create a another chart
     fedfuel_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
     fedfuel_chart2.set_size({
         'width': 500,

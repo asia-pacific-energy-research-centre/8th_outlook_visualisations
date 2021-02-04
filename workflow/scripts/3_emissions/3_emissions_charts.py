@@ -317,6 +317,60 @@ for economy in Economy_codes:
     
     worksheet1.insert_chart('J3', em_fuel_chart2)
 
+    # Create a Emissions line chart with higher level aggregation
+    em_fuel_chart3 = workbook.add_chart({'type': 'line'})
+    em_fuel_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    em_fuel_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    em_fuel_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    em_fuel_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Million Tonnes CO2',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    em_fuel_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    em_fuel_chart3.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows6):
+        em_fuel_chart3.add_series({
+            'name':       [economy + '_Emissions_fuel', chart_height + i + 1, 0],
+            'categories': [economy + '_Emissions_fuel', chart_height, 2, chart_height, ncols6 - 1],
+            'values':     [economy + '_Emissions_fuel', chart_height + i + 1, 2, chart_height + i + 1, ncols6 - 1],
+            'line':       {'color': colours_hex[i], 'width': 1.25}
+        })    
+        
+    worksheet1.insert_chart('R3', em_fuel_chart3)
+
 
     ############################## Next sheet: FED (TFC) by sector ##############################
     
@@ -330,7 +384,8 @@ for economy in Economy_codes:
     worksheet2.set_row(chart_height + nrows2 + nrows8 + 6, None, header_format)
     worksheet2.write(0, 0, economy + ' emissions by demand sector', cell_format1)
     
-    # Create a FED chart
+    # Create an EMISSIONS sector line chart
+
     em_sector_chart1 = workbook.add_chart({'type': 'line'})
     em_sector_chart1.set_size({
         'width': 500,
@@ -355,7 +410,7 @@ for economy in Economy_codes:
     em_sector_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Tonnes CO2',
+        'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
@@ -374,15 +429,15 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for i in range(nrows2):
+    for i in range(nrows8):
         em_sector_chart1.add_series({
-            'name':       [economy + '_Emissions_sector', chart_height + i + 1, 1],
-            'categories': [economy + '_Emissions_sector', chart_height, 2, chart_height, ncols2 - 1],
-            'values':     [economy + '_Emissions_sector', chart_height + i + 1, 2, chart_height + i + 1, ncols2 - 1],
+            'name':       [economy + '_Emissions_sector', chart_height + nrows2 + i + 4, 1],
+            'categories': [economy + '_Emissions_sector', chart_height + nrows2 + 3, 2, chart_height + nrows2 + 3, ncols8 - 1],
+            'values':     [economy + '_Emissions_sector', chart_height + nrows2 + i + 4, 2, chart_height + nrows2 + i + 4, ncols8 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25}
         })    
         
-    worksheet2.insert_chart('Z3', em_sector_chart1)
+    worksheet2.insert_chart('R3', em_sector_chart1)
 
     # Create a EMISSIONS sector area chart
 
@@ -439,6 +494,63 @@ for economy in Economy_codes:
         })    
         
     worksheet2.insert_chart('B3', em_sector_chart2)
+
+    ###################### Create another FED chart showing proportional share #################################
+
+    # Create a FED chart
+    em_sector_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    em_sector_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    em_sector_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    em_sector_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    em_sector_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Proportion of CO2',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    em_sector_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    em_sector_chart3.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in Emissions_agg_sectors:
+        i = emissions_sector_df2[emissions_sector_df2['item_code_new'] == component].index[0]
+        em_sector_chart3.add_series({
+            'name':       [economy + '_Emissions_sector', chart_height + nrows2 + nrows8 + i + 7, 1],
+            'categories': [economy + '_Emissions_sector', chart_height + nrows2 + nrows8 + 6, 2, chart_height + nrows2 + nrows8 + 6, ncols9 - 1],
+            'values':     [economy + '_Emissions_sector', chart_height + nrows2 + nrows8 + i + 7, 2, chart_height + nrows2 + nrows8 + i + 7, ncols9 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })
+    
+    worksheet2.insert_chart('J3', em_sector_chart3)
 
 
 

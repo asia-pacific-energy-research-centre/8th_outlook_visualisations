@@ -36,7 +36,7 @@ for sheet in Mapping_sheets:
 
 # Now moving everything from OSeMOSYS to EGEDA (Only demand sectors and own use for now)
 
-Mapping_file = Mapping_file[Mapping_file['Sector'].isin(['AGR', 'BLD', 'IND', 'TRN', 'PIP', 'NON'])] # 'OWN' 'PIP' ??????
+Mapping_file = Mapping_file[Mapping_file['Sector'].isin(['AGR', 'BLD', 'IND', 'TRN', 'PIP', 'NON'])] # 'OWN' ??????
 
 # Define unique workbook and sheet combinations
 Unique_combo = Mapping_file.groupby(['Workbook', 'Sheet_emissions']).size().reset_index().loc[:, ['Workbook', 'Sheet_emissions']]
