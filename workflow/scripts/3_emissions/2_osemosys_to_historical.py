@@ -36,7 +36,7 @@ for sheet in Mapping_sheets:
 
 # Now moving everything from OSeMOSYS to EGEDA (Only demand sectors and own use for now)
 
-Mapping_file = Mapping_file[Mapping_file['Sector'].isin(['AGR', 'BLD', 'IND', 'TRN', 'NON', 'OWN', 'PIP'])]
+Mapping_file = Mapping_file[Mapping_file['Sector'].isin(['AGR', 'BLD', 'IND', 'TRN', 'PIP', 'NON'])] # 'OWN' 'PIP' ??????
 
 # Define unique workbook and sheet combinations
 Unique_combo = Mapping_file.groupby(['Workbook', 'Sheet_emissions']).size().reset_index().loc[:, ['Workbook', 'Sheet_emissions']]
@@ -128,7 +128,7 @@ aggregate_df2 = pd.DataFrame()
 
 for region in aggregate_df1['REGION'].unique():
     interim_df1 = aggregate_df1[aggregate_df1['REGION'] == region]
-    interim_df1 = interim_df1.merge(Mapping_file, how = 'left', on = ['TECHNOLOGY'])
+    interim_df1 = interim_df1.merge(Mapping_file, how = 'left', on = ['TECHNOLOGY', 'EMISSION'])
     interim_df1 = interim_df1.groupby(['item_code_new', 'fuel_code']).sum().reset_index()
 
     ########################### Aggregate fuel_code for new variables ###################################
@@ -179,7 +179,6 @@ for region in aggregate_df1['REGION'].unique():
 
     # Now higher level agg
 
-    #Might need to check this depending on whether exports is negative
     tpes = interim_df4[interim_df4['item_code_new'].isin(tpes_agg)].groupby(['fuel_code'])\
         .sum().assign(item_code_new = '7_total_primary_energy_supply').reset_index()
 

@@ -58,6 +58,11 @@ other_fuels = ['16_1_biogas', '16_2_industrial_waste', '16_3_municipal_solid_was
 total_fuels = ['1_coal', '2_coal_products', '5_oil_shale_and_oil_sands', '6_crude_oil_and_ngl', '7_petroleum_products', '8_gas', '9_nuclear', '10_hydro', '11_geothermal',
                '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass', '16_others', '17_electricity', '18_heat']
 
+# item_code_new aggregations
+tfc_agg = ['14_industry_sector', '15_transport_sector', '16_other_sector', '17_nonenergy_use']
+
+tfec_agg = ['14_industry_sector', '15_transport_sector', '16_other_sector']
+
 # Aggregations
 
 EGEDA_aggregate = pd.DataFrame()
@@ -78,34 +83,47 @@ for region in EGEDA_emissions['economy'].unique():
 
     jetfuel_agg = interim_df1[interim_df1['fuel_code'].isin(jetfuel)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '7_x_jet_fuel').reset_index()
+
+    interim_df2 = interim_df1.append([thermal_agg, ngl_agg, oth_pet_agg, jetfuel_agg]).reset_index(drop = True)
         
-    coal = interim_df1[interim_df1['fuel_code'].isin(coal_fuels)].groupby(['item_code_new'])\
+    coal = interim_df2[interim_df2['fuel_code'].isin(coal_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '1_coal').reset_index()
 
-    coal_prod = interim_df1[interim_df1['fuel_code'].isin(coal_prod_fuels)].groupby(['item_code_new'])\
+    coal_prod = interim_df2[interim_df2['fuel_code'].isin(coal_prod_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '2_coal_products').reset_index()
         
-    oil = interim_df1[interim_df1['fuel_code'].isin(oil_fuels)].groupby(['item_code_new'])\
+    oil = interim_df2[interim_df2['fuel_code'].isin(oil_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '6_crude_oil_and_ngl').reset_index()
         
-    petrol = interim_df1[interim_df1['fuel_code'].isin(petrol_fuels)].groupby(['item_code_new'])\
+    petrol = interim_df2[interim_df2['fuel_code'].isin(petrol_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '7_petroleum_products').reset_index()
         
-    gas = interim_df1[interim_df1['fuel_code'].isin(gas_fuels)].groupby(['item_code_new'])\
+    gas = interim_df2[interim_df2['fuel_code'].isin(gas_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '8_gas').reset_index()
 
-    others = interim_df1[interim_df1['fuel_code'].isin(other_fuels)].groupby(['item_code_new'])\
+    others = interim_df2[interim_df2['fuel_code'].isin(other_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '16_others').reset_index()
 
-    total = interim_df1[interim_df1['fuel_code'].isin(total_fuels)].groupby(['item_code_new'])\
+    interim_df3 = interim_df2.append([coal, coal_prod, oil, petrol, gas, others]).reset_index(drop = True)
+
+    # Now add in the totals
+    total = interim_df3[interim_df3['fuel_code'].isin(total_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '19_total').reset_index()
 
-    interim_df2 = interim_df1.append([thermal_agg, ngl_agg, oth_pet_agg, jetfuel_agg, 
-                                      coal, coal_prod, oil, petrol, gas, others, total]).reset_index(drop = True)
+    interim_df4 = interim_df3.append([total]).reset_index(drop = True)
 
-    interim_df2['economy'] = region
+    # # Totals by sector aggregation
+    # tfc = interim_df5[interim_df5['item_code_new'].isin(tfc_agg)].groupby(['fuel_code'])\
+    #     .sum().assign(item_code_new = '12_total_final_consumption').reset_index()
 
-    EGEDA_aggregate = EGEDA_aggregate.append(interim_df2).reset_index(drop = True)
+    # tfec = interim_df5[interim_df5['item_code_new'].isin(tfec_agg)].groupby(['fuel_code'])\
+    #     .sum().assign(item_code_new = '13_total_final_energy_consumption').reset_index()
+
+    # interim_df6 = interim_df5.append([tpes, tfc, tfec]).reset_index(drop = True)                                      
+
+    interim_df4['economy'] = region
+
+    EGEDA_aggregate = EGEDA_aggregate.append(interim_df4).reset_index(drop = True)
 
 # Load correct order of fuel code and item code. Update this csv based on new entries or desired order
 
@@ -133,65 +151,5 @@ EGEDA_aggregate_sorted.to_csv('./data/1_EGEDA/EGEDA_2018_emissions.csv', index =
 
 ########################################################################################################################################
 
-# New 2018 data variable names 
-
-Mapping_sheets = list(pd.read_excel(path_mapping + '/OSeMOSYS_mapping_2021.xlsx', sheet_name = None).keys())[1:]
-
-Mapping_file = pd.DataFrame()
-
-for sheet in Mapping_sheets:
-    interim_map = pd.read_excel(path_mapping + '/OSeMOSYS_mapping_2021.xlsx', sheet_name = sheet, skiprows = 1)
-    Mapping_file = Mapping_file.append(interim_map).reset_index(drop = True)
-
-# Now moving everything from OSeMOSYS to EGEDA (Only demand sectors and own use for now)
-
-Mapping_file = Mapping_file[Mapping_file['Sector'].isin(['AGR', 'BLD', 'IND', 'TRN', 'NON', 'OWN', 'PIP'])]
-
-# Define unique workbook and sheet combinations
-Unique_combo = Mapping_file.groupby(['Workbook', 'Sheet_emissions']).size().reset_index().loc[:, ['Workbook', 'Sheet_emissions']]
-
-# Determine list of files to read based on the workbooks identified in the mapping file
-file_df = pd.DataFrame()
-
-for i in range(len(Unique_combo['Workbook'].unique())):
-    _file = pd.DataFrame({'File': [entry for entry in OSeMOSYS_filenames if Unique_combo['Workbook'].unique()[i] in entry],
-                         'Workbook': Unique_combo['Workbook'].unique()[i]})
-    file_df = file_df.append(_file)
-
-file_df = file_df.merge(Unique_combo, how = 'outer', on = 'Workbook')
-
-# Create empty dataframe to store aggregated results 
-aggregate_df1 = pd.DataFrame()
-
-# Now read in the OSeMOSYS output files so that that they're all in one data frame (aggregate_df1)
-for i in range(file_df.shape[0]):
-    _df = pd.read_excel(file_df.iloc[i, 0], sheet_name = file_df.iloc[i, 2])
-    _df['Workbook'] = file_df.iloc[i, 1]
-    _df['Sheet_emissions'] = file_df.iloc[i, 2]
-    aggregate_df1 = aggregate_df1.append(_df) 
-
-interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'EMISSION', 'REGION', 'Workbook', 'Sheet_emissions']).sum().reset_index()
-
-aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
-
-# Now aggregate all the results for APEC
-
-APEC = aggregate_df1.groupby(['TECHNOLOGY', 'EMISSION']).sum().reset_index()
-APEC['REGION'] = 'APEC'
-
-aggregate_df1 = aggregate_df1.append(APEC).reset_index(drop = True)
-
-# Get maximum year column to build data frame below
-year_columns = []
-
-for item in list(aggregate_df1.columns):
-    try:
-        year_columns.append(int(item))
-    except ValueError:
-            pass
-
-max_year = max(year_columns)
-
-OSeMOSYS_years = list(range(2017, max_year + 1))
 
 
