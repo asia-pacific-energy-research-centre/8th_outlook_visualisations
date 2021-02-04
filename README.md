@@ -1,4 +1,4 @@
-## Instructions for charting osemosys results
+## Instructions for charting osemosys results (NOW UPDATED FOR 2018 BASIS YEAR)
 
 #### 0. Before you begin
 
@@ -19,13 +19,13 @@ You can clone this repository to wherever you want on your personal computer
 
 #### 2. In your newly cloned repository (8th_outlook_visualisations), you need to save some relevant input data in the ‘data’ folder
 
-Save ‘EGEDA_2020_June_22_wide_years_PJ.csv’ in 8th_outlook_visualisations/data/1_EGEDA/ 
+Save ‘EGEDA_2018_years.csv’ in 8th_outlook_visualisations/data/1_EGEDA/ 
+  (available in 'Historical Energy Balances' in the 'Integration' Teams channel)
+
+Save ‘colour_template_7th.xlsx’ and ‘OSeMOSYS_mapping_2021.xlsx’ in 8th_outlook_visualisations/data/2_Mapping_and_other/
   (available in 'Charts and tables' teams folder)
 
-Save ‘colour_template_7th.xlsx’ and ‘OSeMOSYS mapping.xlsx’ in 8th_outlook_visualisations/data/2_Mapping_and_other/
-  (available in 'Charts and tables' teams folder)
-
-Save OSeMOSYS results, (e.g. ‘08_JPN_results_v1.0.xlsx’, ‘11_MEX_results_v1.2.xlsx’) in 8th_outlook_visualisations/data/3_OSeMOSYS_output/
+Save OSeMOSYS results, (e.g. ‘07_INA_demand_results_2021-01-28-191214.xlsx’ in 8th_outlook_visualisations/data/3_OSeMOSYS_output/
   (note: 'results' needs to be lowercase)
 
 #### 3. At the command prompt, navigate so that the ‘root’ directory is the 8th_outlook_visualisations folder
@@ -50,34 +50,35 @@ conda activate ./env
 NB: this needs to be run every time, as it takes the new results you've output and bolts them to EGEDA 
 
 ```bash
-python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA.py
+python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA_2018.py
 ```
 
 Check that this has executed correctly by looking in the folder C:\Users\mathew.horne\Projects\8th_outlook_visualisations\data\4_Joined
 
-There should be a newly created csv file 'OSeMOSYS_to_EGEDA.csv'
+There should be a newly created csv file 'OSeMOSYS_to_EGEDA_2018.csv'
 
 #### 7. When you've run step 6 you can run the charting scripts contained in 8th_outlook_visualisations\workflow\scripts\2_charts_tables
-There are currently four scripts in this folder. 
+There are currently four (2018 based) scripts in this folder. 
 
 For running FED
 ```bash
-python ./workflow/scripts/2_charts_tables/FED_tfc_economy.py
+python ./workflow/scripts/2_charts_tables/FED_tfc_economy_2018.py
 ```
 
 For running TPES
 ```bash
-python ./workflow/scripts/2_charts_tables/TPES_economy.py
+python ./workflow/scripts/2_charts_tables/TPES_economy_2018.py
 ```
 
 For running Transformation
 ```bash
-python ./workflow/scripts/2_charts_tables/Transformation_economy.py
+python ./workflow/scripts/2_charts_tables/Transformation_economy_2018.py
 ```
 
 For running some OSeMOSYS specific outputs (not mapped to EGEDA):
+(NB: THIS SCRIPT NOT YET READY)
 ```bash
-python ./workflow/scripts/2_charts_tables/OSeMOSYS_detailed.py
+python ./workflow/scripts/2_charts_tables/OSeMOSYS_detailed_2018.py
 ```
 
 
