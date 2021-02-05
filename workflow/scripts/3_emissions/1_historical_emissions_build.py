@@ -174,7 +174,7 @@ for region in EGEDA_aggregate['economy'].unique():
 
 # Load correct order of fuel code and item code. Update this csv based on new entries or desired order
 
-ordered = pd.read_csv('./data/2_Mapping_and_other/order_2018.csv')
+ordered = pd.read_csv('./data/2_Mapping_and_other/emissions_order_2018.csv')
 
 # This grabs the unique values of fuel_code and item_code_new in the order they appear in the original dataframe. It removes 'na' by calling '[:-1]' 
 
