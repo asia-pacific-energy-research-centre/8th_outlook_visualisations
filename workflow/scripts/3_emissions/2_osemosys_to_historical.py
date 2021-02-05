@@ -110,6 +110,7 @@ industry_agg = ['14_1_iron_and_steel', '14_2_chemical_incl_petrochemical', '14_3
                 '14_11_construction', '14_12_textiles_and_leather', '14_13_nonspecified_industry']
 transport_agg = ['15_1_domestic_air_transport', '15_2_road', '15_3_rail', '15_4_domestic_navigation', '15_5_pipeline_transport', '15_6_nonspecified_transport']
 others_agg = ['16_1_commercial_and_public_services', '16_2_residential', '16_3_agriculture', '16_4_fishing', '16_5_nonspecified_others']
+dem_pow_own_agg = ['9_x_power', '10_losses_and_own_use', '13_total_final_energy_consumption']
 
 # Then first level
 tpes_agg = ['1_indigenous_production', '2_imports', '3_exports', '4_international_marine_bunkers', '5_international_aviation_bunkers']
@@ -191,11 +192,16 @@ for region in aggregate_df1['REGION'].unique():
 
     interim_df5 = interim_df4.append([tpes, tfc, tfec]).reset_index(drop = True)
 
+    dem_pow_own = interim_df5[interim_df5['item_code_new'].isin(dem_pow_own_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '13_x_dem_pow_own').reset_index()
+
+    interim_df6 = interim_df5.append(dem_pow_own).reset_index(drop = True)
+
     # Now add in economy reference
-    interim_df5['economy'] = region
+    interim_df6['economy'] = region
 
     # Now append economy dataframe to communal data frame 
-    aggregate_df2 = aggregate_df2.append(interim_df5)
+    aggregate_df2 = aggregate_df2.append(interim_df6)
 
 key_variables = ['economy', 'fuel_code', 'item_code_new']
 

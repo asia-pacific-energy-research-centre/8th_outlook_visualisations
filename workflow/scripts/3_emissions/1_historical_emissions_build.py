@@ -154,6 +154,24 @@ change_to_negative[s.columns] = s
 
 EGEDA_aggregate = everything_else.append(change_to_negative).reset_index(drop = True)
 
+# Aggregate for demand sectors, power and own use and losses
+
+EGEDA_aggregate2 = pd.DataFrame()
+
+for region in EGEDA_aggregate['economy'].unique():
+    interim_df1 = EGEDA_aggregate[EGEDA_aggregate['economy'] == region]
+
+    dem_pow_own = interim_df1[interim_df1['item_code_new']\
+        .isin(['9_x_power', '10_losses_and_own_use', '13_total_final_energy_consumption'])]\
+            .groupby(['fuel_code'])\
+                .sum().assign(item_code_new = '13_x_dem_pow_own').reset_index()
+
+    interim_df2 = interim_df1.append([dem_pow_own]).reset_index(drop = True)
+
+    interim_df2['economy'] = region
+
+    EGEDA_aggregate2 = EGEDA_aggregate2.append(interim_df2).reset_index(drop = True)    
+
 # Load correct order of fuel code and item code. Update this csv based on new entries or desired order
 
 ordered = pd.read_csv('./data/2_Mapping_and_other/order_2018.csv')
@@ -165,15 +183,15 @@ order2 = list(ordered['item_code_new'])
 
 # Take order defined above and define each of the variables as categorical in that already established order (for the benefit of viewing data later)
 
-EGEDA_aggregate['fuel_code'] = pd.Categorical(EGEDA_aggregate['fuel_code'], 
+EGEDA_aggregate2['fuel_code'] = pd.Categorical(EGEDA_aggregate2['fuel_code'], 
                                                 categories = order1, 
                                                 ordered = True)
 
-EGEDA_aggregate['item_code_new'] = pd.Categorical(EGEDA_aggregate['item_code_new'],
+EGEDA_aggregate2['item_code_new'] = pd.Categorical(EGEDA_aggregate2['item_code_new'],
                                                     categories = order2,
                                                     ordered = True)
 
-EGEDA_aggregate_sorted = EGEDA_aggregate.sort_values(['economy', 'fuel_code', 'item_code_new']).reset_index(drop = True)
+EGEDA_aggregate_sorted = EGEDA_aggregate2.sort_values(['economy', 'fuel_code', 'item_code_new']).reset_index(drop = True)
 
 # Write file
 EGEDA_aggregate_sorted.to_csv('./data/1_EGEDA/EGEDA_2018_emissions.csv', index = False)

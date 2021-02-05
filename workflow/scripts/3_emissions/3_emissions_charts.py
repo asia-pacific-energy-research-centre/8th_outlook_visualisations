@@ -98,7 +98,7 @@ for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
     # First data frame construction: Emissions by fuels
     econ_df1 = EGEDA_emissions[(EGEDA_emissions['economy'] == economy) & 
-                          (EGEDA_emissions['item_code_new'].isin(['13_total_final_energy_consumption'])) &
+                          (EGEDA_emissions['item_code_new'].isin(['13_x_dem_pow_own'])) &
                           (EGEDA_emissions['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
     
     #nrows1 = econ_df1.shape[0]
@@ -107,13 +107,13 @@ for economy in Economy_codes:
     # Now build aggregate variables of the first level fuels in EGEDA
 
     coal = econ_df1[econ_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
-                                                                                                    item_code_new = '13_total_final_energy_consumption')
+                                                                                                    item_code_new = '13_x_dem_pow_own')
     
     oil = econ_df1[econ_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
-                                                                                                  item_code_new = '13_total_final_energy_consumption')
+                                                                                                  item_code_new = '13_x_dem_pow_own')
     
     heat_others = econ_df1[econ_df1['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
-                                                                                                                  item_code_new = '13_total_final_energy_consumption')
+                                                                                                                  item_code_new = '13_x_dem_pow_own')
 
     # EMISSIONS fuel data frame 1 (data frame 6)
 
