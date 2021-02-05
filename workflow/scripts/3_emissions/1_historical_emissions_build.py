@@ -63,6 +63,18 @@ tfc_agg = ['14_industry_sector', '15_transport_sector', '16_other_sector', '17_n
 
 tfec_agg = ['14_industry_sector', '15_transport_sector', '16_other_sector']
 
+power_agg = ['9_1_main_activity_producer', '9_2_autoproducers']
+
+# Change from negative to positive
+
+neg_to_pos = ['9_x_power',
+              '9_1_main_activity_producer', '9_1_1_electricity_plants', '9_1_2_chp_plants', '9_1_3_heat_plants', '9_2_autoproducers',
+              '9_2_1_electricity_plants', '9_2_2_chp_plants', '9_2_3_heat_plants', '9_3_gas_processing_plants', '9_3_1_gas_works_plants',
+              '9_3_2_liquefaction_plants', '9_3_3_regasification_plants', '9_3_4_natural_gas_blending_plants', '9_3_5_gastoliquids_plants',
+              '9_4_oil_refineries', '9_5_coal_transformation', '9_5_1_coke_ovens', '9_5_2_blast_furnaces', '9_5_3_patent_fuel_plants',
+              '9_5_4_bkb_pb_plants', '9_5_5_liquefaction_coal_to_oil', '9_6_petrochemical_industry', '9_7_biofuels_processing', 
+              '9_8_charcoal_processing', '9_9_nonspecified_transformation', '10_losses_and_own_use']
+
 # Aggregations
 
 EGEDA_aggregate = pd.DataFrame()
@@ -107,23 +119,40 @@ for region in EGEDA_emissions['economy'].unique():
     interim_df3 = interim_df2.append([coal, coal_prod, oil, petrol, gas, others]).reset_index(drop = True)
 
     # Now add in the totals
+
     total = interim_df3[interim_df3['fuel_code'].isin(total_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '19_total').reset_index()
 
     interim_df4 = interim_df3.append([total]).reset_index(drop = True)
 
-    # # Totals by sector aggregation
+    # Totals by sector aggregation
+    
+    power_total = interim_df4[interim_df4['item_code_new'].isin(power_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '9_x_power').reset_index()
+
     # tfc = interim_df5[interim_df5['item_code_new'].isin(tfc_agg)].groupby(['fuel_code'])\
     #     .sum().assign(item_code_new = '12_total_final_consumption').reset_index()
 
     # tfec = interim_df5[interim_df5['item_code_new'].isin(tfec_agg)].groupby(['fuel_code'])\
     #     .sum().assign(item_code_new = '13_total_final_energy_consumption').reset_index()
 
-    # interim_df6 = interim_df5.append([tpes, tfc, tfec]).reset_index(drop = True)                                      
+    interim_df5 = interim_df4.append([power_total]).reset_index(drop = True)                                      
 
-    interim_df4['economy'] = region
+    interim_df5['economy'] = region
 
-    EGEDA_aggregate = EGEDA_aggregate.append(interim_df4).reset_index(drop = True)
+    EGEDA_aggregate = EGEDA_aggregate.append(interim_df5).reset_index(drop = True)
+
+# Now change main activity producer and own use to positive
+
+change_to_negative = EGEDA_aggregate[EGEDA_aggregate['item_code_new'].\
+    isin(neg_to_pos)].copy().reset_index(drop = True)
+everything_else = EGEDA_aggregate[~EGEDA_aggregate['item_code_new'].\
+    isin(neg_to_pos)].copy().reset_index(drop = True)
+
+s = change_to_negative.select_dtypes(include=[np.number]) * -1 
+change_to_negative[s.columns] = s
+
+EGEDA_aggregate = everything_else.append(change_to_negative).reset_index(drop = True)
 
 # Load correct order of fuel code and item code. Update this csv based on new entries or desired order
 

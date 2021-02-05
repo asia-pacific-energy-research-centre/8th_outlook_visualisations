@@ -46,9 +46,10 @@ Oil_fuels = ['6_crude_oil_and_ngl', '7_petroleum_products']
 
 Heat_others_fuels = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_9_other_sources', '18_heat']
 
-# Sectors
+# Sectors (DEMANDS)
 
-Sectors_tfc = ['14_industry_sector', '15_transport_sector', '16_1_commercial_and_public_services', '16_2_residential',
+Sectors_tfc = ['9_x_power', '10_losses_and_own_use', 
+               '14_industry_sector', '15_transport_sector', '16_1_commercial_and_public_services', '16_2_residential',
                '16_3_agriculture', '16_4_fishing', '16_5_nonspecified_others', '17_nonenergy_use']
 
 Buildings_items = ['16_1_commercial_and_public_services', '16_2_residential']
@@ -89,7 +90,7 @@ col_chart_years_transport = ['2017', '2020', '2030', '2040', '2050']
 
 Emissions_agg_fuels = ['Coal', 'Oil', 'Gas', 'Electricity', 'Heat & others']
 
-Emissions_agg_sectors = ['Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-specified']
+Emissions_agg_sectors = ['Power', 'Own use', 'Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-specified']
 
 Industry_eight = ['Iron & steel', 'Chemicals', 'Aluminium', 'Non-metallic minerals', 'Mining', 'Pulp & paper', 'Other', 'Non-specified']
 
@@ -154,6 +155,8 @@ for economy in Economy_codes:
 
     emissions_sector_df1 = econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(econ_df2.loc[:, '2000':])].reset_index(drop = True)
 
+    emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '9_x_power', 'item_code_new'] = 'Power'
+    emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own use'
     emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
     #emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
@@ -230,7 +233,7 @@ for economy in Economy_codes:
     em_fuel_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Tonnes CO2',
+        'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
@@ -342,7 +345,7 @@ for economy in Economy_codes:
     em_fuel_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million Tonnes CO2',
+        'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
@@ -465,7 +468,7 @@ for economy in Economy_codes:
     em_sector_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Tonnes CO2',
+        'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
