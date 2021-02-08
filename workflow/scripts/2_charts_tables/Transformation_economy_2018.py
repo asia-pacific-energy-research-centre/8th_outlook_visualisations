@@ -43,7 +43,7 @@ Map_trans = Mapping_file[Mapping_file['Balance'] == 'TRANS'].reset_index(drop = 
 
 # Define unique workbook and sheet combinations
 
-Unique_trans = Map_trans.groupby(['Workbook', 'Sheet']).size().reset_index().loc[:, ['Workbook', 'Sheet']]
+Unique_trans = Map_trans.groupby(['Workbook', 'Sheet_energy']).size().reset_index().loc[:, ['Workbook', 'Sheet_energy']]
 
 # Determine list of files to read based on the workbooks identified in the mapping file
 
@@ -65,7 +65,7 @@ aggregate_df1 = pd.DataFrame()
 for i in range(file_trans.shape[0]):
     _df = pd.read_excel(file_trans.iloc[i, 0], sheet_name = file_trans.iloc[i, 2])
     _df['Workbook'] = file_trans.iloc[i, 1]
-    _df['Sheet'] = file_trans.iloc[i, 2]
+    _df['Sheet_energy'] = file_trans.iloc[i, 2]
     aggregate_df1 = aggregate_df1.append(_df) 
 
 aggregate_df1 = aggregate_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index()
@@ -120,7 +120,7 @@ power_df1 = pd.DataFrame()
 for region in aggregate_df1['REGION'].unique():
     interim_df1 = aggregate_df1[aggregate_df1['REGION'] == region]
     interim_df1 = interim_df1.merge(Map_power, how = 'right', on = ['TECHNOLOGY', 'FUEL'])
-    interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet']).sum().reset_index()
+    interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy']).sum().reset_index()
 
     # Now add in economy reference
     interim_df1['economy'] = region
@@ -128,7 +128,7 @@ for region in aggregate_df1['REGION'].unique():
     # Now append economy dataframe to communal data frame 
     power_df1 = power_df1.append(interim_df1)
     
-power_df1 = power_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet'] + OSeMOSYS_years]
+power_df1 = power_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet_energy'] + OSeMOSYS_years]
 
 ################################ REFINERY, OWN USE and SUPPLY TRANSFORMATION SECTOR ############################### 
 
@@ -147,7 +147,7 @@ refownsup_df1 = pd.DataFrame()
 for region in aggregate_df1['REGION'].unique():
     interim_df1 = aggregate_df1[aggregate_df1['REGION'] == region]
     interim_df1 = interim_df1.merge(Map_refownsup, how = 'right', on = ['TECHNOLOGY', 'FUEL'])
-    interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet', 'Sector']).sum().reset_index()
+    interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
 
     # Now add in economy reference
     interim_df1['economy'] = region
@@ -155,7 +155,7 @@ for region in aggregate_df1['REGION'].unique():
     # Now append economy dataframe to communal data frame 
     refownsup_df1 = refownsup_df1.append(interim_df1)
     
-refownsup_df1 = refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet', 'Sector'] + OSeMOSYS_years]
+refownsup_df1 = refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector'] + OSeMOSYS_years]
 
 # FUEL aggregations for UseByTechnology
 
@@ -248,7 +248,7 @@ chart_height = 18 # number of excel rows before the data is written
 
 for economy in power_df1['economy'].unique():
     use_df1 = power_df1[(power_df1['economy'] == economy) &
-                        (power_df1['Sheet'] == 'UseByTechnology') &
+                        (power_df1['Sheet_energy'] == 'UseByTechnology') &
                         (power_df1['TECHNOLOGY'] != 'POW_Transmission')].reset_index(drop = True)
 
     # Now build aggregate variables of the FUELS
@@ -338,7 +338,7 @@ for economy in power_df1['economy'].unique():
 
     # Now build production dataframe
     prodelec_df1 = power_df1[(power_df1['economy'] == economy) &
-                             (power_df1['Sheet'] == 'ProductionByTechnology') &
+                             (power_df1['Sheet_energy'] == 'ProductionByTechnology') &
                              (power_df1['FUEL'].isin(['17_electricity', '17_electricity_Dx']))].reset_index(drop = True)
 
     # Now build the aggregations of technology (power plants)
