@@ -23,6 +23,11 @@ path_final = './data/4_Joined'
 # OSeMOSYS results files
 OSeMOSYS_filenames = glob.glob(path_output + "/*.xlsx")
 
+# Reference filenames and net zero filenames
+
+reference_filenames = list(filter(lambda k: 'reference' in k, OSeMOSYS_filenames))
+netzero_filenames = list(filter(lambda y: 'net-zero' in y, OSeMOSYS_filenames))
+
 # New 2018 data variable names 
 
 Mapping_sheets = list(pd.read_excel(path_mapping + '/OSeMOSYS_mapping_2021.xlsx', sheet_name = None).keys())[1:]
@@ -40,52 +45,99 @@ Mapping_file = Mapping_file[Mapping_file['Balance'].isin(['TFC', 'TPES'])]
 # Define unique workbook and sheet combinations
 Unique_combo = Mapping_file.groupby(['Workbook', 'Sheet_energy']).size().reset_index().loc[:, ['Workbook', 'Sheet_energy']]
 
-# Determine list of files to read based on the workbooks identified in the mapping file
-file_df = pd.DataFrame()
+# Determine list of files to read based on the workbooks identified in the mapping file for REFERENCE scenario
+ref_file_df = pd.DataFrame()
 
 for i in range(len(Unique_combo['Workbook'].unique())):
-    _file = pd.DataFrame({'File': [entry for entry in OSeMOSYS_filenames if Unique_combo['Workbook'].unique()[i] in entry],
+    _file = pd.DataFrame({'File': [entry for entry in reference_filenames if Unique_combo['Workbook'].unique()[i] in entry],
                          'Workbook': Unique_combo['Workbook'].unique()[i]})
-    file_df = file_df.append(_file)
+    ref_file_df = ref_file_df.append(_file)
 
-file_df = file_df.merge(Unique_combo, how = 'outer', on = 'Workbook')
+ref_file_df = ref_file_df.merge(Unique_combo, how = 'outer', on = 'Workbook')
 
-# Create empty dataframe to store aggregated results 
-aggregate_df1 = pd.DataFrame()
+# Determine list of files to read based on the workbooks identified in the mapping file for NET-ZERO scenario
+netz_file_df = pd.DataFrame()
 
-# Now read in the OSeMOSYS output files so that that they're all in one data frame (aggregate_df1)
-for i in range(file_df.shape[0]):
-    _df = pd.read_excel(file_df.iloc[i, 0], sheet_name = file_df.iloc[i, 2])
-    _df['Workbook'] = file_df.iloc[i, 1]
-    _df['Sheet_energy'] = file_df.iloc[i, 2]
-    aggregate_df1 = aggregate_df1.append(_df) 
+for i in range(len(Unique_combo['Workbook'].unique())):
+    _file = pd.DataFrame({'File': [entry for entry in netzero_filenames if Unique_combo['Workbook'].unique()[i] in entry],
+                         'Workbook': Unique_combo['Workbook'].unique()[i]})
+    netz_file_df = netz_file_df.append(_file)
 
-interim_df1 = aggregate_df1[aggregate_df1['TIMESLICE'] != 'ONE']
-interim_df2 = aggregate_df1[aggregate_df1['TIMESLICE'] == 'ONE']
+netz_file_df = netz_file_df.merge(Unique_combo, how = 'outer', on = 'Workbook')
+
+# Create empty dataframe to store REFERENCE aggregated results 
+ref_aggregate_df1 = pd.DataFrame()
+
+# Now read in the OSeMOSYS output files so that that they're all in one data frame (ref_aggregate_df1)
+for i in range(ref_file_df.shape[0]):
+    _df = pd.read_excel(ref_file_df.iloc[i, 0], sheet_name = ref_file_df.iloc[i, 2])
+    _df['Workbook'] = ref_file_df.iloc[i, 1]
+    _df['Sheet_energy'] = ref_file_df.iloc[i, 2]
+    ref_aggregate_df1 = ref_aggregate_df1.append(_df) 
+
+interim_df1 = ref_aggregate_df1[ref_aggregate_df1['TIMESLICE'] != 'ONE']
+interim_df2 = ref_aggregate_df1[ref_aggregate_df1['TIMESLICE'] == 'ONE']
 
 interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', 'Sheet_energy']).sum().reset_index()
 
-aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
+ref_aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
+
+# Create empty dataframe to store NET ZERO aggregated results 
+netz_aggregate_df1 = pd.DataFrame()
+
+# Now read in the OSeMOSYS output files so that that they're all in one data frame (ref_aggregate_df1)
+for i in range(netz_file_df.shape[0]):
+    _df = pd.read_excel(netz_file_df.iloc[i, 0], sheet_name = netz_file_df.iloc[i, 2])
+    _df['Workbook'] = netz_file_df.iloc[i, 1]
+    _df['Sheet_energy'] = netz_file_df.iloc[i, 2]
+    netz_aggregate_df1 = netz_aggregate_df1.append(_df) 
+
+interim_df1 = netz_aggregate_df1[netz_aggregate_df1['TIMESLICE'] != 'ONE']
+interim_df2 = netz_aggregate_df1[netz_aggregate_df1['TIMESLICE'] == 'ONE']
+
+interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', 'Sheet_energy']).sum().reset_index()
+
+netz_aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
 
 # Now aggregate all the results for APEC
 
-APEC = aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
-APEC['REGION'] = 'APEC'
+# REFERENCE
+APEC_ref = ref_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+APEC_ref['REGION'] = 'APEC'
 
-aggregate_df1 = aggregate_df1.append(APEC).reset_index(drop = True)
+ref_aggregate_df1 = ref_aggregate_df1.append(APEC_ref).reset_index(drop = True)
 
-# Get maximum year column to build data frame below
-year_columns = []
+# NET ZERO
+APEC_netz = netz_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+APEC_netz['REGION'] = 'APEC'
 
-for item in list(aggregate_df1.columns):
+netz_aggregate_df1 = netz_aggregate_df1.append(APEC_netz).reset_index(drop = True)
+
+# Get maximum REFERENCE year column to build data frame below
+ref_year_columns = []
+
+for item in list(ref_aggregate_df1.columns):
     try:
-        year_columns.append(int(item))
+        ref_year_columns.append(int(item))
     except ValueError:
             pass
 
-max_year = max(year_columns)
+max_year_ref = max(ref_year_columns)
 
-OSeMOSYS_years = list(range(2017, max_year + 1))
+OSeMOSYS_years_ref = list(range(2017, max_year_ref + 1))
+
+# Get maximum NET ZERO year column to build data frame below
+netz_year_columns = []
+
+for item in list(netz_aggregate_df1.columns):
+    try:
+        netz_year_columns.append(int(item))
+    except ValueError:
+            pass
+
+max_year_netz = max(netz_year_columns)
+
+OSeMOSYS_years_netz = list(range(2017, max_year_netz + 1))
 
 ########################## fuel_code aggregations ##########################
 
@@ -123,17 +175,21 @@ tfc_agg = ['14_industry_sector', '15_transport_sector', '16_other_sector', '17_n
 
 tfec_agg = ['14_industry_sector', '15_transport_sector', '16_other_sector']
 
-##############################################################################
+# For dataframe finalising
+key_variables = ['economy', 'fuel_code', 'item_code_new']
+
+#######################################################################################################################
+# REFERENCE
 
 # Now aggregate data based on the mapping
 # That is group by REGION, TECHNOLOGY and FUEL
 # First create empty dataframe
-aggregate_df2 = pd.DataFrame()
+ref_aggregate_df2 = pd.DataFrame()
 
 # Then loop through based on different regions/economies and stitch back together
 
-for region in aggregate_df1['REGION'].unique():
-    interim_df1 = aggregate_df1[aggregate_df1['REGION'] == region]
+for region in ref_aggregate_df1['REGION'].unique():
+    interim_df1 = ref_aggregate_df1[ref_aggregate_df1['REGION'] == region]
     interim_df1 = interim_df1.merge(Mapping_file, how = 'left', on = ['TECHNOLOGY', 'FUEL'])
     interim_df1 = interim_df1.groupby(['item_code_new', 'fuel_code']).sum().reset_index()
 
@@ -210,12 +266,103 @@ for region in aggregate_df1['REGION'].unique():
     interim_df6['economy'] = region
 
     # Now append economy dataframe to communal data frame 
-    aggregate_df2 = aggregate_df2.append(interim_df6)
-    
-key_variables = ['economy', 'fuel_code', 'item_code_new']
+    ref_aggregate_df2 = ref_aggregate_df2.append(interim_df6)
 
 # aggregate_df2 = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years]
-aggregate_df2 = aggregate_df2.loc[:, key_variables + OSeMOSYS_years]
+ref_aggregate_df2 = ref_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_ref]
+
+#######################################################################################################################
+# NET ZERO
+
+# Now aggregate data based on the mapping
+# That is group by REGION, TECHNOLOGY and FUEL
+# First create empty dataframe
+netz_aggregate_df2 = pd.DataFrame()
+
+# Then loop through based on different regions/economies and stitch back together
+
+for region in netz_aggregate_df1['REGION'].unique():
+    interim_df1 = netz_aggregate_df1[netz_aggregate_df1['REGION'] == region]
+    interim_df1 = interim_df1.merge(Mapping_file, how = 'left', on = ['TECHNOLOGY', 'FUEL'])
+    interim_df1 = interim_df1.groupby(['item_code_new', 'fuel_code']).sum().reset_index()
+
+    # Change export data to negative values
+    exports_bunkers = interim_df1[interim_df1['item_code_new'].isin(['3_exports', '4_international_marine_bunkers', '5_international_aviation_bunkers'])]\
+        .set_index(['item_code_new', 'fuel_code'])
+    everything_else = interim_df1[~interim_df1['item_code_new'].isin(['3_exports', '4_international_marine_bunkers', '5_international_aviation_bunkers'])]
+
+    exports_bunkers = exports_bunkers * -1
+    exports_bunkers = exports_bunkers.reset_index()
+    interim_df2 = everything_else.append(exports_bunkers)
+
+    ########################### Aggregate fuel_code for new variables ###################################
+
+    # First level fuels
+
+    coal = interim_df2[interim_df2['fuel_code'].isin(coal_fuels)].groupby(['item_code_new'])\
+        .sum().assign(fuel_code = '1_coal').reset_index()
+
+    oil = interim_df2[interim_df2['fuel_code'].isin(oil_fuels)].groupby(['item_code_new'])\
+        .sum().assign(fuel_code = '6_crude_oil_and_ngl').reset_index()
+
+    petrol = interim_df2[interim_df2['fuel_code'].isin(petrol_fuels)].groupby(['item_code_new'])\
+        .sum().assign(fuel_code = '7_petroleum_products').reset_index()
+
+    gas = interim_df2[interim_df2['fuel_code'].isin(gas_fuels)].groupby(['item_code_new'])\
+        .sum().assign(fuel_code = '8_gas').reset_index()
+
+    biomass = interim_df2[interim_df2['fuel_code'].isin(biomass_fuels)].groupby(['item_code_new'])\
+        .sum().assign(fuel_code = '15_solid_biomass').reset_index()
+
+    others = interim_df2[interim_df2['fuel_code'].isin(other_fuels)].groupby(['item_code_new'])\
+        .sum().assign(fuel_code = '16_others').reset_index()
+
+    interim_df3 = interim_df2.append([coal, oil, petrol, gas, biomass, others]).reset_index(drop = True)
+
+    # And total fuels
+
+    total_f = interim_df3[interim_df3['fuel_code'].isin(total_fuels)].groupby(['item_code_new'])\
+        .sum().assign(fuel_code = '19_total').reset_index()
+
+    interim_df4 = interim_df3.append(total_f).reset_index(drop = True)
+
+    ################################ And now item_code_new ######################################
+
+    # Start with lowest level
+
+    industry = interim_df4[interim_df4['item_code_new'].isin(industry_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '14_industry_sector').reset_index()
+
+    transport = interim_df4[interim_df4['item_code_new'].isin(transport_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '15_transport_sector').reset_index()
+
+    bld_ag_other = interim_df4[interim_df4['item_code_new'].isin(others_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '16_other_sector').reset_index()
+
+    interim_df5 = interim_df4.append([industry, transport, bld_ag_other]).reset_index(drop = True)
+
+    # Now higher level agg
+
+    #Might need to check this depending on whether exports is negative
+    tpes = interim_df5[interim_df5['item_code_new'].isin(tpes_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '7_total_primary_energy_supply').reset_index()
+
+    tfc = interim_df5[interim_df5['item_code_new'].isin(tfc_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '12_total_final_consumption').reset_index()
+
+    tfec = interim_df5[interim_df5['item_code_new'].isin(tfec_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '13_total_final_energy_consumption').reset_index()
+
+    interim_df6 = interim_df5.append([tpes, tfc, tfec]).reset_index(drop = True)
+
+    # Now add in economy reference
+    interim_df6['economy'] = region
+
+    # Now append economy dataframe to communal data frame 
+    netz_aggregate_df2 = netz_aggregate_df2.append(interim_df6)
+
+# aggregate_df2 = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years]
+netz_aggregate_df2 = netz_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_netz]
 
 # Now load the EGEDA_years data frame
 EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv')
@@ -362,12 +509,21 @@ EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv')
 # Remove 2017 which is already in the EGEDA historical
 # aggregate_df2_tojoin = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years[1:]]
 # aggregate_df2_tojoin = aggregate_df2.loc[:, key_variables + OSeMOSYS_years[1:]] # New line below keeps 2017 in OSeMOSYS
-aggregate_df2_tojoin = aggregate_df2.loc[:, key_variables + OSeMOSYS_years]
+
+# REFERENCE
+ref_aggregate_df2_tojoin = ref_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_ref]
+# NET ZERO
+netz_aggregate_df2_tojoin = netz_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_netz]
 
 # Join EGEDA historical to OSeMOSYS results (line below removes 2017 and 2018 from historical)
-Joined_df = EGEDA_years.iloc[:, :-2].merge(aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
-Joined_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018.csv', index = False)
+# REFERENCE
+Joined_ref_df = EGEDA_years.iloc[:, :-2].merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+Joined_ref_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_reference.csv', index = False)
 
-print('OSeMOSYS_to_EGEDA.csv file successfully created')
+# NET ZERO
+Joined_netz_df = EGEDA_years.iloc[:, :-2].merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+Joined_netz_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_netzero.csv', index = False)
+
+print('OSeMOSYS_to_EGEDA_2018_reference.csv and OSeMOSYS_to_EGEDA_2018_netzero.csv file successfully created')
 
 
