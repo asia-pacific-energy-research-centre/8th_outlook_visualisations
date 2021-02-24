@@ -66,49 +66,51 @@ for i in range(len(Unique_combo['Workbook'].unique())):
 netz_file_df = netz_file_df.merge(Unique_combo, how = 'outer', on = 'Workbook')
 
 # Create empty dataframe to store REFERENCE aggregated results 
-ref_aggregate_df1 = pd.DataFrame()
+ref_aggregate_df1 = pd.DataFrame(columns = ['TECHNOLOGY', 'FUEL', 'REGION', 2050])
 
 # Now read in the OSeMOSYS output files so that that they're all in one data frame (ref_aggregate_df1)
-for i in range(ref_file_df.shape[0]):
-    _df = pd.read_excel(ref_file_df.iloc[i, 0], sheet_name = ref_file_df.iloc[i, 2])
-    _df['Workbook'] = ref_file_df.iloc[i, 1]
-    _df['Sheet_energy'] = ref_file_df.iloc[i, 2]
-    ref_aggregate_df1 = ref_aggregate_df1.append(_df) 
-
-interim_df1 = ref_aggregate_df1[ref_aggregate_df1['TIMESLICE'] != 'ONE']
-interim_df2 = ref_aggregate_df1[ref_aggregate_df1['TIMESLICE'] == 'ONE']
-
-interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', 'Sheet_energy']).sum().reset_index()
-
-ref_aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
+if ref_file_df['File'].isna().any() == False:
+    for i in range(ref_file_df.shape[0]):
+        _df = pd.read_excel(ref_file_df.iloc[i, 0], sheet_name = ref_file_df.iloc[i, 2])
+        _df['Workbook'] = ref_file_df.iloc[i, 1]
+        _df['Sheet_energy'] = ref_file_df.iloc[i, 2]
+        ref_aggregate_df1 = ref_aggregate_df1.append(_df) 
+        
+    interim_df1 = ref_aggregate_df1[ref_aggregate_df1['TIMESLICE'] != 'ONE']
+    interim_df2 = ref_aggregate_df1[ref_aggregate_df1['TIMESLICE'] == 'ONE']
+    
+    interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', 'Sheet_energy']).sum().reset_index()
+    
+    ref_aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
 
 # Create empty dataframe to store NET ZERO aggregated results 
-netz_aggregate_df1 = pd.DataFrame()
+netz_aggregate_df1 = pd.DataFrame(columns = ['TECHNOLOGY', 'FUEL', 'REGION', 2050])
 
 # Now read in the OSeMOSYS output files so that that they're all in one data frame (ref_aggregate_df1)
-for i in range(netz_file_df.shape[0]):
-    _df = pd.read_excel(netz_file_df.iloc[i, 0], sheet_name = netz_file_df.iloc[i, 2])
-    _df['Workbook'] = netz_file_df.iloc[i, 1]
-    _df['Sheet_energy'] = netz_file_df.iloc[i, 2]
-    netz_aggregate_df1 = netz_aggregate_df1.append(_df) 
+if netz_file_df['File'].isna().any() == False:
+    for i in range(netz_file_df.shape[0]):
+        _df = pd.read_excel(netz_file_df.iloc[i, 0], sheet_name = netz_file_df.iloc[i, 2])
+        _df['Workbook'] = netz_file_df.iloc[i, 1]
+        _df['Sheet_energy'] = netz_file_df.iloc[i, 2]
+        netz_aggregate_df1 = netz_aggregate_df1.append(_df) 
 
-interim_df1 = netz_aggregate_df1[netz_aggregate_df1['TIMESLICE'] != 'ONE']
-interim_df2 = netz_aggregate_df1[netz_aggregate_df1['TIMESLICE'] == 'ONE']
+    interim_df1 = netz_aggregate_df1[netz_aggregate_df1['TIMESLICE'] != 'ONE']
+    interim_df2 = netz_aggregate_df1[netz_aggregate_df1['TIMESLICE'] == 'ONE']
 
-interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', 'Sheet_energy']).sum().reset_index()
+    interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION', 'Workbook', 'Sheet_energy']).sum().reset_index()
 
-netz_aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
+    netz_aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
 
 # Now aggregate all the results for APEC
 
 # REFERENCE
-APEC_ref = ref_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+APEC_ref = ref_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
 APEC_ref['REGION'] = 'APEC'
 
 ref_aggregate_df1 = ref_aggregate_df1.append(APEC_ref).reset_index(drop = True)
 
 # NET ZERO
-APEC_netz = netz_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+APEC_netz = netz_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
 APEC_netz['REGION'] = 'APEC'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(APEC_netz).reset_index(drop = True)
@@ -269,7 +271,11 @@ for region in ref_aggregate_df1['REGION'].unique():
     ref_aggregate_df2 = ref_aggregate_df2.append(interim_df6)
 
 # aggregate_df2 = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years]
-ref_aggregate_df2 = ref_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_ref]
+
+if ref_aggregate_df2.empty:
+    ref_aggregate_df2
+else:
+    ref_aggregate_df2 = ref_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_ref]
 
 #######################################################################################################################
 # NET ZERO
@@ -362,7 +368,10 @@ for region in netz_aggregate_df1['REGION'].unique():
     netz_aggregate_df2 = netz_aggregate_df2.append(interim_df6)
 
 # aggregate_df2 = aggregate_df2[['economy', 'fuel_code', 'item_code_new'] + OSeMOSYS_years]
-netz_aggregate_df2 = netz_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_netz]
+if netz_aggregate_df2.empty == True:
+    netz_aggregate_df2
+else:
+    netz_aggregate_df2 = netz_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_netz]
 
 # Now load the EGEDA_years data frame
 EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv')
@@ -511,17 +520,32 @@ EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv')
 # aggregate_df2_tojoin = aggregate_df2.loc[:, key_variables + OSeMOSYS_years[1:]] # New line below keeps 2017 in OSeMOSYS
 
 # REFERENCE
-ref_aggregate_df2_tojoin = ref_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_ref]
+if ref_aggregate_df2.empty == True:
+    ref_aggregate_df2_tojoin = ref_aggregate_df2
+else:
+    ref_aggregate_df2_tojoin = ref_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_ref]
+
 # NET ZERO
-netz_aggregate_df2_tojoin = netz_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_netz]
+if netz_aggregate_df2.empty == True:
+    netz_aggregate_df2_tojoin = netz_aggregate_df2
+else:
+    netz_aggregate_df2_tojoin = netz_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_netz]
 
 # Join EGEDA historical to OSeMOSYS results (line below removes 2017 and 2018 from historical)
 # REFERENCE
-Joined_ref_df = EGEDA_years.iloc[:, :-2].merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+if ref_aggregate_df2_tojoin.empty == True:
+    Joined_ref_df = EGEDA_years.reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
+else:
+    Joined_ref_df = EGEDA_years.iloc[:, :-2].merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+
 Joined_ref_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_reference.csv', index = False)
 
 # NET ZERO
-Joined_netz_df = EGEDA_years.iloc[:, :-2].merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+if netz_aggregate_df2_tojoin.empty == True:
+    Joined_netz_df = EGEDA_years.reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
+else:
+    Joined_netz_df = EGEDA_years.iloc[:, :-2].merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+
 Joined_netz_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_netzero.csv', index = False)
 
 print('OSeMOSYS_to_EGEDA_2018_reference.csv and OSeMOSYS_to_EGEDA_2018_netzero.csv file successfully created')
