@@ -15,8 +15,8 @@ from pandas import ExcelWriter
 # Import the recently created data frame that joins OSeMOSYS results to EGEDA historical
 # 2 Dataframes: REFERENCE and NET ZERO 
 
-EGEDA_years_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018_reference.csv')
-EGEDA_years_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018_netzero.csv')
+EGEDA_years_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018_reference.csv').loc[:,:'2050']
+EGEDA_years_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018_netzero.csv').loc[:,:'2050']
 
 # Define unique values for economy, fuels, and items columns
 # only looking at one dataframe which should be sufficient as both have same structure
@@ -97,10 +97,10 @@ Transport_modal_agg = ['Aviation', 'Road', 'Rail' ,'Marine', 'Pipeline', 'Non-sp
 chart_height = 18 # number of excel rows before the data is written (can change this)
 
 # Define column chart years
-col_chart_years = ['2000', '2010', '2017', '2020', '2030', '2040', '2050']
+col_chart_years = ['2000', '2010', '2018', '2020', '2030', '2040', '2050']
 
 # Define column chart years for transport
-col_chart_years_transport = ['2017', '2020', '2030', '2040', '2050']
+col_chart_years_transport = ['2018', '2020', '2030', '2040', '2050']
 
 # FED aggregate fuels
 
