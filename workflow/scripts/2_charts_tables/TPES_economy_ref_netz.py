@@ -10,13 +10,14 @@ import pandas.io.formats.excel
 
 # Import the recently created data frame that joins OSeMOSYS results to EGEDA historical 
 
-EGEDA_years = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018.csv')
+EGEDA_years_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018_reference.csv').loc[:,:'2050']
+EGEDA_years_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018_netzero.csv').loc[:,:'2050']
 
 # Define unique values for economy, fuels, and items columns
 
-Economy_codes = EGEDA_years.economy.unique()
-Fuels = EGEDA_years.fuel_code.unique()
-Items = EGEDA_years.item_code_new.unique()
+Economy_codes = EGEDA_years_reference.economy.unique()
+Fuels = EGEDA_years_reference.fuel_code.unique()
+Items = EGEDA_years_reference.item_code_new.unique()
 
 # Colours for charting (to be amended later)
 
@@ -63,7 +64,7 @@ Petroleum_fuels = ['7_petroleum_products', '7_1_motor_gasoline', '7_2_aviation_g
 chart_height = 18 # number of excel rows before the data is written
 
 # Define column chart years
-col_chart_years = ['2000', '2010', '2017', '2020', '2030', '2040', '2050']
+col_chart_years = ['2000', '2010', '2018', '2020', '2030', '2040', '2050']
 
 TPES_agg_fuels = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
 TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
@@ -75,9 +76,10 @@ avi_bunker = ['Aviation gasoline', 'Jet fuel']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
+    # REFERENCE DATAFRAMES
     # First data frame: TPES by fuels (and also fourth and sixth dataframe with slight tweaks)
-    tpes_df = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                          (EGEDA_years['item_code_new'] == '7_total_primary_energy_supply') &
+    ref_tpes_df = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                          (EGEDA_years_reference['item_code_new'] == '7_total_primary_energy_supply') &
                           (EGEDA_years['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
     
     #nrows1 = tpes_df.shape[0]

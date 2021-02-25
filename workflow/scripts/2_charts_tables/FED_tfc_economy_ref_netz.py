@@ -108,7 +108,7 @@ FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat & othe
 
 FED_agg_sectors = ['Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-energy', 'Non-specified']
 
-Industry_eight = ['Iron & steel', 'Chemicals', 'Aluminium', 'Non-metallic minerals', 'Mini/BASHng', 'Pulp & paper', 'Other', 'Non-specified']
+Industry_eight = ['Iron & steel', 'Chemicals', 'Aluminium', 'Non-metallic minerals', 'Mining', 'Pulp & paper', 'Other', 'Non-specified']
 
 # Final energy demand by fuel and sector for each economy
 
