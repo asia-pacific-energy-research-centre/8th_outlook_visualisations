@@ -505,20 +505,20 @@ for economy in Economy_codes:
     netz_prod_df1.to_excel(writer, sheet_name = economy + '_prod_netz', index = False, startrow = chart_height)
     ref_prod_df2.to_excel(writer, sheet_name = economy + '_prod_ref', index = False, startrow = chart_height + nrows5 + 3)
     netz_prod_df2.to_excel(writer, sheet_name = economy + '_prod_netz', index = False, startrow = chart_height + nrows25 + 3)
-    ref_tpes_comp_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height)
-    netz_tpes_comp_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height)
-    ref_imports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height + nrows3 + 3)
-    netz_imports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height + nrows23 + 3)
-    ref_imports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + 6)
-    netz_imports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + 6)
-    ref_exports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + nrows12 + 9)
-    netz_exports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + nrows32 + 9)
-    ref_exports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12)
-    netz_exports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12)
-    ref_bunkers_df1.to_excel(writer, sheet_name = economy + '_TPES_components_II_ref', index = False, startrow = chart_height)
-    netz_bunkers_df1.to_excel(writer, sheet_name = economy + '_TPES_components_II_netz', index = False, startrow = chart_height)
-    ref_bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_components_II_ref', index = False, startrow = chart_height + nrows10 + 3)
-    netz_bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_components_II_netz', index = False, startrow = chart_height + nrows30 + 3)
+    ref_tpes_comp_df1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height)
+    netz_tpes_comp_df1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height)
+    ref_imports_df1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height + nrows3 + 3)
+    netz_imports_df1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height + nrows23 + 3)
+    ref_imports_df2.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + 6)
+    netz_imports_df2.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + 6)
+    ref_exports_df1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + nrows12 + 9)
+    netz_exports_df1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + nrows32 + 9)
+    ref_exports_df2.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12)
+    netz_exports_df2.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12)
+    ref_bunkers_df1.to_excel(writer, sheet_name = economy + '_TPES_comp_II_ref', index = False, startrow = chart_height)
+    netz_bunkers_df1.to_excel(writer, sheet_name = economy + '_TPES_comp_II_netz', index = False, startrow = chart_height)
+    ref_bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_comp_II_ref', index = False, startrow = chart_height + nrows10 + 3)
+    netz_bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_comp_II_netz', index = False, startrow = chart_height + nrows30 + 3)
         
     # Access the workbook
     workbook = writer.book
@@ -895,7 +895,7 @@ for economy in Economy_codes:
     ###################################### TPES components I ###########################################
     
     # access the sheet for production created above
-    ref_worksheet3 = writer.sheets[economy + '_TPES_components_I_ref']
+    ref_worksheet3 = writer.sheets[economy + '_TPES_comp_I_ref']
     
     # Apply comma format and header format to relevant data rows
     ref_worksheet3.set_column(2, ncols8 + 1, None, comma_format)
@@ -951,9 +951,9 @@ for economy in Economy_codes:
     for component in ['Production', 'Net trade', 'Bunkers', 'Stock changes']:
         i = ref_tpes_comp_df1[ref_tpes_comp_df1['item_code_new'] == component].index[0]
         ref_tpes_comp_chart1.add_series({
-            'name':       [economy + '_TPES_components_I_ref', chart_height + i + 1, 1],
-            'categories': [economy + '_TPES_components_I_ref', chart_height, 2, chart_height, ncols3 - 1],
-            'values':     [economy + '_TPES_components_I_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols3 - 1],
+            'name':       [economy + '_TPES_comp_I_ref', chart_height + i + 1, 1],
+            'categories': [economy + '_TPES_comp_I_ref', chart_height, 2, chart_height, ncols3 - 1],
+            'values':     [economy + '_TPES_comp_I_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols3 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
@@ -1008,9 +1008,9 @@ for economy in Economy_codes:
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = ref_imports_df1[ref_imports_df1['fuel_code'] == fuel].index[0]
         ref_imports_line.add_series({
-            'name':       [economy + '_TPES_components_I_ref', chart_height + nrows3 + i + 4, 0],
-            'categories': [economy + '_TPES_components_I_ref', chart_height + nrows3 + 3, 2, chart_height + nrows3 + 3, ncols8 - 1],
-            'values':     [economy + '_TPES_components_I_ref', chart_height + nrows3 + i + 4, 2, chart_height + nrows3 + i + 4, ncols8 - 1],
+            'name':       [economy + '_TPES_comp_I_ref', chart_height + nrows3 + i + 4, 0],
+            'categories': [economy + '_TPES_comp_I_ref', chart_height + nrows3 + 3, 2, chart_height + nrows3 + 3, ncols8 - 1],
+            'values':     [economy + '_TPES_comp_I_ref', chart_height + nrows3 + i + 4, 2, chart_height + nrows3 + i + 4, ncols8 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
@@ -1060,9 +1060,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(nrows12):
         ref_imports_column.add_series({
-            'name':       [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + i + 7, 0],
-            'categories': [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + 6, 2, chart_height + nrows3 + nrows8 + 6, ncols12 - 1],
-            'values':     [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + i + 7, 2, chart_height + nrows3 + nrows8 + i + 7, ncols12 - 1],
+            'name':       [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + i + 7, 0],
+            'categories': [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + 6, 2, chart_height + nrows3 + nrows8 + 6, ncols12 - 1],
+            'values':     [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + i + 7, 2, chart_height + nrows3 + nrows8 + i + 7, ncols12 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
@@ -1117,9 +1117,9 @@ for economy in Economy_codes:
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = ref_exports_df1[ref_exports_df1['fuel_code'] == fuel].index[0]
         ref_exports_line.add_series({
-            'name':       [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 0],
-            'categories': [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + 9, 2, chart_height + nrows3 + nrows8 + nrows12 + 9, ncols8 - 1],
-            'values':     [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 2, chart_height + nrows3 + nrows8 + nrows12 + i + 10, ncols8 - 1],
+            'name':       [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 0],
+            'categories': [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + nrows12 + 9, 2, chart_height + nrows3 + nrows8 + nrows12 + 9, ncols8 - 1],
+            'values':     [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 2, chart_height + nrows3 + nrows8 + nrows12 + i + 10, ncols8 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
@@ -1169,9 +1169,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(nrows13):
         ref_exports_column.add_series({
-            'name':       [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, 0],
-            'categories': [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, 2, chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, ncols13 - 1],
-            'values':     [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, 2, chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, ncols13 - 1],
+            'name':       [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, 0],
+            'categories': [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, 2, chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, ncols13 - 1],
+            'values':     [economy + '_TPES_comp_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, 2, chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, ncols13 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
@@ -1181,7 +1181,7 @@ for economy in Economy_codes:
     ###################################### TPES components II ###########################################
     
     # access the sheet for production created above
-    ref_worksheet4 = writer.sheets[economy + '_TPES_components_II_ref']
+    ref_worksheet4 = writer.sheets[economy + '_TPES_comp_II_ref']
     
     # Apply comma format and header format to relevant data rows
     ref_worksheet4.set_column(2, ncols10 + 1, None, comma_format)
@@ -1236,9 +1236,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows10):
         ref_marine_line.add_series({
-            'name':       [economy + '_TPES_components_II_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_components_II_ref', chart_height, 2, chart_height, ncols10 - 1],
-            'values':     [economy + '_TPES_components_II_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols10 - 1],
+            'name':       [economy + '_TPES_comp_II_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_comp_II_ref', chart_height, 2, chart_height, ncols10 - 1],
+            'values':     [economy + '_TPES_comp_II_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols10 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
@@ -1291,9 +1291,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows11):
         ref_aviation_line.add_series({
-            'name':       [economy + '_TPES_components_II_ref', chart_height + nrows10 + i + 4, 0],
-            'categories': [economy + '_TPES_components_II_ref', chart_height + nrows10 + 3, 2, chart_height + nrows10 + 3, ncols11 - 1],
-            'values':     [economy + '_TPES_components_II_ref', chart_height + nrows10 + i + 4, 2, chart_height + nrows10 + i + 4, ncols11 - 1],
+            'name':       [economy + '_TPES_comp_II_ref', chart_height + nrows10 + i + 4, 0],
+            'categories': [economy + '_TPES_comp_II_ref', chart_height + nrows10 + 3, 2, chart_height + nrows10 + 3, ncols11 - 1],
+            'values':     [economy + '_TPES_comp_II_ref', chart_height + nrows10 + i + 4, 2, chart_height + nrows10 + i + 4, ncols11 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
@@ -1667,7 +1667,7 @@ for economy in Economy_codes:
     ###################################### TPES components I ###########################################
     
     # access the sheet for production created above
-    netz_worksheet3 = writer.sheets[economy + '_TPES_components_I_netz']
+    netz_worksheet3 = writer.sheets[economy + '_TPES_comp_I_netz']
     
     # Apply comma format and header format to relevant data rows
     netz_worksheet3.set_column(2, ncols28 + 1, None, comma_format)
@@ -1723,9 +1723,9 @@ for economy in Economy_codes:
     for component in ['Production', 'Net trade', 'Bunkers', 'Stock changes']:
         i = netz_tpes_comp_df1[netz_tpes_comp_df1['item_code_new'] == component].index[0]
         netz_tpes_comp_chart1.add_series({
-            'name':       [economy + '_TPES_components_I_netz', chart_height + i + 1, 1],
-            'categories': [economy + '_TPES_components_I_netz', chart_height, 2, chart_height, ncols23 - 1],
-            'values':     [economy + '_TPES_components_I_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols23 - 1],
+            'name':       [economy + '_TPES_comp_I_netz', chart_height + i + 1, 1],
+            'categories': [economy + '_TPES_comp_I_netz', chart_height, 2, chart_height, ncols23 - 1],
+            'values':     [economy + '_TPES_comp_I_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols23 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
@@ -1780,9 +1780,9 @@ for economy in Economy_codes:
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = netz_imports_df1[netz_imports_df1['fuel_code'] == fuel].index[0]
         netz_imports_line.add_series({
-            'name':       [economy + '_TPES_components_I_netz', chart_height + nrows23 + i + 4, 0],
-            'categories': [economy + '_TPES_components_I_netz', chart_height + nrows23 + 3, 2, chart_height + nrows23 + 3, ncols28 - 1],
-            'values':     [economy + '_TPES_components_I_netz', chart_height + nrows23 + i + 4, 2, chart_height + nrows23 + i + 4, ncols28 - 1],
+            'name':       [economy + '_TPES_comp_I_netz', chart_height + nrows23 + i + 4, 0],
+            'categories': [economy + '_TPES_comp_I_netz', chart_height + nrows23 + 3, 2, chart_height + nrows23 + 3, ncols28 - 1],
+            'values':     [economy + '_TPES_comp_I_netz', chart_height + nrows23 + i + 4, 2, chart_height + nrows23 + i + 4, ncols28 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
@@ -1832,9 +1832,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(nrows32):
         netz_imports_column.add_series({
-            'name':       [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + i + 7, 0],
-            'categories': [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + 6, 2, chart_height + nrows23 + nrows28 + 6, ncols32 - 1],
-            'values':     [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + i + 7, 2, chart_height + nrows23 + nrows28 + i + 7, ncols32 - 1],
+            'name':       [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + i + 7, 0],
+            'categories': [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + 6, 2, chart_height + nrows23 + nrows28 + 6, ncols32 - 1],
+            'values':     [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + i + 7, 2, chart_height + nrows23 + nrows28 + i + 7, ncols32 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
@@ -1889,9 +1889,9 @@ for economy in Economy_codes:
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = netz_exports_df1[netz_exports_df1['fuel_code'] == fuel].index[0]
         netz_exports_line.add_series({
-            'name':       [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + i + 10, 0],
-            'categories': [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + 9, 2, chart_height + nrows23 + nrows28 + nrows32 + 9, ncols28 - 1],
-            'values':     [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + i + 10, 2, chart_height + nrows23 + nrows28 + nrows32 + i + 10, ncols28 - 1],
+            'name':       [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + nrows32 + i + 10, 0],
+            'categories': [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + nrows32 + 9, 2, chart_height + nrows23 + nrows28 + nrows32 + 9, ncols28 - 1],
+            'values':     [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + nrows32 + i + 10, 2, chart_height + nrows23 + nrows28 + nrows32 + i + 10, ncols28 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
@@ -1941,9 +1941,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(nrows33):
         netz_exports_column.add_series({
-            'name':       [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, 0],
-            'categories': [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12, 2, chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12, ncols33 - 1],
-            'values':     [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, 2, chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, ncols33 - 1],
+            'name':       [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, 0],
+            'categories': [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12, 2, chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12, ncols33 - 1],
+            'values':     [economy + '_TPES_comp_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, 2, chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, ncols33 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
@@ -1953,7 +1953,7 @@ for economy in Economy_codes:
     ###################################### TPES components II ###########################################
     
     # access the sheet for production created above
-    netz_worksheet4 = writer.sheets[economy + '_TPES_components_II_netz']
+    netz_worksheet4 = writer.sheets[economy + '_TPES_comp_II_netz']
     
     # Apply comma format and header format to relevant data rows
     netz_worksheet4.set_column(2, ncols30 + 1, None, comma_format)
@@ -2008,9 +2008,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows30):
         netz_marine_line.add_series({
-            'name':       [economy + '_TPES_components_II_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_components_II_netz', chart_height, 2, chart_height, ncols30 - 1],
-            'values':     [economy + '_TPES_components_II_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols30 - 1],
+            'name':       [economy + '_TPES_comp_II_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_comp_II_netz', chart_height, 2, chart_height, ncols30 - 1],
+            'values':     [economy + '_TPES_comp_II_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols30 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
@@ -2063,9 +2063,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows31):
         netz_aviation_line.add_series({
-            'name':       [economy + '_TPES_components_II_netz', chart_height + nrows30 + i + 4, 0],
-            'categories': [economy + '_TPES_components_II_netz', chart_height + nrows30 + 3, 2, chart_height + nrows30 + 3, ncols31 - 1],
-            'values':     [economy + '_TPES_components_II_netz', chart_height + nrows30 + i + 4, 2, chart_height + nrows30 + i + 4, ncols31 - 1],
+            'name':       [economy + '_TPES_comp_II_netz', chart_height + nrows30 + i + 4, 0],
+            'categories': [economy + '_TPES_comp_II_netz', chart_height + nrows30 + 3, 2, chart_height + nrows30 + 3, ncols31 - 1],
+            'values':     [economy + '_TPES_comp_II_netz', chart_height + nrows30 + i + 4, 2, chart_height + nrows30 + i + 4, ncols31 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
