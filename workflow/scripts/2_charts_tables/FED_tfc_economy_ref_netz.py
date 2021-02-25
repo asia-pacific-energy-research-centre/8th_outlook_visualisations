@@ -652,7 +652,7 @@ for economy in Economy_codes:
     pandas.io.formats.excel.ExcelFormatter.header_style = None
 
     # Insert the various dataframes into different sheets of the workbook
-    # REFERENCE
+    # REFERENCE and NETZERO
     ref_fedfuel_df1.to_excel(writer, sheet_name = economy + '_FED_fuel_ref', index = False, startrow = chart_height)
     netz_fedfuel_df1.to_excel(writer, sheet_name = economy + '_FED_fuel_netz', index = False, startrow = chart_height)
     ref_fedfuel_df2.to_excel(writer, sheet_name = economy + '_FED_fuel_ref', index = False, startrow = chart_height + nrows6 + 3)
