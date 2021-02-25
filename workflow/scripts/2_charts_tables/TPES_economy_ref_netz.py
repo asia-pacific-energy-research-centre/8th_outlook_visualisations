@@ -80,209 +80,412 @@ for economy in Economy_codes:
     # First data frame: TPES by fuels (and also fourth and sixth dataframe with slight tweaks)
     ref_tpes_df = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                           (EGEDA_years_reference['item_code_new'] == '7_total_primary_energy_supply') &
-                          (EGEDA_years['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
+                          (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
     
     #nrows1 = tpes_df.shape[0]
     #ncols1 = tpes_df.shape[1]
 
-    coal = tpes_df[tpes_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+    coal = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                   item_code_new = '7_total_primary_energy_supply')
     
-    oil = tpes_df[tpes_df['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+    oil = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
                                                                                                 item_code_new = '7_total_primary_energy_supply')
     
-    renewables = tpes_df[tpes_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
+    renewables = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                               item_code_new = '7_total_primary_energy_supply')
     
-    others = tpes_df[tpes_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                      item_code_new = '7_total_primary_energy_supply')
     
-    tpes_df1 = tpes_df.append([coal, oil, renewables, others])[['fuel_code', 
-                                                                'item_code_new'] + list(tpes_df.loc[:, '2000':])].reset_index(drop = True)
+    ref_tpes_df1 = ref_tpes_df.append([coal, oil, renewables, others])[['fuel_code', 
+                                                                'item_code_new'] + list(ref_tpes_df.loc[:, '2000':])].reset_index(drop = True)
 
-    tpes_df1.loc[tpes_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    tpes_df1.loc[tpes_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    ref_tpes_df1.loc[ref_tpes_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ref_tpes_df1.loc[ref_tpes_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    tpes_df1 = tpes_df1[tpes_df1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+    ref_tpes_df1 = ref_tpes_df1[ref_tpes_df1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
 
-    nrows4 = tpes_df1.shape[0]
-    ncols4 = tpes_df1.shape[1]
+    nrows4 = ref_tpes_df1.shape[0]
+    ncols4 = ref_tpes_df1.shape[1]
 
-    tpes_df2 = tpes_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_tpes_df2 = ref_tpes_df1[['fuel_code', 'item_code_new'] + col_chart_years]
 
-    nrows6 = tpes_df2.shape[0]
-    ncols6 = tpes_df2.shape[1]
+    nrows6 = ref_tpes_df2.shape[0]
+    ncols6 = ref_tpes_df2.shape[1]
     
     # Second data frame: production (and also fifth and seventh data frames with slight tweaks)
-    prod_df = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                          (EGEDA_years['item_code_new'] == '1_indigenous_production') &
-                          (EGEDA_years['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
+    ref_prod_df = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                          (EGEDA_years_reference['item_code_new'] == '1_indigenous_production') &
+                          (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
     
     #nrows2 = prod_df.shape[0]
     #ncols2 = prod_df.shape[1]
 
-    coal = prod_df[prod_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+    coal = ref_prod_df[ref_prod_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                   item_code_new = '1_indigenous_production')
     
-    oil = prod_df[prod_df['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+    oil = ref_prod_df[ref_prod_df['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
                                                                                                 item_code_new = '1_indigenous_production')
     
-    renewables = prod_df[prod_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
+    renewables = ref_prod_df[ref_prod_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                               item_code_new = '1_indigenous_production')
     
-    others = prod_df[prod_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = ref_prod_df[ref_prod_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                      item_code_new = '1_indigenous_production')
     
-    prod_df1 = prod_df.append([coal, oil, renewables, others])[['fuel_code', 
-                                                                'item_code_new'] + list(prod_df.loc[:, '2000':])].reset_index(drop = True)
+    ref_prod_df1 = ref_prod_df.append([coal, oil, renewables, others])[['fuel_code', 
+                                                                'item_code_new'] + list(ref_prod_df.loc[:, '2000':])].reset_index(drop = True)
 
-    prod_df1.loc[prod_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    prod_df1.loc[prod_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    ref_prod_df1.loc[ref_prod_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ref_prod_df1.loc[ref_prod_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    prod_df1 = prod_df1[prod_df1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+    ref_prod_df1 = ref_prod_df1[ref_prod_df1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
 
-    nrows5 = prod_df1.shape[0]
-    ncols5 = prod_df1.shape[1]
+    nrows5 = ref_prod_df1.shape[0]
+    ncols5 = ref_prod_df1.shape[1]
 
-    prod_df2 = prod_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_prod_df2 = ref_prod_df1[['fuel_code', 'item_code_new'] + col_chart_years]
 
-    nrows7 = prod_df2.shape[0]
-    ncols7 = prod_df2.shape[1]
+    nrows7 = ref_prod_df2.shape[0]
+    ncols7 = ref_prod_df2.shape[1]
     
     # Third data frame: production; net exports; bunkers; stock changes
     
-    tpes_comp_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                           (EGEDA_years['item_code_new'].isin(tpes_items)) &
-                           (EGEDA_years['fuel_code'] == '19_total')]
+    ref_tpes_comp_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                           (EGEDA_years_reference['item_code_new'].isin(tpes_items)) &
+                           (EGEDA_years_reference['fuel_code'] == '19_total')]
     
-    net_trade = tpes_comp_df1[tpes_comp_df1['item_code_new'].isin(['2_imports', 
+    net_trade = ref_tpes_comp_df1[ref_tpes_comp_df1['item_code_new'].isin(['2_imports', 
                                                                      '3_exports'])].groupby(['economy', 
                                                                                              'fuel_code']).sum().assign(fuel_code = '19_total',
                                                                                                                         item_code_new = 'Net trade')
                            
-    bunkers = tpes_comp_df1[tpes_comp_df1['item_code_new'].isin(['4_international_marine_bunkers', 
+    bunkers = ref_tpes_comp_df1[ref_tpes_comp_df1['item_code_new'].isin(['4_international_marine_bunkers', 
                                                                  '5_international_aviation_bunkers'])].groupby(['economy', 
                                                                                                                   'fuel_code']).sum().assign(fuel_code = '19_total',
                                                                                                                                              item_code_new = 'Bunkers')
     
-    tpes_comp_df1 = tpes_comp_df1.append([net_trade, bunkers])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
+    ref_tpes_comp_df1 = ref_tpes_comp_df1.append([net_trade, bunkers])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
     
-    tpes_comp_df1.loc[tpes_comp_df1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    tpes_comp_df1.loc[tpes_comp_df1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock changes'
+    ref_tpes_comp_df1.loc[ref_tpes_comp_df1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
+    ref_tpes_comp_df1.loc[ref_tpes_comp_df1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock changes'
     
-    tpes_comp_df1 = tpes_comp_df1.loc[tpes_comp_df1['item_code_new'].isin(['Production',
+    ref_tpes_comp_df1 = ref_tpes_comp_df1.loc[ref_tpes_comp_df1['item_code_new'].isin(['Production',
                                                                            'Net trade',
                                                                            'Bunkers',
                                                                            'Stock changes'])].reset_index(drop = True)
     
-    nrows3 = tpes_comp_df1.shape[0]
-    ncols3 = tpes_comp_df1.shape[1]
+    nrows3 = ref_tpes_comp_df1.shape[0]
+    ncols3 = ref_tpes_comp_df1.shape[1]
 
     # Imports/exports data frame
 
-    imports_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                              (EGEDA_years['item_code_new'] == '2_imports') & 
-                              (EGEDA_years['fuel_code'].isin(Required_fuels))]
+    ref_imports_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                              (EGEDA_years_reference['item_code_new'] == '2_imports') & 
+                              (EGEDA_years_reference['fuel_code'].isin(Required_fuels))]
 
-    coal = imports_df1[imports_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+    coal = ref_imports_df1[ref_imports_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                           item_code_new = '2_imports')
     
-    renewables = imports_df1[imports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
+    renewables = ref_imports_df1[ref_imports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                       item_code_new = '2_imports')
     
-    others = imports_df1[imports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = ref_imports_df1[ref_imports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                              item_code_new = '2_imports')
     
-    imports_df1 = imports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
+    ref_imports_df1 = ref_imports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
-    imports_df1.loc[imports_df1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    imports_df1.loc[imports_df1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-    imports_df1.loc[imports_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    imports_df1.loc[imports_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    ref_imports_df1.loc[ref_imports_df1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+    ref_imports_df1.loc[ref_imports_df1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_imports_df1.loc[ref_imports_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ref_imports_df1.loc[ref_imports_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    imports_df1 = imports_df1[imports_df1['fuel_code'].isin(TPES_agg_trade)]\
+    ref_imports_df1 = ref_imports_df1[ref_imports_df1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(imports_df1.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(ref_imports_df1.loc[:, '2000':])]
 
-    nrows8 = imports_df1.shape[0]
-    ncols8 = imports_df1.shape[1] 
+    nrows8 = ref_imports_df1.shape[0]
+    ncols8 = ref_imports_df1.shape[1] 
 
-    imports_df2 = imports_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_imports_df2 = ref_imports_df1[['fuel_code', 'item_code_new'] + col_chart_years]
 
-    nrows12 = imports_df2.shape[0]
-    ncols12 = imports_df2.shape[1]                             
+    nrows12 = ref_imports_df2.shape[0]
+    ncols12 = ref_imports_df2.shape[1]                             
 
-    exports_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                              (EGEDA_years['item_code_new'] == '3_exports') & 
-                              (EGEDA_years['fuel_code'].isin(Required_fuels))].copy()
+    ref_exports_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                              (EGEDA_years_reference['item_code_new'] == '3_exports') & 
+                              (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].copy()
 
     # Change export values to positive rather than negative
 
-    exports_df1[list(exports_df1.columns[3:])] = exports_df1[list(exports_df1.columns[3:])].apply(lambda x: x * -1)
+    ref_exports_df1[list(ref_exports_df1.columns[3:])] = ref_exports_df1[list(ref_exports_df1.columns[3:])].apply(lambda x: x * -1)
 
-    coal = exports_df1[exports_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+    coal = ref_exports_df1[ref_exports_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                           item_code_new = '3_exports')
     
-    renewables = exports_df1[exports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
+    renewables = ref_exports_df1[ref_exports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                       item_code_new = '3_exports')
     
-    others = exports_df1[exports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = ref_exports_df1[ref_exports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                              item_code_new = '3_exports')
     
-    exports_df1 = exports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
+    ref_exports_df1 = ref_exports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
-    exports_df1.loc[exports_df1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    exports_df1.loc[exports_df1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-    exports_df1.loc[exports_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    exports_df1.loc[exports_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    ref_exports_df1.loc[ref_exports_df1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+    ref_exports_df1.loc[ref_exports_df1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_exports_df1.loc[ref_exports_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ref_exports_df1.loc[ref_exports_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    exports_df1 = exports_df1[exports_df1['fuel_code'].isin(TPES_agg_trade)]\
+    ref_exports_df1 = ref_exports_df1[ref_exports_df1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(exports_df1.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(ref_exports_df1.loc[:, '2000':])]
 
-    nrows9 = exports_df1.shape[0]
-    ncols9 = exports_df1.shape[1]
+    nrows9 = ref_exports_df1.shape[0]
+    ncols9 = ref_exports_df1.shape[1]
 
-    exports_df2 = exports_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_exports_df2 = ref_exports_df1[['fuel_code', 'item_code_new'] + col_chart_years]
 
-    nrows13 = exports_df2.shape[0]
-    ncols13 = exports_df2.shape[1] 
+    nrows13 = ref_exports_df2.shape[0]
+    ncols13 = ref_exports_df2.shape[1] 
 
     # Bunkers dataframes
 
-    bunkers_df1 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                              (EGEDA_years['item_code_new'] == '4_international_marine_bunkers') & 
-                              (EGEDA_years['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
+    ref_bunkers_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                              (EGEDA_years_reference['item_code_new'] == '4_international_marine_bunkers') & 
+                              (EGEDA_years_reference['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
 
-    bunkers_df1 = bunkers_df1[['fuel_code', 'item_code_new'] + list(bunkers_df1.loc[:, '2000':])]
+    ref_bunkers_df1 = ref_bunkers_df1[['fuel_code', 'item_code_new'] + list(ref_bunkers_df1.loc[:, '2000':])]
 
-    bunkers_df1.loc[bunkers_df1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
-    bunkers_df1.loc[bunkers_df1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
+    ref_bunkers_df1.loc[ref_bunkers_df1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
+    ref_bunkers_df1.loc[ref_bunkers_df1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
 
-    nrows10 = bunkers_df1.shape[0]
-    ncols10 = bunkers_df1.shape[1]
+    nrows10 = ref_bunkers_df1.shape[0]
+    ncols10 = ref_bunkers_df1.shape[1]
 
-    bunkers_df2 = EGEDA_years[(EGEDA_years['economy'] == economy) & 
-                              (EGEDA_years['item_code_new'] == '5_international_aviation_bunkers') & 
-                              (EGEDA_years['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_2_aviation_gasoline']))]
+    ref_bunkers_df2 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                              (EGEDA_years_reference['item_code_new'] == '5_international_aviation_bunkers') & 
+                              (EGEDA_years_reference['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_2_aviation_gasoline']))]
 
-    jetfuel = bunkers_df2[bunkers_df2['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel'])]\
+    jetfuel = ref_bunkers_df2[ref_bunkers_df2['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel'])]\
         .groupby(['item_code_new']).sum().assign(fuel_code = 'Jet fuel',
                                                  item_code_new = '5_international_aviation_bunkers')
     
-    bunkers_df2 = bunkers_df2.append([jetfuel]).reset_index(drop = True)
+    ref_bunkers_df2 = ref_bunkers_df2.append([jetfuel]).reset_index(drop = True)
 
-    bunkers_df2 = bunkers_df2[['fuel_code', 'item_code_new'] + list(bunkers_df2.loc[:, '2000':])]
+    ref_bunkers_df2 = ref_bunkers_df2[['fuel_code', 'item_code_new'] + list(ref_bunkers_df2.loc[:, '2000':])]
 
-    bunkers_df2.loc[bunkers_df2['fuel_code'] == '7_2_aviation_gasoline', 'fuel_code'] = 'Aviation gasoline'
+    ref_bunkers_df2.loc[ref_bunkers_df2['fuel_code'] == '7_2_aviation_gasoline', 'fuel_code'] = 'Aviation gasoline'
 
-    bunkers_df2 = bunkers_df2[bunkers_df2['fuel_code'].isin(avi_bunker)]\
+    ref_bunkers_df2 = ref_bunkers_df2[ref_bunkers_df2['fuel_code'].isin(avi_bunker)]\
         .set_index('fuel_code').loc[avi_bunker].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(bunkers_df2.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(ref_bunkers_df2.loc[:, '2000':])]
 
-    nrows11 = bunkers_df2.shape[0]
-    ncols11 = bunkers_df2.shape[1]
+    nrows11 = ref_bunkers_df2.shape[0]
+    ncols11 = ref_bunkers_df2.shape[1]
+
+    #########################################################################################################################
+    # NETZERO DATAFRAMES
+
+    # First data frame: TPES by fuels (and also fourth and sixth dataframe with slight tweaks)
+    netz_tpes_df = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                          (EGEDA_years_netzero['item_code_new'] == '7_total_primary_energy_supply') &
+                          (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
+
+    coal = netz_tpes_df[netz_tpes_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+                                                                                                  item_code_new = '7_total_primary_energy_supply')
     
+    oil = netz_tpes_df[netz_tpes_df['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+                                                                                                item_code_new = '7_total_primary_energy_supply')
+    
+    renewables = netz_tpes_df[netz_tpes_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
+                                                                                                              item_code_new = '7_total_primary_energy_supply')
+    
+    others = netz_tpes_df[netz_tpes_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+                                                                                                     item_code_new = '7_total_primary_energy_supply')
+    
+    netz_tpes_df1 = netz_tpes_df.append([coal, oil, renewables, others])[['fuel_code', 
+                                                                'item_code_new'] + list(netz_tpes_df.loc[:, '2000':])].reset_index(drop = True)
+
+    netz_tpes_df1.loc[netz_tpes_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    netz_tpes_df1.loc[netz_tpes_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+
+    netz_tpes_df1 = netz_tpes_df1[netz_tpes_df1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+
+    nrows24 = netz_tpes_df1.shape[0]
+    ncols24 = netz_tpes_df1.shape[1]
+
+    netz_tpes_df2 = netz_tpes_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+
+    nrows26 = netz_tpes_df2.shape[0]
+    ncols26 = netz_tpes_df2.shape[1]
+    
+    # Second data frame: production (and also fifth and seventh data frames with slight tweaks)
+    netz_prod_df = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                          (EGEDA_years_netzero['item_code_new'] == '1_indigenous_production') &
+                          (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
+
+    coal = netz_prod_df[netz_prod_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+                                                                                                  item_code_new = '1_indigenous_production')
+    
+    oil = netz_prod_df[netz_prod_df['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+                                                                                                item_code_new = '1_indigenous_production')
+    
+    renewables = netz_prod_df[netz_prod_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
+                                                                                                              item_code_new = '1_indigenous_production')
+    
+    others = netz_prod_df[netz_prod_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+                                                                                                     item_code_new = '1_indigenous_production')
+    
+    netz_prod_df1 = netz_prod_df.append([coal, oil, renewables, others])[['fuel_code', 
+                                                                'item_code_new'] + list(netz_prod_df.loc[:, '2000':])].reset_index(drop = True)
+
+    netz_prod_df1.loc[netz_prod_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    netz_prod_df1.loc[netz_prod_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+
+    netz_prod_df1 = netz_prod_df1[netz_prod_df1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+
+    nrows25 = netz_prod_df1.shape[0]
+    ncols25 = netz_prod_df1.shape[1]
+
+    netz_prod_df2 = netz_prod_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+
+    nrows27 = netz_prod_df2.shape[0]
+    ncols27 = netz_prod_df2.shape[1]
+    
+    # Third data frame: production; net exports; bunkers; stock changes
+    
+    netz_tpes_comp_df1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                           (EGEDA_years_netzero['item_code_new'].isin(tpes_items)) &
+                           (EGEDA_years_netzero['fuel_code'] == '19_total')]
+    
+    net_trade = netz_tpes_comp_df1[netz_tpes_comp_df1['item_code_new'].isin(['2_imports', 
+                                                                     '3_exports'])].groupby(['economy', 
+                                                                                             'fuel_code']).sum().assign(fuel_code = '19_total',
+                                                                                                                        item_code_new = 'Net trade')
+                           
+    bunkers = netz_tpes_comp_df1[netz_tpes_comp_df1['item_code_new'].isin(['4_international_marine_bunkers', 
+                                                                 '5_international_aviation_bunkers'])].groupby(['economy', 
+                                                                                                                  'fuel_code']).sum().assign(fuel_code = '19_total',
+                                                                                                                                             item_code_new = 'Bunkers')
+    
+    netz_tpes_comp_df1 = netz_tpes_comp_df1.append([net_trade, bunkers])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
+    
+    netz_tpes_comp_df1.loc[netz_tpes_comp_df1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
+    netz_tpes_comp_df1.loc[netz_tpes_comp_df1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock changes'
+    
+    netz_tpes_comp_df1 = netz_tpes_comp_df1.loc[netz_tpes_comp_df1['item_code_new'].isin(['Production',
+                                                                           'Net trade',
+                                                                           'Bunkers',
+                                                                           'Stock changes'])].reset_index(drop = True)
+    
+    nrows23 = netz_tpes_comp_df1.shape[0]
+    ncols23 = netz_tpes_comp_df1.shape[1]
+
+    # Imports/exports data frame
+
+    netz_imports_df1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                              (EGEDA_years_netzero['item_code_new'] == '2_imports') & 
+                              (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))]
+
+    coal = netz_imports_df1[netz_imports_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+                                                                                                          item_code_new = '2_imports')
+    
+    renewables = netz_imports_df1[netz_imports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
+                                                                                                                      item_code_new = '2_imports')
+    
+    others = netz_imports_df1[netz_imports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+                                                                                                             item_code_new = '2_imports')
+    
+    netz_imports_df1 = netz_imports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
+
+    netz_imports_df1.loc[netz_imports_df1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+    netz_imports_df1.loc[netz_imports_df1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_imports_df1.loc[netz_imports_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    netz_imports_df1.loc[netz_imports_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+
+    netz_imports_df1 = netz_imports_df1[netz_imports_df1['fuel_code'].isin(TPES_agg_trade)]\
+        .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
+            [['fuel_code', 'item_code_new'] + list(netz_imports_df1.loc[:, '2000':])]
+
+    nrows28 = netz_imports_df1.shape[0]
+    ncols28 = netz_imports_df1.shape[1] 
+
+    netz_imports_df2 = netz_imports_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+
+    nrows32 = netz_imports_df2.shape[0]
+    ncols32 = netz_imports_df2.shape[1]                             
+
+    netz_exports_df1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                              (EGEDA_years_netzero['item_code_new'] == '3_exports') & 
+                              (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))].copy()
+
+    # Change export values to positive rather than negative
+
+    netz_exports_df1[list(netz_exports_df1.columns[3:])] = netz_exports_df1[list(netz_exports_df1.columns[3:])].apply(lambda x: x * -1)
+
+    coal = netz_exports_df1[netz_exports_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+                                                                                                          item_code_new = '3_exports')
+    
+    renewables = netz_exports_df1[netz_exports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
+                                                                                                                      item_code_new = '3_exports')
+    
+    others = netz_exports_df1[netz_exports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+                                                                                                             item_code_new = '3_exports')
+    
+    netz_exports_df1 = netz_exports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
+
+    netz_exports_df1.loc[netz_exports_df1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+    netz_exports_df1.loc[netz_exports_df1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_exports_df1.loc[netz_exports_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    netz_exports_df1.loc[netz_exports_df1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+
+    netz_exports_df1 = netz_exports_df1[netz_exports_df1['fuel_code'].isin(TPES_agg_trade)]\
+        .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
+            [['fuel_code', 'item_code_new'] + list(netz_exports_df1.loc[:, '2000':])]
+
+    nrows29 = netz_exports_df1.shape[0]
+    ncols29 = netz_exports_df1.shape[1]
+
+    netz_exports_df2 = netz_exports_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+
+    nrows33 = netz_exports_df2.shape[0]
+    ncols33 = netz_exports_df2.shape[1] 
+
+    # Bunkers dataframes
+
+    netz_bunkers_df1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                              (EGEDA_years_netzero['item_code_new'] == '4_international_marine_bunkers') & 
+                              (EGEDA_years_netzero['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
+
+    netz_bunkers_df1 = netz_bunkers_df1[['fuel_code', 'item_code_new'] + list(netz_bunkers_df1.loc[:, '2000':])]
+
+    netz_bunkers_df1.loc[netz_bunkers_df1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
+    netz_bunkers_df1.loc[netz_bunkers_df1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
+
+    nrows30 = netz_bunkers_df1.shape[0]
+    ncols30 = netz_bunkers_df1.shape[1]
+
+    netz_bunkers_df2 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                              (EGEDA_years_netzero['item_code_new'] == '5_international_aviation_bunkers') & 
+                              (EGEDA_years_netzero['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_2_aviation_gasoline']))]
+
+    jetfuel = netz_bunkers_df2[netz_bunkers_df2['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel'])]\
+        .groupby(['item_code_new']).sum().assign(fuel_code = 'Jet fuel',
+                                                 item_code_new = '5_international_aviation_bunkers')
+    
+    netz_bunkers_df2 = netz_bunkers_df2.append([jetfuel]).reset_index(drop = True)
+
+    netz_bunkers_df2 = netz_bunkers_df2[['fuel_code', 'item_code_new'] + list(netz_bunkers_df2.loc[:, '2000':])]
+
+    netz_bunkers_df2.loc[netz_bunkers_df2['fuel_code'] == '7_2_aviation_gasoline', 'fuel_code'] = 'Aviation gasoline'
+
+    netz_bunkers_df2 = netz_bunkers_df2[netz_bunkers_df2['fuel_code'].isin(avi_bunker)]\
+        .set_index('fuel_code').loc[avi_bunker].reset_index()\
+            [['fuel_code', 'item_code_new'] + list(netz_bunkers_df2.loc[:, '2000':])]
+
+    nrows31 = netz_bunkers_df2.shape[0]
+    ncols31 = netz_bunkers_df2.shape[1]
+
     # Define directory
     script_dir = './results/' + month_year + '/TPES/'
     results_dir = os.path.join(script_dir, 'economy_breakdown/', economy)
@@ -292,20 +495,31 @@ for economy in Economy_codes:
     # Create a Pandas excel writer workbook using xlsxwriter as the engine and save it in the directory created above
     writer = pd.ExcelWriter(results_dir + '/' + economy + '_tpes.xlsx', engine = 'xlsxwriter')
     pandas.io.formats.excel.ExcelFormatter.header_style = None
-    tpes_df1.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height)
-    tpes_df2.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height + nrows4 + 3)
-    prod_df1.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = chart_height)
-    prod_df2.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = chart_height + nrows5 + 3)
-    tpes_comp_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I', index = False, startrow = chart_height)
-    imports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I', index = False, startrow = chart_height + nrows3 + 3)
-    imports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I', index = False, startrow = chart_height + nrows3 + nrows8 + 6)
-    exports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I', index = False, startrow = chart_height + nrows3 + nrows8 + nrows12 + 9)
-    exports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I', index = False, startrow = chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12)
-    bunkers_df1.to_excel(writer, sheet_name = economy + '_TPES_components_II', index = False, startrow = chart_height)
-    bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_components_II', index = False, startrow = chart_height + nrows10 + 3)
-
-    #ImEx_df1.to_excel(writer, sheet_name = economy + '_TPES_components', index = False, startrow = chart_height + nrows3 + 3)
     
+    # REFERENCE and NETZERO
+    ref_tpes_df1.to_excel(writer, sheet_name = economy + '_TPES_ref', index = False, startrow = chart_height)
+    netz_tpes_df1.to_excel(writer, sheet_name = economy + '_TPES_netz', index = False, startrow = chart_height)
+    ref_tpes_df2.to_excel(writer, sheet_name = economy + '_TPES_ref', index = False, startrow = chart_height + nrows4 + 3)
+    netz_tpes_df2.to_excel(writer, sheet_name = economy + '_TPES_netz', index = False, startrow = chart_height + nrows24 + 3)
+    ref_prod_df1.to_excel(writer, sheet_name = economy + '_prod_ref', index = False, startrow = chart_height)
+    netz_prod_df1.to_excel(writer, sheet_name = economy + '_prod_netz', index = False, startrow = chart_height)
+    ref_prod_df2.to_excel(writer, sheet_name = economy + '_prod_ref', index = False, startrow = chart_height + nrows5 + 3)
+    netz_prod_df2.to_excel(writer, sheet_name = economy + '_prod_netz', index = False, startrow = chart_height + nrows25 + 3)
+    ref_tpes_comp_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height)
+    netz_tpes_comp_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height)
+    ref_imports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height + nrows3 + 3)
+    netz_imports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height + nrows23 + 3)
+    ref_imports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + 6)
+    netz_imports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + 6)
+    ref_exports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + nrows12 + 9)
+    netz_exports_df1.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + nrows32 + 9)
+    ref_exports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I_ref', index = False, startrow = chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12)
+    netz_exports_df2.to_excel(writer, sheet_name = economy + '_TPES_components_I_netz', index = False, startrow = chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12)
+    ref_bunkers_df1.to_excel(writer, sheet_name = economy + '_TPES_components_II_ref', index = False, startrow = chart_height)
+    netz_bunkers_df1.to_excel(writer, sheet_name = economy + '_TPES_components_II_netz', index = False, startrow = chart_height)
+    ref_bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_components_II_ref', index = False, startrow = chart_height + nrows10 + 3)
+    netz_bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_components_II_netz', index = False, startrow = chart_height + nrows30 + 3)
+        
     # Access the workbook
     workbook = writer.book
     
@@ -314,29 +528,30 @@ for economy in Economy_codes:
     header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
     cell_format1 = workbook.add_format({'bold': True})
     
+    ################################################################### CHARTS ###################################################################
+    # REFERENCE
     # Access the sheet created using writer above
-    worksheet1 = writer.sheets[economy + '_TPES']
+    ref_worksheet1 = writer.sheets[economy + '_TPES_ref']
     
     # Apply comma format and header format to relevant data rows
-    worksheet1.set_column(2, ncols4 + 1, None, comma_format)
-    worksheet1.set_row(chart_height, None, header_format)
-    worksheet1.set_row(chart_height + nrows4 + 3, None, header_format)
-    worksheet1.write(0, 0, economy + ' TPES fuel', cell_format1)
+    ref_worksheet1.set_column(2, ncols4 + 1, None, comma_format)
+    ref_worksheet1.set_row(chart_height, None, header_format)
+    ref_worksheet1.set_row(chart_height + nrows4 + 3, None, header_format)
+    ref_worksheet1.write(0, 0, economy + ' TPES fuel reference', cell_format1)
 
-    ################################################################### CHARTS ###################################################################
-
+    ######################################################
     # Create a TPES chart
-    tpes_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    tpes_chart2.set_size({
+    ref_tpes_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_tpes_chart2.set_size({
         'width': 500,
         'height': 300
     })
     
-    tpes_chart2.set_chartarea({
+    ref_tpes_chart2.set_chartarea({
         'border': {'none': True}
     })
     
-    tpes_chart2.set_x_axis({
+    ref_tpes_chart2.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -347,7 +562,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    tpes_chart2.set_y_axis({
+    ref_tpes_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'PJ',
@@ -359,41 +574,41 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    tpes_chart2.set_legend({
+    ref_tpes_chart2.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    tpes_chart2.set_title({
+    ref_tpes_chart2.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows4):
-        tpes_chart2.add_series({
-            'name':       [economy + '_TPES', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES', chart_height, 2, chart_height, ncols4 - 1],
-            'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ncols4 - 1],
+        ref_tpes_chart2.add_series({
+            'name':       [economy + '_TPES_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_ref', chart_height, 2, chart_height, ncols4 - 1],
+            'values':     [economy + '_TPES_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols4 - 1],
             'fill':       {'color': colours_hex[i]},
             'border':     {'none': True}
         })    
         
-    worksheet1.insert_chart('B3', tpes_chart2)
+    ref_worksheet1.insert_chart('B3', ref_tpes_chart2)
 
     ######## same chart as above but line
 
     # TPES line chart
-    tpes_chart4 = workbook.add_chart({'type': 'line'})
-    tpes_chart4.set_size({
+    ref_tpes_chart4 = workbook.add_chart({'type': 'line'})
+    ref_tpes_chart4.set_size({
         'width': 500,
         'height': 300
     })
     
-    tpes_chart4.set_chartarea({
+    ref_tpes_chart4.set_chartarea({
         'border': {'none': True}
     })
     
-    tpes_chart4.set_x_axis({
+    ref_tpes_chart4.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -404,7 +619,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    tpes_chart4.set_y_axis({
+    ref_tpes_chart4.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'PJ',
@@ -416,41 +631,41 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    tpes_chart4.set_legend({
+    ref_tpes_chart4.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    tpes_chart4.set_title({
+    ref_tpes_chart4.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows4):
-        tpes_chart4.add_series({
-            'name':       [economy + '_TPES', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES', chart_height, 2, chart_height, ncols4 - 1],
-            'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ncols4 - 1],
+        ref_tpes_chart4.add_series({
+            'name':       [economy + '_TPES_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_ref', chart_height, 2, chart_height, ncols4 - 1],
+            'values':     [economy + '_TPES_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols4 - 1],
             'line':       {'color': colours_hex[i], 
                            'width': 1}
         })    
         
-    worksheet1.insert_chart('R3', tpes_chart4)
+    ref_worksheet1.insert_chart('R3', ref_tpes_chart4)
 
     ###################### Create another TPES chart showing proportional share #################################
 
     # Create a TPES chart
-    tpes_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
-    tpes_chart3.set_size({
+    ref_tpes_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    ref_tpes_chart3.set_size({
         'width': 500,
         'height': 300
     })
     
-    tpes_chart3.set_chartarea({
+    ref_tpes_chart3.set_chartarea({
         'border': {'none': True}
     })
     
-    tpes_chart3.set_x_axis({
+    ref_tpes_chart3.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -460,7 +675,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    tpes_chart3.set_y_axis({
+    ref_tpes_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'PJ',
@@ -472,53 +687,53 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    tpes_chart3.set_legend({
+    ref_tpes_chart3.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    tpes_chart3.set_title({
+    ref_tpes_chart3.set_title({
         'none': True
     })
 
     # Configure the series of the chart from the dataframe data.    
     for component in TPES_agg_fuels:
-        i = tpes_df2[tpes_df2['fuel_code'] == component].index[0]
-        tpes_chart3.add_series({
-            'name':       [economy + '_TPES', chart_height + nrows4 + i + 4, 0],
-            'categories': [economy + '_TPES', chart_height + nrows4 + 3, 2, chart_height + nrows4 + 3, ncols6 - 1],
-            'values':     [economy + '_TPES', chart_height + nrows4 + i + 4, 2, chart_height + nrows4 + i + 4, ncols6 - 1],
+        i = ref_tpes_df2[ref_tpes_df2['fuel_code'] == component].index[0]
+        ref_tpes_chart3.add_series({
+            'name':       [economy + '_TPES_ref', chart_height + nrows4 + i + 4, 0],
+            'categories': [economy + '_TPES_ref', chart_height + nrows4 + 3, 2, chart_height + nrows4 + 3, ncols6 - 1],
+            'values':     [economy + '_TPES_ref', chart_height + nrows4 + i + 4, 2, chart_height + nrows4 + i + 4, ncols6 - 1],
             'fill':       {'color': colours_hex[i]},
             'border':     {'none': True}
         })
     
-    worksheet1.insert_chart('J3', tpes_chart3)
+    ref_worksheet1.insert_chart('J3', ref_tpes_chart3)
 
     ########################################### PRODUCTION CHARTS #############################################
     
     # access the sheet for production created above
-    worksheet2 = writer.sheets[economy + '_prod']
+    ref_worksheet2 = writer.sheets[economy + '_prod_ref']
     
     # Apply comma format and header format to relevant data rows
-    worksheet2.set_column(2, ncols5 + 1, None, comma_format)
-    worksheet2.set_row(chart_height, None, header_format)
-    worksheet2.set_row(chart_height + nrows5 + 3, None, header_format)
-    worksheet2.write(0, 0, economy + ' prod fuel', cell_format1)
+    ref_worksheet2.set_column(2, ncols5 + 1, None, comma_format)
+    ref_worksheet2.set_row(chart_height, None, header_format)
+    ref_worksheet2.set_row(chart_height + nrows5 + 3, None, header_format)
+    ref_worksheet2.write(0, 0, economy + ' prod fuel reference', cell_format1)
 
     ###################### Create another PRODUCTION chart with only 6 categories #################################
 
     # Create a PROD chart
-    prod_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    prod_chart2.set_size({
+    ref_prod_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_prod_chart2.set_size({
         'width': 500,
         'height': 300
     })
     
-    prod_chart2.set_chartarea({
+    ref_prod_chart2.set_chartarea({
         'border': {'none': True}
     })
     
-    prod_chart2.set_x_axis({
+    ref_prod_chart2.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -529,7 +744,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    prod_chart2.set_y_axis({
+    ref_prod_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'PJ',
@@ -541,41 +756,41 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    prod_chart2.set_legend({
+    ref_prod_chart2.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    prod_chart2.set_title({
+    ref_prod_chart2.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows5):
-        prod_chart2.add_series({
-            'name':       [economy + '_prod', chart_height + i + 1, 0],
-            'categories': [economy + '_prod', chart_height, 2, chart_height, ncols5 - 1],
-            'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ncols5 - 1],
+        ref_prod_chart2.add_series({
+            'name':       [economy + '_prod_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_prod_ref', chart_height, 2, chart_height, ncols5 - 1],
+            'values':     [economy + '_prod_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols5 - 1],
             'fill':       {'color': colours_hex[i]},
             'border':     {'none': True}
         })    
         
-    worksheet2.insert_chart('B3', prod_chart2)
+    ref_worksheet2.insert_chart('B3', ref_prod_chart2)
 
     ############ Same as above but with a line ###########
 
     # Create a PROD chart
-    prod_chart2 = workbook.add_chart({'type': 'line'})
-    prod_chart2.set_size({
+    ref_prod_chart2 = workbook.add_chart({'type': 'line'})
+    ref_prod_chart2.set_size({
         'width': 500,
         'height': 300
     })
     
-    prod_chart2.set_chartarea({
+    ref_prod_chart2.set_chartarea({
         'border': {'none': True}
     })
     
-    prod_chart2.set_x_axis({
+    ref_prod_chart2.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -586,7 +801,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    prod_chart2.set_y_axis({
+    ref_prod_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'PJ',
@@ -598,42 +813,42 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    prod_chart2.set_legend({
+    ref_prod_chart2.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    prod_chart2.set_title({
+    ref_prod_chart2.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows5):
-        prod_chart2.add_series({
-            'name':       [economy + '_prod', chart_height + i + 1, 0],
-            'categories': [economy + '_prod', chart_height, 2, chart_height, ncols5 - 1],
-            'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ncols5 - 1],
+        ref_prod_chart2.add_series({
+            'name':       [economy + '_prod_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_prod_ref', chart_height, 2, chart_height, ncols5 - 1],
+            'values':     [economy + '_prod_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols5 - 1],
             'line':       {'color': colours_hex[i],
                            'width': 1} 
         })    
         
-    worksheet2.insert_chart('R3', prod_chart2)
+    ref_worksheet2.insert_chart('R3', ref_prod_chart2)
 
     ###################### Create another PRODUCTION chart showing proportional share #################################
 
     # Create a production chart
-    prod_chart3 = workbook.add_chart({'type': 'column', 
+    ref_prod_chart3 = workbook.add_chart({'type': 'column', 
                                       'subtype': 'percent_stacked'})
-    prod_chart3.set_size({
+    ref_prod_chart3.set_size({
         'width': 500,
         'height': 300
     })
     
-    prod_chart3.set_chartarea({
+    ref_prod_chart3.set_chartarea({
         'border': {'none': True}
     })
     
-    prod_chart3.set_x_axis({
+    ref_prod_chart3.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -643,7 +858,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    prod_chart3.set_y_axis({
+    ref_prod_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'PJ',
@@ -655,54 +870,54 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    prod_chart3.set_legend({
+    ref_prod_chart3.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    prod_chart3.set_title({
+    ref_prod_chart3.set_title({
         'none': True
     })
 
     # Configure the series of the chart from the dataframe data.    
     for component in TPES_agg_fuels:
-        i = prod_df2[prod_df2['fuel_code'] == component].index[0]
-        prod_chart3.add_series({
-            'name':       [economy + '_prod', chart_height + nrows5 + i + 4, 0],
-            'categories': [economy + '_prod', chart_height + nrows5 + 3, 2, chart_height + nrows5 + 3, ncols7 - 1],
-            'values':     [economy + '_prod', chart_height + nrows5 + i + 4, 2, chart_height + nrows5 + i + 4, ncols7 - 1],
+        i = ref_prod_df2[ref_prod_df2['fuel_code'] == component].index[0]
+        ref_prod_chart3.add_series({
+            'name':       [economy + '_prod_ref', chart_height + nrows5 + i + 4, 0],
+            'categories': [economy + '_prod_ref', chart_height + nrows5 + 3, 2, chart_height + nrows5 + 3, ncols7 - 1],
+            'values':     [economy + '_prod_ref', chart_height + nrows5 + i + 4, 2, chart_height + nrows5 + i + 4, ncols7 - 1],
             'fill':       {'color': colours_hex[i]},
             'border':     {'none': True}
         })
     
-    worksheet2.insert_chart('J3', prod_chart3)
+    ref_worksheet2.insert_chart('J3', ref_prod_chart3)
     
     ###################################### TPES components I ###########################################
     
     # access the sheet for production created above
-    worksheet3 = writer.sheets[economy + '_TPES_components_I']
+    ref_worksheet3 = writer.sheets[economy + '_TPES_components_I_ref']
     
     # Apply comma format and header format to relevant data rows
-    worksheet3.set_column(2, ncols8 + 1, None, comma_format)
-    worksheet3.set_row(chart_height, None, header_format)
-    worksheet3.set_row(chart_height + nrows3 + 3, None, header_format)
-    worksheet3.set_row(chart_height + nrows3 + nrows8 + 6, None, header_format)
-    worksheet3.set_row(chart_height + nrows3 + nrows8 + nrows12 + 9, None, header_format)
-    worksheet3.set_row(chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, None, header_format)
-    worksheet3.write(0, 0, economy + ' TPES components I', cell_format1)
+    ref_worksheet3.set_column(2, ncols8 + 1, None, comma_format)
+    ref_worksheet3.set_row(chart_height, None, header_format)
+    ref_worksheet3.set_row(chart_height + nrows3 + 3, None, header_format)
+    ref_worksheet3.set_row(chart_height + nrows3 + nrows8 + 6, None, header_format)
+    ref_worksheet3.set_row(chart_height + nrows3 + nrows8 + nrows12 + 9, None, header_format)
+    ref_worksheet3.set_row(chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, None, header_format)
+    ref_worksheet3.write(0, 0, economy + ' TPES components I reference', cell_format1)
     
     # Create a TPES components chart
-    tpes_comp_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    tpes_comp_chart1.set_size({
+    ref_tpes_comp_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_tpes_comp_chart1.set_size({
         'width': 500,
         'height': 300
     })
     
-    tpes_comp_chart1.set_chartarea({
+    ref_tpes_comp_chart1.set_chartarea({
         'border': {'none': True}
     })
     
-    tpes_comp_chart1.set_x_axis({
+    ref_tpes_comp_chart1.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -711,7 +926,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    tpes_comp_chart1.set_y_axis({
+    ref_tpes_comp_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'PJ',
@@ -723,41 +938,41 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    tpes_comp_chart1.set_legend({
+    ref_tpes_comp_chart1.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    tpes_comp_chart1.set_title({
+    ref_tpes_comp_chart1.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.    
     for component in ['Production', 'Net trade', 'Bunkers', 'Stock changes']:
-        i = tpes_comp_df1[tpes_comp_df1['item_code_new'] == component].index[0]
-        tpes_comp_chart1.add_series({
-            'name':       [economy + '_TPES_components_I', chart_height + i + 1, 1],
-            'categories': [economy + '_TPES_components_I', chart_height, 2, chart_height, ncols3 - 1],
-            'values':     [economy + '_TPES_components_I', chart_height + i + 1, 2, chart_height + i + 1, ncols3 - 1],
+        i = ref_tpes_comp_df1[ref_tpes_comp_df1['item_code_new'] == component].index[0]
+        ref_tpes_comp_chart1.add_series({
+            'name':       [economy + '_TPES_components_I_ref', chart_height + i + 1, 1],
+            'categories': [economy + '_TPES_components_I_ref', chart_height, 2, chart_height, ncols3 - 1],
+            'values':     [economy + '_TPES_components_I_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols3 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
     
-    worksheet3.insert_chart('B3', tpes_comp_chart1)
+    ref_worksheet3.insert_chart('B3', ref_tpes_comp_chart1)
 
     # IMPORTS: Create a line chart subset by fuel
     
-    imports_line = workbook.add_chart({'type': 'line'})
-    imports_line.set_size({
+    ref_imports_line = workbook.add_chart({'type': 'line'})
+    ref_imports_line.set_size({
         'width': 500,
         'height': 300
     })
     
-    imports_line.set_chartarea({
+    ref_imports_line.set_chartarea({
         'border': {'none': True}
     })
     
-    imports_line.set_x_axis({
+    ref_imports_line.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -768,7 +983,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    imports_line.set_y_axis({
+    ref_imports_line.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Imports (PJ)',
@@ -780,39 +995,39 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    imports_line.set_legend({
+    ref_imports_line.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    imports_line.set_title({
+    ref_imports_line.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
-        i = imports_df1[imports_df1['fuel_code'] == fuel].index[0]
-        imports_line.add_series({
-            'name':       [economy + '_TPES_components_I', chart_height + nrows3 + i + 4, 0],
-            'categories': [economy + '_TPES_components_I', chart_height + nrows3 + 3, 2, chart_height + nrows3 + 3, ncols8 - 1],
-            'values':     [economy + '_TPES_components_I', chart_height + nrows3 + i + 4, 2, chart_height + nrows3 + i + 4, ncols8 - 1],
+        i = ref_imports_df1[ref_imports_df1['fuel_code'] == fuel].index[0]
+        ref_imports_line.add_series({
+            'name':       [economy + '_TPES_components_I_ref', chart_height + nrows3 + i + 4, 0],
+            'categories': [economy + '_TPES_components_I_ref', chart_height + nrows3 + 3, 2, chart_height + nrows3 + 3, ncols8 - 1],
+            'values':     [economy + '_TPES_components_I_ref', chart_height + nrows3 + i + 4, 2, chart_height + nrows3 + i + 4, ncols8 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
-    worksheet3.insert_chart('J3', imports_line)
+    ref_worksheet3.insert_chart('J3', ref_imports_line)
 
     # Create a imports by fuel column
-    imports_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    imports_column.set_size({
+    ref_imports_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_imports_column.set_size({
         'width': 500,
         'height': 300
     })
     
-    imports_column.set_chartarea({
+    ref_imports_column.set_chartarea({
         'border': {'none': True}
     })
     
-    imports_column.set_x_axis({
+    ref_imports_column.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -821,7 +1036,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    imports_column.set_y_axis({
+    ref_imports_column.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Imports by fuel (PJ)',
@@ -833,40 +1048,40 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    imports_column.set_legend({
+    ref_imports_column.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    imports_column.set_title({
+    ref_imports_column.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.    
     for i in range(nrows12):
-        imports_column.add_series({
-            'name':       [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + i + 7, 0],
-            'categories': [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + 6, 2, chart_height + nrows3 + nrows8 + 6, ncols12 - 1],
-            'values':     [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + i + 7, 2, chart_height + nrows3 + nrows8 + i + 7, ncols12 - 1],
+        ref_imports_column.add_series({
+            'name':       [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + i + 7, 0],
+            'categories': [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + 6, 2, chart_height + nrows3 + nrows8 + 6, ncols12 - 1],
+            'values':     [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + i + 7, 2, chart_height + nrows3 + nrows8 + i + 7, ncols12 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
     
-    worksheet3.insert_chart('R3', imports_column)
+    ref_worksheet3.insert_chart('R3', ref_imports_column)
 
     # EXPORTS: Create a line chart subset by fuel
     
-    exports_line = workbook.add_chart({'type': 'line'})
-    exports_line.set_size({
+    ref_exports_line = workbook.add_chart({'type': 'line'})
+    ref_exports_line.set_size({
         'width': 500,
         'height': 300
     })
     
-    exports_line.set_chartarea({
+    ref_exports_line.set_chartarea({
         'border': {'none': True}
     })
     
-    exports_line.set_x_axis({
+    ref_exports_line.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -877,7 +1092,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    exports_line.set_y_axis({
+    ref_exports_line.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Exports (PJ)',
@@ -889,39 +1104,39 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    exports_line.set_legend({
+    ref_exports_line.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    exports_line.set_title({
+    ref_exports_line.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
-        i = exports_df1[exports_df1['fuel_code'] == fuel].index[0]
-        exports_line.add_series({
-            'name':       [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 0],
-            'categories': [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + nrows12 + 9, 2, chart_height + nrows3 + nrows8 + nrows12 + 9, ncols8 - 1],
-            'values':     [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 2, chart_height + nrows3 + nrows8 + nrows12 + i + 10, ncols8 - 1],
+        i = ref_exports_df1[ref_exports_df1['fuel_code'] == fuel].index[0]
+        ref_exports_line.add_series({
+            'name':       [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 0],
+            'categories': [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + 9, 2, chart_height + nrows3 + nrows8 + nrows12 + 9, ncols8 - 1],
+            'values':     [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + i + 10, 2, chart_height + nrows3 + nrows8 + nrows12 + i + 10, ncols8 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
-    worksheet3.insert_chart('Z3', exports_line)
+    ref_worksheet3.insert_chart('Z3', ref_exports_line)
 
     # Create a imports by fuel column
-    exports_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    exports_column.set_size({
+    ref_exports_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_exports_column.set_size({
         'width': 500,
         'height': 300
     })
     
-    exports_column.set_chartarea({
+    ref_exports_column.set_chartarea({
         'border': {'none': True}
     })
     
-    exports_column.set_x_axis({
+    ref_exports_column.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -930,7 +1145,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    exports_column.set_y_axis({
+    ref_exports_column.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Exports by fuel (PJ)',
@@ -942,51 +1157,51 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    exports_column.set_legend({
+    ref_exports_column.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    exports_column.set_title({
+    ref_exports_column.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.    
     for i in range(nrows13):
-        exports_column.add_series({
-            'name':       [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, 0],
-            'categories': [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, 2, chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, ncols13 - 1],
-            'values':     [economy + '_TPES_components_I', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, 2, chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, ncols13 - 1],
+        ref_exports_column.add_series({
+            'name':       [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, 0],
+            'categories': [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, 2, chart_height + nrows3 + nrows8 + nrows12 + nrows9 + 12, ncols13 - 1],
+            'values':     [economy + '_TPES_components_I_ref', chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, 2, chart_height + nrows3 + nrows8 + nrows12 + nrows9 + i + 13, ncols13 - 1],
             'fill':       {'color': colours_hex[i + 5]},
             'border':     {'none': True}
         })
     
-    worksheet3.insert_chart('AH3', exports_column)
+    ref_worksheet3.insert_chart('AH3', ref_exports_column)
 
     ###################################### TPES components II ###########################################
     
     # access the sheet for production created above
-    worksheet4 = writer.sheets[economy + '_TPES_components_II']
+    ref_worksheet4 = writer.sheets[economy + '_TPES_components_II_ref']
     
     # Apply comma format and header format to relevant data rows
-    worksheet4.set_column(2, ncols10 + 1, None, comma_format)
-    worksheet4.set_row(chart_height, None, header_format)
-    worksheet4.set_row(chart_height + nrows10 + 3, None, header_format)
-    worksheet4.write(0, 0, economy + ' TPES components II', cell_format1)
+    ref_worksheet4.set_column(2, ncols10 + 1, None, comma_format)
+    ref_worksheet4.set_row(chart_height, None, header_format)
+    ref_worksheet4.set_row(chart_height + nrows10 + 3, None, header_format)
+    ref_worksheet4.write(0, 0, economy + ' TPES components II reference', cell_format1)
     
     # MARINE BUNKER: Create a line chart subset by fuel
     
-    marine_line = workbook.add_chart({'type': 'line'})
-    marine_line.set_size({
+    ref_marine_line = workbook.add_chart({'type': 'line'})
+    ref_marine_line.set_size({
         'width': 500,
         'height': 300
     })
     
-    marine_line.set_chartarea({
+    ref_marine_line.set_chartarea({
         'border': {'none': True}
     })
     
-    marine_line.set_x_axis({
+    ref_marine_line.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -997,7 +1212,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    marine_line.set_y_axis({
+    ref_marine_line.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Marine bunkers (PJ)',
@@ -1009,39 +1224,39 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    marine_line.set_legend({
+    ref_marine_line.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    marine_line.set_title({
+    ref_marine_line.set_title({
         'none': True
     }) 
 
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows10):
-        marine_line.add_series({
-            'name':       [economy + '_TPES_components_II', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_components_II', chart_height, 2, chart_height, ncols10 - 1],
-            'values':     [economy + '_TPES_components_II', chart_height + i + 1, 2, chart_height + i + 1, ncols10 - 1],
+        ref_marine_line.add_series({
+            'name':       [economy + '_TPES_components_II_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_components_II_ref', chart_height, 2, chart_height, ncols10 - 1],
+            'values':     [economy + '_TPES_components_II_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols10 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
-    worksheet4.insert_chart('B3', marine_line)
+    ref_worksheet4.insert_chart('B3', ref_marine_line)
 
     # AVIATION BUNKER: Create a line chart subset by fuel
     
-    aviation_line = workbook.add_chart({'type': 'line'})
-    aviation_line.set_size({
+    ref_aviation_line = workbook.add_chart({'type': 'line'})
+    ref_aviation_line.set_size({
         'width': 500,
         'height': 300
     })
     
-    aviation_line.set_chartarea({
+    ref_aviation_line.set_chartarea({
         'border': {'none': True}
     })
     
-    aviation_line.set_x_axis({
+    ref_aviation_line.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -1052,7 +1267,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    aviation_line.set_y_axis({
+    ref_aviation_line.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Aviation bunkers (PJ)',
@@ -1064,25 +1279,797 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    aviation_line.set_legend({
+    ref_aviation_line.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    aviation_line.set_title({
+    ref_aviation_line.set_title({
         'none': True
     }) 
 
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows11):
-        aviation_line.add_series({
-            'name':       [economy + '_TPES_components_II', chart_height + nrows10 + i + 4, 0],
-            'categories': [economy + '_TPES_components_II', chart_height + nrows10 + 3, 2, chart_height + nrows10 + 3, ncols11 - 1],
-            'values':     [economy + '_TPES_components_II', chart_height + nrows10 + i + 4, 2, chart_height + nrows10 + i + 4, ncols11 - 1],
+        ref_aviation_line.add_series({
+            'name':       [economy + '_TPES_components_II_ref', chart_height + nrows10 + i + 4, 0],
+            'categories': [economy + '_TPES_components_II_ref', chart_height + nrows10 + 3, 2, chart_height + nrows10 + 3, ncols11 - 1],
+            'values':     [economy + '_TPES_components_II_ref', chart_height + nrows10 + i + 4, 2, chart_height + nrows10 + i + 4, ncols11 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25},
         })    
         
-    worksheet4.insert_chart('J3', aviation_line)
+    ref_worksheet4.insert_chart('J3', ref_aviation_line)
+
+    #####################################################################################################################################
+    # NET ZERO CHARTS
+
+    # Access the sheet created using writer above
+    netz_worksheet1 = writer.sheets[economy + '_TPES_netz']
+    
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet1.set_column(2, ncols24 + 1, None, comma_format)
+    netz_worksheet1.set_row(chart_height, None, header_format)
+    netz_worksheet1.set_row(chart_height + nrows24 + 3, None, header_format)
+    netz_worksheet1.write(0, 0, economy + ' TPES fuel net-zero', cell_format1)
+
+    ######################################################
+    # Create a TPES chart
+    netz_tpes_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_tpes_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows24):
+        netz_tpes_chart2.add_series({
+            'name':       [economy + '_TPES_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_netz', chart_height, 2, chart_height, ncols24 - 1],
+            'values':     [economy + '_TPES_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols24 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })    
+        
+    netz_worksheet1.insert_chart('B3', netz_tpes_chart2)
+
+    ######## same chart as above but line
+
+    # TPES line chart
+    netz_tpes_chart4 = workbook.add_chart({'type': 'line'})
+    netz_tpes_chart4.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_chart4.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_chart4.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_chart4.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_chart4.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_chart4.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows24):
+        netz_tpes_chart4.add_series({
+            'name':       [economy + '_TPES_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_netz', chart_height, 2, chart_height, ncols24 - 1],
+            'values':     [economy + '_TPES_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols24 - 1],
+            'line':       {'color': colours_hex[i], 
+                           'width': 1}
+        })    
+        
+    netz_worksheet1.insert_chart('R3', netz_tpes_chart4)
+
+    ###################### Create another TPES chart showing proportional share #################################
+
+    # Create a TPES chart
+    netz_tpes_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    netz_tpes_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_chart3.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in TPES_agg_fuels:
+        i = netz_tpes_df2[netz_tpes_df2['fuel_code'] == component].index[0]
+        netz_tpes_chart3.add_series({
+            'name':       [economy + '_TPES_netz', chart_height + nrows24 + i + 4, 0],
+            'categories': [economy + '_TPES_netz', chart_height + nrows24 + 3, 2, chart_height + nrows24 + 3, ncols26 - 1],
+            'values':     [economy + '_TPES_netz', chart_height + nrows24 + i + 4, 2, chart_height + nrows24 + i + 4, ncols26 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet1.insert_chart('J3', netz_tpes_chart3)
+
+    ########################################### PRODUCTION CHARTS #############################################
+    
+    # access the sheet for production created above
+    netz_worksheet2 = writer.sheets[economy + '_prod_netz']
+    
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet2.set_column(2, ncols25 + 1, None, comma_format)
+    netz_worksheet2.set_row(chart_height, None, header_format)
+    netz_worksheet2.set_row(chart_height + nrows25 + 3, None, header_format)
+    netz_worksheet2.write(0, 0, economy + ' prod fuel net-zero', cell_format1)
+
+    ###################### Create another PRODUCTION chart with only 6 categories #################################
+
+    # Create a PROD chart
+    netz_prod_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_prod_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_prod_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_prod_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_prod_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_prod_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_prod_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows25):
+        netz_prod_chart2.add_series({
+            'name':       [economy + '_prod_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_prod_netz', chart_height, 2, chart_height, ncols25 - 1],
+            'values':     [economy + '_prod_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols25 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })    
+        
+    netz_worksheet2.insert_chart('B3', netz_prod_chart2)
+
+    ############ Same as above but with a line ###########
+
+    # Create a PROD chart
+    netz_prod_chart2 = workbook.add_chart({'type': 'line'})
+    netz_prod_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_prod_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_prod_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_prod_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_prod_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_prod_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows25):
+        netz_prod_chart2.add_series({
+            'name':       [economy + '_prod_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_prod_netz', chart_height, 2, chart_height, ncols25 - 1],
+            'values':     [economy + '_prod_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols25 - 1],
+            'line':       {'color': colours_hex[i],
+                           'width': 1} 
+        })    
+        
+    netz_worksheet2.insert_chart('R3', netz_prod_chart2)
+
+    ###################### Create another PRODUCTION chart showing proportional share #################################
+
+    # Create a production chart
+    netz_prod_chart3 = workbook.add_chart({'type': 'column', 
+                                      'subtype': 'percent_stacked'})
+    netz_prod_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_prod_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_prod_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_prod_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_prod_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_prod_chart3.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in TPES_agg_fuels:
+        i = netz_prod_df2[netz_prod_df2['fuel_code'] == component].index[0]
+        netz_prod_chart3.add_series({
+            'name':       [economy + '_prod_netz', chart_height + nrows25 + i + 4, 0],
+            'categories': [economy + '_prod_netz', chart_height + nrows25 + 3, 2, chart_height + nrows25 + 3, ncols27 - 1],
+            'values':     [economy + '_prod_netz', chart_height + nrows25 + i + 4, 2, chart_height + nrows25 + i + 4, ncols27 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet2.insert_chart('J3', netz_prod_chart3)
+    
+    ###################################### TPES components I ###########################################
+    
+    # access the sheet for production created above
+    netz_worksheet3 = writer.sheets[economy + '_TPES_components_I_netz']
+    
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet3.set_column(2, ncols28 + 1, None, comma_format)
+    netz_worksheet3.set_row(chart_height, None, header_format)
+    netz_worksheet3.set_row(chart_height + nrows23 + 3, None, header_format)
+    netz_worksheet3.set_row(chart_height + nrows23 + nrows28 + 6, None, header_format)
+    netz_worksheet3.set_row(chart_height + nrows23 + nrows28 + nrows32 + 9, None, header_format)
+    netz_worksheet3.set_row(chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12, None, header_format)
+    netz_worksheet3.write(0, 0, economy + ' TPES components I net-zero', cell_format1)
+    
+    # Create a TPES components chart
+    netz_tpes_comp_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_tpes_comp_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_comp_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_comp_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_comp_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_comp_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_comp_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Net trade', 'Bunkers', 'Stock changes']:
+        i = netz_tpes_comp_df1[netz_tpes_comp_df1['item_code_new'] == component].index[0]
+        netz_tpes_comp_chart1.add_series({
+            'name':       [economy + '_TPES_components_I_netz', chart_height + i + 1, 1],
+            'categories': [economy + '_TPES_components_I_netz', chart_height, 2, chart_height, ncols23 - 1],
+            'values':     [economy + '_TPES_components_I_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols23 - 1],
+            'fill':       {'color': colours_hex[i + 5]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet3.insert_chart('B3', netz_tpes_comp_chart1)
+
+    # IMPORTS: Create a line chart subset by fuel
+    
+    netz_imports_line = workbook.add_chart({'type': 'line'})
+    netz_imports_line.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_imports_line.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_imports_line.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_imports_line.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Imports (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_imports_line.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_imports_line.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
+        i = netz_imports_df1[netz_imports_df1['fuel_code'] == fuel].index[0]
+        netz_imports_line.add_series({
+            'name':       [economy + '_TPES_components_I_netz', chart_height + nrows23 + i + 4, 0],
+            'categories': [economy + '_TPES_components_I_netz', chart_height + nrows23 + 3, 2, chart_height + nrows23 + 3, ncols28 - 1],
+            'values':     [economy + '_TPES_components_I_netz', chart_height + nrows23 + i + 4, 2, chart_height + nrows23 + i + 4, ncols28 - 1],
+            'line':       {'color': colours_hex[i], 'width': 1.25},
+        })    
+        
+    netz_worksheet3.insert_chart('J3', netz_imports_line)
+
+    # Create a imports by fuel column
+    netz_imports_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_imports_column.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_imports_column.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_imports_column.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_imports_column.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Imports by fuel (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_imports_column.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_imports_column.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for i in range(nrows32):
+        netz_imports_column.add_series({
+            'name':       [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + i + 7, 0],
+            'categories': [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + 6, 2, chart_height + nrows23 + nrows28 + 6, ncols32 - 1],
+            'values':     [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + i + 7, 2, chart_height + nrows23 + nrows28 + i + 7, ncols32 - 1],
+            'fill':       {'color': colours_hex[i + 5]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet3.insert_chart('R3', netz_imports_column)
+
+    # EXPORTS: Create a line chart subset by fuel
+    
+    netz_exports_line = workbook.add_chart({'type': 'line'})
+    netz_exports_line.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_exports_line.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_exports_line.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_exports_line.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Exports (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_exports_line.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_exports_line.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
+        i = netz_exports_df1[netz_exports_df1['fuel_code'] == fuel].index[0]
+        netz_exports_line.add_series({
+            'name':       [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + i + 10, 0],
+            'categories': [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + 9, 2, chart_height + nrows23 + nrows28 + nrows32 + 9, ncols28 - 1],
+            'values':     [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + i + 10, 2, chart_height + nrows23 + nrows28 + nrows32 + i + 10, ncols28 - 1],
+            'line':       {'color': colours_hex[i], 'width': 1.25},
+        })    
+        
+    netz_worksheet3.insert_chart('Z3', netz_exports_line)
+
+    # Create a imports by fuel column
+    netz_exports_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_exports_column.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_exports_column.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_exports_column.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_exports_column.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Exports by fuel (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_exports_column.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_exports_column.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for i in range(nrows33):
+        netz_exports_column.add_series({
+            'name':       [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, 0],
+            'categories': [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12, 2, chart_height + nrows23 + nrows28 + nrows32 + nrows29 + 12, ncols33 - 1],
+            'values':     [economy + '_TPES_components_I_netz', chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, 2, chart_height + nrows23 + nrows28 + nrows32 + nrows29 + i + 13, ncols33 - 1],
+            'fill':       {'color': colours_hex[i + 5]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet3.insert_chart('AH3', netz_exports_column)
+
+    ###################################### TPES components II ###########################################
+    
+    # access the sheet for production created above
+    netz_worksheet4 = writer.sheets[economy + '_TPES_components_II_netz']
+    
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet4.set_column(2, ncols30 + 1, None, comma_format)
+    netz_worksheet4.set_row(chart_height, None, header_format)
+    netz_worksheet4.set_row(chart_height + nrows30 + 3, None, header_format)
+    netz_worksheet4.write(0, 0, economy + ' TPES components II net-zero', cell_format1)
+    
+    # MARINE BUNKER: Create a line chart subset by fuel
+    
+    netz_marine_line = workbook.add_chart({'type': 'line'})
+    netz_marine_line.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_marine_line.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_marine_line.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_marine_line.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Marine bunkers (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_marine_line.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_marine_line.set_title({
+        'none': True
+    }) 
+
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows30):
+        netz_marine_line.add_series({
+            'name':       [economy + '_TPES_components_II_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_components_II_netz', chart_height, 2, chart_height, ncols30 - 1],
+            'values':     [economy + '_TPES_components_II_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols30 - 1],
+            'line':       {'color': colours_hex[i], 'width': 1.25},
+        })    
+        
+    netz_worksheet4.insert_chart('B3', netz_marine_line)
+
+    # AVIATION BUNKER: Create a line chart subset by fuel
+    
+    netz_aviation_line = workbook.add_chart({'type': 'line'})
+    netz_aviation_line.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_aviation_line.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_aviation_line.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_aviation_line.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Aviation bunkers (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_aviation_line.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_aviation_line.set_title({
+        'none': True
+    }) 
+
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows31):
+        netz_aviation_line.add_series({
+            'name':       [economy + '_TPES_components_II_netz', chart_height + nrows30 + i + 4, 0],
+            'categories': [economy + '_TPES_components_II_netz', chart_height + nrows30 + 3, 2, chart_height + nrows30 + 3, ncols31 - 1],
+            'values':     [economy + '_TPES_components_II_netz', chart_height + nrows30 + i + 4, 2, chart_height + nrows30 + i + 4, ncols31 - 1],
+            'line':       {'color': colours_hex[i], 'width': 1.25},
+        })    
+        
+    netz_worksheet4.insert_chart('J3', netz_aviation_line)
     
     writer.save()
 
