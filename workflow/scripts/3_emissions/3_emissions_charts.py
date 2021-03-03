@@ -14,13 +14,14 @@ import re
 
 # Import the recently created EMISSIONS data frame that joins OSeMOSYS results to EGEDA historical 
 
-EGEDA_emissions = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018.csv')
+EGEDA_emissions_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_reference.csv')
+EGEDA_emissions_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_netzero.csv')
 
 # Define unique values for economy, fuels, and items columns
 
-Economy_codes = EGEDA_emissions.economy.unique()
-Fuels = EGEDA_emissions.fuel_code.unique()
-Items = EGEDA_emissions.item_code_new.unique()
+Economy_codes = EGEDA_emissions_reference.economy.unique()
+Fuels = EGEDA_emissions_reference.fuel_code.unique()
+Items = EGEDA_emissions_reference.item_code_new.unique()
 
 # Colours for charting (to be amended later)
 
@@ -96,82 +97,162 @@ Industry_eight = ['Iron & steel', 'Chemicals', 'Aluminium', 'Non-metallic minera
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
+    # REFERENCE DATA FRAMES
     # First data frame construction: Emissions by fuels
-    econ_df1 = EGEDA_emissions[(EGEDA_emissions['economy'] == economy) & 
-                          (EGEDA_emissions['item_code_new'].isin(['13_x_dem_pow_own'])) &
-                          (EGEDA_emissions['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
+    ref_econ_df1 = EGEDA_emissions_reference[(EGEDA_emissions_reference['economy'] == economy) & 
+                          (EGEDA_emissions_reference['item_code_new'].isin(['13_x_dem_pow_own'])) &
+                          (EGEDA_emissions_reference['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
     
     #nrows1 = econ_df1.shape[0]
     #ncols1 = econ_df1.shape[1]
 
     # Now build aggregate variables of the first level fuels in EGEDA
 
-    coal = econ_df1[econ_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+    coal = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                     item_code_new = '13_x_dem_pow_own')
     
-    oil = econ_df1[econ_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+    oil = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
                                                                                                   item_code_new = '13_x_dem_pow_own')
     
-    heat_others = econ_df1[econ_df1['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
+    heat_others = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
                                                                                                                   item_code_new = '13_x_dem_pow_own')
 
     # EMISSIONS fuel data frame 1 (data frame 6)
 
-    emissions_fuel_df1 = econ_df1.append([coal, oil, heat_others])[['fuel_code',
-                                                             'item_code_new'] + list(econ_df1.loc[:, '2000':])].reset_index(drop = True)
+    ref_emissions_fuel_df1 = ref_econ_df1.append([coal, oil, heat_others])[['fuel_code',
+                                                             'item_code_new'] + list(ref_econ_df1.loc[:, '2000':])].reset_index(drop = True)
 
-    emissions_fuel_df1.loc[emissions_fuel_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    emissions_fuel_df1.loc[emissions_fuel_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    ref_emissions_fuel_df1.loc[ref_emissions_fuel_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ref_emissions_fuel_df1.loc[ref_emissions_fuel_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
-    emissions_fuel_df1 = emissions_fuel_df1[emissions_fuel_df1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()
+    ref_emissions_fuel_df1 = ref_emissions_fuel_df1[ref_emissions_fuel_df1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()
 
-    nrows6 = emissions_fuel_df1.shape[0]
-    ncols6 = emissions_fuel_df1.shape[1]
+    nrows6 = ref_emissions_fuel_df1.shape[0]
+    ncols6 = ref_emissions_fuel_df1.shape[1]
 
-    emissions_fuel_df2 = emissions_fuel_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_emissions_fuel_df2 = ref_emissions_fuel_df1[['fuel_code', 'item_code_new'] + col_chart_years]
 
-    nrows7 = emissions_fuel_df2.shape[0]
-    ncols7 = emissions_fuel_df2.shape[1]
+    nrows7 = ref_emissions_fuel_df2.shape[0]
+    ncols7 = ref_emissions_fuel_df2.shape[1]
 
     # Second data frame construction: FED by sectors
-    econ_df2 = EGEDA_emissions[(EGEDA_emissions['economy'] == economy) &
-                               (EGEDA_emissions['item_code_new'].isin(Sectors_tfc)) &
-                               (EGEDA_emissions['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True)
+    ref_econ_df2 = EGEDA_emissions_reference[(EGEDA_emissions_reference['economy'] == economy) &
+                               (EGEDA_emissions_reference['item_code_new'].isin(Sectors_tfc)) &
+                               (EGEDA_emissions_reference['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True)
 
-    econ_df2 = econ_df2[['fuel_code', 'item_code_new'] + list(econ_df2.loc[:,'2000':])]
+    ref_econ_df2 = ref_econ_df2[['fuel_code', 'item_code_new'] + list(ref_econ_df2.loc[:,'2000':])]
     
-    nrows2 = econ_df2.shape[0]
-    ncols2 = econ_df2.shape[1]
+    nrows2 = ref_econ_df2.shape[0]
+    ncols2 = ref_econ_df2.shape[1]
 
     # Now build aggregate sector variables
     
-    buildings = econ_df2[econ_df2['item_code_new'].isin(Buildings_items)].groupby(['fuel_code']).sum().assign(fuel_code = '19_total',
+    buildings = ref_econ_df2[ref_econ_df2['item_code_new'].isin(Buildings_items)].groupby(['fuel_code']).sum().assign(fuel_code = '19_total',
                                                                                                               item_code_new = 'Buildings')
     
-    agriculture = econ_df2[econ_df2['item_code_new'].isin(Ag_items)].groupby(['fuel_code']).sum().assign(fuel_code = '19_total',
+    agriculture = ref_econ_df2[ref_econ_df2['item_code_new'].isin(Ag_items)].groupby(['fuel_code']).sum().assign(fuel_code = '19_total',
                                                                                                          item_code_new = 'Agriculture')
 
     # Build aggregate data frame of FED sector
 
-    emissions_sector_df1 = econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(econ_df2.loc[:, '2000':])].reset_index(drop = True)
+    ref_emissions_sector_df1 = ref_econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(ref_econ_df2.loc[:, '2000':])].reset_index(drop = True)
 
-    emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '9_x_power', 'item_code_new'] = 'Power'
-    emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own use'
-    emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    ref_emissions_sector_df1.loc[ref_emissions_sector_df1['item_code_new'] == '9_x_power', 'item_code_new'] = 'Power'
+    ref_emissions_sector_df1.loc[ref_emissions_sector_df1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own use'
+    ref_emissions_sector_df1.loc[ref_emissions_sector_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    ref_emissions_sector_df1.loc[ref_emissions_sector_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
     #emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
-    emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+    ref_emissions_sector_df1.loc[ref_emissions_sector_df1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    emissions_sector_df1 = emissions_sector_df1[emissions_sector_df1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()
-    emissions_sector_df1 = emissions_sector_df1[['fuel_code', 'item_code_new'] + list(emissions_sector_df1.loc[:, '2000':])]
+    ref_emissions_sector_df1 = ref_emissions_sector_df1[ref_emissions_sector_df1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()
+    ref_emissions_sector_df1 = ref_emissions_sector_df1[['fuel_code', 'item_code_new'] + list(ref_emissions_sector_df1.loc[:, '2000':])]
 
-    nrows8 = emissions_sector_df1.shape[0]
-    ncols8 = emissions_sector_df1.shape[1]
+    nrows8 = ref_emissions_sector_df1.shape[0]
+    ncols8 = ref_emissions_sector_df1.shape[1]
 
-    emissions_sector_df2 = emissions_sector_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_emissions_sector_df2 = ref_emissions_sector_df1[['fuel_code', 'item_code_new'] + col_chart_years]
 
-    nrows9 = emissions_sector_df2.shape[0]
-    ncols9 = emissions_sector_df2.shape[1]
+    nrows9 = ref_emissions_sector_df2.shape[0]
+    ncols9 = ref_emissions_sector_df2.shape[1]
+
+    ##################################################################################################################################
+    # NET ZERO DATA FRAMES
+    # First data frame construction: Emissions by fuels
+    netz_econ_df1 = EGEDA_emissions_netzero[(EGEDA_emissions_netzero['economy'] == economy) & 
+                          (EGEDA_emissions_netzero['item_code_new'].isin(['13_x_dem_pow_own'])) &
+                          (EGEDA_emissions_netzero['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
+    
+    #nrows1 = econ_df1.shape[0]
+    #ncols1 = econ_df1.shape[1]
+
+    # Now build aggregate variables of the first level fuels in EGEDA
+
+    coal = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+                                                                                                    item_code_new = '13_x_dem_pow_own')
+    
+    oil = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+                                                                                                  item_code_new = '13_x_dem_pow_own')
+    
+    heat_others = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
+                                                                                                                  item_code_new = '13_x_dem_pow_own')
+
+    # EMISSIONS fuel data frame 1 (data frame 6)
+
+    netz_emissions_fuel_df1 = netz_econ_df1.append([coal, oil, heat_others])[['fuel_code',
+                                                             'item_code_new'] + list(netz_econ_df1.loc[:, '2000':])].reset_index(drop = True)
+
+    netz_emissions_fuel_df1.loc[netz_emissions_fuel_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    netz_emissions_fuel_df1.loc[netz_emissions_fuel_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+
+    netz_emissions_fuel_df1 = netz_emissions_fuel_df1[netz_emissions_fuel_df1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()
+
+    nrows26 = netz_emissions_fuel_df1.shape[0]
+    ncols26 = netz_emissions_fuel_df1.shape[1]
+
+    netz_emissions_fuel_df2 = netz_emissions_fuel_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+
+    nrows27 = netz_emissions_fuel_df2.shape[0]
+    ncols27 = netz_emissions_fuel_df2.shape[1]
+
+    # Second data frame construction: FED by sectors
+    netz_econ_df2 = EGEDA_emissions_netzero[(EGEDA_emissions_netzero['economy'] == economy) &
+                               (EGEDA_emissions_netzero['item_code_new'].isin(Sectors_tfc)) &
+                               (EGEDA_emissions_netzero['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True)
+
+    netz_econ_df2 = netz_econ_df2[['fuel_code', 'item_code_new'] + list(netz_econ_df2.loc[:,'2000':])]
+    
+    nrows22 = netz_econ_df2.shape[0]
+    ncols22 = netz_econ_df2.shape[1]
+
+    # Now build aggregate sector variables
+    
+    buildings = netz_econ_df2[netz_econ_df2['item_code_new'].isin(Buildings_items)].groupby(['fuel_code']).sum().assign(fuel_code = '19_total',
+                                                                                                              item_code_new = 'Buildings')
+    
+    agriculture = netz_econ_df2[netz_econ_df2['item_code_new'].isin(Ag_items)].groupby(['fuel_code']).sum().assign(fuel_code = '19_total',
+                                                                                                         item_code_new = 'Agriculture')
+
+    # Build aggregate data frame of FED sector
+
+    netz_emissions_sector_df1 = netz_econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(netz_econ_df2.loc[:, '2000':])].reset_index(drop = True)
+
+    netz_emissions_sector_df1.loc[netz_emissions_sector_df1['item_code_new'] == '9_x_power', 'item_code_new'] = 'Power'
+    netz_emissions_sector_df1.loc[netz_emissions_sector_df1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own use'
+    netz_emissions_sector_df1.loc[netz_emissions_sector_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    netz_emissions_sector_df1.loc[netz_emissions_sector_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    #emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    netz_emissions_sector_df1.loc[netz_emissions_sector_df1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+
+    netz_emissions_sector_df1 = netz_emissions_sector_df1[netz_emissions_sector_df1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()
+    netz_emissions_sector_df1 = netz_emissions_sector_df1[['fuel_code', 'item_code_new'] + list(netz_emissions_sector_df1.loc[:, '2000':])]
+
+    nrows28 = netz_emissions_sector_df1.shape[0]
+    ncols28 = netz_emissions_sector_df1.shape[1]
+
+    netz_emissions_sector_df2 = netz_emissions_sector_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+
+    nrows29 = netz_emissions_sector_df2.shape[0]
+    ncols29 = netz_emissions_sector_df2.shape[1]
 
     # Define directory
     script_dir = './results/' + month_year + '/Emissions/'
@@ -185,14 +266,19 @@ for economy in Economy_codes:
     pandas.io.formats.excel.ExcelFormatter.header_style = None
 
     # Insert the various dataframes into different sheets of the workbook    
-    emissions_fuel_df1.to_excel(writer, sheet_name = economy + '_Emissions_fuel', index = False, startrow = chart_height)
-    emissions_fuel_df2.to_excel(writer, sheet_name = economy + '_Emissions_fuel', index = False, startrow = chart_height + nrows6 + 3)
-    econ_df2.to_excel(writer, sheet_name = economy + '_Emissions_sector', index = False, startrow = chart_height)
-    emissions_sector_df1.to_excel(writer, sheet_name = economy + '_Emissions_sector', index = False, startrow = chart_height + nrows2 + 3)
-    emissions_sector_df2.to_excel(writer, sheet_name = economy + '_Emissions_sector', index = False, startrow = chart_height + nrows2 + nrows8 + 6)
+    ref_emissions_fuel_df1.to_excel(writer, sheet_name = economy + '_Emiss_fuel_ref', index = False, startrow = chart_height)
+    netz_emissions_fuel_df1.to_excel(writer, sheet_name = economy + '_Emiss_fuel_netz', index = False, startrow = chart_height)
+    ref_emissions_fuel_df2.to_excel(writer, sheet_name = economy + '_Emiss_fuel_ref', index = False, startrow = chart_height + nrows6 + 3)
+    netz_emissions_fuel_df2.to_excel(writer, sheet_name = economy + '_Emiss_fuel_netz', index = False, startrow = chart_height + nrows26 + 3)
+    ref_econ_df2.to_excel(writer, sheet_name = economy + '_Emiss_sector_ref', index = False, startrow = chart_height)
+    netz_econ_df2.to_excel(writer, sheet_name = economy + '_Emiss_sector_netz', index = False, startrow = chart_height)
+    ref_emissions_sector_df1.to_excel(writer, sheet_name = economy + '_Emiss_sector_ref', index = False, startrow = chart_height + nrows2 + 3)
+    netz_emissions_sector_df1.to_excel(writer, sheet_name = economy + '_Emiss_sector_netz', index = False, startrow = chart_height + nrows22 + 3)
+    ref_emissions_sector_df2.to_excel(writer, sheet_name = economy + '_Emiss_sector_ref', index = False, startrow = chart_height + nrows2 + nrows8 + 6)
+    netz_emissions_sector_df2.to_excel(writer, sheet_name = economy + '_Emiss_sector_netz', index = False, startrow = chart_height + nrows22 + nrows28 + 6)
 
     # Access the workbook and first sheet with data from df1
-    worksheet1 = writer.sheets[economy + '_Emissions_fuel']
+    ref_worksheet1 = writer.sheets[economy + '_Emiss_fuel_ref']
     
     # Comma format and header format        
     comma_format = workbook.add_format({'num_format': '#,##0'})
@@ -200,26 +286,26 @@ for economy in Economy_codes:
     cell_format1 = workbook.add_format({'bold': True})
         
     # Apply comma format and header format to relevant data rows
-    worksheet1.set_column(1, ncols6 + 1, None, comma_format)
-    worksheet1.set_row(chart_height, None, header_format)
-    worksheet1.set_row(chart_height, None, header_format)
-    worksheet1.set_row(chart_height + nrows6 + 3, None, header_format)
-    worksheet1.write(0, 0, economy + ' emissions by fuel', cell_format1)
+    ref_worksheet1.set_column(1, ncols6 + 1, None, comma_format)
+    ref_worksheet1.set_row(chart_height, None, header_format)
+    ref_worksheet1.set_row(chart_height, None, header_format)
+    ref_worksheet1.set_row(chart_height + nrows6 + 3, None, header_format)
+    ref_worksheet1.write(0, 0, economy + ' emissions by fuel reference scenario', cell_format1)
 
     ################################################################### CHARTS ###################################################################
 
     # Create a FED area chart
-    em_fuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    em_fuel_chart1.set_size({
+    ref_em_fuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_em_fuel_chart1.set_size({
         'width': 500,
         'height': 300
     })
     
-    em_fuel_chart1.set_chartarea({
+    ref_em_fuel_chart1.set_chartarea({
         'border': {'none': True}
     })
     
-    em_fuel_chart1.set_x_axis({
+    ref_em_fuel_chart1.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -230,7 +316,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_fuel_chart1.set_y_axis({
+    ref_em_fuel_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Million tonnes CO2',
@@ -242,41 +328,41 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_fuel_chart1.set_legend({
+    ref_em_fuel_chart1.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    em_fuel_chart1.set_title({
+    ref_em_fuel_chart1.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows6):
-        em_fuel_chart1.add_series({
-            'name':       [economy + '_Emissions_fuel', chart_height + i + 1, 0],
-            'categories': [economy + '_Emissions_fuel', chart_height, 2, chart_height, ncols6 - 1],
-            'values':     [economy + '_Emissions_fuel', chart_height + i + 1, 2, chart_height + i + 1, ncols6 - 1],
+        ref_em_fuel_chart1.add_series({
+            'name':       [economy + '_Emiss_fuel_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_Emiss_fuel_ref', chart_height, 2, chart_height, ncols6 - 1],
+            'values':     [economy + '_Emiss_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols6 - 1],
             'fill':       {'color': colours_hex[i]},
             'border':     {'none': True}
         })    
         
-    worksheet1.insert_chart('B3', em_fuel_chart1)
+    ref_worksheet1.insert_chart('B3', ref_em_fuel_chart1)
 
     ###################### Create another EMISSIONS chart showing proportional share #################################
 
     # Create a another chart
-    em_fuel_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
-    em_fuel_chart2.set_size({
+    ref_em_fuel_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    ref_em_fuel_chart2.set_size({
         'width': 500,
         'height': 300
     })
     
-    em_fuel_chart2.set_chartarea({
+    ref_em_fuel_chart2.set_chartarea({
         'border': {'none': True}
     })
     
-    em_fuel_chart2.set_x_axis({
+    ref_em_fuel_chart2.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -286,7 +372,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_fuel_chart2.set_y_axis({
+    ref_em_fuel_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'CO2 proportion',
@@ -298,40 +384,40 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_fuel_chart2.set_legend({
+    ref_em_fuel_chart2.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    em_fuel_chart2.set_title({
+    ref_em_fuel_chart2.set_title({
         'none': True
     })
 
     # Configure the series of the chart from the dataframe data.    
     for component in Emissions_agg_fuels:
-        i = emissions_fuel_df2[emissions_fuel_df2['fuel_code'] == component].index[0]
-        em_fuel_chart2.add_series({
-            'name':       [economy + '_Emissions_fuel', chart_height + nrows6 + i + 4, 0],
-            'categories': [economy + '_Emissions_fuel', chart_height + nrows6 + 3, 2, chart_height + nrows6 + 3, ncols7 - 1],
-            'values':     [economy + '_Emissions_fuel', chart_height + nrows6 + i + 4, 2, chart_height + nrows6 + i + 4, ncols7 - 1],
+        i = ref_emissions_fuel_df2[ref_emissions_fuel_df2['fuel_code'] == component].index[0]
+        ref_em_fuel_chart2.add_series({
+            'name':       [economy + '_Emiss_fuel_ref', chart_height + nrows6 + i + 4, 0],
+            'categories': [economy + '_Emiss_fuel_ref', chart_height + nrows6 + 3, 2, chart_height + nrows6 + 3, ncols7 - 1],
+            'values':     [economy + '_Emiss_fuel_ref', chart_height + nrows6 + i + 4, 2, chart_height + nrows6 + i + 4, ncols7 - 1],
             'fill':       {'color': colours_hex[i]},
             'border':     {'none': True}
         })
     
-    worksheet1.insert_chart('J3', em_fuel_chart2)
+    ref_worksheet1.insert_chart('J3', ref_em_fuel_chart2)
 
     # Create a Emissions line chart with higher level aggregation
-    em_fuel_chart3 = workbook.add_chart({'type': 'line'})
-    em_fuel_chart3.set_size({
+    ref_em_fuel_chart3 = workbook.add_chart({'type': 'line'})
+    ref_em_fuel_chart3.set_size({
         'width': 500,
         'height': 300
     })
     
-    em_fuel_chart3.set_chartarea({
+    ref_em_fuel_chart3.set_chartarea({
         'border': {'none': True}
     })
     
-    em_fuel_chart3.set_x_axis({
+    ref_em_fuel_chart3.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -342,7 +428,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_fuel_chart3.set_y_axis({
+    ref_em_fuel_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Million tonnes CO2',
@@ -354,52 +440,52 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_fuel_chart3.set_legend({
+    ref_em_fuel_chart3.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    em_fuel_chart3.set_title({
+    ref_em_fuel_chart3.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows6):
-        em_fuel_chart3.add_series({
-            'name':       [economy + '_Emissions_fuel', chart_height + i + 1, 0],
-            'categories': [economy + '_Emissions_fuel', chart_height, 2, chart_height, ncols6 - 1],
-            'values':     [economy + '_Emissions_fuel', chart_height + i + 1, 2, chart_height + i + 1, ncols6 - 1],
+        ref_em_fuel_chart3.add_series({
+            'name':       [economy + '_Emiss_fuel_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_Emiss_fuel_ref', chart_height, 2, chart_height, ncols6 - 1],
+            'values':     [economy + '_Emiss_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols6 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25}
         })    
         
-    worksheet1.insert_chart('R3', em_fuel_chart3)
+    ref_worksheet1.insert_chart('R3', ref_em_fuel_chart3)
 
 
     ############################## Next sheet: FED (TFC) by sector ##############################
     
     # Access the workbook and second sheet with data from df2
-    worksheet2 = writer.sheets[economy + '_Emissions_sector']
+    ref_worksheet2 = writer.sheets[economy + '_Emiss_sector_ref']
         
     # Apply comma format and header format to relevant data rows
-    worksheet2.set_column(1, ncols2 + 1, None, comma_format)
-    worksheet2.set_row(chart_height, None, header_format)
-    worksheet2.set_row(chart_height + nrows2 + 3, None, header_format)
-    worksheet2.set_row(chart_height + nrows2 + nrows8 + 6, None, header_format)
-    worksheet2.write(0, 0, economy + ' emissions by demand sector', cell_format1)
+    ref_worksheet2.set_column(1, ncols2 + 1, None, comma_format)
+    ref_worksheet2.set_row(chart_height, None, header_format)
+    ref_worksheet2.set_row(chart_height + nrows2 + 3, None, header_format)
+    ref_worksheet2.set_row(chart_height + nrows2 + nrows8 + 6, None, header_format)
+    ref_worksheet2.write(0, 0, economy + ' emissions by demand sector reference scenario', cell_format1)
     
     # Create an EMISSIONS sector line chart
 
-    em_sector_chart1 = workbook.add_chart({'type': 'line'})
-    em_sector_chart1.set_size({
+    ref_em_sector_chart1 = workbook.add_chart({'type': 'line'})
+    ref_em_sector_chart1.set_size({
         'width': 500,
         'height': 300
     })
     
-    em_sector_chart1.set_chartarea({
+    ref_em_sector_chart1.set_chartarea({
         'border': {'none': True}
     })
     
-    em_sector_chart1.set_x_axis({
+    ref_em_sector_chart1.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -410,7 +496,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_sector_chart1.set_y_axis({
+    ref_em_sector_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Million tonnes CO2',
@@ -422,39 +508,39 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_sector_chart1.set_legend({
+    ref_em_sector_chart1.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    em_sector_chart1.set_title({
+    ref_em_sector_chart1.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows8):
-        em_sector_chart1.add_series({
-            'name':       [economy + '_Emissions_sector', chart_height + nrows2 + i + 4, 1],
-            'categories': [economy + '_Emissions_sector', chart_height + nrows2 + 3, 2, chart_height + nrows2 + 3, ncols8 - 1],
-            'values':     [economy + '_Emissions_sector', chart_height + nrows2 + i + 4, 2, chart_height + nrows2 + i + 4, ncols8 - 1],
+        ref_em_sector_chart1.add_series({
+            'name':       [economy + '_Emiss_sector_ref', chart_height + nrows2 + i + 4, 1],
+            'categories': [economy + '_Emiss_sector_ref', chart_height + nrows2 + 3, 2, chart_height + nrows2 + 3, ncols8 - 1],
+            'values':     [economy + '_Emiss_sector_ref', chart_height + nrows2 + i + 4, 2, chart_height + nrows2 + i + 4, ncols8 - 1],
             'line':       {'color': colours_hex[i], 'width': 1.25}
         })    
         
-    worksheet2.insert_chart('R3', em_sector_chart1)
+    ref_worksheet2.insert_chart('R3', ref_em_sector_chart1)
 
     # Create a EMISSIONS sector area chart
 
-    em_sector_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    em_sector_chart2.set_size({
+    ref_em_sector_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_em_sector_chart2.set_size({
         'width': 500,
         'height': 300
     })
     
-    em_sector_chart2.set_chartarea({
+    ref_em_sector_chart2.set_chartarea({
         'border': {'none': True}
     })
     
-    em_sector_chart2.set_x_axis({
+    ref_em_sector_chart2.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -465,7 +551,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_sector_chart2.set_y_axis({
+    ref_em_sector_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Million tonnes CO2',
@@ -477,41 +563,41 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_sector_chart2.set_legend({
+    ref_em_sector_chart2.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    em_sector_chart2.set_title({
+    ref_em_sector_chart2.set_title({
         'none': True
     })
     
     # Configure the series of the chart from the dataframe data.
     for i in range(nrows8):
-        em_sector_chart2.add_series({
-            'name':       [economy + '_Emissions_sector', chart_height + nrows2 + i + 4, 1],
-            'categories': [economy + '_Emissions_sector', chart_height + nrows2 + 3, 2, chart_height + nrows2 + 3, ncols8 - 1],
-            'values':     [economy + '_Emissions_sector', chart_height + nrows2 + i + 4, 2, chart_height + nrows2 + i + 4, ncols8 - 1],
+        ref_em_sector_chart2.add_series({
+            'name':       [economy + '_Emiss_sector_ref', chart_height + nrows2 + i + 4, 1],
+            'categories': [economy + '_Emiss_sector_ref', chart_height + nrows2 + 3, 2, chart_height + nrows2 + 3, ncols8 - 1],
+            'values':     [economy + '_Emiss_sector_ref', chart_height + nrows2 + i + 4, 2, chart_height + nrows2 + i + 4, ncols8 - 1],
             'fill':       {'color': colours_hex[i]},
             'border':     {'none': True}
         })    
         
-    worksheet2.insert_chart('B3', em_sector_chart2)
+    ref_worksheet2.insert_chart('B3', ref_em_sector_chart2)
 
     ###################### Create another FED chart showing proportional share #################################
 
     # Create a FED chart
-    em_sector_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
-    em_sector_chart3.set_size({
+    ref_em_sector_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    ref_em_sector_chart3.set_size({
         'width': 500,
         'height': 300
     })
     
-    em_sector_chart3.set_chartarea({
+    ref_em_sector_chart3.set_chartarea({
         'border': {'none': True}
     })
     
-    em_sector_chart3.set_x_axis({
+    ref_em_sector_chart3.set_x_axis({
         'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -521,7 +607,7 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_sector_chart3.set_y_axis({
+    ref_em_sector_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Proportion of CO2',
@@ -533,27 +619,388 @@ for economy in Economy_codes:
         'line': {'color': '#bebebe'}
     })
         
-    em_sector_chart3.set_legend({
+    ref_em_sector_chart3.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
         
-    em_sector_chart3.set_title({
+    ref_em_sector_chart3.set_title({
         'none': True
     })
 
     # Configure the series of the chart from the dataframe data.    
     for component in Emissions_agg_sectors:
-        i = emissions_sector_df2[emissions_sector_df2['item_code_new'] == component].index[0]
-        em_sector_chart3.add_series({
-            'name':       [economy + '_Emissions_sector', chart_height + nrows2 + nrows8 + i + 7, 1],
-            'categories': [economy + '_Emissions_sector', chart_height + nrows2 + nrows8 + 6, 2, chart_height + nrows2 + nrows8 + 6, ncols9 - 1],
-            'values':     [economy + '_Emissions_sector', chart_height + nrows2 + nrows8 + i + 7, 2, chart_height + nrows2 + nrows8 + i + 7, ncols9 - 1],
+        i = ref_emissions_sector_df2[ref_emissions_sector_df2['item_code_new'] == component].index[0]
+        ref_em_sector_chart3.add_series({
+            'name':       [economy + '_Emiss_sector_ref', chart_height + nrows2 + nrows8 + i + 7, 1],
+            'categories': [economy + '_Emiss_sector_ref', chart_height + nrows2 + nrows8 + 6, 2, chart_height + nrows2 + nrows8 + 6, ncols9 - 1],
+            'values':     [economy + '_Emiss_sector_ref', chart_height + nrows2 + nrows8 + i + 7, 2, chart_height + nrows2 + nrows8 + i + 7, ncols9 - 1],
             'fill':       {'color': colours_hex[i]},
             'border':     {'none': True}
         })
     
-    worksheet2.insert_chart('J3', em_sector_chart3)
+    ref_worksheet2.insert_chart('J3', ref_em_sector_chart3)
+
+    #############################################################################################################################
+    # NET ZERO CHARTS
+    # Access the workbook and first sheet with data from df1
+    netz_worksheet1 = writer.sheets[economy + '_Emiss_fuel_netz']
+        
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet1.set_column(1, ncols26 + 1, None, comma_format)
+    netz_worksheet1.set_row(chart_height, None, header_format)
+    netz_worksheet1.set_row(chart_height, None, header_format)
+    netz_worksheet1.set_row(chart_height + nrows26 + 3, None, header_format)
+    netz_worksheet1.write(0, 0, economy + ' emissions by fuel net zero scenario', cell_format1)
+
+    ################################################################### CHARTS ###################################################################
+
+    # Create a FED area chart
+    netz_em_fuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_em_fuel_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_em_fuel_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_em_fuel_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_fuel_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Million tonnes CO2',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_fuel_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_em_fuel_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows26):
+        netz_em_fuel_chart1.add_series({
+            'name':       [economy + '_Emiss_fuel_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_Emiss_fuel_netz', chart_height, 2, chart_height, ncols26 - 1],
+            'values':     [economy + '_Emiss_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols26 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })    
+        
+    netz_worksheet1.insert_chart('B3', netz_em_fuel_chart1)
+
+    ###################### Create another EMISSIONS chart showing proportional share #################################
+
+    # Create a another chart
+    netz_em_fuel_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    netz_em_fuel_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_em_fuel_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_em_fuel_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_fuel_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'CO2 proportion',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_fuel_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_em_fuel_chart2.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in Emissions_agg_fuels:
+        i = netz_emissions_fuel_df2[netz_emissions_fuel_df2['fuel_code'] == component].index[0]
+        netz_em_fuel_chart2.add_series({
+            'name':       [economy + '_Emiss_fuel_netz', chart_height + nrows26 + i + 4, 0],
+            'categories': [economy + '_Emiss_fuel_netz', chart_height + nrows26 + 3, 2, chart_height + nrows26 + 3, ncols27 - 1],
+            'values':     [economy + '_Emiss_fuel_netz', chart_height + nrows26 + i + 4, 2, chart_height + nrows26 + i + 4, ncols27 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet1.insert_chart('J3', netz_em_fuel_chart2)
+
+    # Create a Emissions line chart with higher level aggregation
+    netz_em_fuel_chart3 = workbook.add_chart({'type': 'line'})
+    netz_em_fuel_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_em_fuel_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_em_fuel_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_fuel_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Million tonnes CO2',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_fuel_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_em_fuel_chart3.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows26):
+        netz_em_fuel_chart3.add_series({
+            'name':       [economy + '_Emiss_fuel_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_Emiss_fuel_netz', chart_height, 2, chart_height, ncols26 - 1],
+            'values':     [economy + '_Emiss_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols26 - 1],
+            'line':       {'color': colours_hex[i], 'width': 1.25}
+        })    
+        
+    netz_worksheet1.insert_chart('R3', netz_em_fuel_chart3)
+
+
+    ############################## Next sheet: FED (TFC) by sector ##############################
+    
+    # Access the workbook and second sheet with data from df2
+    netz_worksheet2 = writer.sheets[economy + '_Emiss_sector_netz']
+        
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet2.set_column(1, ncols2 + 1, None, comma_format)
+    netz_worksheet2.set_row(chart_height, None, header_format)
+    netz_worksheet2.set_row(chart_height + nrows2 + 3, None, header_format)
+    netz_worksheet2.set_row(chart_height + nrows2 + nrows8 + 6, None, header_format)
+    netz_worksheet2.write(0, 0, economy + ' emissions by demand sector net zero scenario', cell_format1)
+    
+    # Create an EMISSIONS sector line chart
+
+    netz_em_sector_chart1 = workbook.add_chart({'type': 'line'})
+    netz_em_sector_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_em_sector_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_em_sector_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_sector_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Million tonnes CO2',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_sector_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_em_sector_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows28):
+        netz_em_sector_chart1.add_series({
+            'name':       [economy + '_Emiss_sector_netz', chart_height + nrows22 + i + 4, 1],
+            'categories': [economy + '_Emiss_sector_netz', chart_height + nrows22 + 3, 2, chart_height + nrows22 + 3, ncols28 - 1],
+            'values':     [economy + '_Emiss_sector_netz', chart_height + nrows22 + i + 4, 2, chart_height + nrows22 + i + 4, ncols28 - 1],
+            'line':       {'color': colours_hex[i], 'width': 1.25}
+        })    
+        
+    netz_worksheet2.insert_chart('R3', netz_em_sector_chart1)
+
+    # Create a EMISSIONS sector area chart
+
+    netz_em_sector_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_em_sector_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_em_sector_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_em_sector_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_sector_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Million tonnes CO2',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_sector_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_em_sector_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows28):
+        netz_em_sector_chart2.add_series({
+            'name':       [economy + '_Emiss_sector_netz', chart_height + nrows22 + i + 4, 1],
+            'categories': [economy + '_Emiss_sector_netz', chart_height + nrows22 + 3, 2, chart_height + nrows22 + 3, ncols28 - 1],
+            'values':     [economy + '_Emiss_sector_netz', chart_height + nrows22 + i + 4, 2, chart_height + nrows22 + i + 4, ncols28 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })    
+        
+    netz_worksheet2.insert_chart('B3', netz_em_sector_chart2)
+
+    ###################### Create another FED chart showing proportional share #################################
+
+    # Create a FED chart
+    netz_em_sector_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    netz_em_sector_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_em_sector_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_em_sector_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_sector_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Proportion of CO2',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_em_sector_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_em_sector_chart3.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in Emissions_agg_sectors:
+        i = netz_emissions_sector_df2[netz_emissions_sector_df2['item_code_new'] == component].index[0]
+        netz_em_sector_chart3.add_series({
+            'name':       [economy + '_Emiss_sector_netz', chart_height + nrows22 + nrows28 + i + 7, 1],
+            'categories': [economy + '_Emiss_sector_netz', chart_height + nrows22 + nrows28 + 6, 2, chart_height + nrows22 + nrows28 + 6, ncols29 - 1],
+            'values':     [economy + '_Emiss_sector_netz', chart_height + nrows22 + nrows28 + i + 7, 2, chart_height + nrows22 + nrows28 + i + 7, ncols29 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet2.insert_chart('J3', netz_em_sector_chart3)
 
     writer.save()
 
