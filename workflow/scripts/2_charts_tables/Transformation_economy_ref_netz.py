@@ -1756,7 +1756,7 @@ for economy in ref_power_df1['economy'].unique():
                 'categories': [economy + '_trnsfrm_ref', chart_height, 1, chart_height, ncols12 - 1],
                 'values':     [economy + '_trnsfrm_ref', chart_height + i + 1, 1, chart_height + i + 1, ncols12 - 1],
                 'line':       {'color': colours_hex[i],
-                               'wdith': 1}
+                               'width': 1.25}
             })    
             
         ref_worksheet5.insert_chart('J3', ref_trnsfrm_chart2)
@@ -1944,7 +1944,7 @@ for economy in ref_power_df1['economy'].unique():
                 'categories': [economy + '_own_ref', chart_height, 2, chart_height, ncols14 - 1],
                 'values':     [economy + '_own_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols14 - 1],
                 'line':       {'color': colours_hex[i],
-                               'width': 1}
+                               'width': 1.25}
             })    
             
         ref_worksheet6.insert_chart('J3', ref_own_chart2)
@@ -2704,7 +2704,7 @@ for economy in ref_power_df1['economy'].unique():
                 'categories': [economy + '_trnsfrm_netz', chart_height, 1, chart_height, ncols32 - 1],
                 'values':     [economy + '_trnsfrm_netz', chart_height + i + 1, 1, chart_height + i + 1, ncols32 - 1],
                 'line':       {'color': colours_hex[i],
-                               'width': 1}
+                               'width': 1.25}
             })    
             
         netz_worksheet5.insert_chart('J3', netz_trnsfrm_chart2)
@@ -2892,7 +2892,7 @@ for economy in ref_power_df1['economy'].unique():
                 'categories': [economy + '_own_netz', chart_height, 2, chart_height, ncols34 - 1],
                 'values':     [economy + '_own_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols34 - 1],
                 'line':       {'color': colours_hex[i],
-                               'width': 1}
+                               'width': 1.25}
             })    
             
         netz_worksheet6.insert_chart('J3', netz_own_chart2)
