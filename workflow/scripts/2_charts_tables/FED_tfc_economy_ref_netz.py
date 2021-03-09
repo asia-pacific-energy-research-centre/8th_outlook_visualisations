@@ -52,13 +52,31 @@ Oil_fuels = ['6_crude_oil_and_ngl', '7_petroleum_products', '5_oil_shale_and_oil
 
 Heat_others_fuels = ['9_nuclear', '16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_9_other_sources', '18_heat']
 
+Heat_others_fuels_nobio = ['9_nuclear', '15_solid_biomass', '16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', 
+                           '16_9_other_sources', '18_heat']
+
 # Need to amend this to reflect demarcation between modern renewables and traditional biomass renewables 
 
 Renewables_fuels = ['10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass', '16_1_biogas', 
                     '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                     '16_8_other_liquid_biofuels']
 
+Renewables_fuels_nobio = ['10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '16_1_biogas', 
+                          '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                          '16_8_other_liquid_biofuels']
+
+no_bio_sectors = ['16_1_commercial_and_public_services', '16_2_residential',
+                  '16_3_agriculture', '16_4_fishing', '16_5_nonspecified_others']
+
+bio_sectors = ['14_industry_sector', '15_transport_sector', '17_nonenergy_use']
+
+no_bio_renewables = ['10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', 
+                     '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', 
+                     '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels']
+
 # Modern_renew_primary = to be completed
+
+
 
 # Modern_renew_FED = to be completed
 
@@ -104,7 +122,8 @@ col_chart_years_transport = ['2018', '2020', '2030', '2040', '2050']
 
 # FED aggregate fuels
 
-FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat & others']
+FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Modern renewables', 'Electricity', 'Heat & others']
+FED_agg_fuels_ind = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat & others']
 
 FED_agg_sectors = ['Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-energy', 'Non-specified']
 
@@ -121,25 +140,27 @@ for economy in Economy_codes:
     # REFERENCE DATA FRAMES
     # First data frame construction: FED by fuels
     ref_econ_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                          (EGEDA_years_reference['item_code_new'].isin(['12_total_final_consumption'])) &
+                          (EGEDA_years_reference['item_code_new'].isin(bio_sectors)) &
                           (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
     
+    ref_econ_df1 = ref_econ_df1.copy().groupby(['fuel_code']).sum().assign(item_code_new = 'Industry, transport, NE').reset_index()
+
     #nrows1 = econ_df1.shape[0]
     #ncols1 = econ_df1.shape[1]
 
     # Now build aggregate variables of the first level fuels in EGEDA
 
     coal = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
-                                                                                                             item_code_new = '12_total_final_consumption')
+                                                                                                             item_code_new = 'Industry, transport, NE')
     
     oil = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
-                                                                                                             item_code_new = '12_total_final_consumption')
+                                                                                                             item_code_new = 'Industry, transport, NE')
     
-    renewables = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
-                                                                                                                           item_code_new = '12_total_final_consumption')
+    renewables = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Modern renewables',
+                                                                                                                           item_code_new = 'Industry, transport, NE')
     
     heat_others = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
-                                                                                                                             item_code_new = '12_total_final_consumption')
+                                                                                                                             item_code_new = 'Industry, transport, NE')
 
     # Fed fuel data frame 1 (data frame 6)
 
@@ -150,6 +171,43 @@ for economy in Economy_codes:
     ref_fedfuel_df1.loc[ref_fedfuel_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
     ref_fedfuel_df1 = ref_fedfuel_df1[ref_fedfuel_df1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+
+    ##### No biomass fix for dataframe
+
+    ref_nobio_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                          (EGEDA_years_reference['item_code_new'].isin(no_bio_sectors)) &
+                          (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
+
+    ref_nobio_df1 = ref_nobio_df1.copy().groupby(['fuel_code']).sum().assign(item_code_new = 'Non bio sectors').reset_index()
+
+    # build aggregate with altered vector to account for no biomass in renewables
+    coal_nobio = ref_nobio_df1[ref_nobio_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).\
+        sum().assign(fuel_code = 'Coal', item_code_new = 'Non bio sectors')
+
+    oil_nobio = ref_nobio_df1[ref_nobio_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).\
+        sum().assign(fuel_code = 'Oil', item_code_new = 'Non bio sectors')
+
+    renew_nobio = ref_nobio_df1[ref_nobio_df1['fuel_code'].isin(Renewables_fuels_nobio)].groupby(['item_code_new']).\
+        sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Non bio sectors')
+
+    heat_others_nobio = ref_nobio_df1[ref_nobio_df1['fuel_code'].isin(Heat_others_fuels_nobio)].groupby(['item_code_new']).\
+        sum().assign(fuel_code = 'Heat & others', item_code_new = 'Non bio sectors')
+
+    # Fed fuel no biomass in other sector renewables
+    ref_nobio_df2 = ref_nobio_df1.append([coal_nobio, oil_nobio, renew_nobio, heat_others_nobio])\
+        [['fuel_code', 'item_code_new'] + list(ref_nobio_df1.loc[:, '2000':])].reset_index(drop = True)
+
+    ref_nobio_df2.loc[ref_nobio_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ref_nobio_df2.loc[ref_nobio_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+
+    ref_nobio_df2 = ref_nobio_df2[ref_nobio_df2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+
+    ref_fedfuel_df1 = ref_fedfuel_df1.append(ref_nobio_df2)
+
+    # Combine the two dataframes that account for Modern renewables
+    ref_fedfuel_df1 = ref_fedfuel_df1.copy().groupby(['fuel_code']).sum().assign(item_code_new = '12_total_final_consumption')\
+        .reset_index()[['fuel_code', 'item_code_new'] + list(ref_fedfuel_df1.loc[:,'2000':'2050'])]\
+            .set_index('fuel_code').loc[FED_agg_fuels].reset_index()
 
     nrows6 = ref_fedfuel_df1.shape[0]
     ncols6 = ref_fedfuel_df1.shape[1]
@@ -220,9 +278,9 @@ for economy in Economy_codes:
     
     oil = ref_bld_df2[ref_bld_df2['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil', item_code_new = '16_x_buildings')
     
-    renewables = ref_bld_df2[ref_bld_df2['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables', item_code_new = '16_x_buildings')
+    renewables = ref_bld_df2[ref_bld_df2['fuel_code'].isin(Renewables_fuels_nobio)].groupby(['item_code_new']).sum().assign(fuel_code = 'Modern renewables', item_code_new = '16_x_buildings')
     
-    heat_others = ref_bld_df2[ref_bld_df2['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others', item_code_new = '16_x_buildings')
+    heat_others = ref_bld_df2[ref_bld_df2['fuel_code'].isin(Heat_others_fuels_nobio)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others', item_code_new = '16_x_buildings')
 
     ref_bld_df2 = ref_bld_df2.append([coal, oil, renewables, heat_others])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
 
@@ -291,7 +349,7 @@ for economy in Economy_codes:
     ref_ind_df2.loc[ref_ind_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_ind_df2.loc[ref_ind_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'                                                                    
 
-    ref_ind_df2 = ref_ind_df2[ref_ind_df2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+    ref_ind_df2 = ref_ind_df2[ref_ind_df2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index()
     
     nrows5 = ref_ind_df2.shape[0]
     ncols5 = ref_ind_df2.shape[1]
@@ -358,9 +416,9 @@ for economy in Economy_codes:
 
     oil = ref_ag_df1[ref_ag_df1['fuel_code'].isin(Oil_fuels)].groupby('item_code_new').sum().assign(fuel_code = 'Oil', item_code_new = 'Agriculture')
 
-    renewables = ref_ag_df1[ref_ag_df1['fuel_code'].isin(Renewables_fuels)].groupby('item_code_new').sum().assign(fuel_code = 'Renewables', item_code_new = 'Agriculture')
+    renewables = ref_ag_df1[ref_ag_df1['fuel_code'].isin(Renewables_fuels_nobio)].groupby('item_code_new').sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Agriculture')
     
-    heat_others = ref_ag_df1[ref_ag_df1['fuel_code'].isin(Heat_others_fuels)].groupby('item_code_new').sum().assign(fuel_code = 'Heat & others', item_code_new = 'Agriculture')
+    heat_others = ref_ag_df1[ref_ag_df1['fuel_code'].isin(Heat_others_fuels_nobio)].groupby('item_code_new').sum().assign(fuel_code = 'Heat & others', item_code_new = 'Agriculture')
     
     ref_ag_df1 = ref_ag_df1.append([coal, oil, renewables, heat_others])[['fuel_code', 'item_code_new'] + list(ref_ag_df1.loc[:,'2000':'2050'])].reset_index(drop = True)
 
@@ -382,25 +440,27 @@ for economy in Economy_codes:
     # NET ZERO DATA FRAMES
     # First data frame construction: FED by fuels
     netz_econ_df1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                          (EGEDA_years_netzero['item_code_new'].isin(['12_total_final_consumption'])) &
+                          (EGEDA_years_netzero['item_code_new'].isin(bio_sectors)) &
                           (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
     
+    netz_econ_df1 = netz_econ_df1.copy().groupby(['fuel_code']).sum().assign(item_code_new = 'Industry, transport, NE').reset_index()
+
     #nrows1 = econ_df1.shape[0]
     #ncols1 = econ_df1.shape[1]
 
     # Now build aggregate variables of the first level fuels in EGEDA
 
     coal = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
-                                                                                                             item_code_new = '12_total_final_consumption')
+                                                                                                             item_code_new = 'Industry, transport, NE')
     
     oil = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
-                                                                                                             item_code_new = '12_total_final_consumption')
+                                                                                                             item_code_new = 'Industry, transport, NE')
     
-    renewables = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
-                                                                                                                           item_code_new = '12_total_final_consumption')
+    renewables = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Modern renewables',
+                                                                                                                           item_code_new = 'Industry, transport, NE')
     
     heat_others = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
-                                                                                                                             item_code_new = '12_total_final_consumption')
+                                                                                                                             item_code_new = 'Industry, transport, NE')
 
     # Fed fuel data frame 1 (data frame 6)
 
@@ -411,6 +471,43 @@ for economy in Economy_codes:
     netz_fedfuel_df1.loc[netz_fedfuel_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
     netz_fedfuel_df1 = netz_fedfuel_df1[netz_fedfuel_df1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+
+    ##### No biomass fix for dataframe
+
+    netz_nobio_df1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                          (EGEDA_years_netzero['item_code_new'].isin(no_bio_sectors)) &
+                          (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':].reset_index(drop = True)
+
+    netz_nobio_df1 = netz_nobio_df1.copy().groupby(['fuel_code']).sum().assign(item_code_new = 'Non bio sectors').reset_index()
+
+    # build aggregate with altered vector to account for no biomass in renewables
+    coal_nobio = netz_nobio_df1[netz_nobio_df1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).\
+        sum().assign(fuel_code = 'Coal', item_code_new = 'Non bio sectors')
+
+    oil_nobio = netz_nobio_df1[netz_nobio_df1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).\
+        sum().assign(fuel_code = 'Oil', item_code_new = 'Non bio sectors')
+
+    renew_nobio = netz_nobio_df1[netz_nobio_df1['fuel_code'].isin(Renewables_fuels_nobio)].groupby(['item_code_new']).\
+        sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Non bio sectors')
+
+    heat_others_nobio = netz_nobio_df1[netz_nobio_df1['fuel_code'].isin(Heat_others_fuels_nobio)].groupby(['item_code_new']).\
+        sum().assign(fuel_code = 'Heat & others', item_code_new = 'Non bio sectors')
+
+    # Fed fuel no biomass in other sector renewables
+    netz_nobio_df2 = netz_nobio_df1.append([coal_nobio, oil_nobio, renew_nobio, heat_others_nobio])\
+        [['fuel_code', 'item_code_new'] + list(netz_nobio_df1.loc[:, '2000':])].reset_index(drop = True)
+
+    netz_nobio_df2.loc[netz_nobio_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    netz_nobio_df2.loc[netz_nobio_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+
+    netz_nobio_df2 = netz_nobio_df2[netz_nobio_df2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+
+    netz_fedfuel_df1 = netz_fedfuel_df1.append(netz_nobio_df2)
+
+    # Combine the two dataframes that account for Modern renewables
+    netz_fedfuel_df1 = netz_fedfuel_df1.copy().groupby(['fuel_code']).sum().assign(item_code_new = '12_total_final_consumption')\
+        .reset_index()[['fuel_code', 'item_code_new'] + list(netz_fedfuel_df1.loc[:,'2000':'2050'])]\
+            .set_index('fuel_code').loc[FED_agg_fuels].reset_index()
 
     nrows26 = netz_fedfuel_df1.shape[0]
     ncols26 = netz_fedfuel_df1.shape[1]
@@ -481,9 +578,9 @@ for economy in Economy_codes:
     
     oil = netz_bld_df2[netz_bld_df2['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil', item_code_new = '16_x_buildings')
     
-    renewables = netz_bld_df2[netz_bld_df2['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables', item_code_new = '16_x_buildings')
+    renewables = netz_bld_df2[netz_bld_df2['fuel_code'].isin(Renewables_fuels_nobio)].groupby(['item_code_new']).sum().assign(fuel_code = 'Modern renewables', item_code_new = '16_x_buildings')
     
-    heat_others = netz_bld_df2[netz_bld_df2['fuel_code'].isin(Heat_others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others', item_code_new = '16_x_buildings')
+    heat_others = netz_bld_df2[netz_bld_df2['fuel_code'].isin(Heat_others_fuels_nobio)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others', item_code_new = '16_x_buildings')
 
     netz_bld_df2 = netz_bld_df2.append([coal, oil, renewables, heat_others])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
 
@@ -552,7 +649,7 @@ for economy in Economy_codes:
     netz_ind_df2.loc[netz_ind_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_ind_df2.loc[netz_ind_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'                                                                    
 
-    netz_ind_df2 = netz_ind_df2[netz_ind_df2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+    netz_ind_df2 = netz_ind_df2[netz_ind_df2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index()
     
     nrows25 = netz_ind_df2.shape[0]
     ncols25 = netz_ind_df2.shape[1]
@@ -619,9 +716,9 @@ for economy in Economy_codes:
 
     oil = netz_ag_df1[netz_ag_df1['fuel_code'].isin(Oil_fuels)].groupby('item_code_new').sum().assign(fuel_code = 'Oil', item_code_new = 'Agriculture')
 
-    renewables = netz_ag_df1[netz_ag_df1['fuel_code'].isin(Renewables_fuels)].groupby('item_code_new').sum().assign(fuel_code = 'Renewables', item_code_new = 'Agriculture')
+    renewables = netz_ag_df1[netz_ag_df1['fuel_code'].isin(Renewables_fuels_nobio)].groupby('item_code_new').sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Agriculture')
     
-    heat_others = netz_ag_df1[netz_ag_df1['fuel_code'].isin(Heat_others_fuels)].groupby('item_code_new').sum().assign(fuel_code = 'Heat & others', item_code_new = 'Agriculture')
+    heat_others = netz_ag_df1[netz_ag_df1['fuel_code'].isin(Heat_others_fuels_nobio)].groupby('item_code_new').sum().assign(fuel_code = 'Heat & others', item_code_new = 'Agriculture')
     
     netz_ag_df1 = netz_ag_df1.append([coal, oil, renewables, heat_others])[['fuel_code', 'item_code_new'] + list(netz_ag_df1.loc[:,'2000':'2050'])].reset_index(drop = True)
 
@@ -1330,7 +1427,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for fuel_agg in FED_agg_fuels:
+    for fuel_agg in FED_agg_fuels_ind:
         j = ref_ind_df2[ref_ind_df2['fuel_code'] == fuel_agg].index[0]
         ref_fed_ind_chart2.add_series({
             'name':       [economy + '_FED_ind_ref', chart_height + nrows4 + j + 3, 0],
@@ -2294,7 +2391,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for fuel_agg in FED_agg_fuels:
+    for fuel_agg in FED_agg_fuels_ind:
         j = netz_ind_df2[netz_ind_df2['fuel_code'] == fuel_agg].index[0]
         netz_fed_ind_chart2.add_series({
             'name':       [economy + '_FED_ind_netz', chart_height + nrows24 + j + 3, 0],
