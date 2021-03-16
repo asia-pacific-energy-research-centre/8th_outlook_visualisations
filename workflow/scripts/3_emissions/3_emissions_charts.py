@@ -120,7 +120,7 @@ for economy in Economy_codes:
     # EMISSIONS fuel data frame 1 (data frame 6)
 
     ref_emissions_fuel_df1 = ref_econ_df1.append([coal, oil, heat_others])[['fuel_code',
-                                                             'item_code_new'] + list(ref_econ_df1.loc[:, '2000':])].reset_index(drop = True)
+                                                             'item_code_new'] + list(ref_econ_df1.loc[:, '2000':'2050'])].reset_index(drop = True)
 
     ref_emissions_fuel_df1.loc[ref_emissions_fuel_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_emissions_fuel_df1.loc[ref_emissions_fuel_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -140,7 +140,7 @@ for economy in Economy_codes:
                                (EGEDA_emissions_reference['item_code_new'].isin(Sectors_tfc)) &
                                (EGEDA_emissions_reference['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True)
 
-    ref_econ_df2 = ref_econ_df2[['fuel_code', 'item_code_new'] + list(ref_econ_df2.loc[:,'2000':])]
+    ref_econ_df2 = ref_econ_df2[['fuel_code', 'item_code_new'] + list(ref_econ_df2.loc[:,'2000':'2050'])]
     
     nrows2 = ref_econ_df2.shape[0]
     ncols2 = ref_econ_df2.shape[1]
@@ -155,7 +155,7 @@ for economy in Economy_codes:
 
     # Build aggregate data frame of FED sector
 
-    ref_emissions_sector_df1 = ref_econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(ref_econ_df2.loc[:, '2000':])].reset_index(drop = True)
+    ref_emissions_sector_df1 = ref_econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(ref_econ_df2.loc[:, '2000':'2050'])].reset_index(drop = True)
 
     ref_emissions_sector_df1.loc[ref_emissions_sector_df1['item_code_new'] == '9_x_power', 'item_code_new'] = 'Power'
     ref_emissions_sector_df1.loc[ref_emissions_sector_df1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own use'
@@ -165,7 +165,7 @@ for economy in Economy_codes:
     ref_emissions_sector_df1.loc[ref_emissions_sector_df1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
     ref_emissions_sector_df1 = ref_emissions_sector_df1[ref_emissions_sector_df1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()
-    ref_emissions_sector_df1 = ref_emissions_sector_df1[['fuel_code', 'item_code_new'] + list(ref_emissions_sector_df1.loc[:, '2000':])]
+    ref_emissions_sector_df1 = ref_emissions_sector_df1[['fuel_code', 'item_code_new'] + list(ref_emissions_sector_df1.loc[:, '2000':'2050'])]
 
     nrows8 = ref_emissions_sector_df1.shape[0]
     ncols8 = ref_emissions_sector_df1.shape[1]
@@ -199,7 +199,7 @@ for economy in Economy_codes:
     # EMISSIONS fuel data frame 1 (data frame 6)
 
     netz_emissions_fuel_df1 = netz_econ_df1.append([coal, oil, heat_others])[['fuel_code',
-                                                             'item_code_new'] + list(netz_econ_df1.loc[:, '2000':])].reset_index(drop = True)
+                                                             'item_code_new'] + list(netz_econ_df1.loc[:, '2000':'2050'])].reset_index(drop = True)
 
     netz_emissions_fuel_df1.loc[netz_emissions_fuel_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_emissions_fuel_df1.loc[netz_emissions_fuel_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -219,7 +219,7 @@ for economy in Economy_codes:
                                (EGEDA_emissions_netzero['item_code_new'].isin(Sectors_tfc)) &
                                (EGEDA_emissions_netzero['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True)
 
-    netz_econ_df2 = netz_econ_df2[['fuel_code', 'item_code_new'] + list(netz_econ_df2.loc[:,'2000':])]
+    netz_econ_df2 = netz_econ_df2[['fuel_code', 'item_code_new'] + list(netz_econ_df2.loc[:,'2000':'2050'])]
     
     nrows22 = netz_econ_df2.shape[0]
     ncols22 = netz_econ_df2.shape[1]
@@ -234,7 +234,7 @@ for economy in Economy_codes:
 
     # Build aggregate data frame of FED sector
 
-    netz_emissions_sector_df1 = netz_econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(netz_econ_df2.loc[:, '2000':])].reset_index(drop = True)
+    netz_emissions_sector_df1 = netz_econ_df2.append([buildings, agriculture])[['fuel_code', 'item_code_new'] + list(netz_econ_df2.loc[:, '2000':'2050'])].reset_index(drop = True)
 
     netz_emissions_sector_df1.loc[netz_emissions_sector_df1['item_code_new'] == '9_x_power', 'item_code_new'] = 'Power'
     netz_emissions_sector_df1.loc[netz_emissions_sector_df1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own use'
@@ -244,7 +244,7 @@ for economy in Economy_codes:
     netz_emissions_sector_df1.loc[netz_emissions_sector_df1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
     netz_emissions_sector_df1 = netz_emissions_sector_df1[netz_emissions_sector_df1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()
-    netz_emissions_sector_df1 = netz_emissions_sector_df1[['fuel_code', 'item_code_new'] + list(netz_emissions_sector_df1.loc[:, '2000':])]
+    netz_emissions_sector_df1 = netz_emissions_sector_df1[['fuel_code', 'item_code_new'] + list(netz_emissions_sector_df1.loc[:, '2000':'2050'])]
 
     nrows28 = netz_emissions_sector_df1.shape[0]
     ncols28 = netz_emissions_sector_df1.shape[1]
