@@ -457,6 +457,30 @@ for economy in Economy_codes:
     nrows15 = ref_ag_df2.shape[0]
     ncols15 = ref_ag_df2.shape[1]
 
+    # Hydrogen data frame
+
+    ref_hyd_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
+                                        (EGEDA_years_reference['item_code_new'].isin(Sectors_tfc)) &
+                                        (EGEDA_years_reference['fuel_code'] == '16_9_other_sources')].groupby('item_code_new').sum().assign(fuel_code = 'Hydrogen').reset_index()
+
+    buildings_hy = ref_hyd_df1[ref_hyd_df1['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])].groupby('fuel_code')\
+        .sum().assign(item_code_new = 'Buildings', fuel_code = 'Hydrogen')
+
+    ag_hy = ref_hyd_df1[ref_hyd_df1['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])].groupby('fuel_code')\
+        .sum().assign(item_code_new = 'Agriculture', fuel_code = 'Hydrogen')
+
+    ref_hyd_df1 = ref_hyd_df1.append([buildings_hy, ag_hy])\
+        [['fuel_code', 'item_code_new'] + list(ref_hyd_df1.loc[:, '2000':'2050'])].reset_index(drop = True)
+
+    ref_hyd_df1.loc[ref_hyd_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    ref_hyd_df1.loc[ref_hyd_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+
+    ref_hyd_df1 = ref_hyd_df1[ref_hyd_df1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]
+
+    
+
+
+
     ###############################################################################################################
 
     # NET ZERO DATA FRAMES
