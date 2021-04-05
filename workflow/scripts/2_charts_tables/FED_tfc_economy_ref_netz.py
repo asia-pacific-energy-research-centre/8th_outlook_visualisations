@@ -457,7 +457,7 @@ for economy in Economy_codes:
     nrows15 = ref_ag_df2.shape[0]
     ncols15 = ref_ag_df2.shape[1]
 
-    # Hydrogen data frame
+    # Hydrogen data frame reference
 
     ref_hyd_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
                                         (EGEDA_years_reference['item_code_new'].isin(Sectors_tfc)) &
@@ -470,16 +470,15 @@ for economy in Economy_codes:
         .sum().assign(item_code_new = 'Agriculture', fuel_code = 'Hydrogen')
 
     ref_hyd_df1 = ref_hyd_df1.append([buildings_hy, ag_hy])\
-        [['fuel_code', 'item_code_new'] + list(ref_hyd_df1.loc[:, '2000':'2050'])].reset_index(drop = True)
+        [['fuel_code', 'item_code_new'] + list(ref_hyd_df1.loc[:, '2017':'2050'])].reset_index(drop = True)
 
     ref_hyd_df1.loc[ref_hyd_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     ref_hyd_df1.loc[ref_hyd_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
 
     ref_hyd_df1 = ref_hyd_df1[ref_hyd_df1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]
 
-    
-
-
+    nrows16 = ref_hyd_df1.shape[0]
+    ncols16 = ref_hyd_df1.shape[1]
 
     ###############################################################################################################
 
@@ -811,6 +810,29 @@ for economy in Economy_codes:
     nrows35 = netz_ag_df2.shape[0]
     ncols35 = netz_ag_df2.shape[1]
 
+    # Hydrogen data frame net zero
+
+    netz_hyd_df1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) &
+                                        (EGEDA_years_netzero['item_code_new'].isin(Sectors_tfc)) &
+                                        (EGEDA_years_netzero['fuel_code'] == '16_9_other_sources')].groupby('item_code_new').sum().assign(fuel_code = 'Hydrogen').reset_index()
+
+    buildings_hy = netz_hyd_df1[netz_hyd_df1['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])].groupby('fuel_code')\
+        .sum().assign(item_code_new = 'Buildings', fuel_code = 'Hydrogen')
+
+    ag_hy = netz_hyd_df1[netz_hyd_df1['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])].groupby('fuel_code')\
+        .sum().assign(item_code_new = 'Agriculture', fuel_code = 'Hydrogen')
+
+    netz_hyd_df1 = netz_hyd_df1.append([buildings_hy, ag_hy])\
+        [['fuel_code', 'item_code_new'] + list(netz_hyd_df1.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+    netz_hyd_df1.loc[netz_hyd_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    netz_hyd_df1.loc[netz_hyd_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+
+    netz_hyd_df1 = netz_hyd_df1[netz_hyd_df1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]
+
+    nrows36 = netz_hyd_df1.shape[0]
+    ncols36 = netz_hyd_df1.shape[1]
+
     ############################################################################################################################
     
     # Define directory
@@ -852,6 +874,8 @@ for economy in Economy_codes:
     netz_ag_df1.to_excel(writer, sheet_name = economy + '_FED_agr_netz', index = False, startrow = chart_height)
     ref_ag_df2.to_excel(writer, sheet_name = economy + '_FED_agr_ref', index = False, startrow = chart_height + nrows14 + 3)
     netz_ag_df2.to_excel(writer, sheet_name = economy + '_FED_agr_netz', index = False, startrow = chart_height + nrows34 + 3)
+    ref_hyd_df1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height)
+    netz_hyd_df1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height + nrows16 + 3)
     
     ################################################################################################################################
 
@@ -1812,6 +1836,133 @@ for economy in Economy_codes:
         })
     
     ref_worksheet6.insert_chart('R3', ref_ag_chart3)
+
+    # HYDROGEN CHARTS
+
+    # Access the workbook and first sheet with data from df1
+    hyd_worksheet1 = writer.sheets[economy + '_FED_hyd']
+    
+    # Comma format and header format        
+    comma_format = workbook.add_format({'num_format': '#,##0'})
+    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    cell_format1 = workbook.add_format({'bold': True})
+        
+    # Apply comma format and header format to relevant data rows
+    hyd_worksheet1.set_column(1, ncols16 + 1, None, comma_format)
+    hyd_worksheet1.set_row(chart_height, None, header_format)
+    hyd_worksheet1.set_row(chart_height, None, header_format)
+    hyd_worksheet1.set_row(chart_height + nrows16 + 3, None, header_format)
+    hyd_worksheet1.write(0, 0, economy + ' FED hydrogen', cell_format1)
+
+    # Create a HYDROGEN area chart
+    ref_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_hyd_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_hyd_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_hyd_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_hyd_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_hyd_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_hyd_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows16):
+        ref_hyd_chart1.add_series({
+            'name':       [economy + '_FED_hyd', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_hyd', chart_height, 2, chart_height, ncols16 - 1],
+            'values':     [economy + '_FED_hyd', chart_height + i + 1, 2, chart_height + i + 1, ncols16 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })    
+        
+    hyd_worksheet1.insert_chart('B3', ref_hyd_chart1)
+
+    # Create a HYDROGEN area chart
+    netz_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_hyd_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_hyd_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_hyd_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_hyd_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_hyd_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_hyd_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(nrows36):
+        netz_hyd_chart1.add_series({
+            'name':       [economy + '_FED_hyd', chart_height + nrows16 + i + 4, 1],
+            'categories': [economy + '_FED_hyd', chart_height + nrows16 + 3, 2, chart_height + nrows16 + 3, ncols36 - 1],
+            'values':     [economy + '_FED_hyd', chart_height + nrows16 + i + 4, 2, chart_height + nrows16 + i + 4, ncols36 - 1],
+            'fill':       {'color': colours_hex[i]},
+            'border':     {'none': True}
+        })    
+        
+    hyd_worksheet1.insert_chart('J3', netz_hyd_chart1)
 
     ##############################################################################################################################
 
