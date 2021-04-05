@@ -269,7 +269,7 @@ for economy in Economy_codes:
         
         ref_bld_df1 = ref_bld_df1.append(buildings).reset_index(drop = True)
         
-    ref_bld_df1 = ref_bld_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_bld_df1 = ref_bld_df1[['fuel_code', 'item_code_new'] + list(ref_bld_df1.loc[:, '2000':])]
     
     nrows3 = ref_bld_df1.shape[0]
     ncols3 = ref_bld_df1.shape[1]
@@ -289,7 +289,7 @@ for economy in Economy_codes:
         .sum().assign(fuel_code = 'Others', item_code_new = '16_x_buildings')
 
     ref_bld_df2 = ref_bld_df2.append([coal, oil, renewables, others])\
-        [['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
+        [['fuel_code', 'item_code_new'] + list(ref_bld_df2.loc[:, '2000':])].reset_index(drop = True)
 
     ref_bld_df2.loc[ref_bld_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_bld_df2.loc[ref_bld_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Traditional biomass'
@@ -320,7 +320,7 @@ for economy in Economy_codes:
     other_industry = ref_ind_df1[ref_ind_df1['item_code_new'].isin(Other_industry)].groupby(['fuel_code']).sum().assign(item_code_new = 'Other',
                                                                                                                 fuel_code = '19_total')
 
-    ref_ind_df1 = ref_ind_df1.append([other_industry])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
+    ref_ind_df1 = ref_ind_df1.append([other_industry])[['fuel_code', 'item_code_new'] + list(ref_ind_df1.loc[:, '2000':])].reset_index(drop = True)
 
     ref_ind_df1.loc[ref_ind_df1['item_code_new'] == '14_1_iron_and_steel', 'item_code_new'] = 'Iron & steel'
     ref_ind_df1.loc[ref_ind_df1['item_code_new'] == '14_2_chemical_incl_petrochemical', 'item_code_new'] = 'Chemicals'
@@ -332,7 +332,7 @@ for economy in Economy_codes:
     
     ref_ind_df1 = ref_ind_df1[ref_ind_df1['item_code_new'].isin(Industry_eight)].set_index('item_code_new').loc[Industry_eight].reset_index()
 
-    ref_ind_df1 = ref_ind_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_ind_df1 = ref_ind_df1[['fuel_code', 'item_code_new'] + list(ref_ind_df1.loc[:, '2000':])]
 
     nrows4 = ref_ind_df1.shape[0]
     ncols4 = ref_ind_df1.shape[1]
@@ -355,7 +355,7 @@ for economy in Economy_codes:
                                                                                                                 item_code_new = '14_industry_sector')
     
     ref_ind_df2 = ref_ind_df2.append([coal, oil, renewables, others])\
-        [['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
+        [['fuel_code', 'item_code_new'] + list(ref_ind_df2.loc[:, '2000':])].reset_index(drop = True)
 
     ref_ind_df2.loc[ref_ind_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_ind_df2.loc[ref_ind_df2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
@@ -623,7 +623,7 @@ for economy in Economy_codes:
         
         netz_bld_df1 = netz_bld_df1.append(buildings).reset_index(drop = True)
         
-    netz_bld_df1 = netz_bld_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    netz_bld_df1 = netz_bld_df1[['fuel_code', 'item_code_new'] + list(netz_bld_df1.loc[:, '2000':])]
     
     nrows23 = netz_bld_df1.shape[0]
     ncols23 = netz_bld_df1.shape[1]
@@ -643,7 +643,7 @@ for economy in Economy_codes:
         .sum().assign(fuel_code = 'Others', item_code_new = '16_x_buildings')
 
     netz_bld_df2 = netz_bld_df2.append([coal, oil, renewables, others])\
-        [['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
+        [['fuel_code', 'item_code_new'] + list(netz_bld_df2.loc[:, '2000':])].reset_index(drop = True)
 
     netz_bld_df2.loc[netz_bld_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_bld_df2.loc[netz_bld_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Traditional biomass'
@@ -673,7 +673,7 @@ for economy in Economy_codes:
     other_industry = netz_ind_df1[netz_ind_df1['item_code_new'].isin(Other_industry)].groupby(['fuel_code']).sum().assign(item_code_new = 'Other',
                                                                                                                 fuel_code = '19_total')
 
-    netz_ind_df1 = netz_ind_df1.append([other_industry])[['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
+    netz_ind_df1 = netz_ind_df1.append([other_industry])[['fuel_code', 'item_code_new'] + list(netz_ind_df1.loc[:, '2000':])].reset_index(drop = True)
 
     netz_ind_df1.loc[netz_ind_df1['item_code_new'] == '14_1_iron_and_steel', 'item_code_new'] = 'Iron & steel'
     netz_ind_df1.loc[netz_ind_df1['item_code_new'] == '14_2_chemical_incl_petrochemical', 'item_code_new'] = 'Chemicals'
@@ -685,7 +685,7 @@ for economy in Economy_codes:
     
     netz_ind_df1 = netz_ind_df1[netz_ind_df1['item_code_new'].isin(Industry_eight)].set_index('item_code_new').loc[Industry_eight].reset_index()
 
-    netz_ind_df1 = netz_ind_df1[['fuel_code', 'item_code_new'] + col_chart_years]
+    netz_ind_df1 = netz_ind_df1[['fuel_code', 'item_code_new'] + list(netz_ind_df1.loc[:, '2000':])]
 
     nrows24 = netz_ind_df1.shape[0]
     ncols24 = netz_ind_df1.shape[1]
@@ -708,7 +708,7 @@ for economy in Economy_codes:
                                                                                                                 item_code_new = '14_industry_sector')
     
     netz_ind_df2 = netz_ind_df2.append([coal, oil, renewables, others])\
-        [['fuel_code', 'item_code_new'] + col_chart_years].reset_index(drop = True)
+        [['fuel_code', 'item_code_new'] + list(netz_ind_df2.loc[:, '2000':])].reset_index(drop = True)
 
     netz_ind_df2.loc[netz_ind_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_ind_df2.loc[netz_ind_df2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
@@ -1311,7 +1311,7 @@ for economy in Economy_codes:
     ref_worksheet3.write(0, 0, economy + ' buildings', cell_format1)
     
     # Create a FED chart
-    ref_fed_bld_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_fed_bld_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     ref_fed_bld_chart1.set_size({
         'width': 500,
         'height': 300
@@ -1367,7 +1367,7 @@ for economy in Economy_codes:
     ################## FED building chart 2 (residential versus services) ###########################################
     
     # Create a second FED building chart
-    ref_fed_bld_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_fed_bld_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     ref_fed_bld_chart2.set_size({
         'width': 500,
         'height': 300
@@ -1431,7 +1431,7 @@ for economy in Economy_codes:
     ref_worksheet4.write(0, 0, economy + ' industry', cell_format1)
     
     # Create a industry subsector FED chart
-    ref_fed_ind_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_fed_ind_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     ref_fed_ind_chart1.set_size({
         'width': 500,
         'height': 300
@@ -1486,7 +1486,7 @@ for economy in Economy_codes:
     ############# FED industry chart 2 (industry by fuel)
     
     # Create a FED industry fuel chart
-    ref_fed_ind_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_fed_ind_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     ref_fed_ind_chart2.set_size({
         'width': 500,
         'height': 300
@@ -2402,7 +2402,7 @@ for economy in Economy_codes:
     netz_worksheet3.write(0, 0, economy + ' buildings', cell_format1)
     
     # Create a FED chart
-    netz_fed_bld_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_fed_bld_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     netz_fed_bld_chart1.set_size({
         'width': 500,
         'height': 300
@@ -2458,7 +2458,7 @@ for economy in Economy_codes:
     ################## FED building chart 2 (residential versus services) ###########################################
     
     # Create a second FED building chart
-    netz_fed_bld_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_fed_bld_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     netz_fed_bld_chart2.set_size({
         'width': 500,
         'height': 300
@@ -2522,7 +2522,7 @@ for economy in Economy_codes:
     netz_worksheet4.write(0, 0, economy + ' industry', cell_format1)
     
     # Create a industry subsector FED chart
-    netz_fed_ind_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_fed_ind_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     netz_fed_ind_chart1.set_size({
         'width': 500,
         'height': 300
@@ -2577,7 +2577,7 @@ for economy in Economy_codes:
     ############# FED industry chart 2 (industry by fuel)
     
     # Create a FED industry fuel chart
-    netz_fed_ind_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_fed_ind_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     netz_fed_ind_chart2.set_size({
         'width': 500,
         'height': 300
