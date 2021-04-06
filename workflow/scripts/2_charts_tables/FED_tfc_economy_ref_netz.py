@@ -77,13 +77,6 @@ colours_dict = {
     '17_nonenergy_use': 'pink'
     }
 
-Transport_fuels_agg = ['Diesel', 'Gasoline', 'LPG', 'Gas', 'Jet fuel', 'Electricity', 'Renewables', 'Hydrogen', 'Other']
-FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Modern renewables', 'Traditional biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
-FED_agg_fuels_ind = ['Coal', 'Oil', 'Gas', 'Renewables', 'Hydrogen', 'Electricity', 'Heat', 'Others']
-
-FED_agg_sectors = ['Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-energy', 'Non-specified']
-
-Industry_eight = ['Iron & steel', 'Chemicals', 'Aluminium', 'Non-metallic minerals', 'Mining', 'Pulp & paper', 'Other', 'Non-specified']
 # Define month and year to create folder for saving charts/tables
 
 month_year = pd.to_datetime('today').strftime('%B_%Y')
@@ -105,6 +98,10 @@ Coal_fuels = ['1_coal', '2_coal_products', '3_peat', '4_peat_products']
 Oil_fuels = ['6_crude_oil_and_ngl', '7_petroleum_products', '5_oil_shale_and_oil_sands']
 
 Others_fuels = ['9_nuclear', '16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable']
+
+Others_fuels_industry = ['9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '16_1_biogas',
+                         '16_2_industrial_waste', '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable', 
+                         '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels']
 
 # Need to amend this to reflect demarcation between modern renewables and traditional biomass renewables 
 
@@ -168,7 +165,7 @@ col_chart_years_transport = ['2018', '2020', '2030', '2040', '2050']
 # FED aggregate fuels
 
 FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Modern renewables', 'Traditional biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
-FED_agg_fuels_ind = ['Coal', 'Oil', 'Gas', 'Renewables', 'Hydrogen', 'Electricity', 'Heat', 'Others']
+FED_agg_fuels_ind = ['Coal', 'Oil', 'Gas', 'Biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
 
 FED_agg_sectors = ['Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-energy', 'Non-specified']
 
@@ -402,13 +399,13 @@ for economy in Economy_codes:
     oil = ref_ind_df2[ref_ind_df2['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil', 
                                                                                                 item_code_new = '14_industry_sector')
     
-    renewables = ref_ind_df2[ref_ind_df2['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables', 
+    biomass = ref_ind_df2[ref_ind_df2['fuel_code'].isin(['15_solid_biomass'])].groupby(['item_code_new']).sum().assign(fuel_code = 'Biomass', 
                                                                                                               item_code_new = '14_industry_sector')
     
-    others = ref_ind_df2[ref_ind_df2['fuel_code'].isin(Others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Others', 
+    others = ref_ind_df2[ref_ind_df2['fuel_code'].isin(Others_fuels_industry)].groupby(['item_code_new']).sum().assign(fuel_code = 'Others', 
                                                                                                                 item_code_new = '14_industry_sector')
     
-    ref_ind_df2 = ref_ind_df2.append([coal, oil, renewables, others])\
+    ref_ind_df2 = ref_ind_df2.append([coal, oil, biomass, others])\
         [['fuel_code', 'item_code_new'] + list(ref_ind_df2.loc[:, '2000':])].reset_index(drop = True)
 
     ref_ind_df2.loc[ref_ind_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
@@ -756,13 +753,13 @@ for economy in Economy_codes:
     oil = netz_ind_df2[netz_ind_df2['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil', 
                                                                                                 item_code_new = '14_industry_sector')
     
-    renewables = netz_ind_df2[netz_ind_df2['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables', 
+    biomass = netz_ind_df2[netz_ind_df2['fuel_code'].isin(['15_solid_biomass'])].groupby(['item_code_new']).sum().assign(fuel_code = 'Biomass', 
                                                                                                               item_code_new = '14_industry_sector')
     
-    others = netz_ind_df2[netz_ind_df2['fuel_code'].isin(Others_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Others', 
+    others = netz_ind_df2[netz_ind_df2['fuel_code'].isin(Others_fuels_industry)].groupby(['item_code_new']).sum().assign(fuel_code = 'Others', 
                                                                                                                 item_code_new = '14_industry_sector')
     
-    netz_ind_df2 = netz_ind_df2.append([coal, oil, renewables, others])\
+    netz_ind_df2 = netz_ind_df2.append([coal, oil, biomass, others])\
         [['fuel_code', 'item_code_new'] + list(netz_ind_df2.loc[:, '2000':])].reset_index(drop = True)
 
     netz_ind_df2.loc[netz_ind_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
