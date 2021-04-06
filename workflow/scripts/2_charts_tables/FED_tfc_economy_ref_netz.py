@@ -30,6 +30,60 @@ Items = EGEDA_years_reference.item_code_new.unique()
 colours = pd.read_excel('./data/2_Mapping_and_other/colour_template_7th.xlsx')
 colours_hex = colours['hex']
 
+# Colours dictionary
+colours_dict = {
+    'Coal': '#323232',
+    'Oil': '#be280a',
+    'Gas': '#f59300',
+    'Modern renewables': '#3c7896',
+    'Traditional biomass': '#828282',
+    'Hydrogen': '#28825a',
+    'Electricity': '#a5cdf0',
+    'Heat': '#cd6477',
+    'Others': '#bebebe',
+    'Industry': '#ffc305',
+    'Transport': '#bebebe',
+    'Buildings': '#3c7896',
+    'Agriculture': '#323232',
+    'Non-energy': '#cd6477',
+    'Non-specified': '#872355',
+    'Services': '#a5cdf0',
+    'Residential': '#28825a',
+    'Iron & steel': '#8c0000',
+    'Chemicals': '#a5cdf0',
+    'Aluminium': '#bebebe',
+    'Non-metallic minerals': '#1e465a',
+    'Mining': '#f59300',
+    'Pulp & paper': '#28825a',
+    'Other': '#cd6477',
+    'Biomass': '#3c7896',
+    'Jet fuel': '#323232',
+    'LPG': '#ffdc96',
+    'Gasoline': '#be280a',
+    'Diesel': '#3c7896',
+    'Renewables': '#1e465a',
+    'Aviation': '#ffc305',
+    'Road': '#1e465a',
+    'Rail': '#be280a',
+    'Marine': '#28825a',
+    'Pipeline': '#bebebe',
+    '14_industry_sector': 'blue',
+    '15_transport_sector': 'yellow',
+    '16_1_commercial_and_public_services': 'black',
+    '16_2_residential': 'red',
+    '16_3_agriculture': 'orange',
+    '16_4_fishing': 'red',
+    '16_5_nonspecified_others': 'green',
+    '17_nonenergy_use': 'pink'
+    }
+
+Transport_fuels_agg = ['Diesel', 'Gasoline', 'LPG', 'Gas', 'Jet fuel', 'Electricity', 'Renewables', 'Hydrogen', 'Other']
+FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Modern renewables', 'Traditional biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
+FED_agg_fuels_ind = ['Coal', 'Oil', 'Gas', 'Renewables', 'Hydrogen', 'Electricity', 'Heat', 'Others']
+
+FED_agg_sectors = ['Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-energy', 'Non-specified']
+
+Industry_eight = ['Iron & steel', 'Chemicals', 'Aluminium', 'Non-metallic minerals', 'Mining', 'Pulp & paper', 'Other', 'Non-specified']
 # Define month and year to create folder for saving charts/tables
 
 month_year = pd.to_datetime('today').strftime('%B_%Y')
@@ -304,7 +358,7 @@ for economy in Economy_codes:
     ncols12 = ref_bld_df2.shape[1]
 
     ref_bld_df3 = ref_bld_df1[(ref_bld_df1['fuel_code'] == '19_total') &
-                      (ref_bld_df1['item_code_new'].isin(Buildings_items))].copy()
+                      (ref_bld_df1['item_code_new'].isin(Buildings_items))].copy().reset_index(drop = True)
 
     ref_bld_df3.loc[ref_bld_df3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
     ref_bld_df3.loc[ref_bld_df3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
@@ -475,7 +529,8 @@ for economy in Economy_codes:
     ref_hyd_df1.loc[ref_hyd_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     ref_hyd_df1.loc[ref_hyd_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
 
-    ref_hyd_df1 = ref_hyd_df1[ref_hyd_df1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]
+    ref_hyd_df1 = ref_hyd_df1[ref_hyd_df1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
+        .copy().reset_index(drop = True)
 
     nrows16 = ref_hyd_df1.shape[0]
     ncols16 = ref_hyd_df1.shape[1]
@@ -657,7 +712,7 @@ for economy in Economy_codes:
     ncols32 = netz_bld_df2.shape[1]
 
     netz_bld_df3 = netz_bld_df1[(netz_bld_df1['fuel_code'] == '19_total') &
-                      (netz_bld_df1['item_code_new'].isin(Buildings_items))].copy()
+                      (netz_bld_df1['item_code_new'].isin(Buildings_items))].copy().reset_index(drop = True)
 
     netz_bld_df3.loc[netz_bld_df3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
     netz_bld_df3.loc[netz_bld_df3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
@@ -828,7 +883,8 @@ for economy in Economy_codes:
     netz_hyd_df1.loc[netz_hyd_df1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     netz_hyd_df1.loc[netz_hyd_df1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
 
-    netz_hyd_df1 = netz_hyd_df1[netz_hyd_df1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]
+    netz_hyd_df1 = netz_hyd_df1[netz_hyd_df1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
+        .copy().reset_index(drop = True)
 
     nrows36 = netz_hyd_df1.shape[0]
     ncols36 = netz_hyd_df1.shape[1]
@@ -948,7 +1004,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_fuel_ref', chart_height + i + 1, 0],
             'categories': [economy + '_FED_fuel_ref', chart_height, 2, chart_height, ncols6 - 1],
             'values':     [economy + '_FED_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols6 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_fedfuel_df1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -1005,7 +1061,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_fuel_ref', chart_height + nrows6 + i + 4, 0],
             'categories': [economy + '_FED_fuel_ref', chart_height + nrows6 + 3, 2, chart_height + nrows6 + 3, ncols7 - 1],
             'values':     [economy + '_FED_fuel_ref', chart_height + nrows6 + i + 4, 2, chart_height + nrows6 + i + 4, ncols7 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_fedfuel_df2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
@@ -1060,7 +1116,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_fuel_ref', chart_height + i + 1, 0],
             'categories': [economy + '_FED_fuel_ref', chart_height, 2, chart_height, ncols6 - 1],
             'values':     [economy + '_FED_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols6 - 1],
-            'line':       {'color': colours_hex[i], 'width': 1.25}
+            'line':       {'color': ref_fedfuel_df1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
     ref_worksheet1.insert_chart('R3', ref_fedfuel_chart3)
@@ -1126,7 +1182,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector_ref', chart_height + i + 1, 1],
             'categories': [economy + '_FED_sector_ref', chart_height, 2, chart_height, ncols2 - 1],
             'values':     [economy + '_FED_sector_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols2 - 1],
-            'line':       {'color': colours_hex[i], 'width': 1.25}
+            'line':       {'color': ref_econ_df2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
     ref_worksheet2.insert_chart('Z3', ref_fed_sector_chart1)
@@ -1181,7 +1237,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector_ref', chart_height + nrows2 + i + 4, 1],
             'categories': [economy + '_FED_sector_ref', chart_height + nrows2 + 3, 2, chart_height + nrows2 + 3, ncols8 - 1],
             'values':     [economy + '_FED_sector_ref', chart_height + nrows2 + i + 4, 2, chart_height + nrows2 + i + 4, ncols8 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_fedsector_df1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -1238,7 +1294,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector_ref', chart_height + nrows2 + nrows8 + i + 7, 1],
             'categories': [economy + '_FED_sector_ref', chart_height + nrows2 + nrows8 + 6, 2, chart_height + nrows2 + nrows8 + 6, ncols9 - 1],
             'values':     [economy + '_FED_sector_ref', chart_height + nrows2 + nrows8 + i + 7, 2, chart_height + nrows2 + nrows8 + i + 7, ncols9 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_fedsector_df2['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
@@ -1294,7 +1350,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector_ref', chart_height + nrows2 + i + 4, 1],
             'categories': [economy + '_FED_sector_ref', chart_height + nrows2 + 3, 2, chart_height + nrows2 + 3, ncols8 - 1],
             'values':     [economy + '_FED_sector_ref', chart_height + nrows2 + i + 4, 2, chart_height + nrows2 + i + 4, ncols8 - 1],
-            'line':       {'color': colours_hex[i], 'width': 1.25}
+            'line':       {'color': ref_fedsector_df1['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
     ref_worksheet2.insert_chart('R3', ref_fedsector_chart5)
@@ -1358,7 +1414,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_bld_ref', chart_height + i + 1, 0],
             'categories': [economy + '_FED_bld_ref', chart_height, 2, chart_height, ncols12 - 1],
             'values':     [economy + '_FED_bld_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols12 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_bld_df2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
 
@@ -1408,12 +1464,13 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for i in range(2):
+    for bld_sect in ['Services', 'Residential']:
+        i = ref_bld_df3[ref_bld_df3['item_code_new'] == bld_sect].index[0]
         ref_fed_bld_chart2.add_series({
             'name':       [economy + '_FED_bld_ref', chart_height + nrows12 + 4 + i, 1],
             'categories': [economy + '_FED_bld_ref', chart_height + nrows12 + 3, 2, chart_height + nrows12 + 3, ncols13 - 1],
             'values':     [economy + '_FED_bld_ref', chart_height + nrows12 + 4 + i, 2, chart_height + nrows12 + 4 + i, ncols13 - 1],
-            'fill':       {'color': colours_hex[i + 5]},
+            'fill':       {'color': ref_bld_df3['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
@@ -1477,7 +1534,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_ind_ref', chart_height + i + 1, 1],
             'categories': [economy + '_FED_ind_ref', chart_height, 2, chart_height, ncols4 - 1],
             'values':     [economy + '_FED_ind_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols4 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_ind_df1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -1533,7 +1590,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_ind_ref', chart_height + nrows4 + j + 3, 0],
             'categories': [economy + '_FED_ind_ref', chart_height + nrows4 + 2, 2, chart_height + nrows4 + 2, ncols5 - 1],
             'values':     [economy + '_FED_ind_ref', chart_height + nrows4 + j + 3, 2, chart_height + nrows4 + j + 3, ncols5 - 1],
-            'fill':       {'color': colours_hex[j]},
+            'fill':       {'color': ref_ind_df2['fuel_code'].map(colours_dict).loc[j]},
             'border':     {'none': True}
         })
     
@@ -1600,7 +1657,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_trn_ref', chart_height + j + 1, 0],
             'categories': [economy + '_FED_trn_ref', chart_height, 2, chart_height, ncols10 - 1],
             'values':     [economy + '_FED_trn_ref', chart_height + j + 1, 2, chart_height + j + 1, ncols10 - 1],
-            'fill':       {'color': colours_hex[j]},
+            'fill':       {'color': ref_transport_df1['fuel_code'].map(colours_dict).loc[j]},
             'border':     {'none': True} 
         })
     
@@ -1657,7 +1714,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_trn_ref', chart_height + nrows10 + j + 4, 1],
             'categories': [economy + '_FED_trn_ref', chart_height + nrows10 + 3, 2, chart_height + nrows10 + 3, ncols11 - 1],
             'values':     [economy + '_FED_trn_ref', chart_height + nrows10 + j + 4, 2, chart_height + nrows10 + j + 4, ncols11 - 1],
-            'fill':       {'color': colours_hex[j]},
+            'fill':       {'color': ref_transport_df2['item_code_new'].map(colours_dict).loc[j]},
             'border':     {'none': True}
         })
     
@@ -1723,7 +1780,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_agr_ref', chart_height + i + 1, 0],
             'categories': [economy + '_FED_agr_ref', chart_height, 2, chart_height, ncols14 - 1],
             'values':     [economy + '_FED_agr_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols14 - 1],
-            'line':       {'color': colours_hex[i], 'width': 1.25}
+            'line':       {'color': ref_ag_df1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
     ref_worksheet6.insert_chart('B3', ref_ag_chart1)
@@ -1777,7 +1834,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_agr_ref', chart_height + i + 1, 0],
             'categories': [economy + '_FED_agr_ref', chart_height, 2, chart_height, ncols14 - 1],
             'values':     [economy + '_FED_agr_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols14 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_ag_df1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -1831,7 +1888,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_agr_ref', chart_height + nrows14 + i + 4, 0],
             'categories': [economy + '_FED_agr_ref', chart_height + nrows14 + 3, 2, chart_height + nrows14 + 3, ncols15 - 1],
             'values':     [economy + '_FED_agr_ref', chart_height + nrows14 + i + 4, 2, chart_height + nrows14 + i + 4, ncols15 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_ag_df2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
@@ -1903,7 +1960,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_hyd', chart_height + i + 1, 1],
             'categories': [economy + '_FED_hyd', chart_height, 2, chart_height, ncols16 - 1],
             'values':     [economy + '_FED_hyd', chart_height + i + 1, 2, chart_height + i + 1, ncols16 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': ref_hyd_df1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -1958,7 +2015,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_hyd', chart_height + nrows16 + i + 4, 1],
             'categories': [economy + '_FED_hyd', chart_height + nrows16 + 3, 2, chart_height + nrows16 + 3, ncols36 - 1],
             'values':     [economy + '_FED_hyd', chart_height + nrows16 + i + 4, 2, chart_height + nrows16 + i + 4, ncols36 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_hyd_df1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -2039,7 +2096,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_fuel_netz', chart_height + i + 1, 0],
             'categories': [economy + '_FED_fuel_netz', chart_height, 2, chart_height, ncols26 - 1],
             'values':     [economy + '_FED_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols26 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_fedfuel_df1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -2096,7 +2153,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_fuel_netz', chart_height + nrows26 + i + 4, 0],
             'categories': [economy + '_FED_fuel_netz', chart_height + nrows26 + 3, 2, chart_height + nrows26 + 3, ncols27 - 1],
             'values':     [economy + '_FED_fuel_netz', chart_height + nrows26 + i + 4, 2, chart_height + nrows26 + i + 4, ncols27 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_fedfuel_df2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
@@ -2151,7 +2208,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_fuel_netz', chart_height + i + 1, 0],
             'categories': [economy + '_FED_fuel_netz', chart_height, 2, chart_height, ncols26 - 1],
             'values':     [economy + '_FED_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols26 - 1],
-            'line':       {'color': colours_hex[i], 'width': 1.25}
+            'line':       {'color': netz_fedfuel_df1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
     netz_worksheet1.insert_chart('R3', netz_fedfuel_chart3)
@@ -2217,7 +2274,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector_netz', chart_height + i + 1, 1],
             'categories': [economy + '_FED_sector_netz', chart_height, 2, chart_height, ncols22 - 1],
             'values':     [economy + '_FED_sector_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols22 - 1],
-            'line':       {'color': colours_hex[i], 'width': 1.25}
+            'line':       {'color': netz_econ_df2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
     netz_worksheet2.insert_chart('Z3', netz_fed_sector_chart1)
@@ -2272,7 +2329,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector_netz', chart_height + nrows22 + i + 4, 1],
             'categories': [economy + '_FED_sector_netz', chart_height + nrows22 + 3, 2, chart_height + nrows22 + 3, ncols28 - 1],
             'values':     [economy + '_FED_sector_netz', chart_height + nrows22 + i + 4, 2, chart_height + nrows22 + i + 4, ncols28 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_fedsector_df1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -2329,7 +2386,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector_netz', chart_height + nrows22 + nrows28 + i + 7, 1],
             'categories': [economy + '_FED_sector_netz', chart_height + nrows22 + nrows28 + 6, 2, chart_height + nrows22 + nrows28 + 6, ncols29 - 1],
             'values':     [economy + '_FED_sector_netz', chart_height + nrows22 + nrows28 + i + 7, 2, chart_height + nrows22 + nrows28 + i + 7, ncols29 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_fedsector_df2['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
@@ -2385,7 +2442,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector_netz', chart_height + nrows22 + i + 4, 1],
             'categories': [economy + '_FED_sector_netz', chart_height + nrows22 + 3, 2, chart_height + nrows22 + 3, ncols28 - 1],
             'values':     [economy + '_FED_sector_netz', chart_height + nrows22 + i + 4, 2, chart_height + nrows22 + i + 4, ncols28 - 1],
-            'line':       {'color': colours_hex[i], 'width': 1.25}
+            'line':       {'color': netz_fedsector_df1['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
     netz_worksheet2.insert_chart('R3', netz_fedsector_chart5)
@@ -2449,7 +2506,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_bld_netz', chart_height + i + 1, 0],
             'categories': [economy + '_FED_bld_netz', chart_height, 2, chart_height, ncols32 - 1],
             'values':     [economy + '_FED_bld_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols32 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_bld_df2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
 
@@ -2499,12 +2556,13 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for i in range(2):
+    for bld_sect in ['Services', 'Residential']:
+        i = netz_bld_df3[netz_bld_df3['item_code_new'] == bld_sect].index[0]
         netz_fed_bld_chart2.add_series({
             'name':       [economy + '_FED_bld_netz', chart_height + nrows32 + 4 + i, 1],
             'categories': [economy + '_FED_bld_netz', chart_height + nrows32 + 3, 2, chart_height + nrows32 + 3, ncols33 - 1],
             'values':     [economy + '_FED_bld_netz', chart_height + nrows32 + 4 + i, 2, chart_height + nrows32 + 4 + i, ncols33 - 1],
-            'fill':       {'color': colours_hex[i + 5]},
+            'fill':       {'color': netz_bld_df3['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
@@ -2568,7 +2626,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_ind_netz', chart_height + i + 1, 1],
             'categories': [economy + '_FED_ind_netz', chart_height, 2, chart_height, ncols24 - 1],
             'values':     [economy + '_FED_ind_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols24 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_ind_df1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -2624,7 +2682,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_ind_netz', chart_height + nrows24 + j + 3, 0],
             'categories': [economy + '_FED_ind_netz', chart_height + nrows24 + 2, 2, chart_height + nrows24 + 2, ncols25 - 1],
             'values':     [economy + '_FED_ind_netz', chart_height + nrows24 + j + 3, 2, chart_height + nrows24 + j + 3, ncols25 - 1],
-            'fill':       {'color': colours_hex[j]},
+            'fill':       {'color': netz_ind_df2['fuel_code'].map(colours_dict).loc[j]},
             'border':     {'none': True}
         })
     
@@ -2691,7 +2749,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_trn_netz', chart_height + j + 1, 0],
             'categories': [economy + '_FED_trn_netz', chart_height, 2, chart_height, ncols30 - 1],
             'values':     [economy + '_FED_trn_netz', chart_height + j + 1, 2, chart_height + j + 1, ncols30 - 1],
-            'fill':       {'color': colours_hex[j]},
+            'fill':       {'color': netz_transport_df1['fuel_code'].map(colours_dict).loc[j]},
             'border':     {'none': True} 
         })
     
@@ -2748,7 +2806,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_trn_netz', chart_height + nrows30 + j + 4, 1],
             'categories': [economy + '_FED_trn_netz', chart_height + nrows30 + 3, 2, chart_height + nrows30 + 3, ncols31 - 1],
             'values':     [economy + '_FED_trn_netz', chart_height + nrows30 + j + 4, 2, chart_height + nrows30 + j + 4, ncols31 - 1],
-            'fill':       {'color': colours_hex[j]},
+            'fill':       {'color': netz_transport_df2['item_code_new'].map(colours_dict).loc[j]},
             'border':     {'none': True}
         })
     
@@ -2814,7 +2872,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_agr_netz', chart_height + i + 1, 0],
             'categories': [economy + '_FED_agr_netz', chart_height, 2, chart_height, ncols34 - 1],
             'values':     [economy + '_FED_agr_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols34 - 1],
-            'line':       {'color': colours_hex[i], 'width': 1.25}
+            'line':       {'color': netz_ag_df1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
     netz_worksheet6.insert_chart('B3', netz_ag_chart1)
@@ -2868,7 +2926,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_agr_netz', chart_height + i + 1, 0],
             'categories': [economy + '_FED_agr_netz', chart_height, 2, chart_height, ncols34 - 1],
             'values':     [economy + '_FED_agr_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols34 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_ag_df1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
@@ -2922,7 +2980,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_agr_netz', chart_height + nrows34 + i + 4, 0],
             'categories': [economy + '_FED_agr_netz', chart_height + nrows34 + 3, 2, chart_height + nrows34 + 3, ncols35 - 1],
             'values':     [economy + '_FED_agr_netz', chart_height + nrows34 + i + 4, 2, chart_height + nrows34 + i + 4, ncols35 - 1],
-            'fill':       {'color': colours_hex[i]},
+            'fill':       {'color': netz_ag_df2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
