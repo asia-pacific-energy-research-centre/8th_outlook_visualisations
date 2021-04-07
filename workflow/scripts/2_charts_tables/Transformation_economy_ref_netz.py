@@ -75,7 +75,7 @@ EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_x_coal_therma
                                                                 '12_solar': 'Solar', 
                                                                 '13_tide_wave_ocean': 'Other', 
                                                                 '14_wind': 'Wind', 
-                                                                '15_solid_biomass': 'Bio', 
+                                                                '15_solid_biomass': 'Biomass', 
                                                                 '16_others': 'Other', 
                                                                 '18_heat': 'Cogeneration'})
 
@@ -173,7 +173,7 @@ for item in list(ref_aggregate_df1.columns):
     except ValueError:
             pass
 
-max_year_ref = max(ref_year_columns)
+max_year_ref = min(2050, max(ref_year_columns))
 
 OSeMOSYS_years_ref = list(range(2017, max_year_ref + 1))
 
@@ -186,7 +186,7 @@ for item in list(netz_aggregate_df1.columns):
     except ValueError:
             pass
 
-max_year_netz = max(netz_year_columns)
+max_year_netz = min(2050, max(netz_year_columns))
 
 OSeMOSYS_years_netz = list(range(2017, max_year_netz + 1))
 
@@ -194,6 +194,67 @@ OSeMOSYS_years_netz = list(range(2017, max_year_netz + 1))
 
 colours = pd.read_excel('./data/2_Mapping_and_other/colour_template_7th.xlsx')
 colours_hex = colours['hex']
+
+# Colour dictionary
+colours_dict = {
+    'Coal': '#323232',
+    'Oil': '#be280a',
+    'Gas': '#f59300',
+    'Modern renewables': '#3c7896',
+    'Traditional biomass': '#828282',
+    'Hydrogen': '#28825a',
+    'Electricity': '#a5cdf0',
+    'Heat': '#cd6477',
+    'Others': '#bebebe',
+    'Industry': '#ffc305',
+    'Transport': '#bebebe',
+    'Buildings': '#3c7896',
+    'Agriculture': '#323232',
+    'Non-energy': '#cd6477',
+    'Non-specified': '#872355',
+    'Services': '#a5cdf0',
+    'Residential': '#28825a',
+    'Iron & steel': '#8c0000',
+    'Chemicals': '#a5cdf0',
+    'Aluminium': '#bebebe',
+    'Non-metallic minerals': '#1e465a',
+    'Mining': '#f59300',
+    'Pulp & paper': '#28825a',
+    'Other': '#cd6477',
+    'Biomass': '#828282',
+    'Jet fuel': '#323232',
+    'LPG': '#ffdc96',
+    'Gasoline': '#be280a',
+    'Diesel': '#3c7896',
+    'Renewables': '#1e465a',
+    'Aviation': '#ffc305',
+    'Road': '#1e465a',
+    'Rail': '#be280a',
+    'Marine': '#28825a',
+    'Pipeline': '#bebebe',
+    # Transformation unique
+    'Geothermal': '#3c7896',
+    'Hydro': '#a5cdf0',
+    'Lignite': '#833C0C',
+    'Nuclear': '#872355',
+    'Other renewables': '#1e465a',
+    'Solar': '#ffc305',
+    'Wind': '#28825a',
+    'Storage': '#ffdc96',
+    'Imports': '#641964',
+    'Crude oil': '#be280a',
+    'NGLs': '#3c7896',
+    'Motor gasoline': '#1e465a',
+    'Aviation gasoline': '#3c7896',
+    'Naphtha': '#a5cdf0',
+    'Other kerosene': '#8c0000',
+    'Gas diesel oil': '#be280a',
+    'Fuel oil': '#f59300',
+    'Refinery gas': '#ffc305',
+    'Ethane': '#872355',
+    'Power': '#1e465a',
+    'Refining': '#3c7896'
+    }
 
 Map_power = Map_trans[Map_trans['Sector'] == 'POW'].reset_index(drop = True)
 
@@ -345,8 +406,8 @@ wind_tech = ['POW_WindOff_PP', 'POW_Wind_PP']
 bio_tech = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP']
 geo_tech = ['POW_Geothermal_PP']
 storage_tech = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
-other_tech = ['POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP']
-chp_tech = ['POW_CHP_PP']
+other_tech = ['POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP', 'POW_CHP_PP']
+# chp_tech = ['POW_CHP_PP']
 im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
 
 lignite_tech = ['POW_Sub_Brown_PP']
@@ -357,9 +418,9 @@ solar_nr_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP']
 
 # POW_EXPORT_ELEC_PP need to work this in
 
-prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 'Geothermal', 'Storage', 'Other', 'Cogeneration', 'Imports']
+prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
 prod_agg_tech2 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
-                 'Bio', 'Geothermal', 'Storage', 'Other', 'Cogeneration', 'Imports']
+                 'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
 
 # Refinery vectors
 
@@ -382,8 +443,8 @@ wind_cap = ['POW_Wind_PP', 'POW_WindOff_PP']
 solar_cap = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
 geo_cap = ['POW_Geothermal_PP']
 storage_cap = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
-other_cap = ['POW_WasteToEnergy_PP', 'POW_IPP_PP', 'POW_TIDAL_PP']
-chp_cap = ['POW_CHP_PP']
+other_cap = ['POW_WasteToEnergy_PP', 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_CHP_PP']
+# chp_cap = ['POW_CHP_PP']
 # 'POW_HEAT_HP' not in electricity capacity
 transmission_cap = ['POW_Transmission']
 
@@ -391,9 +452,9 @@ lignite_cap = ['POW_Sub_Brown_PP']
 thermal_coal_cap = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
 
 
-pow_capacity_agg = ['Coal', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Cogeneration', 'Storage', 'Other']
+pow_capacity_agg = ['Coal', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
 pow_capacity_agg2 = ['Coal', 'Lignite', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 
-                     'Solar', 'Geothermal', 'Storage', 'Cogeneration', 'Other']
+                     'Solar', 'Geothermal', 'Storage', 'Other']
 
 # Chart years for column charts
 
@@ -513,9 +574,9 @@ for economy in ref_power_df1['economy'].unique():
     oil_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(oil_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(gas_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
     storage_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(storage_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Storage')
-    chp_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(chp_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Cogeneration')
+    # chp_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(chp_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Cogeneration')
     nuclear_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(nuclear_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
-    bio_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(bio_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Bio')
+    bio_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(bio_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     other_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(other_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
     hydro_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(hydro_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Hydro')
     geo_pp = ref_prodelec_df1[ref_prodelec_df1['TECHNOLOGY'].isin(geo_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Geothermal')
@@ -530,7 +591,7 @@ for economy in ref_power_df1['economy'].unique():
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    ref_prodelec_bytech_df1 = ref_prodelec_df1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, storage_pp, chp_pp, nuclear_pp,\
+    ref_prodelec_bytech_df1 = ref_prodelec_df1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, storage_pp, nuclear_pp,\
         bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
         [['TECHNOLOGY'] + OSeMOSYS_years_ref].reset_index(drop = True)                                                                                                    
 
@@ -571,7 +632,7 @@ for economy in ref_power_df1['economy'].unique():
                                  (ref_refownsup_df1['FUEL'].isin(Ref_input))].copy()
 
     ref_refinery_df1['Transformation'] = 'Input to refinery'
-    ref_refinery_df1 = ref_refinery_df1[['FUEL', 'Transformation'] + OSeMOSYS_years_ref]
+    ref_refinery_df1 = ref_refinery_df1[['FUEL', 'Transformation'] + OSeMOSYS_years_ref].reset_index(drop = True)
 
     ref_refinery_df1.loc[ref_refinery_df1['FUEL'] == '6_1_crude_oil', 'FUEL'] = 'Crude oil'
     ref_refinery_df1.loc[ref_refinery_df1['FUEL'] == '6_x_ngls', 'FUEL'] = 'NGLs'
@@ -584,7 +645,7 @@ for economy in ref_power_df1['economy'].unique():
                                  (ref_refownsup_df1['FUEL'].isin(Ref_new_output))].copy()
 
     ref_refinery_df2['Transformation'] = 'Output from refinery'
-    ref_refinery_df2 = ref_refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years_ref]
+    ref_refinery_df2 = ref_refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years_ref].reset_index(drop = True)
 
     ref_refinery_df2.loc[ref_refinery_df2['FUEL'] == '7_1_from_ref', 'FUEL'] = 'Motor gasoline'
     ref_refinery_df2.loc[ref_refinery_df2['FUEL'] == '7_2_from_ref', 'FUEL'] = 'Aviation gasoline'
@@ -629,7 +690,7 @@ for economy in ref_power_df1['economy'].unique():
     nuclear_capacity = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(nuclear_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_capacity = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(bio_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Biomass')
     geo_capacity = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(geo_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Geothermal')
-    chp_capacity = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(chp_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Cogeneration')
+    #chp_capacity = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(chp_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Cogeneration')
     other_capacity = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(other_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Other')
     transmission = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(transmission_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Transmission')
 
@@ -640,7 +701,7 @@ for economy in ref_power_df1['economy'].unique():
 
     ref_powcap_df1 = ref_powcap_df1.append([coal_capacity, gas_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
-                                            storage_capacity, geo_capacity, chp_capacity, other_capacity])\
+                                            storage_capacity, geo_capacity, other_capacity])\
         [['TECHNOLOGY'] + OSeMOSYS_years_ref].reset_index(drop = True) 
 
     ref_powcap_df1 = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
@@ -675,7 +736,8 @@ for economy in ref_power_df1['economy'].unique():
     ref_transformation_sector.loc[ref_transformation_sector['Sector'] == 'POW', 'Sector'] = 'Power'
     ref_transformation_sector.loc[ref_transformation_sector['Sector'] == 'REF', 'Sector'] = 'Refining'
 
-    ref_transformation_sector1 = ref_transformation_sector.reset_index(drop = True)
+    ref_transformation_sector1 = ref_transformation_sector[ref_transformation_sector['Sector'].isin(['Power', 'Refining'])]\
+        .reset_index(drop = True)
 
     nrows12 = ref_transformation_sector1.shape[0]
     ncols12 = ref_transformation_sector1.shape[1]
@@ -690,19 +752,19 @@ for economy in ref_power_df1['economy'].unique():
                                    (ref_trans_df1['Sector'] == 'OWN')]
 
     coal_own = ref_ownuse_df1[ref_ownuse_df1['FUEL'].isin(coal_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Coal', Sector = 'Own-use')
+        sum().assign(FUEL = 'Coal', Sector = 'Own-use and losses')
     oil_own = ref_ownuse_df1[ref_ownuse_df1['FUEL'].isin(oil_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Oil', Sector = 'Own-use')
+        sum().assign(FUEL = 'Oil', Sector = 'Own-use and losses')
     gas_own = ref_ownuse_df1[ref_ownuse_df1['FUEL'].isin(gas_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Gas', Sector = 'Own-use')
+        sum().assign(FUEL = 'Gas', Sector = 'Own-use and losses')
     renewables_own = ref_ownuse_df1[ref_ownuse_df1['FUEL'].isin(renew_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Renewables', Sector = 'Own-use')
+        sum().assign(FUEL = 'Renewables', Sector = 'Own-use and losses')
     elec_own = ref_ownuse_df1[ref_ownuse_df1['FUEL'].isin(elec_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Electricity', Sector = 'Own-use')
+        sum().assign(FUEL = 'Electricity', Sector = 'Own-use and losses')
     heat_own = ref_ownuse_df1[ref_ownuse_df1['FUEL'].isin(heat_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Heat', Sector = 'Own-use')
+        sum().assign(FUEL = 'Heat', Sector = 'Own-use and losses')
     other_own = ref_ownuse_df1[ref_ownuse_df1['FUEL'].isin(other_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Other', Sector = 'Own-use')
+        sum().assign(FUEL = 'Other', Sector = 'Own-use and losses')
 
     ref_ownuse_df1 = ref_ownuse_df1.append([coal_own, oil_own, gas_own, renewables_own, elec_own, heat_own, other_own])\
         [['FUEL', 'Sector'] + OSeMOSYS_years_ref].reset_index(drop = True)
@@ -822,9 +884,9 @@ for economy in ref_power_df1['economy'].unique():
     oil_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(oil_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(gas_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
     storage_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(storage_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Storage')
-    chp_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(chp_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Cogeneration')
+    # chp_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(chp_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Cogeneration')
     nuclear_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(nuclear_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
-    bio_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(bio_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Bio')
+    bio_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(bio_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     other_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(other_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
     hydro_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(hydro_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Hydro')
     geo_pp = netz_prodelec_df1[netz_prodelec_df1['TECHNOLOGY'].isin(geo_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Geothermal')
@@ -839,7 +901,7 @@ for economy in ref_power_df1['economy'].unique():
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    netz_prodelec_bytech_df1 = netz_prodelec_df1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, storage_pp, chp_pp, nuclear_pp,\
+    netz_prodelec_bytech_df1 = netz_prodelec_df1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, storage_pp, nuclear_pp,\
         bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
         [['TECHNOLOGY'] + OSeMOSYS_years_netz].reset_index(drop = True)                                                                                                    
 
@@ -880,7 +942,7 @@ for economy in ref_power_df1['economy'].unique():
                                  (netz_refownsup_df1['FUEL'].isin(Ref_input))].copy()
 
     netz_refinery_df1['Transformation'] = 'Input to refinery'
-    netz_refinery_df1 = netz_refinery_df1[['FUEL', 'Transformation'] + OSeMOSYS_years_netz]
+    netz_refinery_df1 = netz_refinery_df1[['FUEL', 'Transformation'] + OSeMOSYS_years_netz].reset_index(drop = True)
 
     netz_refinery_df1.loc[netz_refinery_df1['FUEL'] == '6_1_crude_oil', 'FUEL'] = 'Crude oil'
     netz_refinery_df1.loc[netz_refinery_df1['FUEL'] == '6_x_ngls', 'FUEL'] = 'NGLs'
@@ -893,7 +955,7 @@ for economy in ref_power_df1['economy'].unique():
                                  (netz_refownsup_df1['FUEL'].isin(Ref_new_output))].copy()
 
     netz_refinery_df2['Transformation'] = 'Output from refinery'
-    netz_refinery_df2 = netz_refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years_netz]
+    netz_refinery_df2 = netz_refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years_netz].reset_index(drop = True)
 
     netz_refinery_df2.loc[netz_refinery_df2['FUEL'] == '7_1_from_ref', 'FUEL'] = 'Motor gasoline'
     netz_refinery_df2.loc[netz_refinery_df2['FUEL'] == '7_2_from_ref', 'FUEL'] = 'Aviation gasoline'
@@ -938,7 +1000,7 @@ for economy in ref_power_df1['economy'].unique():
     nuclear_capacity = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(nuclear_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_capacity = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(bio_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Biomass')
     geo_capacity = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(geo_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Geothermal')
-    chp_capacity = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(chp_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Cogeneration')
+    #chp_capacity = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(chp_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Cogeneration')
     other_capacity = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(other_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Other')
     transmission = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(transmission_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Transmission')
 
@@ -949,7 +1011,7 @@ for economy in ref_power_df1['economy'].unique():
 
     netz_powcap_df1 = netz_powcap_df1.append([coal_capacity, gas_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
-                                            storage_capacity, geo_capacity, chp_capacity, other_capacity])\
+                                            storage_capacity, geo_capacity, other_capacity])\
         [['TECHNOLOGY'] + OSeMOSYS_years_netz].reset_index(drop = True) 
 
     netz_powcap_df1 = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
@@ -984,7 +1046,8 @@ for economy in ref_power_df1['economy'].unique():
     netz_transformation_sector.loc[netz_transformation_sector['Sector'] == 'POW', 'Sector'] = 'Power'
     netz_transformation_sector.loc[netz_transformation_sector['Sector'] == 'REF', 'Sector'] = 'Refining'
 
-    netz_transformation_sector1 = netz_transformation_sector.reset_index(drop = True)
+    netz_transformation_sector1 = netz_transformation_sector[netz_transformation_sector['Sector'].isin(['Power', 'Refining'])]\
+        .reset_index(drop = True)
 
     nrows32 = netz_transformation_sector1.shape[0]
     ncols32 = netz_transformation_sector1.shape[1]
@@ -999,19 +1062,19 @@ for economy in ref_power_df1['economy'].unique():
                                    (netz_trans_df1['Sector'] == 'OWN')]
 
     coal_own = netz_ownuse_df1[netz_ownuse_df1['FUEL'].isin(coal_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Coal', Sector = 'Own-use')
+        sum().assign(FUEL = 'Coal', Sector = 'Own-use and losses')
     oil_own = netz_ownuse_df1[netz_ownuse_df1['FUEL'].isin(oil_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Oil', Sector = 'Own-use')
+        sum().assign(FUEL = 'Oil', Sector = 'Own-use and losses')
     gas_own = netz_ownuse_df1[netz_ownuse_df1['FUEL'].isin(gas_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Gas', Sector = 'Own-use')
+        sum().assign(FUEL = 'Gas', Sector = 'Own-use and losses')
     renewables_own = netz_ownuse_df1[netz_ownuse_df1['FUEL'].isin(renew_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Renewables', Sector = 'Own-use')
+        sum().assign(FUEL = 'Renewables', Sector = 'Own-use and losses')
     elec_own = netz_ownuse_df1[netz_ownuse_df1['FUEL'].isin(elec_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Electricity', Sector = 'Own-use')
+        sum().assign(FUEL = 'Electricity', Sector = 'Own-use and losses')
     heat_own = netz_ownuse_df1[netz_ownuse_df1['FUEL'].isin(heat_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Heat', Sector = 'Own-use')
+        sum().assign(FUEL = 'Heat', Sector = 'Own-use and losses')
     other_own = netz_ownuse_df1[netz_ownuse_df1['FUEL'].isin(other_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Other', Sector = 'Own-use')
+        sum().assign(FUEL = 'Other', Sector = 'Own-use and losses')
 
     netz_ownuse_df1 = netz_ownuse_df1.append([coal_own, oil_own, gas_own, renewables_own, elec_own, heat_own, other_own])\
         [['FUEL', 'Sector'] + OSeMOSYS_years_netz].reset_index(drop = True)
@@ -1130,7 +1193,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_use_fuel_ref', chart_height + i + 1, 0],
                 'categories': [economy + '_use_fuel_ref', chart_height, 2, chart_height, ncols1 - 1],
                 'values':     [economy + '_use_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols1 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_usefuel_df1['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1187,7 +1250,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_use_fuel_ref', chart_height + nrows1 + i + 4, 0],
                 'categories': [economy + '_use_fuel_ref', chart_height + nrows1 + 3, 2, chart_height + nrows1 + 3, ncols2 - 1],
                 'values':     [economy + '_use_fuel_ref', chart_height + nrows1 + i + 4, 2, chart_height + nrows1 + i + 4, ncols2 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_usefuel_df2['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })
 
@@ -1257,7 +1320,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_elec_gen_ref', chart_height + i + 1, 0],
                 'categories': [economy + '_elec_gen_ref', chart_height, 2, chart_height, ncols3 - 1],
                 'values':     [economy + '_elec_gen_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols3 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_prodelec_bytech_df1['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1314,7 +1377,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_elec_gen_ref', chart_height + nrows3 + i + 4, 0],
                 'categories': [economy + '_elec_gen_ref', chart_height + nrows3 + 3, 2, chart_height + nrows3 + 3, ncols4 - 1],
                 'values':     [economy + '_elec_gen_ref', chart_height + nrows3 + i + 4, 2, chart_height + nrows3 + i + 4, ncols4 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_prodelec_bytech_df2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1385,7 +1448,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_refining_ref', chart_height + i + 1, 0],
                 'categories': [economy + '_refining_ref', chart_height, 2, chart_height, ncols5 - 1],
                 'values':     [economy + '_refining_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols5 - 1],
-                'line':       {'color': colours_hex[i + 3],
+                'line':       {'color': ref_refinery_df1['FUEL'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
@@ -1442,7 +1505,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_refining_ref', chart_height + nrows5 + i + 4, 0],
                 'categories': [economy + '_refining_ref', chart_height + nrows5 + 3, 2, chart_height + nrows5 + 3, ncols6 - 1],
                 'values':     [economy + '_refining_ref', chart_height + nrows5 + i + 4, 2, chart_height + nrows5 + i + 4, ncols6 - 1],
-                'line':       {'color': colours_hex[i],
+                'line':       {'color': ref_refinery_df2['FUEL'].map(colours_dict).loc[i],
                                'width': 1}
             })    
             
@@ -1499,7 +1562,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_refining_ref', chart_height + nrows5 + nrows6 + i + 7, 0],
                 'categories': [economy + '_refining_ref', chart_height + nrows5 + nrows6 + 6, 2, chart_height + nrows5 + nrows6 + 6, ncols7 - 1],
                 'values':     [economy + '_refining_ref', chart_height + nrows5 + nrows6 + i + 7, 2, chart_height + nrows5 + nrows6 + i + 7, ncols7 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_refinery_df3['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1569,7 +1632,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_pow_cap_ref', chart_height + i + 1, 0],
                 'categories': [economy + '_pow_cap_ref', chart_height, 1, chart_height, ncols8 - 1],
                 'values':     [economy + '_pow_cap_ref', chart_height + i + 1, 1, chart_height + i + 1, ncols8 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_powcap_df1['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1626,7 +1689,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_pow_cap_ref', chart_height + nrows8 + i + 4, 0],
                 'categories': [economy + '_pow_cap_ref', chart_height + nrows8 + 3, 1, chart_height + nrows8 + 3, ncols9 - 1],
                 'values':     [economy + '_pow_cap_ref', chart_height + nrows8 + i + 4, 1, chart_height + nrows8 + i + 4, ncols9 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_powcap_df2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1696,7 +1759,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_trnsfrm_ref', chart_height + i + 1, 0],
                 'categories': [economy + '_trnsfrm_ref', chart_height, 1, chart_height, ncols12 - 1],
                 'values':     [economy + '_trnsfrm_ref', chart_height + i + 1, 1, chart_height + i + 1, ncols12 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_transformation_sector1['Sector'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1755,7 +1818,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_trnsfrm_ref', chart_height + i + 1, 0],
                 'categories': [economy + '_trnsfrm_ref', chart_height, 1, chart_height, ncols12 - 1],
                 'values':     [economy + '_trnsfrm_ref', chart_height + i + 1, 1, chart_height + i + 1, ncols12 - 1],
-                'line':       {'color': colours_hex[i],
+                'line':       {'color': ref_transformation_sector1['Sector'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
@@ -1813,7 +1876,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_trnsfrm_ref', chart_height + nrows12 + i + 4, 0],
                 'categories': [economy + '_trnsfrm_ref', chart_height + nrows12 + 3, 1, chart_height + nrows12 + 3, ncols13 - 1],
                 'values':     [economy + '_trnsfrm_ref', chart_height + nrows12 + i + 4, 1, chart_height + nrows12 + i + 4, ncols13 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_transformation_sector2['Sector'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1884,7 +1947,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_own_ref', chart_height + i + 1, 0],
                 'categories': [economy + '_own_ref', chart_height, 2, chart_height, ncols14 - 1],
                 'values':     [economy + '_own_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols14 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_ownuse_df1['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -1943,7 +2006,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_own_ref', chart_height + i + 1, 0],
                 'categories': [economy + '_own_ref', chart_height, 2, chart_height, ncols14 - 1],
                 'values':     [economy + '_own_ref', chart_height + i + 1, 2, chart_height + i + 1, ncols14 - 1],
-                'line':       {'color': colours_hex[i],
+                'line':       {'color': ref_ownuse_df1['FUEL'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
@@ -2001,7 +2064,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_own_ref', chart_height + nrows14 + i + 4, 0],
                 'categories': [economy + '_own_ref', chart_height + nrows14 + 3, 2, chart_height + nrows14 + 3, ncols15 - 1],
                 'values':     [economy + '_own_ref', chart_height + nrows14 + i + 4, 2, chart_height + nrows14 + i + 4, ncols15 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': ref_ownuse_df2['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2078,7 +2141,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_use_fuel_netz', chart_height + i + 1, 0],
                 'categories': [economy + '_use_fuel_netz', chart_height, 2, chart_height, ncols21 - 1],
                 'values':     [economy + '_use_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols21 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_usefuel_df1['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2135,7 +2198,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_use_fuel_netz', chart_height + nrows21 + i + 4, 0],
                 'categories': [economy + '_use_fuel_netz', chart_height + nrows21 + 3, 2, chart_height + nrows21 + 3, ncols22 - 1],
                 'values':     [economy + '_use_fuel_netz', chart_height + nrows21 + i + 4, 2, chart_height + nrows21 + i + 4, ncols22 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_usefuel_df2['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })
 
@@ -2205,7 +2268,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_elec_gen_netz', chart_height + i + 1, 0],
                 'categories': [economy + '_elec_gen_netz', chart_height, 2, chart_height, ncols23 - 1],
                 'values':     [economy + '_elec_gen_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols23 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_prodelec_bytech_df1['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2262,7 +2325,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_elec_gen_netz', chart_height + nrows23 + i + 4, 0],
                 'categories': [economy + '_elec_gen_netz', chart_height + nrows23 + 3, 2, chart_height + nrows23 + 3, ncols24 - 1],
                 'values':     [economy + '_elec_gen_netz', chart_height + nrows23 + i + 4, 2, chart_height + nrows23 + i + 4, ncols24 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_prodelec_bytech_df2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2333,7 +2396,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_refining_netz', chart_height + i + 1, 0],
                 'categories': [economy + '_refining_netz', chart_height, 2, chart_height, ncols25 - 1],
                 'values':     [economy + '_refining_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols25 - 1],
-                'line':       {'color': colours_hex[i + 3],
+                'line':       {'color': netz_refinery_df1['FUEL'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
@@ -2390,7 +2453,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_refining_netz', chart_height + nrows25 + i + 4, 0],
                 'categories': [economy + '_refining_netz', chart_height + nrows25 + 3, 2, chart_height + nrows25 + 3, ncols26 - 1],
                 'values':     [economy + '_refining_netz', chart_height + nrows25 + i + 4, 2, chart_height + nrows25 + i + 4, ncols26 - 1],
-                'line':       {'color': colours_hex[i],
+                'line':       {'color': netz_refinery_df2['FUEL'].map(colours_dict).loc[i],
                                'width': 1}
             })    
             
@@ -2447,7 +2510,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_refining_netz', chart_height + nrows25 + nrows26 + i + 7, 0],
                 'categories': [economy + '_refining_netz', chart_height + nrows25 + nrows26 + 6, 2, chart_height + nrows25 + nrows26 + 6, ncols27 - 1],
                 'values':     [economy + '_refining_netz', chart_height + nrows25 + nrows26 + i + 7, 2, chart_height + nrows25 + nrows26 + i + 7, ncols27 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_refinery_df3['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2517,7 +2580,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_pow_cap_netz', chart_height + i + 1, 0],
                 'categories': [economy + '_pow_cap_netz', chart_height, 1, chart_height, ncols28 - 1],
                 'values':     [economy + '_pow_cap_netz', chart_height + i + 1, 1, chart_height + i + 1, ncols28 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_powcap_df1['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2574,7 +2637,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_pow_cap_netz', chart_height + nrows28 + i + 4, 0],
                 'categories': [economy + '_pow_cap_netz', chart_height + nrows28 + 3, 1, chart_height + nrows28 + 3, ncols29 - 1],
                 'values':     [economy + '_pow_cap_netz', chart_height + nrows28 + i + 4, 1, chart_height + nrows28 + i + 4, ncols29 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_powcap_df2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2644,7 +2707,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_trnsfrm_netz', chart_height + i + 1, 0],
                 'categories': [economy + '_trnsfrm_netz', chart_height, 1, chart_height, ncols32 - 1],
                 'values':     [economy + '_trnsfrm_netz', chart_height + i + 1, 1, chart_height + i + 1, ncols32 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_transformation_sector1['Sector'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2703,7 +2766,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_trnsfrm_netz', chart_height + i + 1, 0],
                 'categories': [economy + '_trnsfrm_netz', chart_height, 1, chart_height, ncols32 - 1],
                 'values':     [economy + '_trnsfrm_netz', chart_height + i + 1, 1, chart_height + i + 1, ncols32 - 1],
-                'line':       {'color': colours_hex[i],
+                'line':       {'color': netz_transformation_sector1['Sector'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
@@ -2761,7 +2824,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_trnsfrm_netz', chart_height + nrows32 + i + 4, 0],
                 'categories': [economy + '_trnsfrm_netz', chart_height + nrows32 + 3, 1, chart_height + nrows32 + 3, ncols33 - 1],
                 'values':     [economy + '_trnsfrm_netz', chart_height + nrows32 + i + 4, 1, chart_height + nrows32 + i + 4, ncols33 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_transformation_sector2['Sector'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2832,7 +2895,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_own_netz', chart_height + i + 1, 0],
                 'categories': [economy + '_own_netz', chart_height, 2, chart_height, ncols34 - 1],
                 'values':     [economy + '_own_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols34 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_ownuse_df1['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
@@ -2891,7 +2954,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_own_netz', chart_height + i + 1, 0],
                 'categories': [economy + '_own_netz', chart_height, 2, chart_height, ncols34 - 1],
                 'values':     [economy + '_own_netz', chart_height + i + 1, 2, chart_height + i + 1, ncols34 - 1],
-                'line':       {'color': colours_hex[i],
+                'line':       {'color': netz_ownuse_df1['FUEL'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
@@ -2949,7 +3012,7 @@ for economy in ref_power_df1['economy'].unique():
                 'name':       [economy + '_own_netz', chart_height + nrows34 + i + 4, 0],
                 'categories': [economy + '_own_netz', chart_height + nrows34 + 3, 2, chart_height + nrows34 + 3, ncols35 - 1],
                 'values':     [economy + '_own_netz', chart_height + nrows34 + i + 4, 2, chart_height + nrows34 + i + 4, ncols35 - 1],
-                'fill':       {'color': colours_hex[i]},
+                'fill':       {'color': netz_ownuse_df2['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             

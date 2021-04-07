@@ -56,7 +56,7 @@ colours_dict = {
     'Mining': '#f59300',
     'Pulp & paper': '#28825a',
     'Other': '#cd6477',
-    'Biomass': '#3c7896',
+    'Biomass': '#828282',
     'Jet fuel': '#323232',
     'LPG': '#ffdc96',
     'Gasoline': '#be280a',
