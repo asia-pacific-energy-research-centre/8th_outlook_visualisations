@@ -77,7 +77,7 @@ EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_x_coal_therma
                                                                 '14_wind': 'Wind', 
                                                                 '15_solid_biomass': 'Biomass', 
                                                                 '16_others': 'Other', 
-                                                                '18_heat': 'Cogeneration'})
+                                                                '18_heat': 'Other'})
 
 EGEDA_hist_gen['Generation'] = 'Electricity'
 
@@ -360,7 +360,7 @@ oil_fuel_1 = ['7_7_gas_diesel_oil','7_3_naphtha', '7_8_fuel_oil', '6_1_crude_oil
 gas_fuel_1 = ['8_1_natural_gas']
 nuclear_fuel_1 = ['9_nuclear']
 hydro_fuel_1 = ['10_hydro']
-solar_fuel_1 = ['12_solar']
+solar_fuel_1 = ['12_1_of_which_photovoltaics']
 wind_fuel_1 = ['14_wind']
 biomass_fuel_1 = ['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_4_black_liquor', '15_5_other_biomass']
 geothermal_fuel_1 = ['11_geothermal']
@@ -370,7 +370,7 @@ imports_fuel_1 = ['17_electricity_import']
 
 # Second aggreagtion: Oil, Gas, Nuclear, Imports, Other from above and below two new aggregations (7 fuels)
 coal_fuel_2 = ['1_x_coal_thermal', '1_5_lignite', '2_coal_products']
-renewables_fuel_2 = ['10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_1_fuelwood_and_woodwaste', 
+renewables_fuel_2 = ['10_hydro', '11_geothermal', '12_1_of_which_photovoltaics', '13_tide_wave_ocean', '14_wind', '15_1_fuelwood_and_woodwaste', 
                      '15_2_bagasse', '15_4_black_liquor', '15_5_other_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable']
 
 # Own use fuels
