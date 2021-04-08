@@ -530,10 +530,14 @@ for economy in ref_power_df1['economy'].unique():
     ref_usefuel_df1 = ref_use_df1.append([coal, lignite, oil, gas, nuclear, hydro, solar, wind, geothermal, biomass, other_renew, other, imports])\
         [['FUEL', 'TECHNOLOGY'] + OSeMOSYS_years_ref].reset_index(drop = True)
 
-    ref_usefuel_df1 = ref_usefuel_df1[ref_usefuel_df1['FUEL'].isin(use_agg_fuels_1)].copy().set_index('FUEL').reset_index() 
+    ref_usefuel_df1 = ref_usefuel_df1[ref_usefuel_df1['FUEL'].isin(use_agg_fuels_1)].copy().set_index('FUEL').reset_index()
 
     ref_usefuel_df1 = ref_usefuel_df1.groupby('FUEL').sum().reset_index()
     ref_usefuel_df1['Transformation'] = 'Input fuel'
+    ref_usefuel_df1['FUEL'] = pd.Categorical(ref_usefuel_df1['FUEL'], use_agg_fuels_1)
+
+    ref_usefuel_df1 = ref_usefuel_df1.sort_values('FUEL').reset_index(drop = True)
+
     ref_usefuel_df1 = ref_usefuel_df1[['FUEL', 'Transformation'] + OSeMOSYS_years_ref]
 
     nrows1 = ref_usefuel_df1.shape[0]
@@ -609,6 +613,10 @@ for economy in ref_power_df1['economy'].unique():
         iloc[:,:-2][['TECHNOLOGY', 'Generation'] + list(range(2000, 2017))]
 
     ref_prodelec_bytech_df1 = historical_gen.merge(ref_prodelec_bytech_df1, how = 'right', on = ['TECHNOLOGY', 'Generation']).replace(np.nan, 0)
+
+    ref_prodelec_bytech_df1['TECHNOLOGY'] = pd.Categorical(ref_prodelec_bytech_df1['TECHNOLOGY'], prod_agg_tech2)
+
+    ref_prodelec_bytech_df1 = ref_prodelec_bytech_df1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
     # CHange to TWh from Petajoules
 
@@ -705,6 +713,10 @@ for economy in ref_power_df1['economy'].unique():
         [['TECHNOLOGY'] + OSeMOSYS_years_ref].reset_index(drop = True) 
 
     ref_powcap_df1 = ref_powcap_df1[ref_powcap_df1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
+
+    ref_powcap_df1['TECHNOLOGY'] = pd.Categorical(ref_powcap_df1['TECHNOLOGY'], prod_agg_tech[:-1])
+
+    ref_powcap_df1 = ref_powcap_df1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
     nrows8 = ref_powcap_df1.shape[0]
     ncols8 = ref_powcap_df1.shape[1]
@@ -844,6 +856,10 @@ for economy in ref_power_df1['economy'].unique():
 
     netz_usefuel_df1 = netz_usefuel_df1.groupby('FUEL').sum().reset_index()
     netz_usefuel_df1['Transformation'] = 'Input fuel'
+    netz_usefuel_df1['FUEL'] = pd.Categorical(netz_usefuel_df1['FUEL'], use_agg_fuels_1)
+
+    netz_usefuel_df1 = netz_usefuel_df1.sort_values('FUEL').reset_index(drop = True)
+    
     netz_usefuel_df1 = netz_usefuel_df1[['FUEL', 'Transformation'] + OSeMOSYS_years_netz]
 
     nrows21 = netz_usefuel_df1.shape[0]
@@ -919,6 +935,10 @@ for economy in ref_power_df1['economy'].unique():
         iloc[:,:-2][['TECHNOLOGY', 'Generation'] + list(range(2000, 2017))]
 
     netz_prodelec_bytech_df1 = historical_gen.merge(netz_prodelec_bytech_df1, how = 'right', on = ['TECHNOLOGY', 'Generation']).replace(np.nan, 0)
+
+    netz_prodelec_bytech_df1['TECHNOLOGY'] = pd.Categorical(netz_prodelec_bytech_df1['TECHNOLOGY'], prod_agg_tech2)
+
+    netz_prodelec_bytech_df1 = netz_prodelec_bytech_df1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
     # CHange to TWh from Petajoules
 
@@ -1015,6 +1035,10 @@ for economy in ref_power_df1['economy'].unique():
         [['TECHNOLOGY'] + OSeMOSYS_years_netz].reset_index(drop = True) 
 
     netz_powcap_df1 = netz_powcap_df1[netz_powcap_df1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
+
+    netz_powcap_df1['TECHNOLOGY'] = pd.Categorical(netz_powcap_df1['TECHNOLOGY'], prod_agg_tech[:-1])
+
+    netz_powcap_df1 = netz_powcap_df1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
     nrows28 = netz_powcap_df1.shape[0]
     ncols28 = netz_powcap_df1.shape[1]
