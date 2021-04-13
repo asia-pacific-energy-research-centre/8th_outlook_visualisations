@@ -135,7 +135,7 @@ OSeMOSYS_years_netz = list(range(2017, netz_max_year + 1))
 
 # First level
 coal_fuels = ['1_1_coking_coal', '1_5_lignite', '1_x_coal_thermal']
-coal_prod_fuels = ['2_1_coke_oven_coke', '2_2_coke_oven_gas', '2_3_blast_furnace_gas', '2_4_other_recovered_gases', '2_5_patent_fuel', '2_6_coal_tar', '2_7_bkb_pb']
+#coal_prod_fuels = ['2_1_coke_oven_coke', '2_2_coke_oven_gas', '2_3_blast_furnace_gas', '2_4_other_recovered_gases', '2_5_patent_fuel', '2_6_coal_tar', '2_7_bkb_pb']
 oil_fuels = ['6_1_crude_oil', '6_x_ngls']
 petrol_fuels = ['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil',
                 '7_8_fuel_oil', '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane', '7_x_other_petroleum_products']
@@ -191,9 +191,6 @@ for region in ref_aggregate_df1['REGION'].unique():
     coal = interim_df1[interim_df1['fuel_code'].isin(coal_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '1_coal').reset_index()
 
-    coal_prod = interim_df1[interim_df1['fuel_code'].isin(coal_prod_fuels)].groupby(['item_code_new'])\
-        .sum().assign(fuel_code = '2_coal_products').reset_index()
-
     oil = interim_df1[interim_df1['fuel_code'].isin(oil_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '6_crude_oil_and_ngl').reset_index()
 
@@ -209,7 +206,7 @@ for region in ref_aggregate_df1['REGION'].unique():
     others = interim_df1[interim_df1['fuel_code'].isin(other_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '16_others').reset_index()
 
-    interim_df2 = interim_df1.append([coal, coal_prod, oil, petrol, gas, others]).reset_index(drop = True)
+    interim_df2 = interim_df1.append([coal, oil, petrol, gas, others]).reset_index(drop = True)
 
     # And total fuels
 
@@ -276,9 +273,6 @@ for region in netz_aggregate_df1['REGION'].unique():
     coal = interim_df1[interim_df1['fuel_code'].isin(coal_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '1_coal').reset_index()
 
-    coal_prod = interim_df1[interim_df1['fuel_code'].isin(coal_prod_fuels)].groupby(['item_code_new'])\
-        .sum().assign(fuel_code = '2_coal_products').reset_index()
-
     oil = interim_df1[interim_df1['fuel_code'].isin(oil_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '6_crude_oil_and_ngl').reset_index()
 
@@ -294,7 +288,7 @@ for region in netz_aggregate_df1['REGION'].unique():
     others = interim_df1[interim_df1['fuel_code'].isin(other_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = '16_others').reset_index()
 
-    interim_df2 = interim_df1.append([coal, coal_prod, oil, petrol, gas, others]).reset_index(drop = True)
+    interim_df2 = interim_df1.append([coal, oil, petrol, gas, others]).reset_index(drop = True)
 
     # And total fuels
 
