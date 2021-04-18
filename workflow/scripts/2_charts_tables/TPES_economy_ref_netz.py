@@ -24,10 +24,6 @@ Items = EGEDA_years_reference.item_code_new.unique()
 colours = pd.read_excel('./data/2_Mapping_and_other/colour_template_7th.xlsx')
 colours_hex = colours['hex']
 
-# Define month and year to create folder for saving charts/tables
-
-month_year = pd.to_datetime('today').strftime('%B_%Y')
-
 # Subsets for impending df builds
 
 First_level_fuels = ['1_coal', '2_coal_products', '5_oil_shale_and_oil_sands', '6_crude_oil_and_ngl', '7_petroleum_products',
@@ -487,8 +483,8 @@ for economy in Economy_codes:
     ncols31 = netz_bunkers_df2.shape[1]
 
     # Define directory
-    script_dir = './results/' + month_year + '/TPES/'
-    results_dir = os.path.join(script_dir, 'economy_breakdown/', economy)
+    script_dir = './results/'
+    results_dir = os.path.join(script_dir,economy)
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
     

@@ -34,9 +34,6 @@ use_df1 = use_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index()
 
 ################### THINGS FOR THE BELOW CHART BUILDS ###################
 
-# define month and year for charts
-month_year = pd.to_datetime('today').strftime('%B_%Y')
-
 # Chart years for column charts
 col_chart_years = [2017, 2020, 2030, 2040, 2050]
     
@@ -282,8 +279,8 @@ for economy in use_df1['REGION'].unique():
     # Electric vehicles
 
     # Define directory
-    script_dir = './results/' + month_year + '/OSeMOSYS_detailed/'
-    results_dir = os.path.join(script_dir, 'economy_breakdown/', economy)
+    script_dir = './results/'
+    results_dir = os.path.join(script_dir,economy)
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
 

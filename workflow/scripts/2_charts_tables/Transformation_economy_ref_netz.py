@@ -461,10 +461,6 @@ pow_capacity_agg2 = ['Coal', 'Lignite', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Bioma
 col_chart_years = [2018, 2020, 2030, 2040, 2050]
 gen_col_chart_years = [2000, 2010, 2018, 2020, 2030, 2040, 2050]
 
-# Define month and year to create folder for saving charts/tables
-
-month_year = pd.to_datetime('today').strftime('%B_%Y')
-
 # Make space for charts (before data/tables)
 chart_height = 18 # number of excel rows before the data is written
 
@@ -1114,8 +1110,8 @@ for economy in ref_power_df1['economy'].unique():
     ncols35 = netz_ownuse_df2.shape[1]
 
     # Define directory
-    script_dir = './results/' + month_year + '/Transformation/'
-    results_dir = os.path.join(script_dir, 'economy_breakdown/', economy)
+    script_dir = './results/'
+    results_dir = os.path.join(script_dir,economy)
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
 
