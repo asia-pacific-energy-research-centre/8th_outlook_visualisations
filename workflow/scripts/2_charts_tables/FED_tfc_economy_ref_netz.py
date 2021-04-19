@@ -309,7 +309,7 @@ for economy in Economy_codes:
     ref_tfec_df1 = ref_fedsector_df1[ref_fedsector_df1['item_code_new'] != 'Non-energy'].copy().groupby(['fuel_code'])\
         .sum().assign(item_code_new = 'TFEC', fuel_code = 'Total').reset_index(drop = True)
 
-    ref_tfec_df1 = ref_tfec_df1[['fuel_code', 'item_code_new'] + list(ref_tfec_df1.loc[:, '2000':])]
+    ref_tfec_df1 = ref_tfec_df1[['fuel_code', 'item_code_new'] + list(ref_tfec_df1.loc[:, '2000':'2050'])]
 
     nrows17 = ref_tfec_df1.shape[0]
     ncols17 = ref_tfec_df1.shape[1] 
