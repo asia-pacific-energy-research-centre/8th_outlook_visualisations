@@ -303,6 +303,16 @@ for economy in Economy_codes:
 
     nrows9 = ref_fedsector_df2.shape[0]
     ncols9 = ref_fedsector_df2.shape[1]
+
+    # New FED by sector (not including non-energy)
+
+    ref_tfec_df1 = ref_fedsector_df1[ref_fedsector_df1['item_code_new'] != 'Non-energy'].copy().groupby(['fuel_code'])\
+        .sum().assign(item_code_new = 'TFEC', fuel_code = 'Total').reset_index(drop = True)
+
+    ref_tfec_df1 = ref_tfec_df1[['fuel_code', 'item_code_new'] + list(ref_tfec_df1.loc[:, '2000':])]
+
+    nrows17 = ref_tfec_df1.shape[0]
+    ncols17 = ref_tfec_df1.shape[1] 
     
     # Third data frame construction: Buildings FED by fuel
     ref_bld_df1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
@@ -907,6 +917,7 @@ for economy in Economy_codes:
     netz_fedsector_df1.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height + nrows22 + 3)
     ref_fedsector_df2.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height + nrows2 + nrows8 + 6)
     netz_fedsector_df2.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height + nrows22 + nrows28 + 6)
+    ref_tfec_df1.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height + nrows2 + nrows8 + nrows9 + 9)
     ref_bld_df2.to_excel(writer, sheet_name = economy + '_FED_bld_ref', index = False, startrow = chart_height)
     netz_bld_df2.to_excel(writer, sheet_name = economy + '_FED_bld_netz', index = False, startrow = chart_height)
     ref_bld_df3.to_excel(writer, sheet_name = economy + '_FED_bld_ref', index = False, startrow = chart_height + nrows12 + 3)
@@ -1124,6 +1135,7 @@ for economy in Economy_codes:
     ref_worksheet2.set_row(chart_height, None, header_format)
     ref_worksheet2.set_row(chart_height + nrows2 + 3, None, header_format)
     ref_worksheet2.set_row(chart_height + nrows2 + nrows8 + 6, None, header_format)
+    ref_worksheet2.set_row(chart_height + nrows2 + nrows8 + nrows9 + 9, None, header_format)
     ref_worksheet2.write(0, 0, economy + ' FED sector', cell_format1)
     
     # Create a FED chart
