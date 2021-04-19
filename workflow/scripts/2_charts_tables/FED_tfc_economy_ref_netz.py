@@ -886,7 +886,7 @@ for economy in Economy_codes:
     
     # Define directory
     script_dir = './results/'
-    results_dir = os.path.join(script_dir,economy)
+    results_dir = os.path.join(script_dir, economy)
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
         
