@@ -36,7 +36,7 @@ colours_dict = {
     'Oil': '#be280a',
     'Gas': '#f59300',
     'Modern renewables': '#3c7896',
-    'Traditional biomass': '#828282',
+    'Biomass': '#828282',
     'Hydrogen': '#28825a',
     'Electricity': '#a5cdf0',
     'Heat': '#cd6477',
@@ -56,7 +56,6 @@ colours_dict = {
     'Mining': '#f59300',
     'Pulp & paper': '#28825a',
     'Other': '#cd6477',
-    'Biomass': '#828282',
     'Jet fuel': '#323232',
     'LPG': '#ffdc96',
     'Gasoline': '#be280a',
@@ -160,7 +159,7 @@ col_chart_years_transport = ['2018', '2020', '2030', '2040', '2050']
 
 # FED aggregate fuels
 
-FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Modern renewables', 'Traditional biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
+FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Modern renewables', 'Biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
 FED_agg_fuels_ind = ['Coal', 'Oil', 'Gas', 'Biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
 
 FED_agg_sectors = ['Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-energy', 'Non-specified']
@@ -211,7 +210,7 @@ for economy in Economy_codes:
     ref_fedfuel_df1.loc[ref_fedfuel_df1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     # Insert 0 traditional biomass row
-    new_row = ['Traditional biomass', 'Industry, transport, NE'] + [0] * 51
+    new_row = ['Biomass', 'Industry, transport, NE'] + [0] * 51
     new_series = pd.Series(new_row, index = ref_fedfuel_df1.columns)
 
     ref_fedfuel_df1 = ref_fedfuel_df1.append(new_series, ignore_index = True)
@@ -244,7 +243,7 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(ref_tradbio_df1.loc[:, '2000':'2050'])].reset_index(drop = True)
 
     ref_tradbio_df2.loc[ref_tradbio_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    ref_tradbio_df2.loc[ref_tradbio_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Traditional biomass'
+    ref_tradbio_df2.loc[ref_tradbio_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
     ref_tradbio_df2.loc[ref_tradbio_df2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
     ref_tradbio_df2.loc[ref_tradbio_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_tradbio_df2.loc[ref_tradbio_df2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
@@ -349,7 +348,7 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(ref_bld_df2.loc[:, '2000':])].reset_index(drop = True)
 
     ref_bld_df2.loc[ref_bld_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    ref_bld_df2.loc[ref_bld_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Traditional biomass'
+    ref_bld_df2.loc[ref_bld_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
     ref_bld_df2.loc[ref_bld_df2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
     ref_bld_df2.loc[ref_bld_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_bld_df2.loc[ref_bld_df2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
@@ -499,7 +498,7 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(ref_ag_df1.loc[:,'2000':'2050'])].reset_index(drop = True)
 
     ref_ag_df1.loc[ref_ag_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    ref_ag_df1.loc[ref_ag_df1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Traditional biomass'
+    ref_ag_df1.loc[ref_ag_df1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
     ref_ag_df1.loc[ref_ag_df1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
     ref_ag_df1.loc[ref_ag_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_ag_df1.loc[ref_ag_df1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
@@ -576,7 +575,7 @@ for economy in Economy_codes:
     netz_fedfuel_df1.loc[netz_fedfuel_df1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     # Insert 0 traditional biomass row
-    new_row = ['Traditional biomass', 'Industry, transport, NE'] + [0] * 51
+    new_row = ['Biomass', 'Industry, transport, NE'] + [0] * 51
     new_series = pd.Series(new_row, index = netz_fedfuel_df1.columns)
 
     netz_fedfuel_df1 = netz_fedfuel_df1.append(new_series, ignore_index = True)
@@ -609,7 +608,7 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(netz_tradbio_df1.loc[:, '2000':'2050'])].reset_index(drop = True)
 
     netz_tradbio_df2.loc[netz_tradbio_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    netz_tradbio_df2.loc[netz_tradbio_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Traditional biomass'
+    netz_tradbio_df2.loc[netz_tradbio_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
     netz_tradbio_df2.loc[netz_tradbio_df2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
     netz_tradbio_df2.loc[netz_tradbio_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_tradbio_df2.loc[netz_tradbio_df2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
@@ -714,7 +713,7 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(netz_bld_df2.loc[:, '2000':])].reset_index(drop = True)
 
     netz_bld_df2.loc[netz_bld_df2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    netz_bld_df2.loc[netz_bld_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Traditional biomass'
+    netz_bld_df2.loc[netz_bld_df2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
     netz_bld_df2.loc[netz_bld_df2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
     netz_bld_df2.loc[netz_bld_df2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_bld_df2.loc[netz_bld_df2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
@@ -863,7 +862,7 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(netz_ag_df1.loc[:,'2000':'2050'])].reset_index(drop = True)
 
     netz_ag_df1.loc[netz_ag_df1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    netz_ag_df1.loc[netz_ag_df1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Traditional biomass'
+    netz_ag_df1.loc[netz_ag_df1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
     netz_ag_df1.loc[netz_ag_df1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
     netz_ag_df1.loc[netz_ag_df1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_ag_df1.loc[netz_ag_df1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
