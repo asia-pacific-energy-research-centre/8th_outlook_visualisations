@@ -35,7 +35,7 @@ colours_dict = {
     'Coal': '#323232',
     'Oil': '#be280a',
     'Gas': '#f59300',
-    'Modern renewables': '#3c7896',
+    'Other renewables': '#3c7896',
     'Biomass': '#828282',
     'Hydrogen': '#28825a',
     'Electricity': '#a5cdf0',
@@ -159,7 +159,7 @@ col_chart_years_transport = ['2018', '2020', '2030', '2040', '2050']
 
 # FED aggregate fuels
 
-FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Modern renewables', 'Biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
+FED_agg_fuels = ['Coal', 'Oil', 'Gas', 'Other renewables', 'Biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
 FED_agg_fuels_ind = ['Coal', 'Oil', 'Gas', 'Biomass', 'Hydrogen', 'Electricity', 'Heat', 'Others']
 
 FED_agg_sectors = ['Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-energy', 'Non-specified']
@@ -194,7 +194,7 @@ for economy in Economy_codes:
         .sum().assign(fuel_code = 'Oil', item_code_new = 'Industry, transport, NE')
     
     renewables = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new'])\
-        .sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Industry, transport, NE')
+        .sum().assign(fuel_code = 'Other renewables', item_code_new = 'Industry, transport, NE')
     
     others = ref_econ_df1[ref_econ_df1['fuel_code'].isin(Others_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = 'Others', item_code_new = 'Industry, transport, NE')
@@ -233,7 +233,7 @@ for economy in Economy_codes:
         sum().assign(fuel_code = 'Oil', item_code_new = 'Trad bio sectors')
 
     renew_tradbio = ref_tradbio_df1[ref_tradbio_df1['fuel_code'].isin(Renewables_fuels_nobiomass)].groupby(['item_code_new']).\
-        sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Trad bio sectors')
+        sum().assign(fuel_code = 'Other renewables', item_code_new = 'Trad bio sectors')
 
     others_tradbio = ref_tradbio_df1[ref_tradbio_df1['fuel_code'].isin(Others_fuels)].groupby(['item_code_new']).\
         sum().assign(fuel_code = 'Others', item_code_new = 'Trad bio sectors')
@@ -339,7 +339,7 @@ for economy in Economy_codes:
         .sum().assign(fuel_code = 'Oil', item_code_new = '16_x_buildings')
     
     renewables = ref_bld_df2[ref_bld_df2['fuel_code'].isin(Renewables_fuels_nobiomass)].groupby(['item_code_new'])\
-        .sum().assign(fuel_code = 'Modern renewables', item_code_new = '16_x_buildings')
+        .sum().assign(fuel_code = 'Other renewables', item_code_new = '16_x_buildings')
     
     others = ref_bld_df2[ref_bld_df2['fuel_code'].isin(Others_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = 'Others', item_code_new = '16_x_buildings')
@@ -489,7 +489,7 @@ for economy in Economy_codes:
         .sum().assign(fuel_code = 'Oil', item_code_new = 'Agriculture')
 
     renewables = ref_ag_df1[ref_ag_df1['fuel_code'].isin(Renewables_fuels_nobiomass)].groupby('item_code_new')\
-        .sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Agriculture')
+        .sum().assign(fuel_code = 'Other renewables', item_code_new = 'Agriculture')
     
     others = ref_ag_df1[ref_ag_df1['fuel_code'].isin(Others_fuels)].groupby('item_code_new')\
         .sum().assign(fuel_code = 'Others', item_code_new = 'Agriculture')
@@ -559,7 +559,7 @@ for economy in Economy_codes:
         .sum().assign(fuel_code = 'Oil', item_code_new = 'Industry, transport, NE')
     
     renewables = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new'])\
-        .sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Industry, transport, NE')
+        .sum().assign(fuel_code = 'Other renewables', item_code_new = 'Industry, transport, NE')
     
     others = netz_econ_df1[netz_econ_df1['fuel_code'].isin(Others_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = 'Others', item_code_new = 'Industry, transport, NE')
@@ -598,7 +598,7 @@ for economy in Economy_codes:
         sum().assign(fuel_code = 'Oil', item_code_new = 'Trad bio sectors')
 
     renew_tradbio = netz_tradbio_df1[netz_tradbio_df1['fuel_code'].isin(Renewables_fuels_nobiomass)].groupby(['item_code_new']).\
-        sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Trad bio sectors')
+        sum().assign(fuel_code = 'Other renewables', item_code_new = 'Trad bio sectors')
 
     others_tradbio = netz_tradbio_df1[netz_tradbio_df1['fuel_code'].isin(Others_fuels)].groupby(['item_code_new']).\
         sum().assign(fuel_code = 'Others', item_code_new = 'Trad bio sectors')
@@ -704,7 +704,7 @@ for economy in Economy_codes:
         .sum().assign(fuel_code = 'Oil', item_code_new = '16_x_buildings')
     
     renewables = netz_bld_df2[netz_bld_df2['fuel_code'].isin(Renewables_fuels_nobiomass)].groupby(['item_code_new'])\
-        .sum().assign(fuel_code = 'Modern renewables', item_code_new = '16_x_buildings')
+        .sum().assign(fuel_code = 'Other renewables', item_code_new = '16_x_buildings')
     
     others = netz_bld_df2[netz_bld_df2['fuel_code'].isin(Others_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = 'Others', item_code_new = '16_x_buildings')
@@ -853,7 +853,7 @@ for economy in Economy_codes:
         .sum().assign(fuel_code = 'Oil', item_code_new = 'Agriculture')
 
     renewables = netz_ag_df1[netz_ag_df1['fuel_code'].isin(Renewables_fuels_nobiomass)].groupby('item_code_new')\
-        .sum().assign(fuel_code = 'Modern renewables', item_code_new = 'Agriculture')
+        .sum().assign(fuel_code = 'Other renewables', item_code_new = 'Agriculture')
     
     others = netz_ag_df1[netz_ag_df1['fuel_code'].isin(Others_fuels)].groupby('item_code_new')\
         .sum().assign(fuel_code = 'Others', item_code_new = 'Agriculture')
