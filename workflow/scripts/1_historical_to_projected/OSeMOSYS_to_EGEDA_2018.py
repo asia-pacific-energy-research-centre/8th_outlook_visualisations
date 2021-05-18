@@ -115,6 +115,122 @@ APEC_netz['REGION'] = 'APEC'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(APEC_netz).reset_index(drop = True)
 
+# Now aggregate results for 22_SEA
+# Southeast Asia: 02, 07, 10, 15, 17, 19, 21
+
+# REFERENCE
+SEA_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+SEA_ref['REGION'] = '22_SEA'
+
+ref_aggregate_df1 = ref_aggregate_df1.append(SEA_ref).reset_index(drop = True)
+
+# NET ZERO
+SEA_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+SEA_netz['REGION'] = '22_SEA'
+
+netz_aggregate_df1 = netz_aggregate_df1.append(SEA_netz).reset_index(drop = True)
+
+# Aggregate results for 23_NEA
+# Northeast Asia: 06, 08, 09, 18
+
+# REFERENCE
+NEA_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+NEA_ref['REGION'] = '23_NEA'
+
+ref_aggregate_df1 = ref_aggregate_df1.append(NEA_ref).reset_index(drop = True)
+
+# NET ZERO
+NEA_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+NEA_netz['REGION'] = '23_NEA'
+
+netz_aggregate_df1 = netz_aggregate_df1.append(NEA_netz).reset_index(drop = True)
+
+
+# Aggregate results for 23b_ONEA
+# ONEA: 06, 09, 18
+
+# REFERENCE
+ONEA_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+ONEA_ref['REGION'] = '23b_ONEA'
+
+ref_aggregate_df1 = ref_aggregate_df1.append(ONEA_ref).reset_index(drop = True)
+
+# NET ZERO
+ONEA_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+ONEA_netz['REGION'] = '23b_ONEA'
+
+netz_aggregate_df1 = netz_aggregate_df1.append(ONEA_netz).reset_index(drop = True)
+
+# Aggregate results for 24_OAM
+# OAM: 03, 04, 11, 14
+
+# REFERENCE
+OAM_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+OAM_ref['REGION'] = '24_OAM'
+
+ref_aggregate_df1 = ref_aggregate_df1.append(OAM_ref).reset_index(drop = True)
+
+# NET ZERO
+OAM_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+OAM_netz['REGION'] = '24_OAM'
+
+netz_aggregate_df1 = netz_aggregate_df1.append(OAM_netz).reset_index(drop = True)
+
+# Aggregate results for 24b_OOAM
+# OOAM: 04, 11, 14
+
+# REFERENCE
+OOAM_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+OOAM_ref['REGION'] = '24b_OOAM'
+
+ref_aggregate_df1 = ref_aggregate_df1.append(OOAM_ref).reset_index(drop = True)
+
+# NET ZERO
+OOAM_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+OOAM_netz['REGION'] = '24b_OOAM'
+
+netz_aggregate_df1 = netz_aggregate_df1.append(OOAM_netz).reset_index(drop = True)
+
+# Aggregate results for 25_OCE
+# Oceania: 01, 12, 13
+
+# REFERENCE
+OCE_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+OCE_ref['REGION'] = '25_OCE'
+
+ref_aggregate_df1 = ref_aggregate_df1.append(OCE_ref).reset_index(drop = True)
+
+# NET ZERO
+OCE_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+OCE_netz['REGION'] = '25_OCE'
+
+netz_aggregate_df1 = netz_aggregate_df1.append(OCE_netz).reset_index(drop = True)
+
+
 # Get maximum REFERENCE year column to build data frame below
 ref_year_columns = []
 
