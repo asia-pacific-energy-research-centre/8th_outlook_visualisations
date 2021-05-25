@@ -104,13 +104,13 @@ if netz_file_df['File'].isna().any() == False:
 # Now aggregate all the results for APEC
 
 # REFERENCE
-APEC_ref = ref_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+APEC_ref = ref_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 APEC_ref['REGION'] = 'APEC'
 
 ref_aggregate_df1 = ref_aggregate_df1.append(APEC_ref).reset_index(drop = True)
 
 # NET ZERO
-APEC_netz = netz_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+APEC_netz = netz_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 APEC_netz['REGION'] = 'APEC'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(APEC_netz).reset_index(drop = True)
@@ -121,7 +121,7 @@ netz_aggregate_df1 = netz_aggregate_df1.append(APEC_netz).reset_index(drop = Tru
 # REFERENCE
 SEA_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
     .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 SEA_ref['REGION'] = '22_SEA'
 
 ref_aggregate_df1 = ref_aggregate_df1.append(SEA_ref).reset_index(drop = True)
@@ -129,7 +129,7 @@ ref_aggregate_df1 = ref_aggregate_df1.append(SEA_ref).reset_index(drop = True)
 # NET ZERO
 SEA_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
     .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 SEA_netz['REGION'] = '22_SEA'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(SEA_netz).reset_index(drop = True)
@@ -140,7 +140,7 @@ netz_aggregate_df1 = netz_aggregate_df1.append(SEA_netz).reset_index(drop = True
 # REFERENCE
 NEA_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
     .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 NEA_ref['REGION'] = '23_NEA'
 
 ref_aggregate_df1 = ref_aggregate_df1.append(NEA_ref).reset_index(drop = True)
@@ -148,7 +148,7 @@ ref_aggregate_df1 = ref_aggregate_df1.append(NEA_ref).reset_index(drop = True)
 # NET ZERO
 NEA_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
     .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 NEA_netz['REGION'] = '23_NEA'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(NEA_netz).reset_index(drop = True)
@@ -160,7 +160,7 @@ netz_aggregate_df1 = netz_aggregate_df1.append(NEA_netz).reset_index(drop = True
 # REFERENCE
 ONEA_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
     .isin(['06_HKC', '09_ROK', '18_CT'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 ONEA_ref['REGION'] = '23b_ONEA'
 
 ref_aggregate_df1 = ref_aggregate_df1.append(ONEA_ref).reset_index(drop = True)
@@ -168,7 +168,7 @@ ref_aggregate_df1 = ref_aggregate_df1.append(ONEA_ref).reset_index(drop = True)
 # NET ZERO
 ONEA_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
     .isin(['06_HKC', '09_ROK', '18_CT'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 ONEA_netz['REGION'] = '23b_ONEA'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(ONEA_netz).reset_index(drop = True)
@@ -179,7 +179,7 @@ netz_aggregate_df1 = netz_aggregate_df1.append(ONEA_netz).reset_index(drop = Tru
 # REFERENCE
 OAM_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
     .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 OAM_ref['REGION'] = '24_OAM'
 
 ref_aggregate_df1 = ref_aggregate_df1.append(OAM_ref).reset_index(drop = True)
@@ -187,7 +187,7 @@ ref_aggregate_df1 = ref_aggregate_df1.append(OAM_ref).reset_index(drop = True)
 # NET ZERO
 OAM_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
     .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 OAM_netz['REGION'] = '24_OAM'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(OAM_netz).reset_index(drop = True)
@@ -198,7 +198,7 @@ netz_aggregate_df1 = netz_aggregate_df1.append(OAM_netz).reset_index(drop = True
 # REFERENCE
 OOAM_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
     .isin(['04_CHL', '11_MEX', '14_PE'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 OOAM_ref['REGION'] = '24b_OOAM'
 
 ref_aggregate_df1 = ref_aggregate_df1.append(OOAM_ref).reset_index(drop = True)
@@ -206,7 +206,7 @@ ref_aggregate_df1 = ref_aggregate_df1.append(OOAM_ref).reset_index(drop = True)
 # NET ZERO
 OOAM_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
     .isin(['04_CHL', '11_MEX', '14_PE'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 OOAM_netz['REGION'] = '24b_OOAM'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(OOAM_netz).reset_index(drop = True)
@@ -217,7 +217,7 @@ netz_aggregate_df1 = netz_aggregate_df1.append(OOAM_netz).reset_index(drop = Tru
 # REFERENCE
 OCE_ref = ref_aggregate_df1[ref_aggregate_df1['REGION']\
     .isin(['01_AUS', '12_NZ', '13_PNG'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 OCE_ref['REGION'] = '25_OCE'
 
 ref_aggregate_df1 = ref_aggregate_df1.append(OCE_ref).reset_index(drop = True)
@@ -225,7 +225,7 @@ ref_aggregate_df1 = ref_aggregate_df1.append(OCE_ref).reset_index(drop = True)
 # NET ZERO
 OCE_netz = netz_aggregate_df1[netz_aggregate_df1['REGION']\
     .isin(['01_AUS', '12_NZ', '13_PNG'])]\
-        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index(drop = True)
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
 OCE_netz['REGION'] = '25_OCE'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(OCE_netz).reset_index(drop = True)
