@@ -53,7 +53,7 @@ Unique_trans = Map_trans.groupby(['Workbook', 'Sheet_energy']).size().reset_inde
 ########################################################################################################################
 ########################### Create historical electricity generation dataframe for use later ###########################
 
-required_fuels = ['1_x_coal_thermal', '1_5_lignite', '2_coal_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
+required_fuels = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
                   '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', 
                   '15_solid_biomass', '16_others', '18_heat']
 
@@ -63,7 +63,22 @@ EGEDA_hist_gen = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv',
 EGEDA_hist_gen = EGEDA_hist_gen[(EGEDA_hist_gen['item_code_new'] == '18_electricity_output_in_pj') & 
                                 (EGEDA_hist_gen['fuel_code'].isin(required_fuels))].reset_index(drop = True)
 
-EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_x_coal_thermal': 'Coal', 
+# China only having data for 1_coal requires workaround to keep lignite data
+lignite_alt = EGEDA_hist_gen[EGEDA_hist_gen['fuel_code'] == '1_5_lignite'].copy()\
+    .set_index(['economy', 'fuel_code', 'item_code_new']) * -1
+
+lignite_alt = lignite_alt.reset_index()
+
+new_coal = EGEDA_hist_gen[EGEDA_hist_gen['fuel_code'] == '1_coal'].copy().reset_index(drop = True)
+
+lig_coal = new_coal.append(lignite_alt).reset_index(drop = True).groupby(['economy', 'item_code_new']).sum().reset_index()
+lig_coal['fuel_code'] = '1_coal'
+
+no_coal = EGEDA_hist_gen[EGEDA_hist_gen['fuel_code'] != '1_coal'].copy().reset_index(drop = True)
+
+EGEDA_hist_gen = no_coal.append(lig_coal).reset_index(drop = True)
+
+EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_coal': 'Coal', 
                                                                 '1_5_lignite': 'Lignite', 
                                                                 '2_coal_products': 'Coal',
                                                                 '6_crude_oil_and_ngl': 'Oil',
