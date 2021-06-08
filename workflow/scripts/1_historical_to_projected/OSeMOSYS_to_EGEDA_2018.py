@@ -666,23 +666,23 @@ Joined_netz_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_netzero.csv', index 
 
 # ###################### FOR CHECKING #########################################
 
-# Join EGEDA historical to OSeMOSYS results (line below removes 2017 and 2018 from historical)
-# REFERENCE
-if ref_aggregate_df2_tojoin.empty == True:
-    Joined_ref_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]
-else:
-    Joined_ref_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]\
-        .merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+# # Join EGEDA historical to OSeMOSYS results (line below removes 2017 and 2018 from historical)
+# # REFERENCE
+# if ref_aggregate_df2_tojoin.empty == True:
+#     Joined_ref_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]
+# else:
+#     Joined_ref_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]\
+#         .merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
-Joined_ref_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_reference_CHECK.csv', index = False)
+# Joined_ref_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_reference_CHECK.csv', index = False)
 
-# NET ZERO
-if netz_aggregate_df2_tojoin.empty == True:
-    Joined_netz_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]
-else:
-    Joined_netz_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]\
-        .merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+# # NET ZERO
+# if netz_aggregate_df2_tojoin.empty == True:
+#     Joined_netz_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]
+# else:
+#     Joined_netz_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]\
+#         .merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
-Joined_netz_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_netzero_CHECK.csv', index = False)
+# Joined_netz_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_netzero_CHECK.csv', index = False)
 
 print('OSeMOSYS_to_EGEDA_2018_reference.csv and OSeMOSYS_to_EGEDA_2018_netzero.csv file successfully created')
