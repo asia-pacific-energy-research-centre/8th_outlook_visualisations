@@ -243,7 +243,6 @@ for item in list(ref_aggregate_df1.columns):
 max_year_ref = max(ref_year_columns)
 
 OSeMOSYS_years_ref = list(range(2017, max_year_ref + 1))
-OSeMOSYS_check_ref = list(range(2019, max_year_ref + 1))
 
 # Get maximum NET ZERO year column to build data frame below
 netz_year_columns = []
@@ -257,7 +256,6 @@ for item in list(netz_aggregate_df1.columns):
 max_year_netz = max(netz_year_columns)
 
 OSeMOSYS_years_netz = list(range(2017, max_year_netz + 1))
-OSeMOSYS_years_netz = list(range(2019, max_year_netz + 1))
 
 ########################## fuel_code aggregations ##########################
 
@@ -639,55 +637,52 @@ EGEDA_years = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv')
 
 # REFERENCE
 if ref_aggregate_df2.empty == True:
-    ref_aggregate_df2_tojoin = ref_aggregate_df2
+    ref_aggregate_df2_tojoin = ref_aggregate_df2.copy()
 else:
-    ref_aggregate_df2_tojoin = ref_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_ref]
+    ref_aggregate_df2_tojoin = ref_aggregate_df2.copy().loc[:, key_variables + OSeMOSYS_years_ref]
 
 # NET ZERO
 if netz_aggregate_df2.empty == True:
-    netz_aggregate_df2_tojoin = netz_aggregate_df2
+    netz_aggregate_df2_tojoin = netz_aggregate_df2.copy()
 else:
-    netz_aggregate_df2_tojoin = netz_aggregate_df2.loc[:, key_variables + OSeMOSYS_years_netz]
+    netz_aggregate_df2_tojoin = netz_aggregate_df2.copy().loc[:, key_variables + OSeMOSYS_years_netz]
 
 # Join EGEDA historical to OSeMOSYS results (line below removes 2017 and 2018 from historical)
 # REFERENCE
 if ref_aggregate_df2_tojoin.empty == True:
-    Joined_ref_df = EGEDA_years.reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
+    Joined_ref_df = EGEDA_years.copy().reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
 else:
-    Joined_ref_df = EGEDA_years.iloc[:, :-2].merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+    Joined_ref_df = EGEDA_years.copy().iloc[:, :-2].merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_ref_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_reference.csv', index = False)
 
 # NET ZERO
 if netz_aggregate_df2_tojoin.empty == True:
-    Joined_netz_df = EGEDA_years.reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
+    Joined_netz_df = EGEDA_years.copy().reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
 else:
-    Joined_netz_df = EGEDA_years.iloc[:, :-2].merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+    Joined_netz_df = EGEDA_years.copy().iloc[:, :-2].merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_netz_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_netzero.csv', index = False)
 
-###################### FOR CHECKING #########################################
+# ###################### FOR CHECKING #########################################
 
 # Join EGEDA historical to OSeMOSYS results (line below removes 2017 and 2018 from historical)
 # REFERENCE
 if ref_aggregate_df2_tojoin.empty == True:
-    Joined_ref_df = EGEDA_years.reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
+    Joined_ref_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]
 else:
-    Joined_ref_df = EGEDA_years.iloc[:, :].merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+    Joined_ref_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]\
+        .merge(ref_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_ref_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_reference_CHECK.csv', index = False)
 
 # NET ZERO
 if netz_aggregate_df2_tojoin.empty == True:
-    Joined_netz_df = EGEDA_years.reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
+    Joined_netz_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]
 else:
-    Joined_netz_df = EGEDA_years.iloc[:, :].merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
+    Joined_netz_df = EGEDA_years[['economy', 'fuel_code', 'item_code_new', '2017', '2018']]\
+        .merge(netz_aggregate_df2_tojoin, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_netz_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_netzero_CHECK.csv', index = False)
 
 print('OSeMOSYS_to_EGEDA_2018_reference.csv and OSeMOSYS_to_EGEDA_2018_netzero.csv file successfully created')
-
-
-
-
-
