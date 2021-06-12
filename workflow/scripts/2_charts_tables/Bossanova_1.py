@@ -21,12 +21,12 @@ EGEDA_years_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_2018_netzer
 ref_power_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_power_reference.csv').loc[:,:'2050']
 ref_refownsup_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_refownsup_reference.csv').loc[:,:'2050']
 ref_pow_capacity_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_powcapacity_reference.csv').loc[:,:'2050']
-ref_trans_df1 = = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_reference.csv').loc[:,:'2050']
+ref_trans_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_reference.csv').loc[:,:'2050']
 
 netz_power_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_power_netzero.csv').loc[:,:'2050']
 netz_refownsup_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_refownsup_netzero.csv').loc[:,:'2050']
 netz_pow_capacity_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_powcapacity_netzero.csv').loc[:,:'2050']
-netz_trans_df1 = = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_netzero.csv').loc[:,:'2050']
+netz_trans_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_netzero.csv').loc[:,:'2050']
 
 # Define unique values for economy, fuels, and items columns
 # only looking at one dataframe which should be sufficient as both have same structure
@@ -40,7 +40,7 @@ Items = EGEDA_years_reference.item_code_new.unique()
 colours_dict = pd.read_csv('./data/2_Mapping_and_other/colours_dict.csv',\
     header = None, index_col = 0, squeeze = True).to_dict()
 
-# FED: Subsets for impending df builds
+# FED and TPES: vectors for impending df builds
 
 # Fuels
 
@@ -94,7 +94,7 @@ Renew_fuel = ['16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', '16
 
 Other_fuel_trans = ['7_8_fuel_oil', '1_1_coking_coal', '1_5_lignite', '1_x_coal_thermal', '2_coal_products', '7_x_other_petroleum_products']
 
-# Sectors
+# FED and TPES: Sectors
 
 trad_bio_sectors = ['16_1_commercial_and_public_services', '16_2_residential',
                   '16_3_agriculture', '16_4_fishing', '16_5_nonspecified_others']
@@ -124,6 +124,113 @@ tpes_items = ['1_indigenous_production', '2_imports', '3_exports', '4_internatio
 
 Prod_items = tpes_items[:1]
 
+##############################################################################################################################
+# TRANSFORMATION vectors for df builds
+
+# FUEL aggregations for UseByTechnology (input fuels)
+
+# First aggregation (13 fuels)
+coal_fuel_1 = ['1_x_coal_thermal', '2_coal_products']
+lignite_fuel_1 = ['1_5_lignite']
+oil_fuel_1 = ['7_7_gas_diesel_oil','7_3_naphtha', '7_8_fuel_oil', '6_1_crude_oil', '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_x_other_petroleum_products']
+gas_fuel_1 = ['8_1_natural_gas']
+nuclear_fuel_1 = ['9_nuclear']
+hydro_fuel_1 = ['10_hydro']
+solar_fuel_1 = ['12_1_of_which_photovoltaics']
+wind_fuel_1 = ['14_wind']
+biomass_fuel_1 = ['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_4_black_liquor', '15_5_other_biomass']
+geothermal_fuel_1 = ['11_geothermal']
+other_renew_fuel_1 = ['13_tide_wave_ocean', '16_3_municipal_solid_waste_renewable', '16_1_biogas']
+other_fuel_1 = ['16_4_municipal_solid_waste_nonrenewable', '17_electricity', '18_heat', '16_x_hydrogen', '16_2_industrial_waste']
+imports_fuel_1 = ['17_electricity_import']
+
+# Second aggreagtion: Oil, Gas, Nuclear, Imports, Other from above and below two new aggregations (7 fuels)
+coal_fuel_2 = ['1_x_coal_thermal', '1_5_lignite', '2_coal_products']
+renewables_fuel_2 = ['10_hydro', '11_geothermal', '12_1_of_which_photovoltaics', '13_tide_wave_ocean', '14_wind', '15_1_fuelwood_and_woodwaste', 
+                     '15_2_bagasse', '15_4_black_liquor', '15_5_other_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable']
+
+# Own use fuels
+coal_ou = ['1_x_coal_thermal', '1_5_lignite', '2_coal_products', '1_1_coking_coal']
+oil_ou = ['6_1_crude_oil', '6_x_ngls', '7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_6_kerosene',
+          '7_7_gas_diesel_oil', '7_8_fuel_oil', '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane',
+          '7_x_jet_fuel', '7_x_other_petroleum_products']
+gas_ou = ['8_1_natural_gas']
+renew_ou = ['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_4_black_liquor', '15_5_other_biomass', 
+            '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel',
+            '16_8_other_liquid_biofuels']
+elec_ou = ['17_electricity']
+heat_ou = ['18_heat']
+other_ou = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable']
+
+own_use_fuels = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat', 'Other']
+
+# Note, 12_1_of_which_photovoltaics is a subset of 12_solar so including will lead to double counting
+
+use_agg_fuels_1 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Nuclear', 'Hydro', 'Solar', 'Wind', 
+                   'Biomass', 'Geothermal', 'Other renewables', 'Other', 'Imports']
+use_agg_fuels_2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other', 'Imports']
+
+# TECHNOLOGY aggregations for ProductionByTechnology
+
+coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
+oil_tech = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
+gas_tech = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
+nuclear_tech = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
+hydro_tech = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP']
+solar_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
+wind_tech = ['POW_WindOff_PP', 'POW_Wind_PP']
+bio_tech = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP']
+geo_tech = ['POW_Geothermal_PP']
+storage_tech = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
+other_tech = ['POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP', 'POW_CHP_PP']
+# chp_tech = ['POW_CHP_PP']
+im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
+
+lignite_tech = ['POW_Sub_Brown_PP']
+thermal_coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
+solar_roof_tech = ['POW_SolarRoofPV_PP']
+solar_nr_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP']
+
+# POW_EXPORT_ELEC_PP need to work this in
+
+prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
+prod_agg_tech2 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
+                 'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
+
+# Refinery vectors
+
+refinery_input = ['6_1_crude_oil', '6_x_ngls']
+refinery_output = ['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
+              '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane', '7_x_other_petroleum_products']
+
+refinery_new_output = ['7_1_from_ref', '7_2_from_ref', '7_3_from_ref', '7_jet_from_ref', '7_6_from_ref', '7_7_from_ref',
+                       '7_8_from_ref', '7_9_from_ref', '7_10_from_ref', '7_11_from_ref', '7_other_from_ref']
+
+# Capacity vectors
+    
+coal_cap = ['POW_Black_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_CHP_COAL_PP', 'POW_Other_Coal_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP']
+gas_cap = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
+oil_cap = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
+nuclear_cap = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
+hydro_cap = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP']
+bio_cap = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP']
+wind_cap = ['POW_Wind_PP', 'POW_WindOff_PP']
+solar_cap = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
+geo_cap = ['POW_Geothermal_PP']
+storage_cap = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
+other_cap = ['POW_WasteToEnergy_PP', 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_CHP_PP']
+# chp_cap = ['POW_CHP_PP']
+# 'POW_HEAT_HP' not in electricity capacity
+transmission_cap = ['POW_Transmission']
+
+lignite_cap = ['POW_Sub_Brown_PP']
+thermal_coal_cap = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
+
+
+pow_capacity_agg = ['Coal', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
+pow_capacity_agg2 = ['Coal', 'Lignite', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 
+                     'Solar', 'Geothermal', 'Storage', 'Other']
+
 # Make space for charts (before data/tables)
 chart_height = 18 # number of excel rows before the data is written (can change this)
 
@@ -132,6 +239,10 @@ col_chart_years = ['2000', '2010', '2018', '2020', '2030', '2040', '2050']
 
 # Define column chart years for transport
 col_chart_years_transport = ['2018', '2020', '2030', '2040', '2050']
+
+# Transformation chart years
+trans_col_chart = ['2018', '2020', '2030', '2040', '2050']
+gen_col_chart_years = ['2000', '2010', '2018', '2020', '2030', '2040', '2050']
 
 # FED aggregate fuels
 
@@ -195,6 +306,9 @@ EGEDA_hist_gen['Generation'] = 'Electricity'
 
 EGEDA_hist_gen = EGEDA_hist_gen[['economy', 'TECHNOLOGY', 'Generation'] + list(range(2000, 2019))].\
     groupby(['economy', 'TECHNOLOGY', 'Generation']).sum().reset_index()
+
+EGEDA_hist_gen.to_csv('./data/4_Joined/EGEDA_hist_gen.csv', index = False)
+EGEDA_hist_gen = pd.read_csv('./data/4_Joined/EGEDA_hist_gen.csv')
 
 #########################################################################################################################################
 
@@ -1324,3 +1438,657 @@ for economy in Economy_codes:
 
     netz_bunkers_2_rows = netz_bunkers_2.shape[0]
     netz_bunkers_2_cols = netz_bunkers_2.shape[1]
+
+    ################################################################################################################################
+    ################################################################################################################################
+
+    # Now, transformation dataframes
+
+    # REFERENCE
+
+    ref_pow_use_1 = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                        (ref_power_df1['Sheet_energy'] == 'UseByTechnology') &
+                        (ref_power_df1['TECHNOLOGY'] != 'POW_Transmission')].reset_index(drop = True)
+
+    # Now build aggregate variables of the FUELS
+
+    # First level aggregations
+    coal = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(coal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Coal',
+                                                                                      TECHNOLOGY = 'Coal power')
+
+    lignite = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(lignite_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Lignite',
+                                                                                              TECHNOLOGY = 'Lignite power')                                                                                      
+
+    oil = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(oil_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Oil',
+                                                                                    TECHNOLOGY = 'Oil power')
+
+    gas = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(gas_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Gas',
+                                                                                      TECHNOLOGY = 'Gas power')
+
+    nuclear = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(nuclear_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Nuclear',
+                                                                                    TECHNOLOGY = 'Nuclear power')
+
+    hydro = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(hydro_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Hydro',
+                                                                                    TECHNOLOGY = 'Hydro power')
+
+    solar = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(solar_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Solar',
+                                                                                        TECHNOLOGY = 'Solar power')
+
+    wind = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(wind_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Wind',
+                                                                                    TECHNOLOGY = 'Wind power')
+
+    geothermal = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(geothermal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Geothermal',
+                                                                                    TECHNOLOGY = 'Geothermal power')
+
+    biomass = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(biomass_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Biomass',
+                                                                                    TECHNOLOGY = 'Biomass power')
+
+    other_renew = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(other_renew_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Other renewables',
+                                                                                    TECHNOLOGY = 'Other renewable power')
+
+    other = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(other_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Other',
+                                                                                        TECHNOLOGY = 'Other power')
+
+    imports = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(imports_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Imports',
+                                                                                        TECHNOLOGY = 'Electricity imports')                                                                                         
+
+    # Second level aggregations
+
+    coal2 = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(coal_fuel_2)].groupby(['economy']).sum().assign(FUEL = 'Coal',
+                                                                                      TECHNOLOGY = 'Coal power')
+
+    renew2 = ref_pow_use_1[ref_pow_use_1['FUEL'].isin(renewables_fuel_2)].groupby(['economy']).sum().assign(FUEL = 'Renewables',
+                                                                                      TECHNOLOGY = 'Renewables power')
+
+    # Use by fuel data frame number 1
+
+    ref_pow_use_2 = ref_pow_use_1.append([coal, lignite, oil, gas, nuclear, hydro, solar, wind, geothermal, biomass, other_renew, other, imports])\
+        [['FUEL', 'TECHNOLOGY'] + list(ref_pow_use_1.loc[:, '2017':])].reset_index(drop = True)
+
+    ref_pow_use_2 = ref_pow_use_2[ref_pow_use_2['FUEL'].isin(use_agg_fuels_1)].copy().set_index('FUEL').reset_index()
+
+    ref_pow_use_2 = ref_pow_use_2.groupby('FUEL').sum().reset_index()
+    ref_pow_use_2['Transformation'] = 'Input fuel'
+    ref_pow_use_2['FUEL'] = pd.Categorical(ref_pow_use_2['FUEL'], use_agg_fuels_1)
+
+    ref_pow_use_2 = ref_pow_use_2.sort_values('FUEL').reset_index(drop = True)
+
+    ref_pow_use_2 = ref_pow_use_2[['FUEL', 'Transformation'] + list(ref_pow_use_2.loc[:, '2017':'2050'])]
+
+    ref_pow_use_2_rows = ref_pow_use_2.shape[0]
+    ref_pow_use_2_cols = ref_pow_use_2.shape[1]
+
+    ref_pow_use_3 = ref_pow_use_2[['FUEL', 'Transformation'] + trans_col_chart]
+
+    ref_pow_use_3_rows = ref_pow_use_3.shape[0]
+    ref_pow_use_3_cols = ref_pow_use_3.shape[1]
+
+    # Use by fuel data frame number 1
+
+    ref_pow_use_4 = ref_pow_use_1.append([coal2, oil, gas, nuclear, renew2, other, imports])\
+        [['FUEL', 'TECHNOLOGY'] + list(ref_pow_use_1.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+    ref_pow_use_4 = ref_pow_use_4[ref_pow_use_4['FUEL'].isin(use_agg_fuels_2)].copy().set_index('FUEL').reset_index() 
+
+    ref_pow_use_4 = ref_pow_use_4.groupby('FUEL').sum().reset_index()
+    ref_pow_use_4['Transformation'] = 'Input fuel'
+    ref_pow_use_4 = ref_pow_use_4[['FUEL', 'Transformation'] + list(ref_pow_use_4.loc[:, '2017':'2050'])]
+
+    ref_pow_use_4_rows = ref_pow_use_4.shape[0]
+    ref_pow_use_4_cols = ref_pow_use_4.shape[1]
+
+    ref_pow_use_5 = ref_pow_use_4[['FUEL', 'Transformation'] + trans_col_chart]
+
+    ref_pow_use_5_rows = ref_pow_use_5.shape[0]
+    ref_pow_use_5_cols = ref_pow_use_5.shape[1]
+
+    # Now build production dataframe
+    ref_elecgen_1 = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                             (ref_power_df1['Sheet_energy'] == 'ProductionByTechnology') &
+                             (ref_power_df1['FUEL'].isin(['17_electricity', '17_electricity_Dx']))].reset_index(drop = True)
+
+    # Now build the aggregations of technology (power plants)
+
+    coal_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    oil_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(oil_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
+    gas_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(gas_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    storage_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(storage_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Storage')
+    # chp_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(chp_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Cogeneration')
+    nuclear_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(nuclear_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
+    bio_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(bio_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
+    other_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(other_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
+    hydro_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(hydro_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Hydro')
+    geo_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(geo_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Geothermal')
+    misc = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(im_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Imports')
+    solar_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(solar_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar')
+    wind_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(wind_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Wind')
+
+    coal_pp2 = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(thermal_coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    lignite_pp2 = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(lignite_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
+    roof_pp2 = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(solar_roof_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar roof')
+    nonroof_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(solar_nr_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar')
+
+    # Generation of electricity by tech dataframe (with the above aggregations added)
+
+    ref_elecgen_2 = ref_elecgen_1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, storage_pp, nuclear_pp,\
+        bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
+        [['TECHNOLOGY'] + list(ref_elecgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                                                                    
+
+    ref_elecgen_2['Generation'] = 'Electricity'
+    ref_elecgen_2 = ref_elecgen_2[['TECHNOLOGY', 'Generation'] + list(ref_elecgen_2.loc[:, '2017':'2050'])] 
+
+    ref_elecgen_2 = ref_elecgen_2[ref_elecgen_2['TECHNOLOGY'].isin(prod_agg_tech2)].\
+        set_index('TECHNOLOGY')
+
+    ref_elecgen_2 = ref_elecgen_2.loc[ref_elecgen_2.index.intersection(prod_agg_tech2)].reset_index()\
+        .rename(columns = {'index': 'TECHNOLOGY'})
+
+    #################################################################################
+    historical_gen = EGEDA_hist_gen[EGEDA_hist_gen['economy'] == economy].copy().\
+        iloc[:,:-2][['TECHNOLOGY', 'Generation'] + list(EGEDA_hist_gen.loc[:, '2000':'2016'])]
+
+    ref_elecgen_2 = historical_gen.merge(ref_elecgen_2, how = 'right', on = ['TECHNOLOGY', 'Generation']).replace(np.nan, 0)
+
+    ref_elecgen_2['TECHNOLOGY'] = pd.Categorical(ref_elecgen_2['TECHNOLOGY'], prod_agg_tech2)
+
+    ref_elecgen_2 = ref_elecgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    # CHange to TWh from Petajoules
+
+    s = ref_elecgen_2.select_dtypes(include=[np.number]) / 3.6 
+    ref_elecgen_2[s.columns] = s
+
+    ref_elecgen_2_rows = ref_elecgen_2.shape[0]
+    ref_elecgen_2_cols = ref_elecgen_2.shape[1]
+
+    ref_elecgen_3 = ref_elecgen_2[['TECHNOLOGY', 'Generation'] + gen_col_chart_years]
+
+    ref_elecgen_3_rows = ref_elecgen_3.shape[0]
+    ref_elecgen_3_cols = ref_elecgen_3.shape[1]
+
+    ##################################################################################################################################################################
+
+    # Now create some refinery dataframes
+
+    ref_refinery_1 = ref_refownsup_df1[(ref_refownsup_df1['economy'] == economy) &
+                                 (ref_refownsup_df1['Sector'] == 'REF') & 
+                                 (ref_refownsup_df1['FUEL'].isin(refinery_input))].copy()
+
+    ref_refinery_1['Transformation'] = 'Input to refinery'
+    ref_refinery_1 = ref_refinery_1[['FUEL', 'Transformation'] + list(ref_refinery_1.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+    ref_refinery_1.loc[ref_refinery_1['FUEL'] == '6_1_crude_oil', 'FUEL'] = 'Crude oil'
+    ref_refinery_1.loc[ref_refinery_1['FUEL'] == '6_x_ngls', 'FUEL'] = 'NGLs'
+
+    ref_refinery_1_rows = ref_refinery_1.shape[0]
+    ref_refinery_1_cols = ref_refinery_1.shape[1]
+
+    ref_refinery_2 = ref_refownsup_df1[(ref_refownsup_df1['economy'] == economy) &
+                                 (ref_refownsup_df1['Sector'] == 'REF') & 
+                                 (ref_refownsup_df1['FUEL'].isin(refinery_new_output))].copy()
+
+    ref_refinery_2['Transformation'] = 'Output from refinery'
+    ref_refinery_2 = ref_refinery_2[['FUEL', 'Transformation'] + list(ref_refinery_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_1_from_ref', 'FUEL'] = 'Motor gasoline'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_2_from_ref', 'FUEL'] = 'Aviation gasoline'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_3_from_ref', 'FUEL'] = 'Naphtha'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_jet_from_ref', 'FUEL'] = 'Jet fuel'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_6_from_ref', 'FUEL'] = 'Other kerosene'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_7_from_ref', 'FUEL'] = 'Gas diesel oil'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_8_from_ref', 'FUEL'] = 'Fuel oil'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_9_from_ref', 'FUEL'] = 'LPG'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_10_from_ref', 'FUEL'] = 'Refinery gas'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_11_from_ref', 'FUEL'] = 'Ethane'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_other_from_ref', 'FUEL'] = 'Other'
+
+    ref_refinery_2['FUEL'] = pd.Categorical(
+        ref_refinery_2['FUEL'], 
+        categories = ['Motor gasoline', 'Aviation gasoline', 'Naphtha', 'Jet fuel', 'Other kerosene', 'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other'], 
+        ordered = True)
+
+    ref_refinery_2 = ref_refinery_2.sort_values('FUEL')
+
+    ref_refinery_2_rows = ref_refinery_2.shape[0]
+    ref_refinery_2_cols = ref_refinery_2.shape[1]
+
+    ref_refinery_3 = ref_refinery_2[['FUEL', 'Transformation'] + trans_col_chart]
+
+    ref_refinery_3_rows = ref_refinery_3.shape[0]
+    ref_refinery_3_cols = ref_refinery_3.shape[1]
+
+    #####################################################################################################################################################################
+
+    # Create some power capacity dataframes
+
+    ref_powcap_1 = ref_pow_capacity_df1[ref_pow_capacity_df1['REGION'] == economy]
+
+    coal_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
+    oil_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(oil_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Oil')
+    wind_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(wind_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Wind')
+    storage_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(storage_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Storage')
+    gas_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(gas_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Gas')
+    hydro_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(hydro_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Hydro')
+    solar_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(solar_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Solar')
+    nuclear_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(nuclear_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Nuclear')
+    bio_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(bio_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Biomass')
+    geo_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(geo_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Geothermal')
+    #chp_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(chp_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Cogeneration')
+    other_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(other_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Other')
+    transmission = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(transmission_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Transmission')
+
+    lignite_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(lignite_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Lignite')
+    thermal_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(thermal_coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
+
+    # Capacity by tech dataframe (with the above aggregations added)
+
+    ref_powcap_1 = ref_powcap_1.append([coal_capacity, gas_capacity, oil_capacity, nuclear_capacity,
+                                            hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
+                                            storage_capacity, geo_capacity, other_capacity])\
+        [['TECHNOLOGY'] + list(ref_powcap_1.loc[:, '2017':'2050'])].reset_index(drop = True) 
+
+    ref_powcap_1 = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
+
+    ref_powcap_1['TECHNOLOGY'] = pd.Categorical(ref_powcap_1['TECHNOLOGY'], prod_agg_tech[:-1])
+
+    ref_powcap_1 = ref_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    ref_powcap_1_rows = ref_powcap_1.shape[0]
+    ref_powcap_1_cols = ref_powcap_1.shape[1]
+
+    ref_powcap_2 = ref_powcap_1[['TECHNOLOGY'] + trans_col_chart]
+
+    ref_powcap_2_rows = ref_powcap_2.shape[0]
+    ref_powcap_2_cols = ref_powcap_2.shape[1]
+
+    #########################################################################################################################################
+    ############ NEW DATAFRAMES #############################################################################################################
+
+    # Refining, supply and own-use, and power
+    # SHould this include POW_Transmission?
+    ref_trans_1 = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
+                                           (ref_trans_df1['Sheet_energy'] == 'UseByTechnology') &
+                                           (ref_trans_df1['TECHNOLOGY'] != 'POW_Transmission')]
+
+    ref_transmission1 = ref_trans_df1[(ref_trans_df1['economy'] == economy) &
+                                     (ref_trans_df1['Sheet_energy'] == 'UseByTechnology') &
+                                     (ref_trans_df1['TECHNOLOGY'] == 'POW_Transmission')]
+
+    ref_transmission1 = ref_transmission1.groupby('Sector').sum().copy().reset_index()
+    ref_transmission1.loc[ref_transmission1['Sector'] == 'POW', 'Sector'] = 'Transmission'
+
+    ref_trans_2 = ref_trans_1.groupby('Sector').sum().copy().reset_index().append(ref_transmission1)
+
+    ref_trans_2.loc[ref_trans_2['Sector'] == 'OWN', 'Sector'] = 'Own-use'
+    ref_trans_2.loc[ref_trans_2['Sector'] == 'POW', 'Sector'] = 'Power'
+    ref_trans_2.loc[ref_trans_2['Sector'] == 'REF', 'Sector'] = 'Refining'
+
+    # Gets rid of own-use and Transmission so that the chart is only power and refining
+    ref_trans_3 = ref_trans_2[ref_trans_2['Sector'].isin(['Power', 'Refining'])]\
+        .reset_index(drop = True)
+
+    ref_trans_3_rows = ref_trans_3.shape[0]
+    ref_trans_3_cols = ref_trans_3.shape[1]
+
+    ref_trans_4 = ref_trans_3[['Sector'] + trans_col_chart]
+
+    ref_trans_4_rows = ref_trans_4.shape[0]
+    ref_trans_4_cols = ref_trans_4.shape[1]
+
+    # Own-use
+    ref_ownuse_1 = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
+                                   (ref_trans_df1['Sector'] == 'OWN')]
+
+    coal_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(coal_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Coal', Sector = 'Own-use and losses')
+    oil_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(oil_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Oil', Sector = 'Own-use and losses')
+    gas_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(gas_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Gas', Sector = 'Own-use and losses')
+    renewables_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(renew_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Renewables', Sector = 'Own-use and losses')
+    elec_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(elec_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Electricity', Sector = 'Own-use and losses')
+    heat_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(heat_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Heat', Sector = 'Own-use and losses')
+    other_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(other_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Other', Sector = 'Own-use and losses')
+
+    ref_ownuse_1 = ref_ownuse_1.append([coal_own, oil_own, gas_own, renewables_own, elec_own, heat_own, other_own])\
+        [['FUEL', 'Sector'] + list(ref_ownuse_1.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+    ref_ownuse_1 = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(own_use_fuels)].reset_index(drop = True)
+
+    ref_ownuse_1_rows = ref_ownuse_1.shape[0]
+    ref_ownuse_1_cols = ref_ownuse_1.shape[1]
+
+    ref_ownuse_2 = ref_ownuse_1[['FUEL', 'Sector'] + trans_col_chart]
+
+    ref_ownuse_2_rows = ref_ownuse_2.shape[0]
+    ref_ownuse_1_cols = ref_ownuse_2.shape[1]
+
+    ######################################################################################################################
+    
+    # NET-ZERO dataframes
+
+    netz_pow_use_1 = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                        (netz_power_df1['Sheet_energy'] == 'UseByTechnology') &
+                        (netz_power_df1['TECHNOLOGY'] != 'POW_Transmission')].reset_index(drop = True)
+
+    # Now build aggregate variables of the FUELS
+
+    # First level aggregations
+    coal = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(coal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Coal',
+                                                                                      TECHNOLOGY = 'Coal power')
+
+    lignite = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(lignite_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Lignite',
+                                                                                              TECHNOLOGY = 'Lignite power')                                                                                      
+
+    oil = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(oil_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Oil',
+                                                                                    TECHNOLOGY = 'Oil power')
+
+    gas = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(gas_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Gas',
+                                                                                      TECHNOLOGY = 'Gas power')
+
+    nuclear = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(nuclear_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Nuclear',
+                                                                                    TECHNOLOGY = 'Nuclear power')
+
+    hydro = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(hydro_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Hydro',
+                                                                                    TECHNOLOGY = 'Hydro power')
+
+    solar = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(solar_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Solar',
+                                                                                        TECHNOLOGY = 'Solar power')
+
+    wind = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(wind_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Wind',
+                                                                                    TECHNOLOGY = 'Wind power')
+
+    geothermal = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(geothermal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Geothermal',
+                                                                                    TECHNOLOGY = 'Geothermal power')
+
+    biomass = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(biomass_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Biomass',
+                                                                                    TECHNOLOGY = 'Biomass power')
+
+    other_renew = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(other_renew_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Other renewables',
+                                                                                    TECHNOLOGY = 'Other renewable power')
+
+    other = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(other_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Other',
+                                                                                        TECHNOLOGY = 'Other power')
+
+    imports = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(imports_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Imports',
+                                                                                        TECHNOLOGY = 'Electricity imports')                                                                                         
+
+    # Second level aggregations
+
+    coal2 = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(coal_fuel_2)].groupby(['economy']).sum().assign(FUEL = 'Coal',
+                                                                                      TECHNOLOGY = 'Coal power')
+
+    renew2 = netz_pow_use_1[netz_pow_use_1['FUEL'].isin(renewables_fuel_2)].groupby(['economy']).sum().assign(FUEL = 'Renewables',
+                                                                                      TECHNOLOGY = 'Renewables power')
+
+    # Use by fuel data frame number 1
+
+    netz_pow_use_2 = netz_pow_use_1.append([coal, lignite, oil, gas, nuclear, hydro, solar, wind, geothermal, biomass, other_renew, other, imports])\
+        [['FUEL', 'TECHNOLOGY'] + list(netz_pow_use_1.loc[:,'2017':'2050'])].reset_index(drop = True)
+
+    netz_pow_use_2 = netz_pow_use_2[netz_pow_use_2['FUEL'].isin(use_agg_fuels_1)].copy().set_index('FUEL').reset_index()
+
+    netz_pow_use_2 = netz_pow_use_2.groupby('FUEL').sum().reset_index()
+    netz_pow_use_2['Transformation'] = 'Input fuel'
+    netz_pow_use_2['FUEL'] = pd.Categorical(netz_pow_use_2['FUEL'], use_agg_fuels_1)
+
+    netz_pow_use_2 = netz_pow_use_2.sort_values('FUEL').reset_index(drop = True)
+
+    netz_pow_use_2 = netz_pow_use_2[['FUEL', 'Transformation'] + list(netz_pow_use_2.loc[:,'2017':'2050'])]
+
+    netz_pow_use_2_rows = netz_pow_use_2.shape[0]
+    netz_pow_use_2_cols = netz_pow_use_2.shape[1]
+
+    netz_pow_use_3 = netz_pow_use_2[['FUEL', 'Transformation'] + trans_col_chart]
+
+    netz_pow_use_3_rows = netz_pow_use_3.shape[0]
+    netz_pow_use_3_cols = netz_pow_use_3.shape[1]
+
+    # Use by fuel data frame number 1
+
+    netz_pow_use_4 = netz_pow_use_1.append([coal2, oil, gas, nuclear, renew2, other, imports])\
+        [['FUEL', 'TECHNOLOGY'] + list(netz_pow_use_1.loc[:,'2017':'2050'])].reset_index(drop = True)
+
+    netz_pow_use_4 = netz_pow_use_4[netz_pow_use_4['FUEL'].isin(use_agg_fuels_2)].copy().set_index('FUEL').reset_index() 
+
+    netz_pow_use_4 = netz_pow_use_4.groupby('FUEL').sum().reset_index()
+    netz_pow_use_4['Transformation'] = 'Input fuel'
+    netz_pow_use_4 = netz_pow_use_4[['FUEL', 'Transformation'] + list(netz_pow_use_4.loc[:,'2017':'2050'])]
+
+    netz_pow_use_4_rows = netz_pow_use_4.shape[0]
+    netz_pow_use_4_cols = netz_pow_use_4.shape[1]
+
+    netz_pow_use_5 = netz_pow_use_4[['FUEL', 'Transformation'] + trans_col_chart]
+
+    netz_pow_use_5_rows = netz_pow_use_5.shape[0]
+    netz_pow_use_5_cols = netz_pow_use_5.shape[1]
+
+    # Now build production dataframe
+    netz_elecgen_1 = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                             (netz_power_df1['Sheet_energy'] == 'ProductionByTechnology') &
+                             (netz_power_df1['FUEL'].isin(['17_electricity', '17_electricity_Dx']))].reset_index(drop = True)
+
+    # Now build the aggregations of technology (power plants)
+
+    coal_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    oil_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(oil_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
+    gas_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(gas_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    storage_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(storage_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Storage')
+    # chp_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(chp_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Cogeneration')
+    nuclear_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(nuclear_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
+    bio_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(bio_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
+    other_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(other_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
+    hydro_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(hydro_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Hydro')
+    geo_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(geo_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Geothermal')
+    misc = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(im_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Imports')
+    solar_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(solar_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar')
+    wind_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(wind_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Wind')
+
+    coal_pp2 = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(thermal_coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    lignite_pp2 = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(lignite_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
+    roof_pp2 = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(solar_roof_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar roof')
+    nonroof_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(solar_nr_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar')
+
+    # Generation of electricity by tech dataframe (with the above aggregations added)
+
+    netz_elecgen_2 = netz_elecgen_1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, storage_pp, nuclear_pp,\
+        bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
+        [['TECHNOLOGY'] + list(netz_elecgen_1.loc[:,'2017':'2050'])].reset_index(drop = True)                                                                                                    
+
+    netz_elecgen_2['Generation'] = 'Electricity'
+    netz_elecgen_2 = netz_elecgen_2[['TECHNOLOGY', 'Generation'] + list(netz_elecgen_2.loc[:,'2017':'2050'])] 
+
+    netz_elecgen_2 = netz_elecgen_2[netz_elecgen_2['TECHNOLOGY'].isin(prod_agg_tech2)].\
+        set_index('TECHNOLOGY')
+
+    netz_elecgen_2 = netz_elecgen_2.loc[netz_elecgen_2.index.intersection(prod_agg_tech2)].reset_index()\
+        .rename(columns = {'index': 'TECHNOLOGY'})
+
+    #################################################################################
+    historical_gen = EGEDA_hist_gen[EGEDA_hist_gen['economy'] == economy].copy().\
+        iloc[:,:-2][['TECHNOLOGY', 'Generation'] + list(EGEDA_hist_gen.loc[:,'2000':'2016'])]
+
+    netz_elecgen_2 = historical_gen.merge(netz_elecgen_2, how = 'right', on = ['TECHNOLOGY', 'Generation']).replace(np.nan, 0)
+
+    netz_elecgen_2['TECHNOLOGY'] = pd.Categorical(netz_elecgen_2['TECHNOLOGY'], prod_agg_tech2)
+
+    netz_elecgen_2 = netz_elecgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    # CHange to TWh from Petajoules
+
+    s = netz_elecgen_2.select_dtypes(include=[np.number]) / 3.6 
+    netz_elecgen_2[s.columns] = s
+
+    netz_elecgen_2_rows = netz_elecgen_2.shape[0]
+    netz_elecgen_2_cols = netz_elecgen_2.shape[1]
+
+    netz_elecgen_3 = netz_elecgen_2[['TECHNOLOGY', 'Generation'] + gen_col_chart_years]
+
+    netz_elecgen_3_rows = netz_elecgen_3.shape[0]
+    netz_elecgen_3_cols = netz_elecgen_3.shape[1]
+
+    ##################################################################################################################################################################
+
+    # Now create some refinery dataframes
+
+    netz_refinery_1 = netz_refownsup_df1[(netz_refownsup_df1['economy'] == economy) &
+                                 (netz_refownsup_df1['Sector'] == 'REF') & 
+                                 (netz_refownsup_df1['FUEL'].isin(refinery_input))].copy()
+
+    netz_refinery_1['Transformation'] = 'Input to refinery'
+    netz_refinery_1 = netz_refinery_1[['FUEL', 'Transformation'] + list(netz_refinery_1.loc[:,'2017':'2050'])].reset_index(drop = True)
+
+    netz_refinery_1.loc[netz_refinery_1['FUEL'] == '6_1_crude_oil', 'FUEL'] = 'Crude oil'
+    netz_refinery_1.loc[netz_refinery_1['FUEL'] == '6_x_ngls', 'FUEL'] = 'NGLs'
+
+    netz_refinery_1_rows = netz_refinery_1.shape[0]
+    netz_refinery_1_cols = netz_refinery_1.shape[1]
+
+    netz_refinery_2 = netz_refownsup_df1[(netz_refownsup_df1['economy'] == economy) &
+                                 (netz_refownsup_df1['Sector'] == 'REF') & 
+                                 (netz_refownsup_df1['FUEL'].isin(refinery_new_output))].copy()
+
+    netz_refinery_2['Transformation'] = 'Output from refinery'
+    netz_refinery_2 = netz_refinery_2[['FUEL', 'Transformation'] + list(netz_refinery_2.loc[:,'2017':'2050'])].reset_index(drop = True)
+
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_1_from_ref', 'FUEL'] = 'Motor gasoline'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_2_from_ref', 'FUEL'] = 'Aviation gasoline'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_3_from_ref', 'FUEL'] = 'Naphtha'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_jet_from_ref', 'FUEL'] = 'Jet fuel'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_6_from_ref', 'FUEL'] = 'Other kerosene'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_7_from_ref', 'FUEL'] = 'Gas diesel oil'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_8_from_ref', 'FUEL'] = 'Fuel oil'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_9_from_ref', 'FUEL'] = 'LPG'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_10_from_ref', 'FUEL'] = 'Refinery gas'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_11_from_ref', 'FUEL'] = 'Ethane'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_other_from_ref', 'FUEL'] = 'Other'
+
+    netz_refinery_2['FUEL'] = pd.Categorical(
+        netz_refinery_2['FUEL'], 
+        categories = ['Motor gasoline', 'Aviation gasoline', 'Naphtha', 'Jet fuel', 'Other kerosene', 'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other'], 
+        ordered = True)
+
+    netz_refinery_2 = netz_refinery_2.sort_values('FUEL')
+
+    netz_refinery_2_rows = netz_refinery_2.shape[0]
+    netz_refinery_2_cols = netz_refinery_2.shape[1]
+
+    netz_refinery_3 = netz_refinery_2[['FUEL', 'Transformation'] + trans_col_chart]
+
+    netz_refinery_3_rows = netz_refinery_3.shape[0]
+    netz_refinery_3_cols = netz_refinery_3.shape[1]
+
+    #####################################################################################################################################################################
+
+    # Create some power capacity dataframes
+
+    netz_powcap_1 = netz_pow_capacity_df1[netz_pow_capacity_df1['REGION'] == economy]
+
+    coal_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
+    oil_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(oil_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Oil')
+    wind_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(wind_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Wind')
+    storage_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(storage_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Storage')
+    gas_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(gas_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Gas')
+    hydro_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(hydro_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Hydro')
+    solar_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(solar_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Solar')
+    nuclear_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(nuclear_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Nuclear')
+    bio_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(bio_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Biomass')
+    geo_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(geo_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Geothermal')
+    #chp_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(chp_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Cogeneration')
+    other_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(other_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Other')
+    transmission = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(transmission_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Transmission')
+
+    lignite_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(lignite_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Lignite')
+    thermal_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(thermal_coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
+
+    # Capacity by tech dataframe (with the above aggregations added)
+
+    netz_powcap_1 = netz_powcap_1.append([coal_capacity, gas_capacity, oil_capacity, nuclear_capacity,
+                                            hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
+                                            storage_capacity, geo_capacity, other_capacity])\
+        [['TECHNOLOGY'] + list(netz_powcap_1.loc[:,'2017':'2050'])].reset_index(drop = True) 
+
+    netz_powcap_1 = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
+
+    netz_powcap_1['TECHNOLOGY'] = pd.Categorical(netz_powcap_1['TECHNOLOGY'], prod_agg_tech[:-1])
+
+    netz_powcap_1 = netz_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    netz_powcap_1_rows = netz_powcap_1.shape[0]
+    netz_powcap_1_cols = netz_powcap_1.shape[1]
+
+    netz_powcap_2 = netz_powcap_1[['TECHNOLOGY'] + trans_col_chart]
+
+    netz_powcap_2_rows = netz_powcap_2.shape[0]
+    netz_powcap_2_cols = netz_powcap_2.shape[1]
+
+    #########################################################################################################################################
+    ############ NEW DATAFRAMES #############################################################################################################
+
+    # Refining, supply and own-use, and power
+    # SHould this include POW_Transmission?
+    netz_trans_1 = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
+                                           (netz_trans_df1['Sheet_energy'] == 'UseByTechnology') &
+                                           (netz_trans_df1['TECHNOLOGY'] != 'POW_Transmission')]
+
+    netz_transmission1 = netz_trans_df1[(netz_trans_df1['economy'] == economy) &
+                                     (netz_trans_df1['Sheet_energy'] == 'UseByTechnology') &
+                                     (netz_trans_df1['TECHNOLOGY'] == 'POW_Transmission')]
+
+    netz_transmission1 = netz_transmission1.groupby('Sector').sum().copy().reset_index()
+    netz_transmission1.loc[netz_transmission1['Sector'] == 'POW', 'Sector'] = 'Transmission'
+
+    netz_trans_2 = netz_trans_1.groupby('Sector').sum().copy().reset_index().append(netz_transmission1)
+
+    netz_trans_2.loc[netz_trans_2['Sector'] == 'OWN', 'Sector'] = 'Own-use'
+    netz_trans_2.loc[netz_trans_2['Sector'] == 'POW', 'Sector'] = 'Power'
+    netz_trans_2.loc[netz_trans_2['Sector'] == 'REF', 'Sector'] = 'Refining'
+
+    # Gets rid of own-use and Transmission so that the chart is only power and refining
+    netz_trans_3 = netz_trans_2[netz_trans_2['Sector'].isin(['Power', 'Refining'])]\
+        .reset_index(drop = True)
+
+    netz_trans_3_rows = netz_trans_3.shape[0]
+    netz_trans_3_cols = netz_trans_3.shape[1]
+
+    netz_trans_4 = netz_trans_3[['Sector'] + trans_col_chart]
+
+    netz_trans_4_rows = netz_trans_4.shape[0]
+    netz_trans_4_cols = netz_trans_4.shape[1]
+
+    # Own-use
+    netz_ownuse_1 = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
+                                   (netz_trans_df1['Sector'] == 'OWN')]
+
+    coal_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(coal_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Coal', Sector = 'Own-use and losses')
+    oil_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(oil_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Oil', Sector = 'Own-use and losses')
+    gas_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(gas_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Gas', Sector = 'Own-use and losses')
+    renewables_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(renew_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Renewables', Sector = 'Own-use and losses')
+    elec_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(elec_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Electricity', Sector = 'Own-use and losses')
+    heat_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(heat_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Heat', Sector = 'Own-use and losses')
+    other_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(other_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Other', Sector = 'Own-use and losses')
+
+    netz_ownuse_1 = netz_ownuse_1.append([coal_own, oil_own, gas_own, renewables_own, elec_own, heat_own, other_own])\
+        [['FUEL', 'Sector'] + list(netz_ownuse_1.loc[:,'2017':'2050'])].reset_index(drop = True)
+
+    netz_ownuse_1 = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(own_use_fuels)].reset_index(drop = True)
+
+    netz_ownuse_1_rows = netz_ownuse_1.shape[0]
+    netz_ownuse_1_cols = netz_ownuse_1.shape[1]
+
+    netz_ownuse_2 = netz_ownuse_1[['FUEL', 'Sector'] + trans_col_chart]
+
+    netz_ownuse_2_rows = netz_ownuse_2.shape[0]
+    netz_ownuse_1_cols = netz_ownuse_2.shape[1]
+    
