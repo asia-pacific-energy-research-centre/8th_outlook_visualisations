@@ -29,6 +29,7 @@ colours_hex = colours['hex']
 First_level_fuels = ['1_coal', '2_coal_products', '5_oil_shale_and_oil_sands', '6_crude_oil_and_ngl', '7_petroleum_products',
                      '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass',
                      '16_others', '17_electricity', '18_heat', '19_total', '20_total_renewables', '21_modern_renewables']
+
 Required_fuels = ['1_coal', '2_coal_products', '5_oil_shale_and_oil_sands', '6_crude_oil_and_ngl', '7_petroleum_products',
                   '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass',
                   '16_1_biogas', '16_2_industrial_waste', '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable',
@@ -40,7 +41,7 @@ Coal_fuels = ['1_coal', '2_coal_products', '3_peat', '4_peat_products']
 
 Oil_fuels = ['6_crude_oil_and_ngl', '7_petroleum_products', '5_oil_shale_and_oil_sands']
 
-Other_fuels = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_9_other_sources']
+Other_fuels_TPES = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_9_other_sources']
 
 Renewables_fuels = ['10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass', '16_1_biogas', 
                     '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
@@ -90,7 +91,7 @@ for economy in Economy_codes:
     renewables = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                               item_code_new = '7_total_primary_energy_supply')
     
-    others = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                      item_code_new = '7_total_primary_energy_supply')
     
     ref_tpes_df1 = ref_tpes_df.append([coal, oil, renewables, others])[['fuel_code', 
@@ -126,7 +127,7 @@ for economy in Economy_codes:
     renewables = ref_prod_df[ref_prod_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                               item_code_new = '1_indigenous_production')
     
-    others = ref_prod_df[ref_prod_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = ref_prod_df[ref_prod_df['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                      item_code_new = '1_indigenous_production')
     
     ref_prod_df1 = ref_prod_df.append([coal, oil, renewables, others])[['fuel_code', 
@@ -186,7 +187,7 @@ for economy in Economy_codes:
     renewables = ref_imports_df1[ref_imports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                       item_code_new = '2_imports')
     
-    others = ref_imports_df1[ref_imports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = ref_imports_df1[ref_imports_df1['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                              item_code_new = '2_imports')
     
     ref_imports_df1 = ref_imports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
@@ -222,7 +223,7 @@ for economy in Economy_codes:
     renewables = ref_exports_df1[ref_exports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                       item_code_new = '3_exports')
     
-    others = ref_exports_df1[ref_exports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = ref_exports_df1[ref_exports_df1['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                              item_code_new = '3_exports')
     
     ref_exports_df1 = ref_exports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
@@ -296,7 +297,7 @@ for economy in Economy_codes:
     renewables = netz_tpes_df[netz_tpes_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                               item_code_new = '7_total_primary_energy_supply')
     
-    others = netz_tpes_df[netz_tpes_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = netz_tpes_df[netz_tpes_df['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                      item_code_new = '7_total_primary_energy_supply')
     
     netz_tpes_df1 = netz_tpes_df.append([coal, oil, renewables, others])[['fuel_code', 
@@ -329,7 +330,7 @@ for economy in Economy_codes:
     renewables = netz_prod_df[netz_prod_df['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                               item_code_new = '1_indigenous_production')
     
-    others = netz_prod_df[netz_prod_df['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = netz_prod_df[netz_prod_df['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                      item_code_new = '1_indigenous_production')
     
     netz_prod_df1 = netz_prod_df.append([coal, oil, renewables, others])[['fuel_code', 
@@ -389,7 +390,7 @@ for economy in Economy_codes:
     renewables = netz_imports_df1[netz_imports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                       item_code_new = '2_imports')
     
-    others = netz_imports_df1[netz_imports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = netz_imports_df1[netz_imports_df1['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                              item_code_new = '2_imports')
     
     netz_imports_df1 = netz_imports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
@@ -425,7 +426,7 @@ for economy in Economy_codes:
     renewables = netz_exports_df1[netz_exports_df1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                       item_code_new = '3_exports')
     
-    others = netz_exports_df1[netz_exports_df1['fuel_code'].isin(Other_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
+    others = netz_exports_df1[netz_exports_df1['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other fuels',
                                                                                                              item_code_new = '3_exports')
     
     netz_exports_df1 = netz_exports_df1.append([coal, oil, renewables, others]).reset_index(drop = True)
