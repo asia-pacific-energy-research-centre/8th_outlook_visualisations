@@ -2091,4 +2091,18 @@ for economy in Economy_codes:
 
     netz_ownuse_2_rows = netz_ownuse_2.shape[0]
     netz_ownuse_1_cols = netz_ownuse_2.shape[1]
+
+    # Df builds are complete
+
+    ##############################################################################################################################
     
+    # Define directory to save charts and tables workbook
+    script_dir = './results/'
+    results_dir = os.path.join(script_dir, economy)
+    if not os.path.isdir(results_dir):
+        os.makedirs(results_dir)
+        
+    # Create a Pandas excel writer workbook using xlsxwriter as the engine and save it in the directory created above
+    writer = pd.ExcelWriter(results_dir + '/' + economy + '_charts.xlsx', engine = 'xlsxwriter')
+    workbook = writer.book
+    pandas.io.formats.excel.ExcelFormatter.header_style = None

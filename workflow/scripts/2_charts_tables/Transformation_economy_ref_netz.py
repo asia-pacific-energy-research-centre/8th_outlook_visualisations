@@ -53,7 +53,7 @@ Unique_trans = Map_trans.groupby(['Workbook', 'Sheet_energy']).size().reset_inde
 ########################################################################################################################
 ########################### Create historical electricity generation dataframe for use later ###########################
 
-required_fuels = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
+required_fuels_elec = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
                   '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', 
                   '15_solid_biomass', '16_others', '18_heat']
 
@@ -61,7 +61,7 @@ EGEDA_hist_gen = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv',
                              names = ['economy', 'fuel_code', 'item_code_new'] + list(range(1980, 2019)),
                              header = 0)
 EGEDA_hist_gen = EGEDA_hist_gen[(EGEDA_hist_gen['item_code_new'] == '18_electricity_output_in_pj') & 
-                                (EGEDA_hist_gen['fuel_code'].isin(required_fuels))].reset_index(drop = True)
+                                (EGEDA_hist_gen['fuel_code'].isin(required_fuels_elec))].reset_index(drop = True)
 
 # China only having data for 1_coal requires workaround to keep lignite data
 lignite_alt = EGEDA_hist_gen[EGEDA_hist_gen['fuel_code'] == '1_5_lignite'].copy()\
@@ -439,12 +439,12 @@ prod_agg_tech2 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', '
 
 # Refinery vectors
 
-Ref_input = ['6_1_crude_oil', '6_x_ngls']
-Ref_output = ['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
+refinery_input = ['6_1_crude_oil', '6_x_ngls']
+refinery_output = ['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
               '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane', '7_x_other_petroleum_products']
 
-Ref_new_output = ['7_1_from_ref', '7_2_from_ref', '7_3_from_ref', '7_jet_from_ref', '7_6_from_ref', '7_7_from_ref',
-                  '7_8_from_ref', '7_9_from_ref', '7_10_from_ref', '7_11_from_ref', '7_other_from_ref']
+refinery_new_output = ['7_1_from_ref', '7_2_from_ref', '7_3_from_ref', '7_jet_from_ref', '7_6_from_ref', '7_7_from_ref',
+                       '7_8_from_ref', '7_9_from_ref', '7_10_from_ref', '7_11_from_ref', '7_other_from_ref']
 
 # Capacity vectors
     
@@ -648,7 +648,7 @@ for economy in ref_power_df1['economy'].unique():
 
     ref_refinery_df1 = ref_refownsup_df1[(ref_refownsup_df1['economy'] == economy) &
                                  (ref_refownsup_df1['Sector'] == 'REF') & 
-                                 (ref_refownsup_df1['FUEL'].isin(Ref_input))].copy()
+                                 (ref_refownsup_df1['FUEL'].isin(refinery_input))].copy()
 
     ref_refinery_df1['Transformation'] = 'Input to refinery'
     ref_refinery_df1 = ref_refinery_df1[['FUEL', 'Transformation'] + OSeMOSYS_years_ref].reset_index(drop = True)
@@ -661,7 +661,7 @@ for economy in ref_power_df1['economy'].unique():
 
     ref_refinery_df2 = ref_refownsup_df1[(ref_refownsup_df1['economy'] == economy) &
                                  (ref_refownsup_df1['Sector'] == 'REF') & 
-                                 (ref_refownsup_df1['FUEL'].isin(Ref_new_output))].copy()
+                                 (ref_refownsup_df1['FUEL'].isin(refinery_new_output))].copy()
 
     ref_refinery_df2['Transformation'] = 'Output from refinery'
     ref_refinery_df2 = ref_refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years_ref].reset_index(drop = True)
@@ -803,7 +803,7 @@ for economy in ref_power_df1['economy'].unique():
     ncols15 = ref_ownuse_df2.shape[1]
 
     ######################################################################################################################
-    # Net zero charts
+    # Net zero dataframes
     netz_use_df1 = netz_power_df1[(netz_power_df1['economy'] == economy) &
                         (netz_power_df1['Sheet_energy'] == 'UseByTechnology') &
                         (netz_power_df1['TECHNOLOGY'] != 'POW_Transmission')].reset_index(drop = True)
@@ -970,7 +970,7 @@ for economy in ref_power_df1['economy'].unique():
 
     netz_refinery_df1 = netz_refownsup_df1[(netz_refownsup_df1['economy'] == economy) &
                                  (netz_refownsup_df1['Sector'] == 'REF') & 
-                                 (netz_refownsup_df1['FUEL'].isin(Ref_input))].copy()
+                                 (netz_refownsup_df1['FUEL'].isin(refinery_input))].copy()
 
     netz_refinery_df1['Transformation'] = 'Input to refinery'
     netz_refinery_df1 = netz_refinery_df1[['FUEL', 'Transformation'] + OSeMOSYS_years_netz].reset_index(drop = True)
@@ -983,7 +983,7 @@ for economy in ref_power_df1['economy'].unique():
 
     netz_refinery_df2 = netz_refownsup_df1[(netz_refownsup_df1['economy'] == economy) &
                                  (netz_refownsup_df1['Sector'] == 'REF') & 
-                                 (netz_refownsup_df1['FUEL'].isin(Ref_new_output))].copy()
+                                 (netz_refownsup_df1['FUEL'].isin(refinery_new_output))].copy()
 
     netz_refinery_df2['Transformation'] = 'Output from refinery'
     netz_refinery_df2 = netz_refinery_df2[['FUEL', 'Transformation'] + OSeMOSYS_years_netz].reset_index(drop = True)
