@@ -1164,7 +1164,7 @@ for economy in ref_power_df1['economy'].unique():
 
     ############################################################################################################################
     
-    # Access the workbook and first sheet with data from df1
+    # Access the workbook and first sheet with data from df1 
     ref_worksheet1 = writer.sheets[economy + '_use_fuel_ref']
     
     # Comma format and header format        

@@ -517,7 +517,7 @@ for economy in Economy_codes:
     ref_bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_comp_II_ref', index = False, startrow = chart_height + nrows10 + 3)
     netz_bunkers_df2.to_excel(writer, sheet_name = economy + '_TPES_comp_II_netz', index = False, startrow = chart_height + nrows30 + 3)
         
-    # Access the workbook
+    # Access the workbook 
     workbook = writer.book
     
     # Comma format and header format        
