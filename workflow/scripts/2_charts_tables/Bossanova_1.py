@@ -562,57 +562,57 @@ for economy in Economy_codes:
     ref_ind_2_cols = ref_ind_2.shape[1]
 
     # Transport data frame construction: FED by fuels
-    ref_trans_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+    ref_trn_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                           (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
                           (EGEDA_years_reference['fuel_code'].isin(Transport_fuels))]
     
-    renewables = ref_trans_1[ref_trans_1['fuel_code'].isin(Renew_fuel)].groupby(['economy', 
+    renewables = ref_trn_1[ref_trn_1['fuel_code'].isin(Renew_fuel)].groupby(['economy', 
                                                                                      'item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                    item_code_new = '15_transport_sector')
     
-    others = ref_trans_1[ref_trans_1['fuel_code'].isin(Other_fuel_trans)].groupby(['economy',
+    others = ref_trn_1[ref_trn_1['fuel_code'].isin(Other_fuel_trans)].groupby(['economy',
                                                                                  'item_code_new']).sum().assign(fuel_code = 'Other', 
                                                                                                                 item_code_new = '15_transport_sector')
 
-    trans_gasoline = ref_trans_1[ref_trans_1['fuel_code'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline'])]\
+    trans_gasoline = ref_trn_1[ref_trn_1['fuel_code'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline'])]\
         .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Gasoline', 
                                                             item_code_new = '15_transport_sector')
 
-    trans_jetfuel = ref_trans_1[ref_trans_1['fuel_code'].isin(['7_x_jet_fuel'])]\
+    trans_jetfuel = ref_trn_1[ref_trn_1['fuel_code'].isin(['7_x_jet_fuel'])]\
         .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Jet fuel', 
                                                             item_code_new = '15_transport_sector')
     
-    ref_trans_1 = ref_trans_1.append([renewables, trans_gasoline, trans_jetfuel, others])[['fuel_code', 'item_code_new'] + list(ref_trans_1.loc[:, '2000':])].reset_index(drop = True) 
+    ref_trn_1 = ref_trn_1.append([renewables, trans_gasoline, trans_jetfuel, others])[['fuel_code', 'item_code_new'] + list(ref_trn_1.loc[:, '2000':])].reset_index(drop = True) 
 
-    ref_trans_1.loc[ref_trans_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Diesel'
-    ref_trans_1.loc[ref_trans_1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
-    ref_trans_1.loc[ref_trans_1['fuel_code'] == '7_9_lpg', 'fuel_code'] = 'LPG'
-    ref_trans_1.loc[ref_trans_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
-    ref_trans_1.loc[ref_trans_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    ref_trn_1.loc[ref_trn_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Diesel'
+    ref_trn_1.loc[ref_trn_1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
+    ref_trn_1.loc[ref_trn_1['fuel_code'] == '7_9_lpg', 'fuel_code'] = 'LPG'
+    ref_trn_1.loc[ref_trn_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    ref_trn_1.loc[ref_trn_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
-    ref_trans_1 = ref_trans_1[ref_trans_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
+    ref_trn_1 = ref_trn_1[ref_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
 
-    ref_trans_1_rows = ref_trans_1.shape[0]
-    ref_trans_1_cols = ref_trans_1.shape[1]
+    ref_trn_1_rows = ref_trn_1.shape[0]
+    ref_trn_1_cols = ref_trn_1.shape[1]
     
     # Second transport data frame that provides a breakdown of the different transport modalities
-    ref_trans_2 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
+    ref_trn_2 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
                                (EGEDA_years_reference['item_code_new'].isin(Transport_modal)) &
                                (EGEDA_years_reference['fuel_code'].isin(['19_total']))].copy()
     
-    ref_trans_2.loc[ref_trans_2['item_code_new'] == '15_1_domestic_air_transport', 'item_code_new'] = 'Aviation'
-    ref_trans_2.loc[ref_trans_2['item_code_new'] == '15_2_road', 'item_code_new'] = 'Road'
-    ref_trans_2.loc[ref_trans_2['item_code_new'] == '15_3_rail', 'item_code_new'] = 'Rail'
-    ref_trans_2.loc[ref_trans_2['item_code_new'] == '15_4_domestic_navigation', 'item_code_new'] = 'Marine'
-    ref_trans_2.loc[ref_trans_2['item_code_new'] == '15_5_pipeline_transport', 'item_code_new'] = 'Pipeline'
-    ref_trans_2.loc[ref_trans_2['item_code_new'] == '15_6_nonspecified_transport', 'item_code_new'] = 'Non-specified'
+    ref_trn_2.loc[ref_trn_2['item_code_new'] == '15_1_domestic_air_transport', 'item_code_new'] = 'Aviation'
+    ref_trn_2.loc[ref_trn_2['item_code_new'] == '15_2_road', 'item_code_new'] = 'Road'
+    ref_trn_2.loc[ref_trn_2['item_code_new'] == '15_3_rail', 'item_code_new'] = 'Rail'
+    ref_trn_2.loc[ref_trn_2['item_code_new'] == '15_4_domestic_navigation', 'item_code_new'] = 'Marine'
+    ref_trn_2.loc[ref_trn_2['item_code_new'] == '15_5_pipeline_transport', 'item_code_new'] = 'Pipeline'
+    ref_trn_2.loc[ref_trn_2['item_code_new'] == '15_6_nonspecified_transport', 'item_code_new'] = 'Non-specified'
 
-    ref_trans_2 = ref_trans_2[ref_trans_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
+    ref_trn_2 = ref_trn_2[ref_trn_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
-    ref_trans_2 = ref_trans_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True)
+    ref_trn_2 = ref_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True)
 
-    ref_trans_2_rows = ref_trans_2.shape[0]
-    ref_trans_2_cols = ref_trans_2.shape[1]
+    ref_trn_2_rows = ref_trn_2.shape[0]
+    ref_trn_2_cols = ref_trn_2.shape[1]
 
     # Agriculture data frame
 
@@ -920,57 +920,57 @@ for economy in Economy_codes:
     netz_ind_2_cols = netz_ind_2.shape[1]
 
     # Transport data frame construction: FED by fuels
-    netz_trans_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+    netz_trn_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                           (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
                           (EGEDA_years_netzero['fuel_code'].isin(Transport_fuels))]
     
-    renewables = netz_trans_1[netz_trans_1['fuel_code'].isin(Renew_fuel)].groupby(['economy', 
+    renewables = netz_trn_1[netz_trn_1['fuel_code'].isin(Renew_fuel)].groupby(['economy', 
                                                                                      'item_code_new']).sum().assign(fuel_code = 'Renewables',
                                                                                                                    item_code_new = '15_transport_sector')
     
-    others = netz_trans_1[netz_trans_1['fuel_code'].isin(Other_fuel_trans)].groupby(['economy',
+    others = netz_trn_1[netz_trn_1['fuel_code'].isin(Other_fuel_trans)].groupby(['economy',
                                                                                  'item_code_new']).sum().assign(fuel_code = 'Other', 
                                                                                                                 item_code_new = '15_transport_sector')
 
-    trans_gasoline = netz_trans_1[netz_trans_1['fuel_code'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline'])]\
+    trans_gasoline = netz_trn_1[netz_trn_1['fuel_code'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline'])]\
         .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Gasoline', 
                                                             item_code_new = '15_transport_sector')
 
-    trans_jetfuel = netz_trans_1[netz_trans_1['fuel_code'].isin(['7_x_jet_fuel'])]\
+    trans_jetfuel = netz_trn_1[netz_trn_1['fuel_code'].isin(['7_x_jet_fuel'])]\
         .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Jet fuel', 
                                                             item_code_new = '15_transport_sector')
     
-    netz_trans_1 = netz_trans_1.append([renewables, trans_gasoline, trans_jetfuel, others])[['fuel_code', 'item_code_new'] + list(netz_trans_1.loc[:, '2000':])].reset_index(drop = True) 
+    netz_trn_1 = netz_trn_1.append([renewables, trans_gasoline, trans_jetfuel, others])[['fuel_code', 'item_code_new'] + list(netz_trn_1.loc[:, '2000':])].reset_index(drop = True) 
 
-    netz_trans_1.loc[netz_trans_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Diesel'
-    netz_trans_1.loc[netz_trans_1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
-    netz_trans_1.loc[netz_trans_1['fuel_code'] == '7_9_lpg', 'fuel_code'] = 'LPG'
-    netz_trans_1.loc[netz_trans_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
-    netz_trans_1.loc[netz_trans_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    netz_trn_1.loc[netz_trn_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Diesel'
+    netz_trn_1.loc[netz_trn_1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
+    netz_trn_1.loc[netz_trn_1['fuel_code'] == '7_9_lpg', 'fuel_code'] = 'LPG'
+    netz_trn_1.loc[netz_trn_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    netz_trn_1.loc[netz_trn_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
-    netz_trans_1 = netz_trans_1[netz_trans_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
+    netz_trn_1 = netz_trn_1[netz_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
 
-    netz_trans_1_rows = netz_trans_1.shape[0]
-    netz_trans_1_cols = netz_trans_1.shape[1]
+    netz_trn_1_rows = netz_trn_1.shape[0]
+    netz_trn_1_cols = netz_trn_1.shape[1]
     
     # Second transport data frame that provides a breakdown of the different transport modalities
-    netz_trans_2 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) &
+    netz_trn_2 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) &
                                (EGEDA_years_netzero['item_code_new'].isin(Transport_modal)) &
                                (EGEDA_years_netzero['fuel_code'].isin(['19_total']))].copy()
     
-    netz_trans_2.loc[netz_trans_2['item_code_new'] == '15_1_domestic_air_transport', 'item_code_new'] = 'Aviation'
-    netz_trans_2.loc[netz_trans_2['item_code_new'] == '15_2_road', 'item_code_new'] = 'Road'
-    netz_trans_2.loc[netz_trans_2['item_code_new'] == '15_3_rail', 'item_code_new'] = 'Rail'
-    netz_trans_2.loc[netz_trans_2['item_code_new'] == '15_4_domestic_navigation', 'item_code_new'] = 'Marine'
-    netz_trans_2.loc[netz_trans_2['item_code_new'] == '15_5_pipeline_transport', 'item_code_new'] = 'Pipeline'
-    netz_trans_2.loc[netz_trans_2['item_code_new'] == '15_6_nonspecified_transport', 'item_code_new'] = 'Non-specified'
+    netz_trn_2.loc[netz_trn_2['item_code_new'] == '15_1_domestic_air_transport', 'item_code_new'] = 'Aviation'
+    netz_trn_2.loc[netz_trn_2['item_code_new'] == '15_2_road', 'item_code_new'] = 'Road'
+    netz_trn_2.loc[netz_trn_2['item_code_new'] == '15_3_rail', 'item_code_new'] = 'Rail'
+    netz_trn_2.loc[netz_trn_2['item_code_new'] == '15_4_domestic_navigation', 'item_code_new'] = 'Marine'
+    netz_trn_2.loc[netz_trn_2['item_code_new'] == '15_5_pipeline_transport', 'item_code_new'] = 'Pipeline'
+    netz_trn_2.loc[netz_trn_2['item_code_new'] == '15_6_nonspecified_transport', 'item_code_new'] = 'Non-specified'
 
-    netz_trans_2 = netz_trans_2[netz_trans_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
+    netz_trn_2 = netz_trn_2[netz_trn_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
-    netz_trans_2 = netz_trans_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True)
+    netz_trn_2 = netz_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True)
 
-    netz_trans_2_rows = netz_trans_2.shape[0]
-    netz_trans_2_cols = netz_trans_2.shape[1]
+    netz_trn_2_rows = netz_trn_2.shape[0]
+    netz_trn_2_cols = netz_trn_2.shape[1]
 
     # Agriculture data frame
 
@@ -2106,3 +2106,2096 @@ for economy in Economy_codes:
     writer = pd.ExcelWriter(results_dir + '/' + economy + '_charts.xlsx', engine = 'xlsxwriter')
     workbook = writer.book
     pandas.io.formats.excel.ExcelFormatter.header_style = None
+
+    # Insert the various dataframes into different sheets of the workbook
+    # REFERENCE and NETZERO
+    ref_fedfuel_1.to_excel(writer, sheet_name = economy + '_FED_fuel_ref', index = False, startrow = chart_height)
+    netz_fedfuel_1.to_excel(writer, sheet_name = economy + '_FED_fuel_netz', index = False, startrow = chart_height)
+    ref_fedfuel_2.to_excel(writer, sheet_name = economy + '_FED_fuel_ref', index = False, startrow = chart_height + ref_fedfuel_1_rows + 3)
+    netz_fedfuel_2.to_excel(writer, sheet_name = economy + '_FED_fuel_netz', index = False, startrow = chart_height + netz_fedfuel_1_rows + 3)
+    ref_fedsector_1.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height)
+    netz_fedsector_1.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height)
+    ref_fedsector_2.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height + ref_fedsector_1_rows + 3)
+    netz_fedsector_2.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height + netz_fedsector_1_rows + 3)
+    ref_fedsector_3.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + 6)
+    netz_fedsector_3.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + 6)
+    ref_tfec_1.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + ref_fedsector_3_rows + 9)
+    netz_tfec_1.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + netz_fedsector_3_rows + 9)
+    ref_bld_2.to_excel(writer, sheet_name = economy + '_FED_bld_ref', index = False, startrow = chart_height)
+    netz_bld_2.to_excel(writer, sheet_name = economy + '_FED_bld_netz', index = False, startrow = chart_height)
+    ref_bld_3.to_excel(writer, sheet_name = economy + '_FED_bld_ref', index = False, startrow = chart_height + ref_bld_2_rows + 3)
+    netz_bld_3.to_excel(writer, sheet_name = economy + '_FED_bld_netz', index = False, startrow = chart_height + netz_bld_2_rows + 3)
+    ref_ind_1.to_excel(writer, sheet_name = economy + '_FED_ind_ref', index = False, startrow = chart_height)
+    netz_ind_1.to_excel(writer, sheet_name = economy + '_FED_ind_netz', index = False, startrow = chart_height)
+    ref_ind_2.to_excel(writer, sheet_name = economy + '_FED_ind_ref', index = False, startrow = chart_height + ref_ind_1_rows + 2)
+    netz_ind_2.to_excel(writer, sheet_name = economy + '_FED_ind_netz', index = False, startrow = chart_height + netz_ind_1_rows + 2)
+    ref_trn_1.to_excel(writer, sheet_name = economy + '_FED_trn_ref', index = False, startrow = chart_height)
+    netz_trn_1.to_excel(writer, sheet_name = economy + '_FED_trn_netz', index = False, startrow = chart_height)
+    ref_trn_2.to_excel(writer, sheet_name = economy + '_FED_trn_ref', index = False, startrow = chart_height + ref_trn_1_rows + 3)
+    netz_trn_2.to_excel(writer, sheet_name = economy + '_FED_trn_netz', index = False, startrow = chart_height + netz_trn_1_rows + 3)
+    ref_ag_1.to_excel(writer, sheet_name = economy + '_FED_agr_ref', index = False, startrow = chart_height)
+    netz_ag_1.to_excel(writer, sheet_name = economy + '_FED_agr_netz', index = False, startrow = chart_height)
+    ref_ag_2.to_excel(writer, sheet_name = economy + '_FED_agr_ref', index = False, startrow = chart_height + ref_ag_1_rows + 3)
+    netz_ag_2.to_excel(writer, sheet_name = economy + '_FED_agr_netz', index = False, startrow = chart_height + netz_ag_1_rows + 3)
+    ref_hyd_1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height)
+    netz_hyd_1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height + ref_hyd_1_rows + 3)
+    
+    ################################################################################################################################
+
+    # CHARTS
+    # REFERENCE
+
+    # Access the workbook and first sheet with data from df1
+    ref_worksheet1 = writer.sheets[economy + '_FED_fuel_ref']
+    
+    # Comma format and header format        
+    comma_format = workbook.add_format({'num_format': '#,##0'})
+    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    cell_format1 = workbook.add_format({'bold': True})
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet1.set_column(1, ref_fedfuel_1_cols + 1, None, comma_format)
+    ref_worksheet1.set_row(chart_height, None, header_format)
+    ref_worksheet1.set_row(chart_height, None, header_format)
+    ref_worksheet1.set_row(chart_height + ref_fedfuel_1_rows + 3, None, header_format)
+    ref_worksheet1.write(0, 0, economy + ' FED fuel', cell_format1)
+
+    # FED Fuel REFERENCE charts
+
+    # Create a FED area chart
+    ref_fedfuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_fedfuel_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fedfuel_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fedfuel_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedfuel_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedfuel_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fedfuel_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_fedfuel_1_rows):
+        ref_fedfuel_chart1.add_series({
+            'name':       [economy + '_FED_fuel_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_fuel_ref', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
+            'values':     [economy + '_FED_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
+            'fill':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet1.insert_chart('B3', ref_fedfuel_chart1)
+
+    ###################### Create another FED chart showing proportional share #################################
+
+    # Create a another chart
+    ref_fedfuel_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    ref_fedfuel_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fedfuel_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fedfuel_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedfuel_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedfuel_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fedfuel_chart2.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in FED_agg_fuels:
+        i = ref_fedfuel_2[ref_fedfuel_2['fuel_code'] == component].index[0]
+        ref_fedfuel_chart2.add_series({
+            'name':       [economy + '_FED_fuel_ref', chart_height + ref_fedfuel_1_rows + i + 4, 0],
+            'categories': [economy + '_FED_fuel_ref', chart_height + ref_fedfuel_1_rows + 3, 2, chart_height + ref_fedfuel_1_rows + 3, ref_fedfuel_2_cols - 1],
+            'values':     [economy + '_FED_fuel_ref', chart_height + ref_fedfuel_1_rows + i + 4, 2, chart_height + ref_fedfuel_1_rows + i + 4, ref_fedfuel_2_cols - 1],
+            'fill':       {'color': ref_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet1.insert_chart('J3', ref_fedfuel_chart2)
+
+    # Create a FED line chart with higher level aggregation
+    ref_fedfuel_chart3 = workbook.add_chart({'type': 'line'})
+    ref_fedfuel_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fedfuel_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fedfuel_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedfuel_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedfuel_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fedfuel_chart3.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_fedfuel_1_rows):
+        ref_fedfuel_chart3.add_series({
+            'name':       [economy + '_FED_fuel_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_fuel_ref', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
+            'values':     [economy + '_FED_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
+            'line':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+        })    
+        
+    ref_worksheet1.insert_chart('R3', ref_fedfuel_chart3)
+
+    ############################## Next sheet: FED (TFC) by sector ##############################
+    
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet2 = writer.sheets[economy + '_FED_sector_ref']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet2.set_column(1, ref_fedsector_1_cols + 1, None, comma_format)
+    ref_worksheet2.set_row(chart_height, None, header_format)
+    ref_worksheet2.set_row(chart_height + ref_fedsector_1_rows + 3, None, header_format)
+    ref_worksheet2.set_row(chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + 6, None, header_format)
+    ref_worksheet2.set_row(chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + ref_fedsector_3_rows + 9, None, header_format)
+    ref_worksheet2.write(0, 0, economy + ' FED sector', cell_format1)
+    
+    # Create a FED chart
+    ref_fed_sector_chart1 = workbook.add_chart({'type': 'line'})
+    ref_fed_sector_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fed_sector_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fed_sector_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_sector_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_sector_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fed_sector_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_fedsector_1_rows):
+        ref_fed_sector_chart1.add_series({
+            'name':       [economy + '_FED_sector_ref', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_sector_ref', chart_height, 2, chart_height, ref_fedsector_1_cols - 1],
+            'values':     [economy + '_FED_sector_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_1_cols - 1],
+            'line':       {'color': ref_fedsector_1['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
+        })    
+        
+    ref_worksheet2.insert_chart('Z3', ref_fed_sector_chart1)
+
+    # Create a FED sector area chart
+
+    ref_fedsector_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_fedsector_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fedsector_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fedsector_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedsector_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedsector_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fedsector_chart3.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_fedsector_2_rows):
+        ref_fedsector_chart3.add_series({
+            'name':       [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + i + 4, 1],
+            'categories': [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + 3, 2, chart_height + ref_fedsector_1_rows + 3, ref_fedsector_2_cols - 1],
+            'values':     [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + i + 4, 2, chart_height + ref_fedsector_1_rows + i + 4, ref_fedsector_2_cols - 1],
+            'fill':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet2.insert_chart('B3', ref_fedsector_chart3)
+
+    ###################### Create another FED chart showing proportional share #################################
+
+    # Create a FED chart
+    ref_fedsector_chart4 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    ref_fedsector_chart4.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fedsector_chart4.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fedsector_chart4.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedsector_chart4.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedsector_chart4.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fedsector_chart4.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in FED_agg_sectors:
+        i = ref_fedsector_3[ref_fedsector_3['item_code_new'] == component].index[0]
+        ref_fedsector_chart4.add_series({
+            'name':       [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + i + 7, 1],
+            'categories': [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + 6, 2, chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + 6, ref_fedsector_3_cols - 1],
+            'values':     [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + i + 7, 2, chart_height + ref_fedsector_1_rows + ref_fedsector_2_rows + i + 7, ref_fedsector_3_cols - 1],
+            'fill':       {'color': ref_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet2.insert_chart('J3', ref_fedsector_chart4)
+
+    # Create a FED sector line chart
+
+    ref_fedsector_chart5 = workbook.add_chart({'type': 'line'})
+    ref_fedsector_chart5.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fedsector_chart5.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fedsector_chart5.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedsector_chart5.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fedsector_chart5.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fedsector_chart5.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_fedsector_2_rows):
+        ref_fedsector_chart5.add_series({
+            'name':       [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + i + 4, 1],
+            'categories': [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + 3, 2, chart_height + ref_fedsector_1_rows + 3, ref_fedsector_2_cols - 1],
+            'values':     [economy + '_FED_sector_ref', chart_height + ref_fedsector_1_rows + i + 4, 2, chart_height + ref_fedsector_1_rows + i + 4, ref_fedsector_2_cols - 1],
+            'line':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
+        })    
+        
+    ref_worksheet2.insert_chart('R3', ref_fedsector_chart5)
+    
+    ############################# Next sheet: FED (TFC) for building sector ##################################
+    
+    # Access the workbook and third sheet with data from bld_df1
+    ref_worksheet3 = writer.sheets[economy + '_FED_bld_ref']
+    
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet3.set_column(2, ref_bld_2_cols + 1, None, comma_format)
+    ref_worksheet3.set_row(chart_height, None, header_format)
+    ref_worksheet3.set_row(chart_height + ref_bld_2_rows + 3, None, header_format)
+    ref_worksheet3.write(0, 0, economy + ' buildings', cell_format1)
+    
+    # Create a FED chart
+    ref_fed_bld_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_fed_bld_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fed_bld_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fed_bld_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_bld_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_bld_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fed_bld_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in FED_agg_fuels:
+        i = ref_bld_2[ref_bld_2['fuel_code'] == component].index[0]
+        ref_fed_bld_chart1.add_series({
+            'name':       [economy + '_FED_bld_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_bld_ref', chart_height, 2, chart_height, ref_bld_2_cols - 1],
+            'values':     [economy + '_FED_bld_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_bld_2_cols - 1],
+            'fill':       {'color': ref_bld_2['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+
+    ref_worksheet3.insert_chart('B3', ref_fed_bld_chart1)
+    
+    ################## FED building chart 2 (residential versus services) ###########################################
+    
+    # Create a second FED building chart
+    ref_fed_bld_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_fed_bld_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+
+    ref_fed_bld_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fed_bld_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_bld_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_bld_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fed_bld_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for bld_sect in ['Services', 'Residential']:
+        i = ref_bld_3[ref_bld_3['item_code_new'] == bld_sect].index[0]
+        ref_fed_bld_chart2.add_series({
+            'name':       [economy + '_FED_bld_ref', chart_height + ref_bld_2_rows + 4 + i, 1],
+            'categories': [economy + '_FED_bld_ref', chart_height + ref_bld_2_rows + 3, 2, chart_height + ref_bld_2_rows + 3, ref_bld_3_cols - 1],
+            'values':     [economy + '_FED_bld_ref', chart_height + ref_bld_2_rows + 4 + i, 2, chart_height + ref_bld_2_rows + 4 + i, ref_bld_3_cols - 1],
+            'fill':       {'color': ref_bld_3['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet3.insert_chart('J3', ref_fed_bld_chart2)
+    
+    ############################# Next sheet: FED (TFC) for industry ##################################
+    
+    # Access the workbook and fourth sheet with data from bld_df1
+    ref_worksheet4 = writer.sheets[economy + '_FED_ind_ref']
+    
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet4.set_column(2, ref_ind_1_cols + 1, None, comma_format)
+    ref_worksheet4.set_row(chart_height, None, header_format)
+    ref_worksheet4.set_row(chart_height + ref_ind_1_rows + 2, None, header_format)
+    ref_worksheet4.write(0, 0, economy + ' industry', cell_format1)
+    
+    # Create a industry subsector FED chart
+    ref_fed_ind_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_fed_ind_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_fed_ind_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fed_ind_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_ind_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_ind_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fed_ind_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_ind_1_rows):
+        ref_fed_ind_chart1.add_series({
+            'name':       [economy + '_FED_ind_ref', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_ind_ref', chart_height, 2, chart_height, ref_ind_1_cols - 1],
+            'values':     [economy + '_FED_ind_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_ind_1_cols - 1],
+            'fill':       {'color': ref_ind_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet4.insert_chart('B3', ref_fed_ind_chart1)
+    
+    ############# FED industry chart 2 (industry by fuel)
+    
+    # Create a FED industry fuel chart
+    ref_fed_ind_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_fed_ind_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+
+    ref_fed_ind_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_fed_ind_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_ind_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_fed_ind_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_fed_ind_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for fuel_agg in FED_agg_fuels_ind:
+        j = ref_ind_2[ref_ind_2['fuel_code'] == fuel_agg].index[0]
+        ref_fed_ind_chart2.add_series({
+            'name':       [economy + '_FED_ind_ref', chart_height + ref_ind_1_rows + j + 3, 0],
+            'categories': [economy + '_FED_ind_ref', chart_height + ref_ind_1_rows + 2, 2, chart_height + ref_ind_1_rows + 2, ref_ind_2_cols - 1],
+            'values':     [economy + '_FED_ind_ref', chart_height + ref_ind_1_rows + j + 3, 2, chart_height + ref_ind_1_rows + j + 3, ref_ind_2_cols - 1],
+            'fill':       {'color': ref_ind_2['fuel_code'].map(colours_dict).loc[j]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet4.insert_chart('J3', ref_fed_ind_chart2)
+
+    ################################# NEXT SHEET: TRANSPORT FED ################################################################
+
+    # Access the workbook and first sheet with data from df1
+    ref_worksheet5 = writer.sheets[economy + '_FED_trn_ref']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet5.set_column(2, ref_trn_1_cols + 1, None, comma_format)
+    ref_worksheet5.set_row(chart_height, None, header_format)
+    ref_worksheet5.set_row(chart_height + ref_trn_1_rows + 3, None, header_format)
+    ref_worksheet5.write(0, 0, economy + ' FED transport', cell_format1)
+    
+    # Create a transport FED area chart
+    ref_transport_chart1 = workbook.add_chart({'type': 'area', 
+                                           'subtype': 'stacked'})
+    ref_transport_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_transport_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_transport_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_transport_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_transport_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_transport_chart1.set_title({
+        'none': True
+    })
+        
+    for fuel_agg in Transport_fuels_agg:
+        j = ref_trn_1[ref_trn_1['fuel_code'] == fuel_agg].index[0]
+        ref_transport_chart1.add_series({
+            'name':       [economy + '_FED_trn_ref', chart_height + j + 1, 0],
+            'categories': [economy + '_FED_trn_ref', chart_height, 2, chart_height, ref_trn_1_cols - 1],
+            'values':     [economy + '_FED_trn_ref', chart_height + j + 1, 2, chart_height + j + 1, ref_trn_1_cols - 1],
+            'fill':       {'color': ref_trn_1['fuel_code'].map(colours_dict).loc[j]},
+            'border':     {'none': True} 
+        })
+    
+    ref_worksheet5.insert_chart('B3', ref_transport_chart1)
+            
+    ############# FED transport chart 2 (transport by modality)
+    
+    # Create a FED transport modality column chart
+    ref_transport_chart2 = workbook.add_chart({'type': 'column', 
+                                         'subtype': 'stacked'})
+    ref_transport_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+
+    ref_transport_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_transport_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_transport_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_transport_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_transport_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for modality in Transport_modal_agg:
+        j = ref_trn_2[ref_trn_2['item_code_new'] == modality].index[0]
+        ref_transport_chart2.add_series({
+            'name':       [economy + '_FED_trn_ref', chart_height + ref_trn_1_rows + j + 4, 1],
+            'categories': [economy + '_FED_trn_ref', chart_height + ref_trn_1_rows + 3, 2, chart_height + ref_trn_1_rows + 3, ref_trn_2_cols - 1],
+            'values':     [economy + '_FED_trn_ref', chart_height + ref_trn_1_rows + j + 4, 2, chart_height + ref_trn_1_rows + j + 4, ref_trn_2_cols - 1],
+            'fill':       {'color': ref_trn_2['item_code_new'].map(colours_dict).loc[j]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet5.insert_chart('J3', ref_transport_chart2)
+
+    ################################# NEXT SHEET: AGRICULTURE FED ################################################################
+
+    # Access the workbook and first sheet with data from df1
+    ref_worksheet6 = writer.sheets[economy + '_FED_agr_ref']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet6.set_column(2, ref_ag_1_cols + 1, None, comma_format)
+    ref_worksheet6.set_row(chart_height, None, header_format)
+    ref_worksheet6.set_row(chart_height + ref_ag_1_rows + 3, None, header_format)
+    ref_worksheet6.write(0, 0, economy + ' FED agriculture', cell_format1)
+
+    # Create a Agriculture line chart 
+    ref_ag_chart1 = workbook.add_chart({'type': 'line'})
+    ref_ag_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_ag_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_ag_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_ag_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_ag_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_ag_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_ag_1_rows):
+        ref_ag_chart1.add_series({
+            'name':       [economy + '_FED_agr_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_agr_ref', chart_height, 2, chart_height, ref_ag_1_cols - 1],
+            'values':     [economy + '_FED_agr_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
+            'line':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+        })    
+        
+    ref_worksheet6.insert_chart('B3', ref_ag_chart1)
+
+    # Create a Agriculture area chart
+    ref_ag_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_ag_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_ag_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_ag_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_ag_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_ag_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_ag_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_ag_1_rows):
+        ref_ag_chart2.add_series({
+            'name':       [economy + '_FED_agr_ref', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_agr_ref', chart_height, 2, chart_height, ref_ag_1_cols - 1],
+            'values':     [economy + '_FED_agr_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
+            'fill':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet6.insert_chart('J3', ref_ag_chart2)
+
+    # Create a Agriculture stacked column
+    ref_ag_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    ref_ag_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_ag_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_ag_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_ag_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_ag_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_ag_chart3.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for i in range(ref_ag_2_rows):
+        ref_ag_chart3.add_series({
+            'name':       [economy + '_FED_agr_ref', chart_height + ref_ag_1_rows + i + 4, 0],
+            'categories': [economy + '_FED_agr_ref', chart_height + ref_ag_1_rows + 3, 2, chart_height + ref_ag_1_rows + 3, ref_ag_2_cols - 1],
+            'values':     [economy + '_FED_agr_ref', chart_height + ref_ag_1_rows + i + 4, 2, chart_height + ref_ag_1_rows + i + 4, ref_ag_2_cols - 1],
+            'fill':       {'color': ref_ag_2['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet6.insert_chart('R3', ref_ag_chart3)
+
+    # HYDROGEN CHARTS
+
+    # Access the workbook and first sheet with data from df1
+    hyd_worksheet1 = writer.sheets[economy + '_FED_hyd']
+    
+    # Comma format and header format        
+    comma_format = workbook.add_format({'num_format': '#,##0'})
+    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    cell_format1 = workbook.add_format({'bold': True})
+        
+    # Apply comma format and header format to relevant data rows
+    hyd_worksheet1.set_column(1, ref_hyd_1_cols + 1, None, comma_format)
+    hyd_worksheet1.set_row(chart_height, None, header_format)
+    hyd_worksheet1.set_row(chart_height, None, header_format)
+    hyd_worksheet1.set_row(chart_height + ref_hyd_1_rows + 3, None, header_format)
+    hyd_worksheet1.write(0, 0, economy + ' FED hydrogen', cell_format1)
+
+    # Create a HYDROGEN area chart
+    ref_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_hyd_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_hyd_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_hyd_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_hyd_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_hyd_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_hyd_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_hyd_1_rows):
+        ref_hyd_chart1.add_series({
+            'name':       [economy + '_FED_hyd', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_hyd', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
+            'values':     [economy + '_FED_hyd', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
+            'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    hyd_worksheet1.insert_chart('B3', ref_hyd_chart1)
+
+    # Create a HYDROGEN area chart
+    netz_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_hyd_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_hyd_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_hyd_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_hyd_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_hyd_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_hyd_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_hyd_1_rows):
+        netz_hyd_chart1.add_series({
+            'name':       [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + i + 4, 1],
+            'categories': [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + 3, 2, chart_height + ref_hyd_1_rows + 3, netz_hyd_1_cols - 1],
+            'values':     [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + i + 4, 2, chart_height + ref_hyd_1_rows + i + 4, netz_hyd_1_cols - 1],
+            'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    hyd_worksheet1.insert_chart('J3', netz_hyd_chart1)
+
+    ##############################################################################################################################
+
+    ##############################################################################################################################
+
+    ##############################################################################################################################
+
+    # CHARTS
+    # NET ZERO
+
+    # Access the workbook and first sheet with data from df1
+    netz_worksheet1 = writer.sheets[economy + '_FED_fuel_netz']
+    
+    # Comma format and header format        
+    comma_format = workbook.add_format({'num_format': '#,##0'})
+    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    cell_format1 = workbook.add_format({'bold': True})
+        
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet1.set_column(1, netz_fedfuel_1_cols + 1, None, comma_format)
+    netz_worksheet1.set_row(chart_height, None, header_format)
+    netz_worksheet1.set_row(chart_height, None, header_format)
+    netz_worksheet1.set_row(chart_height + netz_fedfuel_1_rows + 3, None, header_format)
+    netz_worksheet1.write(0, 0, economy + ' FED fuel', cell_format1)
+
+    # FED Fuel REFERENCE charts
+
+    # Create a FED area chart
+    netz_fedfuel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_fedfuel_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fedfuel_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fedfuel_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedfuel_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedfuel_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fedfuel_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_fedfuel_1_rows):
+        netz_fedfuel_chart1.add_series({
+            'name':       [economy + '_FED_fuel_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_fuel_netz', chart_height, 2, chart_height, netz_fedfuel_1_cols - 1],
+            'values':     [economy + '_FED_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_fedfuel_1_cols - 1],
+            'fill':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    netz_worksheet1.insert_chart('B3', netz_fedfuel_chart1)
+
+    ###################### Create another FED chart showing proportional share #################################
+
+    # Create a another chart
+    netz_fedfuel_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    netz_fedfuel_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fedfuel_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fedfuel_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedfuel_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedfuel_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fedfuel_chart2.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in FED_agg_fuels:
+        i = netz_fedfuel_2[netz_fedfuel_2['fuel_code'] == component].index[0]
+        netz_fedfuel_chart2.add_series({
+            'name':       [economy + '_FED_fuel_netz', chart_height + netz_fedfuel_1_rows + i + 4, 0],
+            'categories': [economy + '_FED_fuel_netz', chart_height + netz_fedfuel_1_rows + 3, 2, chart_height + netz_fedfuel_1_rows + 3, netz_fedfuel_2_cols - 1],
+            'values':     [economy + '_FED_fuel_netz', chart_height + netz_fedfuel_1_rows + i + 4, 2, chart_height + netz_fedfuel_1_rows + i + 4, netz_fedfuel_2_cols - 1],
+            'fill':       {'color': netz_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet1.insert_chart('J3', netz_fedfuel_chart2)
+
+    # Create a FED line chart with higher level aggregation
+    netz_fedfuel_chart3 = workbook.add_chart({'type': 'line'})
+    netz_fedfuel_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fedfuel_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fedfuel_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedfuel_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedfuel_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fedfuel_chart3.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_fedfuel_1_rows):
+        netz_fedfuel_chart3.add_series({
+            'name':       [economy + '_FED_fuel_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_fuel_netz', chart_height, 2, chart_height, netz_fedfuel_1_cols - 1],
+            'values':     [economy + '_FED_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_fedfuel_1_cols - 1],
+            'line':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+        })    
+        
+    netz_worksheet1.insert_chart('R3', netz_fedfuel_chart3)
+
+    ############################## Next sheet: FED (TFC) by sector ##############################
+    
+    # Access the workbook and second sheet with data from df2
+    netz_worksheet2 = writer.sheets[economy + '_FED_sector_netz']
+        
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet2.set_column(1, netz_fedsector_1_cols + 1, None, comma_format)
+    netz_worksheet2.set_row(chart_height, None, header_format)
+    netz_worksheet2.set_row(chart_height + netz_fedsector_1_rows + 3, None, header_format)
+    netz_worksheet2.set_row(chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + 6, None, header_format)
+    netz_worksheet2.set_row(chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + netz_fedsector_3_rows + 9, None, header_format)
+    netz_worksheet2.write(0, 0, economy + ' FED sector', cell_format1)
+    
+    # Create a FED chart
+    netz_fed_sector_chart1 = workbook.add_chart({'type': 'line'})
+    netz_fed_sector_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fed_sector_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fed_sector_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_sector_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_sector_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fed_sector_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_fedsector_1_rows):
+        netz_fed_sector_chart1.add_series({
+            'name':       [economy + '_FED_sector_netz', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_sector_netz', chart_height, 2, chart_height, netz_fedsector_1_cols - 1],
+            'values':     [economy + '_FED_sector_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_fedsector_1_cols - 1],
+            'line':       {'color': netz_fedsector_1['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
+        })    
+        
+    netz_worksheet2.insert_chart('Z3', netz_fed_sector_chart1)
+
+    # Create a FED sector area chart
+
+    netz_fedsector_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_fedsector_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fedsector_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fedsector_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedsector_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedsector_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fedsector_chart3.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_fedsector_2_rows):
+        netz_fedsector_chart3.add_series({
+            'name':       [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + i + 4, 1],
+            'categories': [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + 3, 2, chart_height + netz_fedsector_1_rows + 3, netz_fedsector_2_cols - 1],
+            'values':     [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + i + 4, 2, chart_height + netz_fedsector_1_rows + i + 4, netz_fedsector_2_cols - 1],
+            'fill':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    netz_worksheet2.insert_chart('B3', netz_fedsector_chart3)
+
+    ###################### Create another FED chart showing proportional share #################################
+
+    # Create a FED chart
+    netz_fedsector_chart4 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    netz_fedsector_chart4.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fedsector_chart4.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fedsector_chart4.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedsector_chart4.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedsector_chart4.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fedsector_chart4.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for component in FED_agg_sectors:
+        i = netz_fedsector_3[netz_fedsector_3['item_code_new'] == component].index[0]
+        netz_fedsector_chart4.add_series({
+            'name':       [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + i + 7, 1],
+            'categories': [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + 6, 2, chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + 6, netz_fedsector_3_cols - 1],
+            'values':     [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + i + 7, 2, chart_height + netz_fedsector_1_rows + netz_fedsector_2_rows + i + 7, netz_fedsector_3_cols - 1],
+            'fill':       {'color': netz_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet2.insert_chart('J3', netz_fedsector_chart4)
+
+    # Create a FED sector line chart
+
+    netz_fedsector_chart5 = workbook.add_chart({'type': 'line'})
+    netz_fedsector_chart5.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fedsector_chart5.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fedsector_chart5.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedsector_chart5.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fedsector_chart5.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fedsector_chart5.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_fedsector_2_rows):
+        netz_fedsector_chart5.add_series({
+            'name':       [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + i + 4, 1],
+            'categories': [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + 3, 2, chart_height + netz_fedsector_1_rows + 3, netz_fedsector_2_cols - 1],
+            'values':     [economy + '_FED_sector_netz', chart_height + netz_fedsector_1_rows + i + 4, 2, chart_height + netz_fedsector_1_rows + i + 4, netz_fedsector_2_cols - 1],
+            'line':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
+        })    
+        
+    netz_worksheet2.insert_chart('R3', netz_fedsector_chart5)
+    
+    ############################# Next sheet: FED (TFC) for building sector ##################################
+    
+    # Access the workbook and third sheet with data from bld_df1
+    netz_worksheet3 = writer.sheets[economy + '_FED_bld_netz']
+    
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet3.set_column(2, netz_bld_2_cols + 1, None, comma_format)
+    netz_worksheet3.set_row(chart_height, None, header_format)
+    netz_worksheet3.set_row(chart_height + netz_bld_2_rows + 3, None, header_format)
+    netz_worksheet3.write(0, 0, economy + ' buildings', cell_format1)
+    
+    # Create a FED chart
+    netz_fed_bld_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_fed_bld_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fed_bld_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fed_bld_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_bld_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_bld_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fed_bld_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in FED_agg_fuels:
+        i = netz_bld_2[netz_bld_2['fuel_code'] == component].index[0]
+        netz_fed_bld_chart1.add_series({
+            'name':       [economy + '_FED_bld_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_bld_netz', chart_height, 2, chart_height, netz_bld_2_cols - 1],
+            'values':     [economy + '_FED_bld_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_bld_2_cols - 1],
+            'fill':       {'color': netz_bld_2['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+
+    netz_worksheet3.insert_chart('B3', netz_fed_bld_chart1)
+    
+    ################## FED building chart 2 (residential versus services) ###########################################
+    
+    # Create a second FED building chart
+    netz_fed_bld_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_fed_bld_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+
+    netz_fed_bld_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fed_bld_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_bld_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_bld_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fed_bld_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for bld_sect in ['Services', 'Residential']:
+        i = netz_bld_3[netz_bld_3['item_code_new'] == bld_sect].index[0]
+        netz_fed_bld_chart2.add_series({
+            'name':       [economy + '_FED_bld_netz', chart_height + netz_bld_2_rows + 4 + i, 1],
+            'categories': [economy + '_FED_bld_netz', chart_height + netz_bld_2_rows + 3, 2, chart_height + netz_bld_2_rows + 3, netz_bld_3_cols - 1],
+            'values':     [economy + '_FED_bld_netz', chart_height + netz_bld_2_rows + 4 + i, 2, chart_height + netz_bld_2_rows + 4 + i, netz_bld_3_cols - 1],
+            'fill':       {'color': netz_bld_3['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet3.insert_chart('J3', netz_fed_bld_chart2)
+    
+    ############################# Next sheet: FED (TFC) for industry ##################################
+    
+    # Access the workbook and fourth sheet with data from bld_df1
+    netz_worksheet4 = writer.sheets[economy + '_FED_ind_netz']
+    
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet4.set_column(2, netz_ind_1_cols + 1, None, comma_format)
+    netz_worksheet4.set_row(chart_height, None, header_format)
+    netz_worksheet4.set_row(chart_height + netz_ind_1_rows + 2, None, header_format)
+    netz_worksheet4.write(0, 0, economy + ' industry', cell_format1)
+    
+    # Create a industry subsector FED chart
+    netz_fed_ind_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_fed_ind_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_fed_ind_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fed_ind_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_ind_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_ind_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fed_ind_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_ind_1_rows):
+        netz_fed_ind_chart1.add_series({
+            'name':       [economy + '_FED_ind_netz', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_ind_netz', chart_height, 2, chart_height, netz_ind_1_cols - 1],
+            'values':     [economy + '_FED_ind_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_ind_1_cols - 1],
+            'fill':       {'color': netz_ind_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    netz_worksheet4.insert_chart('B3', netz_fed_ind_chart1)
+    
+    ############# FED industry chart 2 (industry by fuel)
+    
+    # Create a FED industry fuel chart
+    netz_fed_ind_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_fed_ind_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+
+    netz_fed_ind_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_fed_ind_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_ind_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_fed_ind_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_fed_ind_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for fuel_agg in FED_agg_fuels_ind:
+        j = netz_ind_2[netz_ind_2['fuel_code'] == fuel_agg].index[0]
+        netz_fed_ind_chart2.add_series({
+            'name':       [economy + '_FED_ind_netz', chart_height + netz_ind_1_rows + j + 3, 0],
+            'categories': [economy + '_FED_ind_netz', chart_height + netz_ind_1_rows + 2, 2, chart_height + netz_ind_1_rows + 2, netz_ind_2_cols - 1],
+            'values':     [economy + '_FED_ind_netz', chart_height + netz_ind_1_rows + j + 3, 2, chart_height + netz_ind_1_rows + j + 3, netz_ind_2_cols - 1],
+            'fill':       {'color': netz_ind_2['fuel_code'].map(colours_dict).loc[j]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet4.insert_chart('J3', netz_fed_ind_chart2)
+
+    ################################# NEXT SHEET: TRANSPORT FED ################################################################
+
+    # Access the workbook and first sheet with data from df1
+    netz_worksheet5 = writer.sheets[economy + '_FED_trn_netz']
+        
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet5.set_column(2, netz_trn_1_cols + 1, None, comma_format)
+    netz_worksheet5.set_row(chart_height, None, header_format)
+    netz_worksheet5.set_row(chart_height + netz_trn_1_rows + 3, None, header_format)
+    netz_worksheet5.write(0, 0, economy + ' FED transport', cell_format1)
+    
+    # Create a transport FED area chart
+    netz_transport_chart1 = workbook.add_chart({'type': 'area', 
+                                           'subtype': 'stacked'})
+    netz_transport_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_transport_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_transport_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_transport_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_transport_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_transport_chart1.set_title({
+        'none': True
+    })
+        
+    for fuel_agg in Transport_fuels_agg:
+        j = netz_trn_1[netz_trn_1['fuel_code'] == fuel_agg].index[0]
+        netz_transport_chart1.add_series({
+            'name':       [economy + '_FED_trn_netz', chart_height + j + 1, 0],
+            'categories': [economy + '_FED_trn_netz', chart_height, 2, chart_height, netz_trn_1_cols - 1],
+            'values':     [economy + '_FED_trn_netz', chart_height + j + 1, 2, chart_height + j + 1, netz_trn_1_cols - 1],
+            'fill':       {'color': netz_trn_1['fuel_code'].map(colours_dict).loc[j]},
+            'border':     {'none': True} 
+        })
+    
+    netz_worksheet5.insert_chart('B3', netz_transport_chart1)
+            
+    ############# FED transport chart 2 (transport by modality)
+    
+    # Create a FED transport modality column chart
+    netz_transport_chart2 = workbook.add_chart({'type': 'column', 
+                                         'subtype': 'stacked'})
+    netz_transport_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+
+    netz_transport_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_transport_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_transport_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_transport_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_transport_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for modality in Transport_modal_agg:
+        j = netz_trn_2[netz_trn_2['item_code_new'] == modality].index[0]
+        netz_transport_chart2.add_series({
+            'name':       [economy + '_FED_trn_netz', chart_height + netz_trn_1_rows + j + 4, 1],
+            'categories': [economy + '_FED_trn_netz', chart_height + netz_trn_1_rows + 3, 2, chart_height + netz_trn_1_rows + 3, netz_trn_2_cols - 1],
+            'values':     [economy + '_FED_trn_netz', chart_height + netz_trn_1_rows + j + 4, 2, chart_height + netz_trn_1_rows + j + 4, netz_trn_2_cols - 1],
+            'fill':       {'color': netz_trn_2['item_code_new'].map(colours_dict).loc[j]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet5.insert_chart('J3', netz_transport_chart2)
+
+    ################################# NEXT SHEET: AGRICULTURE FED ################################################################
+
+    # Access the workbook and first sheet with data from df1
+    netz_worksheet6 = writer.sheets[economy + '_FED_agr_netz']
+        
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet6.set_column(2, netz_ag_1_cols + 1, None, comma_format)
+    netz_worksheet6.set_row(chart_height, None, header_format)
+    netz_worksheet6.set_row(chart_height + netz_ag_1_rows + 3, None, header_format)
+    netz_worksheet6.write(0, 0, economy + ' FED agriculture', cell_format1)
+
+    # Create a Agriculture line chart 
+    netz_ag_chart1 = workbook.add_chart({'type': 'line'})
+    netz_ag_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_ag_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_ag_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_ag_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_ag_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_ag_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_ag_1_rows):
+        netz_ag_chart1.add_series({
+            'name':       [economy + '_FED_agr_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_agr_netz', chart_height, 2, chart_height, netz_ag_1_cols - 1],
+            'values':     [economy + '_FED_agr_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_ag_1_cols - 1],
+            'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+        })    
+        
+    netz_worksheet6.insert_chart('B3', netz_ag_chart1)
+
+    # Create a Agriculture area chart
+    netz_ag_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_ag_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_ag_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_ag_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_ag_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_ag_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_ag_chart2.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_ag_1_rows):
+        netz_ag_chart2.add_series({
+            'name':       [economy + '_FED_agr_netz', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_agr_netz', chart_height, 2, chart_height, netz_ag_1_cols - 1],
+            'values':     [economy + '_FED_agr_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_ag_1_cols - 1],
+            'fill':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    netz_worksheet6.insert_chart('J3', netz_ag_chart2)
+
+    # Create a Agriculture stacked column
+    netz_ag_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    netz_ag_chart3.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_ag_chart3.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_ag_chart3.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'interval_unit': 1,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_ag_chart3.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_ag_chart3.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_ag_chart3.set_title({
+        'none': True
+    })
+
+    # Configure the series of the chart from the dataframe data.    
+    for i in range(netz_ag_2_rows):
+        netz_ag_chart3.add_series({
+            'name':       [economy + '_FED_agr_netz', chart_height + netz_ag_1_rows + i + 4, 0],
+            'categories': [economy + '_FED_agr_netz', chart_height + netz_ag_1_rows + 3, 2, chart_height + netz_ag_1_rows + 3, netz_ag_2_cols - 1],
+            'values':     [economy + '_FED_agr_netz', chart_height + netz_ag_1_rows + i + 4, 2, chart_height + netz_ag_1_rows + i + 4, netz_ag_2_cols - 1],
+            'fill':       {'color': netz_ag_2['fuel_code'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    netz_worksheet6.insert_chart('R3', netz_ag_chart3)
+        
+    writer.save()
+
+print('Bling blang blaow, you have some FED charts now')
+
