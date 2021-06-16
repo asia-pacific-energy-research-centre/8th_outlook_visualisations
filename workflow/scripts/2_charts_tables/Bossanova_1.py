@@ -191,6 +191,12 @@ thermal_coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal
 solar_roof_tech = ['POW_SolarRoofPV_PP']
 solar_nr_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP']
 
+# Modern renewables
+
+modren_tech = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
+               'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP', 'POW_WindOff_PP', 'POW_Wind_PP',
+               'POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP', 'POW_Geothermal_PP', 'POW_TIDAL_PP']
+
 # POW_EXPORT_ELEC_PP need to work this in
 
 prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
@@ -268,8 +274,13 @@ EGEDA_hist_gen = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv',
                              names = ['economy', 'fuel_code', 'item_code_new'] + list(range(1980, 2019)),
                              header = 0)
 
-EGEDA_hist_gen = EGEDA_hist_gen[(EGEDA_hist_gen['item_code_new'] == '18_electricity_output_in_pj') & 
+EGEDA_hist_gen_1 = EGEDA_hist_gen[(EGEDA_hist_gen['item_code_new'] == '18_electricity_output_in_pj') & 
                                 (EGEDA_hist_gen['fuel_code'].isin(required_fuels_elec))].reset_index(drop = True)
+
+EGEDA_hist_gen_2 = EGEDA_hist_gen[(EGEDA_hist_gen['fuel_code'] == '17_electricity') & 
+                                  (EGEDA_hist_gen['item_code_new'] == '2_imports')].reset_index(drop = True)
+
+EGEDA_hist_gen = EGEDA_hist_gen_1.append(EGEDA_hist_gen_2).reset_index(drop = True)
 
 # China only having data for 1_coal requires workaround to keep lignite data
 lignite_alt = EGEDA_hist_gen[EGEDA_hist_gen['fuel_code'] == '1_5_lignite'].copy()\
@@ -300,6 +311,7 @@ EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_coal': 'Coal'
                                                                 '14_wind': 'Wind', 
                                                                 '15_solid_biomass': 'Biomass', 
                                                                 '16_others': 'Other', 
+                                                                '17_electricity': 'Imports',
                                                                 '18_heat': 'Other'})
 
 EGEDA_hist_gen['Generation'] = 'Electricity'
@@ -315,7 +327,7 @@ EGEDA_hist_gen = pd.read_csv('./data/4_Joined/EGEDA_hist_gen.csv')
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['17_SIN']
+Economy_codes = ['17_SIN']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2099,7 +2111,9 @@ for economy in Economy_codes:
 
     # Modern renewables
 
-    ref_modren_1 = 
+    ref_modren_fed = ref_fedfuel_1[ref_fedfuel_1['fuel_code'] == 'Other renewables']
+
+    ref_modren_elec = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(modern_tech)]
 
     # Df builds are complete
 

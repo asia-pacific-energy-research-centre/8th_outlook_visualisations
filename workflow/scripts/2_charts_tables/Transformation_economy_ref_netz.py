@@ -60,8 +60,14 @@ required_fuels_elec = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_
 EGEDA_hist_gen = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv', 
                              names = ['economy', 'fuel_code', 'item_code_new'] + list(range(1980, 2019)),
                              header = 0)
-EGEDA_hist_gen = EGEDA_hist_gen[(EGEDA_hist_gen['item_code_new'] == '18_electricity_output_in_pj') & 
+
+EGEDA_hist_gen_1 = EGEDA_hist_gen[(EGEDA_hist_gen['item_code_new'] == '18_electricity_output_in_pj') & 
                                 (EGEDA_hist_gen['fuel_code'].isin(required_fuels_elec))].reset_index(drop = True)
+
+EGEDA_hist_gen_2 = EGEDA_hist_gen[(EGEDA_hist_gen['fuel_code'] == '17_electricity') & 
+                                  (EGEDA_hist_gen['item_code_new'] == '2_imports')].reset_index(drop = True)
+
+EGEDA_hist_gen = EGEDA_hist_gen_1.append(EGEDA_hist_gen_2).reset_index(drop = True)                                  
 
 # China only having data for 1_coal requires workaround to keep lignite data
 lignite_alt = EGEDA_hist_gen[EGEDA_hist_gen['fuel_code'] == '1_5_lignite'].copy()\
@@ -91,7 +97,8 @@ EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_coal': 'Coal'
                                                                 '13_tide_wave_ocean': 'Other', 
                                                                 '14_wind': 'Wind', 
                                                                 '15_solid_biomass': 'Biomass', 
-                                                                '16_others': 'Other', 
+                                                                '16_others': 'Other',
+                                                                '17_electricity': 'Imports', 
                                                                 '18_heat': 'Other'})
 
 EGEDA_hist_gen['Generation'] = 'Electricity'
