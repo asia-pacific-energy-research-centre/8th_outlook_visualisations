@@ -314,6 +314,9 @@ EGEDA_hist_gen = pd.read_csv('./data/4_Joined/EGEDA_hist_gen.csv')
 
 # Now build the subset dataframes for charts and tables
 
+# Fix to do quicker one economy runs
+# Economy_codes = ['17_SIN']
+
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
     # FED REFERENCE DATA FRAMES
@@ -2091,6 +2094,12 @@ for economy in Economy_codes:
 
     netz_ownuse_2_rows = netz_ownuse_2.shape[0]
     netz_ownuse_2_cols = netz_ownuse_2.shape[1]
+
+    #############################################################################################################################
+
+    # Modern renewables
+
+    ref_modren_1 = 
 
     # Df builds are complete
 

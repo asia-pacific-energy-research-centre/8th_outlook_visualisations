@@ -749,4 +749,4 @@ netz_refownsup_df1.to_csv(path_final + '/OSeMOSYS_refownsup_netzero.csv', index 
 netz_pow_capacity_df1.to_csv(path_final + '/OSeMOSYS_powcapacity_netzero.csv', index = False)
 netz_trans_df1.to_csv(path_final + '/OSeMOSYS_transformation_netzero.csv', index = False)
 
-print('OSeMOSYS_to_EGEDA_2018_reference.csv and OSeMOSYS_to_EGEDA_2018_netzero.csv file successfully created')
+print('Requisite dataframes created and saved ready for Bossanova script')
