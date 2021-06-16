@@ -56,7 +56,10 @@ Required_fuels = ['1_coal', '2_coal_products', '5_oil_shale_and_oil_sands', '6_c
 
 required_fuels_elec = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
                        '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', 
-                       '15_solid_biomass', '16_others', '18_heat']                  
+                       '15_solid_biomass', '16_others', '18_heat']
+
+required_fuels_heat = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
+                       '8_gas', '9_nuclear', '11_geothermal', '15_solid_biomass', '16_others', '17_electricity', '18_heat']
 
 Coal_fuels = ['1_coal', '2_coal_products', '3_peat', '4_peat_products']
 
@@ -203,6 +206,8 @@ prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio
 prod_agg_tech2 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
                  'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
 
+heat_prod_tech = ['Coal', 'Oil', 'Gas', 'Biomass', 'Other']
+
 # Refinery vectors
 
 refinery_input = ['6_1_crude_oil', '6_x_ngls']
@@ -236,6 +241,14 @@ thermal_coal_cap = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_
 pow_capacity_agg = ['Coal', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
 pow_capacity_agg2 = ['Coal', 'Lignite', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 
                      'Solar', 'Geothermal', 'Storage', 'Other']
+
+# Heat power plants
+
+coal_heat = ['POW_CHP_COAL_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP', 'POW_HEAT_COKE_HP']
+gas_heat = ['POW_CCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
+oil_heat = ['POW_FuelOil_HP']
+bio_heat = ['POW_CHP_BIO_PP']
+combination_heat = ['POW_HEAT_HP', 'POW_CHP_PP']
 
 # Make space for charts (before data/tables)
 chart_height = 18 # number of excel rows before the data is written (can change this)
@@ -307,7 +320,7 @@ EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_coal': 'Coal'
                                                                 '10_hydro': 'Hydro', 
                                                                 '11_geothermal': 'Geothermal', 
                                                                 '12_solar': 'Solar', 
-                                                                '13_tide_wave_ocean': 'Other', 
+                                                                '13_tide_wave_ocean': 'Hydro', 
                                                                 '14_wind': 'Wind', 
                                                                 '15_solid_biomass': 'Biomass', 
                                                                 '16_others': 'Other', 
@@ -322,12 +335,57 @@ EGEDA_hist_gen = EGEDA_hist_gen[['economy', 'TECHNOLOGY', 'Generation'] + list(r
 EGEDA_hist_gen.to_csv('./data/4_Joined/EGEDA_hist_gen.csv', index = False)
 EGEDA_hist_gen = pd.read_csv('./data/4_Joined/EGEDA_hist_gen.csv')
 
+########################### Create historical heat dataframe for use later ###########################
+
+EGEDA_hist_heat = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv', 
+                             names = ['economy', 'fuel_code', 'item_code_new'] + list(range(1980, 2019)),
+                             header = 0)
+
+EGEDA_hist_heat = EGEDA_hist_heat[(EGEDA_hist_heat['item_code_new'] == '19_heat_output_in_pj') & 
+                                (EGEDA_hist_heat['fuel_code'].isin(required_fuels_heat))].reset_index(drop = True)
+
+# China only having data for 1_coal requires workaround to keep lignite data
+lignite_alt = EGEDA_hist_heat[EGEDA_hist_heat['fuel_code'] == '1_5_lignite'].copy()\
+    .set_index(['economy', 'fuel_code', 'item_code_new']) * -1
+
+lignite_alt = lignite_alt.reset_index()
+
+new_coal = EGEDA_hist_heat[EGEDA_hist_heat['fuel_code'] == '1_coal'].copy().reset_index(drop = True)
+
+lig_coal = new_coal.append(lignite_alt).reset_index(drop = True).groupby(['economy', 'item_code_new']).sum().reset_index()
+lig_coal['fuel_code'] = '1_coal'
+
+no_coal = EGEDA_hist_heat[EGEDA_hist_heat['fuel_code'] != '1_coal'].copy().reset_index(drop = True)
+
+EGEDA_hist_heat = no_coal.append(lig_coal).reset_index(drop = True)
+
+EGEDA_hist_heat['TECHNOLOGY'] = EGEDA_hist_heat['fuel_code'].map({'1_coal': 'Coal', 
+                                                                '1_5_lignite': 'Coal', 
+                                                                '2_coal_products': 'Coal',
+                                                                '6_crude_oil_and_ngl': 'Oil',
+                                                                '7_petroleum_products': 'Oil',
+                                                                '8_gas': 'Gas', 
+                                                                '9_nuclear': 'Other',  
+                                                                '11_geothermal': 'Other', 
+                                                                '15_solid_biomass': 'Biomass', 
+                                                                '16_others': 'Other', 
+                                                                '17_electricity': 'Other',
+                                                                '18_heat': 'Other'})
+
+EGEDA_hist_heat['Generation'] = 'Heat'
+
+EGEDA_hist_heat = EGEDA_hist_heat[['economy', 'TECHNOLOGY', 'Generation'] + list(range(2000, 2019))].\
+    groupby(['economy', 'TECHNOLOGY', 'Generation']).sum().reset_index()
+
+EGEDA_hist_heat.to_csv('./data/4_Joined/EGEDA_hist_heat.csv', index = False)
+EGEDA_hist_heat = pd.read_csv('./data/4_Joined/EGEDA_hist_heat.csv')
+
 #########################################################################################################################################
 
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-Economy_codes = ['17_SIN']
+Economy_codes = ['16_RUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1782,6 +1840,54 @@ for economy in Economy_codes:
     ref_ownuse_2_rows = ref_ownuse_2.shape[0]
     ref_ownuse_2_cols = ref_ownuse_2.shape[1]
 
+    ###############################################
+
+    # Heat generation dataframes
+
+    ref_heatgen_1 = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                             (ref_power_df1['Sheet_energy'] == 'ProductionByTechnology') &
+                             (ref_power_df1['FUEL'] == '18_heat')].reset_index(drop = True)
+
+    # Now build the aggregations of technology (power plants)
+
+    coal_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(coal_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    oil_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(oil_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
+    gas_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(gas_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    bio_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
+    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
+
+    # Generation of electricity by tech dataframe (with the above aggregations added)
+
+    ref_heatgen_2 = ref_heatgen_1.append([coal_hp, oil_hp, gas_hp, bio_hp, comb_hp])\
+        [['TECHNOLOGY'] + list(ref_heatgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                                                                    
+
+    ref_heatgen_2['Generation'] = 'Heat'
+    ref_heatgen_2 = ref_heatgen_2[['TECHNOLOGY', 'Generation'] + list(ref_heatgen_2.loc[:, '2017':'2050'])] 
+
+    ref_heatgen_2 = ref_heatgen_2[ref_heatgen_2['TECHNOLOGY'].isin(heat_prod_tech)].\
+        set_index('TECHNOLOGY')
+
+    ref_heatgen_2 = ref_heatgen_2.loc[ref_heatgen_2.index.intersection(heat_prod_tech)].reset_index()\
+        .rename(columns = {'index': 'TECHNOLOGY'})
+
+    #################################################################################
+    historical_gen = EGEDA_hist_heat[EGEDA_hist_heat['economy'] == economy].copy().\
+        iloc[:,:-2][['TECHNOLOGY', 'Generation'] + list(EGEDA_hist_heat.loc[:, '2000':'2016'])]
+
+    ref_heatgen_2 = historical_gen.merge(ref_heatgen_2, how = 'right', on = ['TECHNOLOGY', 'Generation']).replace(np.nan, 0)
+
+    ref_heatgen_2['TECHNOLOGY'] = pd.Categorical(ref_heatgen_2['TECHNOLOGY'], heat_prod_tech)
+
+    ref_heatgen_2 = ref_heatgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    ref_heatgen_2_rows = ref_heatgen_2.shape[0]
+    ref_heatgen_2_cols = ref_heatgen_2.shape[1]
+
+    ref_heatgen_3 = ref_heatgen_2[['TECHNOLOGY', 'Generation'] + gen_col_chart_years]
+
+    ref_heatgen_3_rows = ref_heatgen_3.shape[0]
+    ref_heatgen_3_cols = ref_heatgen_3.shape[1]
+
     ######################################################################################################################
     
     # NET-ZERO dataframes
@@ -2113,7 +2219,7 @@ for economy in Economy_codes:
 
     ref_modren_fed = ref_fedfuel_1[ref_fedfuel_1['fuel_code'] == 'Other renewables']
 
-    ref_modren_elec = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(modern_tech)]
+    # ref_modren_elec = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(modern_tech)]
 
     # Df builds are complete
 
