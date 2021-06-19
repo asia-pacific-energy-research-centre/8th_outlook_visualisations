@@ -432,7 +432,7 @@ EGEDA_hist_eh = pd.read_csv('./data/4_Joined/EGEDA_hist_eh.csv')
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['05_PRC']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2371,7 +2371,7 @@ for economy in Economy_codes:
     # Grab historical
     historical_eh = EGEDA_hist_eh[EGEDA_hist_eh['economy'] == economy].copy().iloc[:,1:-2]
 
-    ref_modren_elecheat = historical_eh.merge(ref_modren_elecheat, how = 'right', on = ['fuel_code', 'item_code_new'])
+    ref_modren_elecheat = historical_eh.merge(ref_modren_elecheat, how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
 
     ref_modren_elecheat = ref_modren_elecheat[['fuel_code', 'item_code_new'] + list(ref_modren_elecheat\
         .loc[:, '2000':'2050'])]
@@ -2382,7 +2382,12 @@ for economy in Economy_codes:
     ref_modren_2.iloc[6, 0] = 'Modern renewables'
     ref_modren_2.iloc[6, 1] = 'Total'
 
-    # ref_modren_2 = ref_modren_1.append([ref_modren_elecheat, ref_tfec_1]).reset_index(drop = True)
+    ref_modren_3 = ref_modren_2.append(ref_tfec_1).reset_index(drop = True)
+
+    modren_prop1 = ['Modern renewables', 'Proportion'] + list(ref_modren_3.iloc[6, 2:] / ref_modren_3.iloc[7, 2:])
+    modren_prop_series1 = pd.Series(modren_prop1, index = ref_modren_3.columns)
+
+    ref_modren_4 = ref_modren_3.append(modren_prop_series1, ignore_index = True).reset_index(drop = True)
 
     # Df builds are complete
 
@@ -2486,6 +2491,9 @@ for economy in Economy_codes:
     netz_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_netz', index = False, startrow = chart_height)
     ref_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_ref', index = False, startrow = chart_height + ref_heatgen_2_rows + 3)
     netz_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_netz', index = False, startrow = chart_height+ netz_heatgen_2_rows + 3) 
+
+    # Miscellaneous
+    ref_modren_4.to_excel(writer, sheet_name = economy + '_mod_renew', index = False, startrow = chart_height)
     
     ################################################################################################################################
 
@@ -8135,6 +8143,10 @@ for economy in Economy_codes:
     
     else:
         pass
+
+    # Miscellaneous
+
+
         
     writer.save()
 
