@@ -59,7 +59,9 @@ required_fuels_elec = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_
                        '15_solid_biomass', '16_others', '18_heat']
 
 required_fuels_heat = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
-                       '8_gas', '9_nuclear', '11_geothermal', '15_solid_biomass', '16_others', '17_electricity', '18_heat']
+                       '8_gas', '9_nuclear', '11_geothermal', '15_solid_biomass', '16_1_biogas', '16_2_industrial_waste',
+                       '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable', '16_8_other_liquid_biofuels',
+                       '16_9_other_sources', '17_electricity', '18_heat']
 
 Coal_fuels = ['1_coal', '2_coal_products', '3_peat', '4_peat_products']
 
@@ -196,9 +198,10 @@ solar_nr_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP']
 
 # Modern renewables
 
-modren_tech = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
-               'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP', 'POW_WindOff_PP', 'POW_Wind_PP',
-               'POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP', 'POW_Geothermal_PP', 'POW_TIDAL_PP']
+modren_elec_heat = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
+                    'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP', 'POW_WindOff_PP', 'POW_Wind_PP',
+                    'POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP', 'POW_Geothermal_PP', 'POW_TIDAL_PP', 
+                    'POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP']
 
 # POW_EXPORT_ELEC_PP need to work this in
 
@@ -206,7 +209,7 @@ prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio
 prod_agg_tech2 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
                  'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
 
-heat_prod_tech = ['Coal', 'Oil', 'Gas', 'Biomass', 'Other']
+heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste', 'Heat only', 'Other']
 
 # Refinery vectors
 
@@ -244,11 +247,13 @@ pow_capacity_agg2 = ['Coal', 'Lignite', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Bioma
 
 # Heat power plants
 
-coal_heat = ['POW_CHP_COAL_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP', 'POW_HEAT_COKE_HP']
+coal_heat = ['POW_CHP_COAL_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP', 'POW_HEAT_COKE_HP', 'POW_Sub_BituCoal_PP', 'POW_Other_Coal_PP']
+lignite_heat = ['POW_Sub_Brown_PP']
 gas_heat = ['POW_CCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
-oil_heat = ['POW_FuelOil_HP']
-bio_heat = ['POW_CHP_BIO_PP']
-combination_heat = ['POW_HEAT_HP', 'POW_CHP_PP']
+oil_heat = ['POW_FuelOil_HP', 'POW_Diesel_PP']
+bio_heat = ['POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP']
+waste_heat = ['POW_WasteToEnergy_PP']
+combination_heat = ['POW_HEAT_HP']
 
 # Make space for charts (before data/tables)
 chart_height = 18 # number of excel rows before the data is written (can change this)
@@ -283,15 +288,15 @@ avi_bunker = ['Aviation gasoline', 'Jet fuel']
 
 ########################### Create historical electricity generation dataframe for use later ###########################
 
-EGEDA_hist_gen = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv', 
+EGEDA_data = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv', 
                              names = ['economy', 'fuel_code', 'item_code_new'] + list(range(1980, 2019)),
                              header = 0)
 
-EGEDA_hist_gen_1 = EGEDA_hist_gen[(EGEDA_hist_gen['item_code_new'] == '18_electricity_output_in_pj') & 
-                                (EGEDA_hist_gen['fuel_code'].isin(required_fuels_elec))].reset_index(drop = True)
+EGEDA_hist_gen_1 = EGEDA_data[(EGEDA_data['item_code_new'] == '18_electricity_output_in_pj') & 
+                                (EGEDA_data['fuel_code'].isin(required_fuels_elec))].reset_index(drop = True)
 
-EGEDA_hist_gen_2 = EGEDA_hist_gen[(EGEDA_hist_gen['fuel_code'] == '17_electricity') & 
-                                  (EGEDA_hist_gen['item_code_new'] == '2_imports')].reset_index(drop = True)
+EGEDA_hist_gen_2 = EGEDA_data[(EGEDA_data['fuel_code'] == '17_electricity') & 
+                              (EGEDA_data['item_code_new'] == '2_imports')].reset_index(drop = True)
 
 EGEDA_hist_gen = EGEDA_hist_gen_1.append(EGEDA_hist_gen_2).reset_index(drop = True)
 
@@ -337,12 +342,8 @@ EGEDA_hist_gen = pd.read_csv('./data/4_Joined/EGEDA_hist_gen.csv')
 
 ########################### Create historical heat dataframe for use later ###########################
 
-EGEDA_hist_heat = pd.read_csv('./data/1_EGEDA/EGEDA_2018_years.csv', 
-                             names = ['economy', 'fuel_code', 'item_code_new'] + list(range(1980, 2019)),
-                             header = 0)
-
-EGEDA_hist_heat = EGEDA_hist_heat[(EGEDA_hist_heat['item_code_new'] == '19_heat_output_in_pj') & 
-                                (EGEDA_hist_heat['fuel_code'].isin(required_fuels_heat))].reset_index(drop = True)
+EGEDA_hist_heat = EGEDA_data[(EGEDA_data['item_code_new'] == '19_heat_output_in_pj') & 
+                             (EGEDA_data['fuel_code'].isin(required_fuels_heat))].reset_index(drop = True)
 
 # China only having data for 1_coal requires workaround to keep lignite data
 lignite_alt = EGEDA_hist_heat[EGEDA_hist_heat['fuel_code'] == '1_5_lignite'].copy()\
@@ -360,7 +361,7 @@ no_coal = EGEDA_hist_heat[EGEDA_hist_heat['fuel_code'] != '1_coal'].copy().reset
 EGEDA_hist_heat = no_coal.append(lig_coal).reset_index(drop = True)
 
 EGEDA_hist_heat['TECHNOLOGY'] = EGEDA_hist_heat['fuel_code'].map({'1_coal': 'Coal', 
-                                                                '1_5_lignite': 'Coal', 
+                                                                '1_5_lignite': 'Lignite', 
                                                                 '2_coal_products': 'Coal',
                                                                 '6_crude_oil_and_ngl': 'Oil',
                                                                 '7_petroleum_products': 'Oil',
@@ -368,7 +369,12 @@ EGEDA_hist_heat['TECHNOLOGY'] = EGEDA_hist_heat['fuel_code'].map({'1_coal': 'Coa
                                                                 '9_nuclear': 'Other',  
                                                                 '11_geothermal': 'Other', 
                                                                 '15_solid_biomass': 'Biomass', 
-                                                                '16_others': 'Other', 
+                                                                '16_1_biogas': 'Other',
+                                                                '16_2_industrial_waste': 'Waste',
+                                                                '16_3_municipal_solid_waste_renewable': 'Waste',
+                                                                '16_4_municipal_solid_waste_nonrenewable': 'Waste',
+                                                                '16_8_other_liquid_biofuels': 'Other',
+                                                                '16_9_other_sources': 'Other',
                                                                 '17_electricity': 'Other',
                                                                 '18_heat': 'Other'})
 
@@ -380,12 +386,53 @@ EGEDA_hist_heat = EGEDA_hist_heat[['economy', 'TECHNOLOGY', 'Generation'] + list
 EGEDA_hist_heat.to_csv('./data/4_Joined/EGEDA_hist_heat.csv', index = False)
 EGEDA_hist_heat = pd.read_csv('./data/4_Joined/EGEDA_hist_heat.csv')
 
+########################### Create historical elec and heat dataframe for modern renewables ###########################
+
+EGEDA_hist_eh = EGEDA_data[(EGEDA_data['item_code_new'].isin(['18_electricity_output_in_pj', '19_heat_output_in_pj'])) &
+                           (EGEDA_data['fuel_code'].isin(Renewables_fuels))].copy().reset_index(drop = True)
+
+EGEDA_hist_eh = EGEDA_hist_eh[['economy', 'fuel_code', 'item_code_new'] + list(range(2000, 2019))].\
+    groupby(['economy']).sum().reset_index()
+
+EGEDA_hist_eh['fuel_code'] = 'Modern renewables'
+EGEDA_hist_eh['item_code_new'] = 'Electricity and heat'
+
+# Amend Chinese Taipei
+CT_amend = EGEDA_data[(EGEDA_data['item_code_new'].isin(['1_indigenous_production', '18_electricity_output_in_pj'])) &
+                      (EGEDA_data['fuel_code'] == '10_hydro') &
+                      (EGEDA_data['economy'] == '18_CT')].copy().reset_index(drop = True)\
+                          [['economy', 'fuel_code', 'item_code_new'] + list(range(2000, 2019))]
+
+new_CT_1 = ['18_CT', 'Modern renewables', 'Electricity and heat'] + list(CT_amend.iloc[0, 3:] - CT_amend.iloc[1, 3:])
+new_CT_series1 = pd.Series(new_CT_1, index = CT_amend.columns)
+
+new_CT_2 = ['23_NEA', 'Modern renewables', 'Electricity and heat'] + list(CT_amend.iloc[0, 3:] - CT_amend.iloc[1, 3:])
+new_CT_series2 = pd.Series(new_CT_2, index = CT_amend.columns)
+
+new_CT_3 = ['23b_ONEA', 'Modern renewables', 'Electricity and heat'] + list(CT_amend.iloc[0, 3:] - CT_amend.iloc[1, 3:])
+new_CT_series3 = pd.Series(new_CT_3, index = CT_amend.columns)
+
+new_CT_4 = ['APEC', 'Modern renewables', 'Electricity and heat'] + list(CT_amend.iloc[0, 3:] - CT_amend.iloc[1, 3:])
+new_CT_series4 = pd.Series(new_CT_4, index = CT_amend.columns)
+
+CT_amend = CT_amend.append([new_CT_series1, new_CT_series2, new_CT_series3, new_CT_series4], ignore_index = True)
+
+EGEDA_hist_eh = EGEDA_hist_eh.append(CT_amend.iloc[2:]).reset_index(drop = True)
+
+EGEDA_hist_eh = EGEDA_hist_eh.groupby(['economy', 'fuel_code', 'item_code_new']).sum().reset_index()
+
+#EGEDA_hist_eh = EGEDA_hist_eh[['economy', 'fuel_code', 'item_code_new'] + list(range(2000, 2019))].reset_index(drop = True)
+
+EGEDA_hist_eh.to_csv('./data/4_Joined/EGEDA_hist_eh.csv', index = False)
+EGEDA_hist_eh = pd.read_csv('./data/4_Joined/EGEDA_hist_eh.csv')
+
+
 #########################################################################################################################################
 
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-Economy_codes = ['16_RUS']
+# Economy_codes = ['05_PRC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -405,7 +452,7 @@ for economy in Economy_codes:
     oil = ref_notrad_1[ref_notrad_1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = 'Oil', item_code_new = 'Industry, transport, NE')
     
-    renewables = ref_notrad_1[ref_notrad_1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new'])\
+    renewables = ref_notrad_1[ref_notrad_1['fuel_code'].isin(Renewables_fuels_nobiomass)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = 'Other renewables', item_code_new = 'Industry, transport, NE')
     
     others = ref_notrad_1[ref_notrad_1['fuel_code'].isin(Other_fuels_FED)].groupby(['item_code_new'])\
@@ -417,15 +464,16 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(ref_notrad_1.loc[:, '2000':'2050'])].reset_index(drop = True)
 
     ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
     ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
     ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     # Insert 0 traditional biomass row
-    new_row = ['Biomass', 'Industry, transport, NE'] + [0] * 51
-    new_series = pd.Series(new_row, index = ref_fedfuel_1.columns)
+    # new_row = ['Biomass', 'Industry, transport, NE'] + [0] * 51
+    # new_series = pd.Series(new_row, index = ref_fedfuel_1.columns)
 
-    ref_fedfuel_1 = ref_fedfuel_1.append(new_series, ignore_index = True)
+    # ref_fedfuel_1 = ref_fedfuel_1.append(new_series, ignore_index = True)
 
     ref_fedfuel_1 = ref_fedfuel_1[ref_fedfuel_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
 
@@ -766,7 +814,7 @@ for economy in Economy_codes:
     oil = netz_notrad_1[netz_notrad_1['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = 'Oil', item_code_new = 'Industry, transport, NE')
     
-    renewables = netz_notrad_1[netz_notrad_1['fuel_code'].isin(Renewables_fuels)].groupby(['item_code_new'])\
+    renewables = netz_notrad_1[netz_notrad_1['fuel_code'].isin(Renewables_fuels_nobiomass)].groupby(['item_code_new'])\
         .sum().assign(fuel_code = 'Other renewables', item_code_new = 'Industry, transport, NE')
     
     others = netz_notrad_1[netz_notrad_1['fuel_code'].isin(Other_fuels_FED)].groupby(['item_code_new'])\
@@ -778,15 +826,16 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(netz_notrad_1.loc[:, '2000':'2050'])].reset_index(drop = True)
 
     netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'    
     netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
     netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     # Insert 0 traditional biomass row
-    new_row = ['Biomass', 'Industry, transport, NE'] + [0] * 51
-    new_series = pd.Series(new_row, index = netz_fedfuel_1.columns)
+    # new_row = ['Biomass', 'Industry, transport, NE'] + [0] * 51
+    # new_series = pd.Series(new_row, index = netz_fedfuel_1.columns)
 
-    netz_fedfuel_1 = netz_fedfuel_1.append(new_series, ignore_index = True)
+    # netz_fedfuel_1 = netz_fedfuel_1.append(new_series, ignore_index = True)
 
     netz_fedfuel_1 = netz_fedfuel_1[netz_fedfuel_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
 
@@ -1851,18 +1900,26 @@ for economy in Economy_codes:
     # Now build the aggregations of technology (power plants)
 
     coal_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(coal_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    lignite_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(lignite_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
     oil_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(oil_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(gas_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
     bio_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
-    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
+    waste_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
+    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    ref_heatgen_2 = ref_heatgen_1.append([coal_hp, oil_hp, gas_hp, bio_hp, comb_hp])\
+    ref_heatgen_2 = ref_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, bio_hp, waste_hp, comb_hp])\
         [['TECHNOLOGY'] + list(ref_heatgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                                                                    
 
     ref_heatgen_2['Generation'] = 'Heat'
     ref_heatgen_2 = ref_heatgen_2[['TECHNOLOGY', 'Generation'] + list(ref_heatgen_2.loc[:, '2017':'2050'])] 
+
+    # Insert 0 other row
+    new_row_zero = ['Other', 'Heat'] + [0] * 34
+    new_series = pd.Series(new_row_zero, index = ref_heatgen_2.columns)
+
+    ref_heatgen_2 = ref_heatgen_2.append(new_series, ignore_index = True).reset_index(drop = True)
 
     ref_heatgen_2 = ref_heatgen_2[ref_heatgen_2['TECHNOLOGY'].isin(heat_prod_tech)].\
         set_index('TECHNOLOGY')
@@ -2213,13 +2270,119 @@ for economy in Economy_codes:
     netz_ownuse_2_rows = netz_ownuse_2.shape[0]
     netz_ownuse_2_cols = netz_ownuse_2.shape[1]
 
+    ###############################################
+
+    # Heat generation dataframes
+
+    netz_heatgen_1 = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                             (netz_power_df1['Sheet_energy'] == 'ProductionByTechnology') &
+                             (netz_power_df1['FUEL'] == '18_heat')].reset_index(drop = True)
+
+    # Now build the aggregations of technology (power plants)
+
+    coal_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(coal_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    lignite_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(lignite_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
+    oil_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(oil_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
+    gas_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(gas_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    bio_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
+    waste_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
+    comb_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only')
+
+    # Generation of electricity by tech dataframe (with the above aggregations added)
+
+    netz_heatgen_2 = netz_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, bio_hp, waste_hp, comb_hp])\
+        [['TECHNOLOGY'] + list(netz_heatgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                              
+
+    netz_heatgen_2['Generation'] = 'Heat'
+    netz_heatgen_2 = netz_heatgen_2[['TECHNOLOGY', 'Generation'] + list(netz_heatgen_2.loc[:, '2017':'2050'])]
+
+    # Insert 0 other row
+    new_row_zero = ['Other', 'Heat'] + [0] * 34
+    new_series = pd.Series(new_row_zero, index = netz_heatgen_2.columns)
+
+    netz_heatgen_2 = netz_heatgen_2.append(new_series, ignore_index = True).reset_index(drop = True)
+
+    netz_heatgen_2 = netz_heatgen_2[netz_heatgen_2['TECHNOLOGY'].isin(heat_prod_tech)].\
+        set_index('TECHNOLOGY')
+
+    netz_heatgen_2 = netz_heatgen_2.loc[netz_heatgen_2.index.intersection(heat_prod_tech)].reset_index()\
+        .rename(columns = {'index': 'TECHNOLOGY'})
+
+    #################################################################################
+    historical_gen = EGEDA_hist_heat[EGEDA_hist_heat['economy'] == economy].copy().\
+        iloc[:,:-2][['TECHNOLOGY', 'Generation'] + list(EGEDA_hist_heat.loc[:, '2000':'2016'])]
+
+    netz_heatgen_2 = historical_gen.merge(netz_heatgen_2, how = 'right', on = ['TECHNOLOGY', 'Generation']).replace(np.nan, 0)
+
+    netz_heatgen_2['TECHNOLOGY'] = pd.Categorical(netz_heatgen_2['TECHNOLOGY'], heat_prod_tech)
+
+    netz_heatgen_2 = netz_heatgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    netz_heatgen_2_rows = netz_heatgen_2.shape[0]
+    netz_heatgen_2_cols = netz_heatgen_2.shape[1]
+
+    netz_heatgen_3 = netz_heatgen_2[['TECHNOLOGY', 'Generation'] + gen_col_chart_years]
+
+    netz_heatgen_3_rows = netz_heatgen_3.shape[0]
+    netz_heatgen_3_cols = netz_heatgen_3.shape[1]
+
     #############################################################################################################################
 
     # Modern renewables
+    # Agriculture, buildings, industry, transport, non-specified others
 
-    ref_modren_fed = ref_fedfuel_1[ref_fedfuel_1['fuel_code'] == 'Other renewables']
+    ref_ag_temp = ref_ag_1[ref_ag_1['fuel_code'] == 'Other renewables'].copy().groupby(['item_code_new']).sum().reset_index()
+    ref_bld_temp = ref_bld_2[ref_bld_2['fuel_code'] == 'Other renewables'].copy().groupby(['item_code_new']).sum().reset_index()
+    ref_trn_temp = ref_trn_1[ref_trn_1['fuel_code'] == 'Renewables'].copy().groupby(['item_code_new']).sum().reset_index()
+    
+    ref_ind_temp = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
+                                         (EGEDA_years_reference['fuel_code'].isin(Renewables_fuels)) &
+                                         (EGEDA_years_reference['item_code_new'] == '14_industry_sector')]\
+                                             [['fuel_code', 'item_code_new'] + list(EGEDA_years_reference.loc[:, '2000':'2050'])]\
+                                             .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index()
 
-    # ref_modren_elec = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(modern_tech)]
+    ref_nonspec_temp = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
+                                         (EGEDA_years_reference['fuel_code'].isin(Renewables_fuels_nobiomass)) &
+                                         (EGEDA_years_reference['item_code_new'] == '16_5_nonspecified_others')]\
+                                             [['fuel_code', 'item_code_new'] + list(EGEDA_years_reference.loc[:, '2000':'2050'])]\
+                                             .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index()
+
+    ref_modren_1 = ref_ag_temp.append([ref_bld_temp, ref_trn_temp, ref_ind_temp, ref_nonspec_temp]).reset_index(drop = True)
+    ref_modren_1['fuel_code'] = 'Modern renewables'
+
+    ref_modren_1.loc[ref_modren_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
+    ref_modren_1.loc[ref_modren_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    ref_modren_1.loc[ref_modren_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    ref_modren_1.loc[ref_modren_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified others'
+
+    ref_modren_1 = ref_modren_1[['fuel_code', 'item_code_new'] + list(ref_modren_1.loc[:, '2000':'2050'])]
+
+    # Electricity and heat renewables
+
+    ref_modren_elecheat = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                                    (ref_power_df1['Sheet_energy'] == 'ProductionByTechnology') &
+                                    (ref_power_df1['FUEL'].isin(['17_electricity', '17_electricity_Dx', '18_heat'])) &
+                                    (ref_power_df1['TECHNOLOGY'].isin(modren_elec_heat))].copy().groupby(['economy'])\
+                                        .sum().reset_index(drop = True)
+
+    ref_modren_elecheat['fuel_code'] = 'Modern renewables'
+    ref_modren_elecheat['item_code_new'] = 'Electricity and heat'
+
+    # Grab historical
+    historical_eh = EGEDA_hist_eh[EGEDA_hist_eh['economy'] == economy].copy().iloc[:,1:-2]
+
+    ref_modren_elecheat = historical_eh.merge(ref_modren_elecheat, how = 'right', on = ['fuel_code', 'item_code_new'])
+
+    ref_modren_elecheat = ref_modren_elecheat[['fuel_code', 'item_code_new'] + list(ref_modren_elecheat\
+        .loc[:, '2000':'2050'])]
+
+    ref_modren_2 = ref_modren_1.append(ref_modren_elecheat).reset_index(drop = True)
+    ref_modren_2 = ref_modren_2.append(ref_modren_2.sum(numeric_only = True), ignore_index = True) 
+
+    ref_modren_2.iloc[6, 0] = 'Modern renewables'
+    ref_modren_2.iloc[6, 1] = 'Total'
+
+    # ref_modren_2 = ref_modren_1.append([ref_modren_elecheat, ref_tfec_1]).reset_index(drop = True)
 
     # Df builds are complete
 
@@ -2319,6 +2482,10 @@ for economy in Economy_codes:
     netz_ownuse_1.to_excel(writer, sheet_name = economy + '_own_netz', index = False, startrow = chart_height)
     ref_ownuse_2.to_excel(writer, sheet_name = economy + '_own_ref', index = False, startrow = chart_height + ref_ownuse_1_rows + 3)
     netz_ownuse_2.to_excel(writer, sheet_name = economy + '_own_netz', index = False, startrow = chart_height + netz_ownuse_1_rows + 3)
+    ref_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_ref', index = False, startrow = chart_height)
+    netz_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_netz', index = False, startrow = chart_height)
+    ref_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_ref', index = False, startrow = chart_height + ref_heatgen_2_rows + 3)
+    netz_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_netz', index = False, startrow = chart_height+ netz_heatgen_2_rows + 3) 
     
     ################################################################################################################################
 
@@ -6023,7 +6190,7 @@ for economy in Economy_codes:
     else: 
         pass
 
-    # Create a industry subsector FED chart
+    # Create a chart
     if ref_elecgen_3_rows > 0:
         prodelec_bytech_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         prodelec_bytech_chart2.set_size({
@@ -6085,14 +6252,14 @@ for economy in Economy_codes:
     ## Refining sheet
 
     # Access the workbook and second sheet
-    ref_worksheet223 = writer.sheets[economy + '_refining_ref']
+    ref_worksheet23 = writer.sheets[economy + '_refining_ref']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet223.set_column(2, ref_refinery_1_rows + 1, None, comma_format)
-    ref_worksheet223.set_row(chart_height, None, header_format)
-    ref_worksheet223.set_row(chart_height + ref_refinery_1_rows + 3, None, header_format)
-    ref_worksheet223.set_row(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, None, header_format)
-    ref_worksheet223.write(0, 0, economy + ' refining', cell_format1)
+    ref_worksheet23.set_column(2, ref_refinery_1_rows + 1, None, comma_format)
+    ref_worksheet23.set_row(chart_height, None, header_format)
+    ref_worksheet23.set_row(chart_height + ref_refinery_1_rows + 3, None, header_format)
+    ref_worksheet23.set_row(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, None, header_format)
+    ref_worksheet23.write(0, 0, economy + ' refining', cell_format1)
 
     # Create ainput refining line chart
     if ref_refinery_1_rows > 0:
@@ -6146,7 +6313,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        ref_worksheet223.insert_chart('B3', refinery_chart1)
+        ref_worksheet23.insert_chart('B3', refinery_chart1)
 
     else:
         pass
@@ -6203,7 +6370,7 @@ for economy in Economy_codes:
                                'width': 1}
             })    
             
-        ref_worksheet223.insert_chart('J3', refinery_chart2)
+        ref_worksheet23.insert_chart('J3', refinery_chart2)
 
     else: 
         pass
@@ -6260,7 +6427,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet223.insert_chart('R3', refinery_chart3)
+        ref_worksheet23.insert_chart('R3', refinery_chart3)
 
     else:
         pass
@@ -6268,13 +6435,13 @@ for economy in Economy_codes:
     ############################# Next sheet: Power capacity ##################################
     
     # Access the workbook and second sheet
-    ref_worksheet224 = writer.sheets[economy + '_pow_cap_ref']
+    ref_worksheet24 = writer.sheets[economy + '_pow_cap_ref']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet224.set_column(1, ref_powcap_1_rows + 1, None, comma_format)
-    ref_worksheet224.set_row(chart_height, None, header_format)
-    ref_worksheet224.set_row(chart_height + ref_powcap_1_rows + 3, None, header_format)
-    ref_worksheet224.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
+    ref_worksheet24.set_column(1, ref_powcap_1_rows + 1, None, comma_format)
+    ref_worksheet24.set_row(chart_height, None, header_format)
+    ref_worksheet24.set_row(chart_height + ref_powcap_1_rows + 3, None, header_format)
+    ref_worksheet24.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
     
     # Create a electricity production area chart
     if ref_powcap_1_rows > 0:
@@ -6330,7 +6497,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet224.insert_chart('B3', pow_cap_chart1)
+        ref_worksheet24.insert_chart('B3', pow_cap_chart1)
 
     else:
         pass
@@ -6387,7 +6554,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet224.insert_chart('J3', pow_cap_chart2)
+        ref_worksheet24.insert_chart('J3', pow_cap_chart2)
 
     else:
         pass
@@ -6395,13 +6562,13 @@ for economy in Economy_codes:
     ############################# Next sheet: Transformation sector ##################################
     
     # Access the workbook and second sheet
-    ref_worksheet225 = writer.sheets[economy + '_trnsfrm_ref']
+    ref_worksheet25 = writer.sheets[economy + '_trnsfrm_ref']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet225.set_column(1, ref_trans_3_rows + 1, None, comma_format)
-    ref_worksheet225.set_row(chart_height, None, header_format)
-    ref_worksheet225.set_row(chart_height + ref_trans_3_rows + 3, None, header_format)
-    ref_worksheet225.write(0, 0, economy + ' transformation', cell_format1)
+    ref_worksheet25.set_column(1, ref_trans_3_rows + 1, None, comma_format)
+    ref_worksheet25.set_row(chart_height, None, header_format)
+    ref_worksheet25.set_row(chart_height + ref_trans_3_rows + 3, None, header_format)
+    ref_worksheet25.write(0, 0, economy + ' transformation', cell_format1)
 
     # Create a transformation area chart
     if ref_trans_3_rows > 0:
@@ -6457,7 +6624,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet225.insert_chart('B3', ref_trnsfrm_chart1)
+        ref_worksheet25.insert_chart('B3', ref_trnsfrm_chart1)
 
     else:
         pass
@@ -6516,7 +6683,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        ref_worksheet225.insert_chart('J3', ref_trnsfrm_chart2)
+        ref_worksheet25.insert_chart('J3', ref_trnsfrm_chart2)
 
     else:
         pass
@@ -6574,7 +6741,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet225.insert_chart('R3', ref_trnsfrm_chart3)
+        ref_worksheet25.insert_chart('R3', ref_trnsfrm_chart3)
 
     else:
         pass
@@ -6583,13 +6750,13 @@ for economy in Economy_codes:
     # Own use charts
     
     # Access the workbook and second sheet
-    ref_worksheet226 = writer.sheets[economy + '_own_ref']
+    ref_worksheet26 = writer.sheets[economy + '_own_ref']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet226.set_column(2, ref_ownuse_1_rows + 1, None, comma_format)
-    ref_worksheet226.set_row(chart_height, None, header_format)
-    ref_worksheet226.set_row(chart_height + ref_ownuse_1_rows + 3, None, header_format)
-    ref_worksheet226.write(0, 0, economy + ' own use and losses', cell_format1)
+    ref_worksheet26.set_column(2, ref_ownuse_1_rows + 1, None, comma_format)
+    ref_worksheet26.set_row(chart_height, None, header_format)
+    ref_worksheet26.set_row(chart_height + ref_ownuse_1_rows + 3, None, header_format)
+    ref_worksheet26.write(0, 0, economy + ' own use and losses', cell_format1)
 
     # Createn own-use transformation area chart by fuel
     if ref_ownuse_1_rows > 0:
@@ -6645,7 +6812,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet226.insert_chart('B3', ref_own_chart1)
+        ref_worksheet26.insert_chart('B3', ref_own_chart1)
 
     else:
         pass
@@ -6704,7 +6871,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        ref_worksheet226.insert_chart('J3', ref_own_chart2)
+        ref_worksheet26.insert_chart('J3', ref_own_chart2)
 
     else:
         pass
@@ -6762,8 +6929,135 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet226.insert_chart('R3', ref_own_chart3)
+        ref_worksheet26.insert_chart('R3', ref_own_chart3)
 
+    else:
+        pass
+
+    ############## HEAT Charts #########################################
+
+    # Access the workbook and second sheet
+    ref_worksheet27 = writer.sheets[economy + '_heat_ref']
+    
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet27.set_column(2, ref_heatgen_2_rows + 1, None, comma_format)
+    ref_worksheet27.set_row(chart_height, None, header_format)
+    ref_worksheet27.set_row(chart_height + ref_heatgen_2_rows + 3, None, header_format)
+    ref_worksheet27.write(0, 0, economy + ' heat generation by technology', cell_format1)
+    
+    # Create a electricity production area chart
+    if ref_heatgen_2_rows > 0:
+        heatgen_bytech_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        heatgen_bytech_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        heatgen_bytech_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        heatgen_bytech_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        heatgen_bytech_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        heatgen_bytech_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        heatgen_bytech_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_heatgen_2_rows):
+            heatgen_bytech_chart1.add_series({
+                'name':       [economy + '_heat_ref', chart_height + i + 1, 0],
+                'categories': [economy + '_heat_ref', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
+                'values':     [economy + '_heat_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_heatgen_2_cols - 1],
+                'fill':       {'color': ref_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        ref_worksheet27.insert_chart('B3', heatgen_bytech_chart1)
+
+    else: 
+        pass
+
+    # Create a chart
+    if ref_heatgen_3_rows > 0:
+        heatgen_bytech_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        heatgen_bytech_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        heatgen_bytech_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        heatgen_bytech_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        heatgen_bytech_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        heatgen_bytech_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        heatgen_bytech_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_heatgen_3_rows):
+            heatgen_bytech_chart2.add_series({
+                'name':       [economy + '_heat_ref', chart_height + ref_heatgen_2_rows + i + 4, 0],
+                'categories': [economy + '_heat_ref', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
+                'values':     [economy + '_heat_ref', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
+                'fill':       {'color': ref_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        ref_worksheet27.insert_chart('J3', heatgen_bytech_chart2)
+    
     else:
         pass
 
@@ -7033,14 +7327,14 @@ for economy in Economy_codes:
     ## Refining sheet
 
     # Access the workbook and second sheet
-    netz_worksheet223 = writer.sheets[economy + '_refining_netz']
+    netz_worksheet23 = writer.sheets[economy + '_refining_netz']
     
     # Apply comma format and header format to relevant data rows
-    netz_worksheet223.set_column(2, netz_refinery_1_rows + 1, None, comma_format)
-    netz_worksheet223.set_row(chart_height, None, header_format)
-    netz_worksheet223.set_row(chart_height + netz_refinery_1_rows + 3, None, header_format)
-    netz_worksheet223.set_row(chart_height + netz_refinery_1_rows + netz_refinery_2_rows + 6, None, header_format)
-    netz_worksheet223.write(0, 0, economy + ' refining', cell_format1)
+    netz_worksheet23.set_column(2, netz_refinery_1_rows + 1, None, comma_format)
+    netz_worksheet23.set_row(chart_height, None, header_format)
+    netz_worksheet23.set_row(chart_height + netz_refinery_1_rows + 3, None, header_format)
+    netz_worksheet23.set_row(chart_height + netz_refinery_1_rows + netz_refinery_2_rows + 6, None, header_format)
+    netz_worksheet23.write(0, 0, economy + ' refining', cell_format1)
 
     # Create ainput refining line chart
     if netz_refinery_1_rows > 0:
@@ -7094,7 +7388,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        netz_worksheet223.insert_chart('B3', netz_refinery_chart1)
+        netz_worksheet23.insert_chart('B3', netz_refinery_chart1)
 
     else:
         pass
@@ -7151,7 +7445,7 @@ for economy in Economy_codes:
                                'width': 1}
             })    
             
-        netz_worksheet223.insert_chart('J3', netz_refinery_chart2)
+        netz_worksheet23.insert_chart('J3', netz_refinery_chart2)
 
     else: 
         pass
@@ -7208,7 +7502,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        netz_worksheet223.insert_chart('R3', netz_refinery_chart3)
+        netz_worksheet23.insert_chart('R3', netz_refinery_chart3)
 
     else:
         pass
@@ -7216,13 +7510,13 @@ for economy in Economy_codes:
     ############################# Next sheet: Power capacity ##################################
     
     # Access the workbook and second sheet
-    netz_worksheet224 = writer.sheets[economy + '_pow_cap_netz']
+    netz_worksheet24 = writer.sheets[economy + '_pow_cap_netz']
     
     # Apply comma format and header format to relevant data rows
-    netz_worksheet224.set_column(1, netz_powcap_1_rows + 1, None, comma_format)
-    netz_worksheet224.set_row(chart_height, None, header_format)
-    netz_worksheet224.set_row(chart_height + netz_powcap_1_rows + 3, None, header_format)
-    netz_worksheet224.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
+    netz_worksheet24.set_column(1, netz_powcap_1_rows + 1, None, comma_format)
+    netz_worksheet24.set_row(chart_height, None, header_format)
+    netz_worksheet24.set_row(chart_height + netz_powcap_1_rows + 3, None, header_format)
+    netz_worksheet24.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
     
     # Create a electricity production area chart
     if netz_powcap_1_rows > 0:
@@ -7278,7 +7572,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        netz_worksheet224.insert_chart('B3', netz_pow_cap_chart1)
+        netz_worksheet24.insert_chart('B3', netz_pow_cap_chart1)
 
     else:
         pass
@@ -7335,7 +7629,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        netz_worksheet224.insert_chart('J3', netz_pow_cap_chart2)
+        netz_worksheet24.insert_chart('J3', netz_pow_cap_chart2)
 
     else:
         pass
@@ -7343,13 +7637,13 @@ for economy in Economy_codes:
     ############################# Next sheet: Transformation sector ##################################
     
     # Access the workbook and second sheet
-    netz_worksheet225 = writer.sheets[economy + '_trnsfrm_netz']
+    netz_worksheet25 = writer.sheets[economy + '_trnsfrm_netz']
     
     # Apply comma format and header format to relevant data rows
-    netz_worksheet225.set_column(1, netz_trans_3_rows + 1, None, comma_format)
-    netz_worksheet225.set_row(chart_height, None, header_format)
-    netz_worksheet225.set_row(chart_height + netz_trans_3_rows + 3, None, header_format)
-    netz_worksheet225.write(0, 0, economy + ' transformation', cell_format1)
+    netz_worksheet25.set_column(1, netz_trans_3_rows + 1, None, comma_format)
+    netz_worksheet25.set_row(chart_height, None, header_format)
+    netz_worksheet25.set_row(chart_height + netz_trans_3_rows + 3, None, header_format)
+    netz_worksheet25.write(0, 0, economy + ' transformation', cell_format1)
 
     # Create a transformation area chart
     if netz_trans_3_rows > 0:
@@ -7405,7 +7699,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        netz_worksheet225.insert_chart('B3', netz_trnsfrm_chart1)
+        netz_worksheet25.insert_chart('B3', netz_trnsfrm_chart1)
 
     else:
         pass
@@ -7464,7 +7758,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        netz_worksheet225.insert_chart('J3', netz_trnsfrm_chart2)
+        netz_worksheet25.insert_chart('J3', netz_trnsfrm_chart2)
 
     else:
         pass
@@ -7522,7 +7816,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        netz_worksheet225.insert_chart('R3', netz_trnsfrm_chart3)
+        netz_worksheet25.insert_chart('R3', netz_trnsfrm_chart3)
 
     else:
         pass
@@ -7531,13 +7825,13 @@ for economy in Economy_codes:
     # Own use charts
     
     # Access the workbook and second sheet
-    netz_worksheet226 = writer.sheets[economy + '_own_netz']
+    netz_worksheet26 = writer.sheets[economy + '_own_netz']
     
     # Apply comma format and header format to relevant data rows
-    netz_worksheet226.set_column(2, netz_ownuse_1_rows + 1, None, comma_format)
-    netz_worksheet226.set_row(chart_height, None, header_format)
-    netz_worksheet226.set_row(chart_height + netz_ownuse_1_rows + 3, None, header_format)
-    netz_worksheet226.write(0, 0, economy + ' own use and losses', cell_format1)
+    netz_worksheet26.set_column(2, netz_ownuse_1_rows + 1, None, comma_format)
+    netz_worksheet26.set_row(chart_height, None, header_format)
+    netz_worksheet26.set_row(chart_height + netz_ownuse_1_rows + 3, None, header_format)
+    netz_worksheet26.write(0, 0, economy + ' own use and losses', cell_format1)
 
     # Createn own-use transformation area chart by fuel
     if netz_ownuse_1_rows > 0:
@@ -7593,7 +7887,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        netz_worksheet226.insert_chart('B3', netz_own_chart1)
+        netz_worksheet26.insert_chart('B3', netz_own_chart1)
 
     else:
         pass
@@ -7652,7 +7946,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        netz_worksheet226.insert_chart('J3', netz_own_chart2)
+        netz_worksheet26.insert_chart('J3', netz_own_chart2)
 
     else:
         pass
@@ -7710,8 +8004,135 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        netz_worksheet226.insert_chart('R3', netz_own_chart3)
+        netz_worksheet26.insert_chart('R3', netz_own_chart3)
 
+    else:
+        pass
+
+    ##################### HEAT Charts ###########################################
+
+    # Access the workbook and second sheet
+    netz_worksheet27 = writer.sheets[economy + '_heat_netz']
+    
+    # Apply comma format and header format to relevant data rows
+    netz_worksheet27.set_column(2, netz_heatgen_2_rows + 1, None, comma_format)
+    netz_worksheet27.set_row(chart_height, None, header_format)
+    netz_worksheet27.set_row(chart_height + netz_heatgen_2_rows + 3, None, header_format)
+    netz_worksheet27.write(0, 0, economy + ' heat generation by technology', cell_format1)
+    
+    # Create a electricity production area chart
+    if netz_heatgen_2_rows > 0:
+        heatgen_bytech_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        heatgen_bytech_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        heatgen_bytech_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        heatgen_bytech_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        heatgen_bytech_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        heatgen_bytech_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        heatgen_bytech_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_heatgen_2_rows):
+            heatgen_bytech_chart1.add_series({
+                'name':       [economy + '_heat_netz', chart_height + i + 1, 0],
+                'categories': [economy + '_heat_netz', chart_height, 2, chart_height, netz_heatgen_2_cols - 1],
+                'values':     [economy + '_heat_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_heatgen_2_cols - 1],
+                'fill':       {'color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        netz_worksheet27.insert_chart('B3', heatgen_bytech_chart1)
+
+    else: 
+        pass
+
+    # Create a chart
+    if netz_heatgen_3_rows > 0:
+        heatgen_bytech_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        heatgen_bytech_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        heatgen_bytech_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        heatgen_bytech_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        heatgen_bytech_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        heatgen_bytech_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        heatgen_bytech_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_heatgen_3_rows):
+            heatgen_bytech_chart2.add_series({
+                'name':       [economy + '_heat_netz', chart_height + netz_heatgen_2_rows + i + 4, 0],
+                'categories': [economy + '_heat_netz', chart_height + netz_heatgen_2_rows + 3, 2, chart_height + netz_heatgen_2_rows + 3, netz_heatgen_3_cols - 1],
+                'values':     [economy + '_heat_netz', chart_height + netz_heatgen_2_rows + i + 4, 2, chart_height + netz_heatgen_2_rows + i + 4, netz_heatgen_3_cols - 1],
+                'fill':       {'color': netz_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        netz_worksheet27.insert_chart('J3', heatgen_bytech_chart2)
+    
     else:
         pass
         
