@@ -749,4 +749,28 @@ netz_refownsup_df1.to_csv(path_final + '/OSeMOSYS_refownsup_netzero.csv', index 
 netz_pow_capacity_df1.to_csv(path_final + '/OSeMOSYS_powcapacity_netzero.csv', index = False)
 netz_trans_df1.to_csv(path_final + '/OSeMOSYS_transformation_netzero.csv', index = False)
 
+# # Macro dataframes (opens in Bossanova)
+
+# macro_GDP = pd.read_excel(path_mapping + '/Key Inputs.xlsx', sheet_name = 'GDP')
+# macro_GDP.columns = macro_GDP.columns.astype(str) 
+# macro_GDP['Series'] = 'GDP 2018 USD PPP'
+# macro_GDP = macro_GDP[['Economy', 'Series'] + list(macro_GDP.loc[:, '2000':'2050'])]
+# macro_GDP = macro_GDP[macro_GDP['Economy'].isin(list(macro_GDP['Economy'].unique()))]
+# macro_GDP.to_csv(path_final + '/macro_GDP.csv', index = False)
+
+# macro_GDP_growth = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'GDP_growth')
+# macro_GDP_growth.columns = macro_GDP_growth.columns.astype(str) 
+# macro_GDP_growth['Series'] = 'GDP growth'
+# macro_GDP_growth = macro_GDP_growth[['Economy', 'Series'] + list(macro_GDP_growth.loc[:, '2000':'2050'])]
+
+# macro_pop = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'Population')
+# macro_pop.columns = macro_pop.columns.astype(str) 
+# macro_pop['Series'] = 'Population'
+# macro_pop = macro_pop[['Economy', 'Series'] + list(macro_pop.loc[:, '2000':'2050'])]
+
+# macro_GDPpc = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'GDP per capita')
+# macro_GDPpc.columns = macro_GDPpc.columns.astype(str)
+# macro_GDPpc['Series'] = 'GDP per capita' 
+# macro_GDPpc = macro_GDPpc[['Economy', 'Series'] + list(macro_GDPpc.loc[:, '2000':'2050'])]
+
 print('Requisite dataframes created and saved ready for Bossanova script')

@@ -28,6 +28,34 @@ netz_refownsup_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_refownsup_netzero.csv
 netz_pow_capacity_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_powcapacity_netzero.csv').loc[:,:'2050']
 netz_trans_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_netzero.csv').loc[:,:'2050']
 
+macro_GDP = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'GDP')
+macro_GDP.columns = macro_GDP.columns.astype(str) 
+macro_GDP['Series'] = 'GDP 2018 USD PPP'
+macro_GDP = macro_GDP[['Economy', 'Series'] + list(macro_GDP.loc[:, '2000':'2050'])]
+
+# Change GDP to millions
+GDP = macro_GDP.select_dtypes(include=[np.number]) / 1000000 
+macro_GDP[GDP.columns] = GDP
+
+macro_GDP_growth = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'GDP_growth')
+macro_GDP_growth.columns = macro_GDP_growth.columns.astype(str) 
+macro_GDP_growth['Series'] = 'GDP growth'
+macro_GDP_growth = macro_GDP_growth[['Economy', 'Series'] + list(macro_GDP_growth.loc[:, '2000':'2050'])]
+
+macro_pop = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'Population')
+macro_pop.columns = macro_pop.columns.astype(str) 
+macro_pop['Series'] = 'Population'
+macro_pop = macro_pop[['Economy', 'Series'] + list(macro_pop.loc[:, '2000':'2050'])]
+
+# Change GDP to millions
+pop = macro_pop.select_dtypes(include=[np.number]) / 1000 
+macro_pop[pop.columns] = pop
+
+macro_GDPpc = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'GDP per capita')
+macro_GDPpc.columns = macro_GDPpc.columns.astype(str)
+macro_GDPpc['Series'] = 'GDP per capita' 
+macro_GDPpc = macro_GDPpc[['Economy', 'Series'] + list(macro_GDPpc.loc[:, '2000':'2050'])]
+
 # Define unique values for economy, fuels, and items columns
 # only looking at one dataframe which should be sufficient as both have same structure
 
@@ -198,10 +226,12 @@ solar_nr_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP']
 
 # Modern renewables
 
-modren_elec_heat = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
+modren_elec_heat = ['POW_Hydro_PP', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
                     'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP', 'POW_WindOff_PP', 'POW_Wind_PP',
                     'POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP', 'POW_Geothermal_PP', 'POW_TIDAL_PP', 
                     'POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP']
+
+# 'POW_Pumped_Hydro'?? in the above
 
 # POW_EXPORT_ELEC_PP need to work this in
 
@@ -426,13 +456,12 @@ EGEDA_hist_eh = EGEDA_hist_eh.groupby(['economy', 'fuel_code', 'item_code_new'])
 EGEDA_hist_eh.to_csv('./data/4_Joined/EGEDA_hist_eh.csv', index = False)
 EGEDA_hist_eh = pd.read_csv('./data/4_Joined/EGEDA_hist_eh.csv')
 
-
 #########################################################################################################################################
 
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2328,7 +2357,7 @@ for economy in Economy_codes:
 
     #############################################################################################################################
 
-    # Modern renewables
+    # REFERENCE: Modern renewables
     # Agriculture, buildings, industry, transport, non-specified others
 
     ref_ag_temp = ref_ag_1[ref_ag_1['fuel_code'] == 'Other renewables'].copy().groupby(['item_code_new']).sum().reset_index()
@@ -2384,10 +2413,140 @@ for economy in Economy_codes:
 
     ref_modren_3 = ref_modren_2.append(ref_tfec_1).reset_index(drop = True)
 
-    modren_prop1 = ['Modern renewables', 'Proportion'] + list(ref_modren_3.iloc[6, 2:] / ref_modren_3.iloc[7, 2:])
+    modren_prop1 = ['Modern renewables', 'Reference'] + list(ref_modren_3.iloc[6, 2:] / ref_modren_3.iloc[7, 2:])
     modren_prop_series1 = pd.Series(modren_prop1, index = ref_modren_3.columns)
 
     ref_modren_4 = ref_modren_3.append(modren_prop_series1, ignore_index = True).reset_index(drop = True)
+
+    ref_modren_4 = ref_modren_4[ref_modren_4['item_code_new'].isin(['Total', 'TFEC', 'Reference'])].copy().reset_index(drop = True)
+
+    ref_modren_4_rows = ref_modren_4.shape[0]
+    ref_modren_4_cols = ref_modren_4.shape[1]
+
+    # NET-ZERO: Modern renewables
+    # Agriculture, buildings, industry, transport, non-specified others
+
+    netz_ag_temp = netz_ag_1[netz_ag_1['fuel_code'] == 'Other renewables'].copy().groupby(['item_code_new']).sum().reset_index()
+    netz_bld_temp = netz_bld_2[netz_bld_2['fuel_code'] == 'Other renewables'].copy().groupby(['item_code_new']).sum().reset_index()
+    netz_trn_temp = netz_trn_1[netz_trn_1['fuel_code'] == 'Renewables'].copy().groupby(['item_code_new']).sum().reset_index()
+    
+    netz_ind_temp = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) &
+                                         (EGEDA_years_netzero['fuel_code'].isin(Renewables_fuels)) &
+                                         (EGEDA_years_netzero['item_code_new'] == '14_industry_sector')]\
+                                             [['fuel_code', 'item_code_new'] + list(EGEDA_years_netzero.loc[:, '2000':'2050'])]\
+                                             .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index()
+
+    netz_nonspec_temp = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) &
+                                         (EGEDA_years_netzero['fuel_code'].isin(Renewables_fuels_nobiomass)) &
+                                         (EGEDA_years_netzero['item_code_new'] == '16_5_nonspecified_others')]\
+                                             [['fuel_code', 'item_code_new'] + list(EGEDA_years_netzero.loc[:, '2000':'2050'])]\
+                                             .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index()
+
+    netz_modren_1 = netz_ag_temp.append([netz_bld_temp, netz_trn_temp, netz_ind_temp, netz_nonspec_temp]).reset_index(drop = True)
+    netz_modren_1['fuel_code'] = 'Modern renewables'
+
+    netz_modren_1.loc[netz_modren_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
+    netz_modren_1.loc[netz_modren_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    netz_modren_1.loc[netz_modren_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    netz_modren_1.loc[netz_modren_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified others'
+
+    netz_modren_1 = netz_modren_1[['fuel_code', 'item_code_new'] + list(netz_modren_1.loc[:, '2000':'2050'])]
+
+    # Electricity and heat renewables
+
+    netz_modren_elecheat = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                                    (netz_power_df1['Sheet_energy'] == 'ProductionByTechnology') &
+                                    (netz_power_df1['FUEL'].isin(['17_electricity', '17_electricity_Dx', '18_heat'])) &
+                                    (netz_power_df1['TECHNOLOGY'].isin(modren_elec_heat))].copy().groupby(['economy'])\
+                                        .sum().reset_index(drop = True)
+
+    netz_modren_elecheat['fuel_code'] = 'Modern renewables'
+    netz_modren_elecheat['item_code_new'] = 'Electricity and heat'
+
+    # Grab historical
+    historical_eh = EGEDA_hist_eh[EGEDA_hist_eh['economy'] == economy].copy().iloc[:,1:-2]
+
+    netz_modren_elecheat = historical_eh.merge(netz_modren_elecheat, how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_modren_elecheat = netz_modren_elecheat[['fuel_code', 'item_code_new'] + list(netz_modren_elecheat\
+        .loc[:, '2000':'2050'])]
+
+    netz_modren_2 = netz_modren_1.append(netz_modren_elecheat).reset_index(drop = True)
+    netz_modren_2 = netz_modren_2.append(netz_modren_2.sum(numeric_only = True), ignore_index = True) 
+
+    netz_modren_2.iloc[6, 0] = 'Modern renewables'
+    netz_modren_2.iloc[6, 1] = 'Total'
+
+    netz_modren_3 = netz_modren_2.append(netz_tfec_1).reset_index(drop = True)
+
+    modren_prop1 = ['Modern renewables', 'Net-zero'] + list(netz_modren_3.iloc[6, 2:] / netz_modren_3.iloc[7, 2:])
+    modren_prop_series1 = pd.Series(modren_prop1, index = netz_modren_3.columns)
+
+    netz_modren_4 = netz_modren_3.append(modren_prop_series1, ignore_index = True).reset_index(drop = True)
+
+    netz_modren_4 = netz_modren_4[netz_modren_4['item_code_new'].isin(['Total', 'TFEC', 'Net-zero'])].copy().reset_index(drop = True)
+
+    netz_modren_4_rows = netz_modren_4.shape[0]
+    netz_modren_4_cols = netz_modren_4.shape[1]
+
+    # Macro dataframe
+
+    macro_1 = macro_GDP[macro_GDP['Economy'] == economy].copy().\
+        append(macro_GDP_growth[macro_GDP_growth['Economy'] == economy].copy()).\
+            append(macro_pop[macro_pop['Economy'] == economy].copy()).\
+                append(macro_GDPpc[macro_GDPpc['Economy'] == economy].copy()).reset_index(drop = True)    
+
+    macro_1_rows = macro_1.shape[0]
+    macro_1_cols = macro_1.shape[1]
+
+    #############################################################################################################
+
+    # Energy intensity
+    # REFERENCE
+
+    ref_enint_1 = ref_tfec_1.copy()
+    ref_enint_1['Economy'] = economy
+    ref_enint_1['Series'] = 'TFEC'
+
+    ref_enint_1 = ref_enint_1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
+
+    ref_enint_1 = ref_enint_1[['Economy', 'Series'] + list(ref_enint_1.loc[:,'2000':'2050'])]
+
+    ref_ei_calc1 = [economy, 'TFEC energy intensity'] + list(ref_enint_1.iloc[0, 2:] / ref_enint_1.iloc[1, 2:])
+    ref_ei_series1 = pd.Series(ref_ei_calc1, index = ref_enint_1.columns)
+
+    ref_enint_2 = ref_enint_1.append(ref_ei_series1, ignore_index = True).reset_index(drop = True)
+
+    ref_ei_calc2 = [economy, 'Reference'] + list(ref_enint_2.iloc[2, 2:] / ref_enint_2.iloc[2, 7] * 100)
+    ref_ei_series2 = pd.Series(ref_ei_calc2, index = ref_enint_2.columns)
+
+    ref_enint_3 = ref_enint_2.append(ref_ei_series2, ignore_index = True).reset_index(drop = True)
+
+    ref_enint_3_rows = ref_enint_3.shape[0]
+    ref_enint_3_cols = ref_enint_3.shape[1]
+
+    # NET-ZERO
+
+    netz_enint_1 = netz_tfec_1.copy()
+    netz_enint_1['Economy'] = economy
+    netz_enint_1['Series'] = 'TFEC'
+
+    netz_enint_1 = netz_enint_1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
+
+    netz_enint_1 = netz_enint_1[['Economy', 'Series'] + list(netz_enint_1.loc[:,'2000':'2050'])]
+
+    netz_ei_calc1 = [economy, 'TFEC energy intensity'] + list(netz_enint_1.iloc[0, 2:] / netz_enint_1.iloc[1, 2:])
+    netz_ei_series1 = pd.Series(netz_ei_calc1, index = netz_enint_1.columns)
+
+    netz_enint_2 = netz_enint_1.append(netz_ei_series1, ignore_index = True).reset_index(drop = True)
+
+    netz_ei_calc2 = [economy, 'Net-zero'] + list(netz_enint_2.iloc[2, 2:] / netz_enint_2.iloc[2, 7] * 100)
+    netz_ei_series2 = pd.Series(netz_ei_calc2, index = netz_enint_2.columns)
+
+    netz_enint_3 = netz_enint_2.append(netz_ei_series2, ignore_index = True).reset_index(drop = True)
+
+    netz_enint_3_rows = netz_enint_3.shape[0]
+    netz_enint_3_cols = netz_enint_3.shape[1]
 
     # Df builds are complete
 
@@ -2407,93 +2566,97 @@ for economy in Economy_codes:
     # Insert the various dataframes into different sheets of the workbook
     # REFERENCE and NETZERO
     # FED
-    ref_fedfuel_1.to_excel(writer, sheet_name = economy + '_FED_fuel_ref', index = False, startrow = chart_height)
-    netz_fedfuel_1.to_excel(writer, sheet_name = economy + '_FED_fuel_netz', index = False, startrow = chart_height)
-    ref_fedfuel_2.to_excel(writer, sheet_name = economy + '_FED_fuel_ref', index = False, startrow = chart_height + ref_fedfuel_1_rows + 3)
-    netz_fedfuel_2.to_excel(writer, sheet_name = economy + '_FED_fuel_netz', index = False, startrow = chart_height + netz_fedfuel_1_rows + 3)
-    ref_fedsector_2.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height)
-    netz_fedsector_2.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height)
-    ref_fedsector_3.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height + ref_fedsector_2_rows + 3)
-    netz_fedsector_3.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height + netz_fedsector_2_rows + 3)
-    ref_tfec_1.to_excel(writer, sheet_name = economy + '_FED_sector_ref', index = False, startrow = chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + 6)
-    netz_tfec_1.to_excel(writer, sheet_name = economy + '_FED_sector_netz', index = False, startrow = chart_height + netz_fedsector_2_rows + netz_fedsector_3_rows + 6)
-    ref_bld_2.to_excel(writer, sheet_name = economy + '_FED_bld_ref', index = False, startrow = chart_height)
-    netz_bld_2.to_excel(writer, sheet_name = economy + '_FED_bld_netz', index = False, startrow = chart_height)
-    ref_bld_3.to_excel(writer, sheet_name = economy + '_FED_bld_ref', index = False, startrow = chart_height + ref_bld_2_rows + 3)
-    netz_bld_3.to_excel(writer, sheet_name = economy + '_FED_bld_netz', index = False, startrow = chart_height + netz_bld_2_rows + 3)
-    ref_ind_1.to_excel(writer, sheet_name = economy + '_FED_ind_ref', index = False, startrow = chart_height)
-    netz_ind_1.to_excel(writer, sheet_name = economy + '_FED_ind_netz', index = False, startrow = chart_height)
-    ref_ind_2.to_excel(writer, sheet_name = economy + '_FED_ind_ref', index = False, startrow = chart_height + ref_ind_1_rows + 2)
-    netz_ind_2.to_excel(writer, sheet_name = economy + '_FED_ind_netz', index = False, startrow = chart_height + netz_ind_1_rows + 2)
-    ref_trn_1.to_excel(writer, sheet_name = economy + '_FED_trn_ref', index = False, startrow = chart_height)
-    netz_trn_1.to_excel(writer, sheet_name = economy + '_FED_trn_netz', index = False, startrow = chart_height)
-    ref_trn_2.to_excel(writer, sheet_name = economy + '_FED_trn_ref', index = False, startrow = chart_height + ref_trn_1_rows + 3)
-    netz_trn_2.to_excel(writer, sheet_name = economy + '_FED_trn_netz', index = False, startrow = chart_height + netz_trn_1_rows + 3)
-    ref_ag_1.to_excel(writer, sheet_name = economy + '_FED_agr_ref', index = False, startrow = chart_height)
-    netz_ag_1.to_excel(writer, sheet_name = economy + '_FED_agr_netz', index = False, startrow = chart_height)
-    ref_ag_2.to_excel(writer, sheet_name = economy + '_FED_agr_ref', index = False, startrow = chart_height + ref_ag_1_rows + 3)
-    netz_ag_2.to_excel(writer, sheet_name = economy + '_FED_agr_netz', index = False, startrow = chart_height + netz_ag_1_rows + 3)
+    ref_fedfuel_1.to_excel(writer, sheet_name = economy + '_FED_fuel', index = False, startrow = chart_height)
+    netz_fedfuel_1.to_excel(writer, sheet_name = economy + '_FED_fuel', index = False, startrow = (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6)
+    ref_fedfuel_2.to_excel(writer, sheet_name = economy + '_FED_fuel', index = False, startrow = chart_height + ref_fedfuel_1_rows + 3)
+    netz_fedfuel_2.to_excel(writer, sheet_name = economy + '_FED_fuel', index = False, startrow = (2 * chart_height) + ref_fedfuel_1_rows + netz_fedfuel_1_rows + ref_fedfuel_2_rows + 9)
+    ref_fedsector_2.to_excel(writer, sheet_name = economy + '_FED_sector', index = False, startrow = chart_height)
+    netz_fedsector_2.to_excel(writer, sheet_name = economy + '_FED_sector', index = False, startrow = (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9)
+    ref_fedsector_3.to_excel(writer, sheet_name = economy + '_FED_sector', index = False, startrow = chart_height + ref_fedsector_2_rows + 3)
+    netz_fedsector_3.to_excel(writer, sheet_name = economy + '_FED_sector', index = False, startrow = (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12)
+    ref_tfec_1.to_excel(writer, sheet_name = economy + '_FED_sector', index = False, startrow = chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + 6)
+    netz_tfec_1.to_excel(writer, sheet_name = economy + '_FED_sector', index = False, startrow = (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + netz_fedsector_3_rows + 15)
+    ref_bld_2.to_excel(writer, sheet_name = economy + '_FED_bld', index = False, startrow = chart_height)
+    netz_bld_2.to_excel(writer, sheet_name = economy + '_FED_bld', index = False, startrow = (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6)
+    ref_bld_3.to_excel(writer, sheet_name = economy + '_FED_bld', index = False, startrow = chart_height + ref_bld_2_rows + 3)
+    netz_bld_3.to_excel(writer, sheet_name = economy + '_FED_bld', index = False, startrow = (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 9)
+    ref_ind_1.to_excel(writer, sheet_name = economy + '_FED_ind', index = False, startrow = chart_height)
+    netz_ind_1.to_excel(writer, sheet_name = economy + '_FED_ind', index = False, startrow = (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6)
+    ref_ind_2.to_excel(writer, sheet_name = economy + '_FED_ind', index = False, startrow = chart_height + ref_ind_1_rows + 3)
+    netz_ind_2.to_excel(writer, sheet_name = economy + '_FED_ind', index = False, startrow = (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9)
+    ref_trn_1.to_excel(writer, sheet_name = economy + '_FED_trn', index = False, startrow = chart_height)
+    netz_trn_1.to_excel(writer, sheet_name = economy + '_FED_trn', index = False, startrow = (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6)
+    ref_trn_2.to_excel(writer, sheet_name = economy + '_FED_trn', index = False, startrow = chart_height + ref_trn_1_rows + 3)
+    netz_trn_2.to_excel(writer, sheet_name = economy + '_FED_trn', index = False, startrow = (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9)
+    ref_ag_1.to_excel(writer, sheet_name = economy + '_FED_agr', index = False, startrow = chart_height)
+    netz_ag_1.to_excel(writer, sheet_name = economy + '_FED_agr', index = False, startrow = (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6)
+    ref_ag_2.to_excel(writer, sheet_name = economy + '_FED_agr', index = False, startrow = chart_height + ref_ag_1_rows + 3)
+    netz_ag_2.to_excel(writer, sheet_name = economy + '_FED_agr', index = False, startrow = (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9)
     ref_hyd_1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height)
     netz_hyd_1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height + ref_hyd_1_rows + 3)
 
     # TPES
-    ref_tpes_1.to_excel(writer, sheet_name = economy + '_TPES_ref', index = False, startrow = chart_height)
-    netz_tpes_1.to_excel(writer, sheet_name = economy + '_TPES_netz', index = False, startrow = chart_height)
-    ref_tpes_2.to_excel(writer, sheet_name = economy + '_TPES_ref', index = False, startrow = chart_height + ref_tpes_1_rows + 3)
-    netz_tpes_2.to_excel(writer, sheet_name = economy + '_TPES_netz', index = False, startrow = chart_height + netz_tpes_1_rows + 3)
-    ref_prod_1.to_excel(writer, sheet_name = economy + '_prod_ref', index = False, startrow = chart_height)
-    netz_prod_1.to_excel(writer, sheet_name = economy + '_prod_netz', index = False, startrow = chart_height)
-    ref_prod_2.to_excel(writer, sheet_name = economy + '_prod_ref', index = False, startrow = chart_height + ref_prod_1_rows + 3)
-    netz_prod_2.to_excel(writer, sheet_name = economy + '_prod_netz', index = False, startrow = chart_height + netz_prod_1_rows + 3)
-    ref_tpes_comp_1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height)
-    netz_tpes_comp_1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height)
-    ref_imports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + 3)
-    netz_imports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + 3)
-    ref_imports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6)
-    netz_imports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6)
-    ref_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9)
-    netz_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9)
-    ref_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_I_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12)
-    netz_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_I_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12)
-    ref_bunkers_1.to_excel(writer, sheet_name = economy + '_TPES_comp_II_ref', index = False, startrow = chart_height)
-    netz_bunkers_1.to_excel(writer, sheet_name = economy + '_TPES_comp_II_netz', index = False, startrow = chart_height)
-    ref_bunkers_2.to_excel(writer, sheet_name = economy + '_TPES_comp_II_ref', index = False, startrow = chart_height + ref_bunkers_1_rows + 3)
-    netz_bunkers_2.to_excel(writer, sheet_name = economy + '_TPES_comp_II_netz', index = False, startrow = chart_height + netz_bunkers_1_rows + 3)
+    ref_tpes_1.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height)
+    netz_tpes_1.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6)
+    ref_tpes_2.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height + ref_tpes_1_rows + 3)
+    netz_tpes_2.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9)
+    ref_prod_1.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = chart_height)
+    netz_prod_1.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6)
+    ref_prod_2.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = chart_height + ref_prod_1_rows + 3)
+    netz_prod_2.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9)
+    ref_tpes_comp_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height)
+    netz_tpes_comp_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height)
+    ref_imports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + 3)
+    netz_imports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + 3)
+    ref_imports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6)
+    netz_imports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6)
+    ref_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9)
+    netz_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9)
+    ref_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12)
+    netz_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12)
+    ref_bunkers_1.to_excel(writer, sheet_name = economy + '_TPES_bunkers', index = False, startrow = chart_height)
+    netz_bunkers_1.to_excel(writer, sheet_name = economy + '_TPES_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6)
+    ref_bunkers_2.to_excel(writer, sheet_name = economy + '_TPES_bunkers', index = False, startrow = chart_height + ref_bunkers_1_rows + 3)
+    netz_bunkers_2.to_excel(writer, sheet_name = economy + '_TPES_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9)
 
     # Transformation
-    ref_pow_use_2.to_excel(writer, sheet_name = economy + '_use_fuel_ref', index = False, startrow = chart_height)
-    netz_pow_use_2.to_excel(writer, sheet_name = economy + '_use_fuel_netz', index = False, startrow = chart_height)
-    ref_pow_use_3.to_excel(writer, sheet_name = economy + '_use_fuel_ref', index = False, startrow = chart_height + ref_pow_use_2_rows + 3)
-    netz_pow_use_3.to_excel(writer, sheet_name = economy + '_use_fuel_netz', index = False, startrow = chart_height + netz_pow_use_2_rows + 3)
-    ref_elecgen_2.to_excel(writer, sheet_name = economy + '_elec_gen_ref', index = False, startrow = chart_height)
-    netz_elecgen_2.to_excel(writer, sheet_name = economy + '_elec_gen_netz', index = False, startrow = chart_height)
-    ref_elecgen_3.to_excel(writer, sheet_name = economy + '_elec_gen_ref', index = False, startrow = chart_height + ref_elecgen_2_rows + 3)
-    netz_elecgen_3.to_excel(writer, sheet_name = economy + '_elec_gen_netz', index = False, startrow = chart_height + netz_elecgen_2_rows + 3)
-    ref_refinery_1.to_excel(writer, sheet_name = economy + '_refining_ref', index = False, startrow = chart_height)
-    netz_refinery_1.to_excel(writer, sheet_name = economy + '_refining_netz', index = False, startrow = chart_height)
-    ref_refinery_2.to_excel(writer, sheet_name = economy + '_refining_ref', index = False, startrow = chart_height + ref_refinery_1_rows + 3)
-    netz_refinery_2.to_excel(writer, sheet_name = economy + '_refining_netz', index = False, startrow = chart_height + netz_refinery_1_rows + 3)
-    ref_refinery_3.to_excel(writer, sheet_name = economy + '_refining_ref', index = False, startrow = chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6)
-    netz_refinery_3.to_excel(writer, sheet_name = economy + '_refining_netz', index = False, startrow = chart_height + netz_refinery_1_rows + netz_refinery_2_rows + 6)
-    ref_powcap_1.to_excel(writer, sheet_name = economy + '_pow_cap_ref', index = False, startrow = chart_height)
-    netz_powcap_1.to_excel(writer, sheet_name = economy + '_pow_cap_netz', index = False, startrow = chart_height)
-    ref_powcap_2.to_excel(writer, sheet_name = economy + '_pow_cap_ref', index = False, startrow = chart_height + ref_powcap_1_rows + 3)
-    netz_powcap_2.to_excel(writer, sheet_name = economy + '_pow_cap_netz', index = False, startrow = chart_height + netz_powcap_1_rows + 3)
-    ref_trans_3.to_excel(writer, sheet_name = economy + '_trnsfrm_ref', index = False, startrow = chart_height)
-    netz_trans_3.to_excel(writer, sheet_name = economy + '_trnsfrm_netz', index = False, startrow = chart_height)
-    ref_trans_4.to_excel(writer, sheet_name = economy + '_trnsfrm_ref', index = False, startrow = chart_height + ref_trans_3_rows + 3)
-    netz_trans_4.to_excel(writer, sheet_name = economy + '_trnsfrm_netz', index = False, startrow = chart_height + netz_trans_3_rows + 3)
-    ref_ownuse_1.to_excel(writer, sheet_name = economy + '_own_ref', index = False, startrow = chart_height)
-    netz_ownuse_1.to_excel(writer, sheet_name = economy + '_own_netz', index = False, startrow = chart_height)
-    ref_ownuse_2.to_excel(writer, sheet_name = economy + '_own_ref', index = False, startrow = chart_height + ref_ownuse_1_rows + 3)
-    netz_ownuse_2.to_excel(writer, sheet_name = economy + '_own_netz', index = False, startrow = chart_height + netz_ownuse_1_rows + 3)
-    ref_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_ref', index = False, startrow = chart_height)
-    netz_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_netz', index = False, startrow = chart_height)
-    ref_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_ref', index = False, startrow = chart_height + ref_heatgen_2_rows + 3)
-    netz_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_netz', index = False, startrow = chart_height+ netz_heatgen_2_rows + 3) 
+    ref_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = chart_height)
+    netz_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6)
+    ref_pow_use_3.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = chart_height + ref_pow_use_2_rows + 3)
+    netz_pow_use_3.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9)
+    ref_elecgen_2.to_excel(writer, sheet_name = economy + '_elec_gen', index = False, startrow = chart_height)
+    netz_elecgen_2.to_excel(writer, sheet_name = economy + '_elec_gen', index = False, startrow = (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6)
+    ref_elecgen_3.to_excel(writer, sheet_name = economy + '_elec_gen', index = False, startrow = chart_height + ref_elecgen_2_rows + 3)
+    netz_elecgen_3.to_excel(writer, sheet_name = economy + '_elec_gen', index = False, startrow = (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9)
+    ref_powcap_1.to_excel(writer, sheet_name = economy + '_pow_cap', index = False, startrow = chart_height)
+    netz_powcap_1.to_excel(writer, sheet_name = economy + '_pow_cap', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6)
+    ref_powcap_2.to_excel(writer, sheet_name = economy + '_pow_cap', index = False, startrow = chart_height + ref_powcap_1_rows + 3)
+    netz_powcap_2.to_excel(writer, sheet_name = economy + '_pow_cap', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9)
+    ref_refinery_1.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = chart_height)
+    netz_refinery_1.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9)
+    ref_refinery_2.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = chart_height + ref_refinery_1_rows + 3)
+    netz_refinery_2.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12)
+    ref_refinery_3.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6)
+    netz_refinery_3.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15)
+    ref_trans_3.to_excel(writer, sheet_name = economy + '_trnsfrm', index = False, startrow = chart_height)
+    netz_trans_3.to_excel(writer, sheet_name = economy + '_trnsfrm', index = False, startrow = (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + 6)
+    ref_trans_4.to_excel(writer, sheet_name = economy + '_trnsfrm', index = False, startrow = chart_height + ref_trans_3_rows + 3)
+    netz_trans_4.to_excel(writer, sheet_name = economy + '_trnsfrm', index = False, startrow = (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + netz_trans_3_rows + 9)
+    ref_ownuse_1.to_excel(writer, sheet_name = economy + '_ownuse', index = False, startrow = chart_height)
+    netz_ownuse_1.to_excel(writer, sheet_name = economy + '_ownuse', index = False, startrow = (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6)
+    ref_ownuse_2.to_excel(writer, sheet_name = economy + '_ownuse', index = False, startrow = chart_height + ref_ownuse_1_rows + 3)
+    netz_ownuse_2.to_excel(writer, sheet_name = economy + '_ownuse', index = False, startrow = (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9)
+    ref_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = chart_height)
+    netz_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6)
+    ref_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = chart_height + ref_heatgen_2_rows + 3)
+    netz_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9) 
 
-    # Miscellaneous
+    # Miscellaneous 
     ref_modren_4.to_excel(writer, sheet_name = economy + '_mod_renew', index = False, startrow = chart_height)
+    netz_modren_4.to_excel(writer, sheet_name = economy + '_mod_renew', index = False, startrow = chart_height + ref_modren_4_rows + 3)
+    ref_enint_3.to_excel(writer, sheet_name = economy + '_eintensity', index = False, startrow = chart_height)
+    netz_enint_3.to_excel(writer, sheet_name = economy + '_eintensity', index = False, startrow = chart_height + ref_enint_3_rows + 3)
+    macro_1.to_excel(writer, sheet_name = economy + '_macro', index = False, startrow = chart_height)
     
     ################################################################################################################################
 
@@ -2501,19 +2664,23 @@ for economy in Economy_codes:
     # REFERENCE
 
     # Access the workbook and first sheet with data from df1
-    ref_worksheet1 = writer.sheets[economy + '_FED_fuel_ref']
+    ref_worksheet1 = writer.sheets[economy + '_FED_fuel']
     
     # Comma format and header format        
-    comma_format = workbook.add_format({'num_format': '#,##0'})
+    space_format = workbook.add_format({'num_format': '# ### ### ##0.0;-# ### ### ##0.0;-'})
+    percentage_format = workbook.add_format({'num_format': '0.0%'})
     header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
     cell_format1 = workbook.add_format({'bold': True})
+
         
     # Apply comma format and header format to relevant data rows
-    ref_worksheet1.set_column(1, ref_fedfuel_1_cols + 1, None, comma_format)
-    ref_worksheet1.set_row(chart_height, None, header_format)
+    ref_worksheet1.set_column(1, ref_fedfuel_1_cols + 1, None, space_format)
     ref_worksheet1.set_row(chart_height, None, header_format)
     ref_worksheet1.set_row(chart_height + ref_fedfuel_1_rows + 3, None, header_format)
-    ref_worksheet1.write(0, 0, economy + ' FED fuel', cell_format1)
+    ref_worksheet1.set_row((2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, None, header_format)
+    ref_worksheet1.set_row((2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9, None, header_format)
+    ref_worksheet1.write(0, 0, economy + ' FED fuel reference', cell_format1)
+    ref_worksheet1.write(42, 0, economy + ' FED fuel net-zero', cell_format1)
 
     # FED Fuel REFERENCE charts
 
@@ -2563,9 +2730,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_fedfuel_1_rows):
         ref_fedfuel_chart1.add_series({
-            'name':       [economy + '_FED_fuel_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_fuel_ref', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
-            'values':     [economy + '_FED_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
+            'name':       [economy + '_FED_fuel', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_fuel', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
+            'values':     [economy + '_FED_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
             'fill':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
@@ -2620,9 +2787,9 @@ for economy in Economy_codes:
     for component in FED_agg_fuels:
         i = ref_fedfuel_2[ref_fedfuel_2['fuel_code'] == component].index[0]
         ref_fedfuel_chart2.add_series({
-            'name':       [economy + '_FED_fuel_ref', chart_height + ref_fedfuel_1_rows + i + 4, 0],
-            'categories': [economy + '_FED_fuel_ref', chart_height + ref_fedfuel_1_rows + 3, 2, chart_height + ref_fedfuel_1_rows + 3, ref_fedfuel_2_cols - 1],
-            'values':     [economy + '_FED_fuel_ref', chart_height + ref_fedfuel_1_rows + i + 4, 2, chart_height + ref_fedfuel_1_rows + i + 4, ref_fedfuel_2_cols - 1],
+            'name':       [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + i + 4, 0],
+            'categories': [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + 3, 2, chart_height + ref_fedfuel_1_rows + 3, ref_fedfuel_2_cols - 1],
+            'values':     [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + i + 4, 2, chart_height + ref_fedfuel_1_rows + i + 4, ref_fedfuel_2_cols - 1],
             'fill':       {'color': ref_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -2675,9 +2842,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_fedfuel_1_rows):
         ref_fedfuel_chart3.add_series({
-            'name':       [economy + '_FED_fuel_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_fuel_ref', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
-            'values':     [economy + '_FED_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
+            'name':       [economy + '_FED_fuel', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_fuel', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
+            'values':     [economy + '_FED_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
             'line':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
@@ -2686,14 +2853,18 @@ for economy in Economy_codes:
     ############################## Next sheet: FED (TFC) by sector ##############################
     
     # Access the workbook and second sheet with data from df2
-    ref_worksheet2 = writer.sheets[economy + '_FED_sector_ref']
+    ref_worksheet2 = writer.sheets[economy + '_FED_sector']
         
     # Apply comma format and header format to relevant data rows
-    ref_worksheet2.set_column(1, ref_fedsector_2_cols + 1, None, comma_format)
+    ref_worksheet2.set_column(1, ref_fedsector_2_cols + 1, None, space_format)
     ref_worksheet2.set_row(chart_height, None, header_format)
     ref_worksheet2.set_row(chart_height + ref_fedsector_2_rows + 3, None, header_format)
     ref_worksheet2.set_row(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + 6, None, header_format)
-    ref_worksheet2.write(0, 0, economy + ' FED sector', cell_format1)
+    ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, None, header_format)
+    ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, None, header_format)
+    ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + netz_fedsector_3_rows + 15, None, header_format)
+    ref_worksheet2.write(0, 0, economy + ' FED sector reference', cell_format1)
+    ref_worksheet2.write(40, 0, economy + ' FED sector net-zero', cell_format1)
 
     # Create a FED sector area chart
 
@@ -2742,9 +2913,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_fedsector_2_rows):
         ref_fedsector_chart3.add_series({
-            'name':       [economy + '_FED_sector_ref', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_sector_ref', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
-            'values':     [economy + '_FED_sector_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
+            'name':       [economy + '_FED_sector', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_sector', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
+            'values':     [economy + '_FED_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
             'fill':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
@@ -2799,9 +2970,9 @@ for economy in Economy_codes:
     for component in FED_agg_sectors:
         i = ref_fedsector_3[ref_fedsector_3['item_code_new'] == component].index[0]
         ref_fedsector_chart4.add_series({
-            'name':       [economy + '_FED_sector_ref', chart_height + ref_fedsector_2_rows + i + 4, 1],
-            'categories': [economy + '_FED_sector_ref', chart_height + ref_fedsector_2_rows + 3, 2, chart_height + ref_fedsector_2_rows + 3, ref_fedsector_3_cols - 1],
-            'values':     [economy + '_FED_sector_ref', chart_height + ref_fedsector_2_rows + i + 4, 2, chart_height + ref_fedsector_2_rows + i + 4, ref_fedsector_3_cols - 1],
+            'name':       [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + i + 4, 1],
+            'categories': [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + 3, 2, chart_height + ref_fedsector_2_rows + 3, ref_fedsector_3_cols - 1],
+            'values':     [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + i + 4, 2, chart_height + ref_fedsector_2_rows + i + 4, ref_fedsector_3_cols - 1],
             'fill':       {'color': ref_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -2855,9 +3026,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_fedsector_2_rows):
         ref_fedsector_chart5.add_series({
-            'name':       [economy + '_FED_sector_ref', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_sector_ref', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
-            'values':     [economy + '_FED_sector_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
+            'name':       [economy + '_FED_sector', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_sector', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
+            'values':     [economy + '_FED_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
             'line':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
@@ -2866,13 +3037,16 @@ for economy in Economy_codes:
     ############################# Next sheet: FED (TFC) for building sector ##################################
     
     # Access the workbook and third sheet with data from bld_df1
-    ref_worksheet3 = writer.sheets[economy + '_FED_bld_ref']
+    ref_worksheet3 = writer.sheets[economy + '_FED_bld']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet3.set_column(2, ref_bld_2_cols + 1, None, comma_format)
+    ref_worksheet3.set_column(2, ref_bld_2_cols + 1, None, space_format)
     ref_worksheet3.set_row(chart_height, None, header_format)
     ref_worksheet3.set_row(chart_height + ref_bld_2_rows + 3, None, header_format)
-    ref_worksheet3.write(0, 0, economy + ' buildings', cell_format1)
+    ref_worksheet3.set_row((2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, None, header_format)
+    ref_worksheet3.set_row((2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 9, None, header_format)
+    ref_worksheet3.write(0, 0, economy + ' buildings reference', cell_format1)
+    ref_worksheet3.write(35, 0, economy + ' buildings net-zero', cell_format1)
     
     # Create a FED chart
     ref_fed_bld_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -2919,9 +3093,9 @@ for economy in Economy_codes:
     for component in FED_agg_fuels:
         i = ref_bld_2[ref_bld_2['fuel_code'] == component].index[0]
         ref_fed_bld_chart1.add_series({
-            'name':       [economy + '_FED_bld_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_bld_ref', chart_height, 2, chart_height, ref_bld_2_cols - 1],
-            'values':     [economy + '_FED_bld_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_bld_2_cols - 1],
+            'name':       [economy + '_FED_bld', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_bld', chart_height, 2, chart_height, ref_bld_2_cols - 1],
+            'values':     [economy + '_FED_bld', chart_height + i + 1, 2, chart_height + i + 1, ref_bld_2_cols - 1],
             'fill':       {'color': ref_bld_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -2975,9 +3149,9 @@ for economy in Economy_codes:
     for bld_sect in ['Services', 'Residential']:
         i = ref_bld_3[ref_bld_3['item_code_new'] == bld_sect].index[0]
         ref_fed_bld_chart2.add_series({
-            'name':       [economy + '_FED_bld_ref', chart_height + ref_bld_2_rows + 4 + i, 1],
-            'categories': [economy + '_FED_bld_ref', chart_height + ref_bld_2_rows + 3, 2, chart_height + ref_bld_2_rows + 3, ref_bld_3_cols - 1],
-            'values':     [economy + '_FED_bld_ref', chart_height + ref_bld_2_rows + 4 + i, 2, chart_height + ref_bld_2_rows + 4 + i, ref_bld_3_cols - 1],
+            'name':       [economy + '_FED_bld', chart_height + ref_bld_2_rows + 4 + i, 1],
+            'categories': [economy + '_FED_bld', chart_height + ref_bld_2_rows + 3, 2, chart_height + ref_bld_2_rows + 3, ref_bld_3_cols - 1],
+            'values':     [economy + '_FED_bld', chart_height + ref_bld_2_rows + 4 + i, 2, chart_height + ref_bld_2_rows + 4 + i, ref_bld_3_cols - 1],
             'fill':       {'color': ref_bld_3['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -2987,13 +3161,16 @@ for economy in Economy_codes:
     ############################# Next sheet: FED (TFC) for industry ##################################
     
     # Access the workbook and fourth sheet with data from bld_df1
-    ref_worksheet4 = writer.sheets[economy + '_FED_ind_ref']
+    ref_worksheet4 = writer.sheets[economy + '_FED_ind']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet4.set_column(2, ref_ind_1_cols + 1, None, comma_format)
+    ref_worksheet4.set_column(2, ref_ind_1_cols + 1, None, space_format)
     ref_worksheet4.set_row(chart_height, None, header_format)
-    ref_worksheet4.set_row(chart_height + ref_ind_1_rows + 2, None, header_format)
-    ref_worksheet4.write(0, 0, economy + ' industry', cell_format1)
+    ref_worksheet4.set_row(chart_height + ref_ind_1_rows + 3, None, header_format)
+    ref_worksheet4.set_row((2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, None, header_format)
+    ref_worksheet4.set_row((2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, None, header_format)
+    ref_worksheet4.write(0, 0, economy + ' industry reference', cell_format1)
+    ref_worksheet4.write(40, 0, economy + ' industry net-zero', cell_format1)
     
     # Create a industry subsector FED chart
     ref_fed_ind_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -3039,9 +3216,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_ind_1_rows):
         ref_fed_ind_chart1.add_series({
-            'name':       [economy + '_FED_ind_ref', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_ind_ref', chart_height, 2, chart_height, ref_ind_1_cols - 1],
-            'values':     [economy + '_FED_ind_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_ind_1_cols - 1],
+            'name':       [economy + '_FED_ind', chart_height + i + 1, 1],
+            'categories': [economy + '_FED_ind', chart_height, 2, chart_height, ref_ind_1_cols - 1],
+            'values':     [economy + '_FED_ind', chart_height + i + 1, 2, chart_height + i + 1, ref_ind_1_cols - 1],
             'fill':       {'color': ref_ind_1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
@@ -3095,9 +3272,9 @@ for economy in Economy_codes:
     for fuel_agg in FED_agg_fuels_ind:
         j = ref_ind_2[ref_ind_2['fuel_code'] == fuel_agg].index[0]
         ref_fed_ind_chart2.add_series({
-            'name':       [economy + '_FED_ind_ref', chart_height + ref_ind_1_rows + j + 3, 0],
-            'categories': [economy + '_FED_ind_ref', chart_height + ref_ind_1_rows + 2, 2, chart_height + ref_ind_1_rows + 2, ref_ind_2_cols - 1],
-            'values':     [economy + '_FED_ind_ref', chart_height + ref_ind_1_rows + j + 3, 2, chart_height + ref_ind_1_rows + j + 3, ref_ind_2_cols - 1],
+            'name':       [economy + '_FED_ind', chart_height + ref_ind_1_rows + j + 4, 0],
+            'categories': [economy + '_FED_ind', chart_height + ref_ind_1_rows + 3, 2, chart_height + ref_ind_1_rows + 3, ref_ind_2_cols - 1],
+            'values':     [economy + '_FED_ind', chart_height + ref_ind_1_rows + j + 4, 2, chart_height + ref_ind_1_rows + j + 4, ref_ind_2_cols - 1],
             'fill':       {'color': ref_ind_2['fuel_code'].map(colours_dict).loc[j]},
             'border':     {'none': True}
         })
@@ -3107,13 +3284,16 @@ for economy in Economy_codes:
     ################################# NEXT SHEET: TRANSPORT FED ################################################################
 
     # Access the workbook and first sheet with data from df1
-    ref_worksheet5 = writer.sheets[economy + '_FED_trn_ref']
+    ref_worksheet5 = writer.sheets[economy + '_FED_trn']
         
     # Apply comma format and header format to relevant data rows
-    ref_worksheet5.set_column(2, ref_trn_1_cols + 1, None, comma_format)
+    ref_worksheet5.set_column(2, ref_trn_1_cols + 1, None, space_format)
     ref_worksheet5.set_row(chart_height, None, header_format)
     ref_worksheet5.set_row(chart_height + ref_trn_1_rows + 3, None, header_format)
-    ref_worksheet5.write(0, 0, economy + ' FED transport', cell_format1)
+    ref_worksheet5.set_row((2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, None, header_format)
+    ref_worksheet5.set_row((2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, None, header_format)
+    ref_worksheet5.write(0, 0, economy + ' FED transport reference', cell_format1)
+    ref_worksheet5.write(39, 0, economy + ' FED transport net-zero', cell_format1)
     
     # Create a transport FED area chart
     ref_transport_chart1 = workbook.add_chart({'type': 'area', 
@@ -3162,9 +3342,9 @@ for economy in Economy_codes:
     for fuel_agg in Transport_fuels_agg:
         j = ref_trn_1[ref_trn_1['fuel_code'] == fuel_agg].index[0]
         ref_transport_chart1.add_series({
-            'name':       [economy + '_FED_trn_ref', chart_height + j + 1, 0],
-            'categories': [economy + '_FED_trn_ref', chart_height, 2, chart_height, ref_trn_1_cols - 1],
-            'values':     [economy + '_FED_trn_ref', chart_height + j + 1, 2, chart_height + j + 1, ref_trn_1_cols - 1],
+            'name':       [economy + '_FED_trn', chart_height + j + 1, 0],
+            'categories': [economy + '_FED_trn', chart_height, 2, chart_height, ref_trn_1_cols - 1],
+            'values':     [economy + '_FED_trn', chart_height + j + 1, 2, chart_height + j + 1, ref_trn_1_cols - 1],
             'fill':       {'color': ref_trn_1['fuel_code'].map(colours_dict).loc[j]},
             'border':     {'none': True} 
         })
@@ -3219,9 +3399,9 @@ for economy in Economy_codes:
     for modality in Transport_modal_agg:
         j = ref_trn_2[ref_trn_2['item_code_new'] == modality].index[0]
         ref_transport_chart2.add_series({
-            'name':       [economy + '_FED_trn_ref', chart_height + ref_trn_1_rows + j + 4, 1],
-            'categories': [economy + '_FED_trn_ref', chart_height + ref_trn_1_rows + 3, 2, chart_height + ref_trn_1_rows + 3, ref_trn_2_cols - 1],
-            'values':     [economy + '_FED_trn_ref', chart_height + ref_trn_1_rows + j + 4, 2, chart_height + ref_trn_1_rows + j + 4, ref_trn_2_cols - 1],
+            'name':       [economy + '_FED_trn', chart_height + ref_trn_1_rows + j + 4, 1],
+            'categories': [economy + '_FED_trn', chart_height + ref_trn_1_rows + 3, 2, chart_height + ref_trn_1_rows + 3, ref_trn_2_cols - 1],
+            'values':     [economy + '_FED_trn', chart_height + ref_trn_1_rows + j + 4, 2, chart_height + ref_trn_1_rows + j + 4, ref_trn_2_cols - 1],
             'fill':       {'color': ref_trn_2['item_code_new'].map(colours_dict).loc[j]},
             'border':     {'none': True}
         })
@@ -3231,13 +3411,16 @@ for economy in Economy_codes:
     ################################# NEXT SHEET: AGRICULTURE FED ################################################################
 
     # Access the workbook and first sheet with data from df1
-    ref_worksheet6 = writer.sheets[economy + '_FED_agr_ref']
+    ref_worksheet6 = writer.sheets[economy + '_FED_agr']
         
     # Apply comma format and header format to relevant data rows
-    ref_worksheet6.set_column(2, ref_ag_1_cols + 1, None, comma_format)
+    ref_worksheet6.set_column(2, ref_ag_1_cols + 1, None, space_format)
     ref_worksheet6.set_row(chart_height, None, header_format)
     ref_worksheet6.set_row(chart_height + ref_ag_1_rows + 3, None, header_format)
-    ref_worksheet6.write(0, 0, economy + ' FED agriculture', cell_format1)
+    ref_worksheet6.set_row((2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, None, header_format)
+    ref_worksheet6.set_row((2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, None, header_format)
+    ref_worksheet6.write(0, 0, economy + ' FED agriculture reference', cell_format1)
+    ref_worksheet6.write(42, 0, economy + ' FED agriculture net-zero', cell_format1)
 
     # Create a Agriculture line chart 
     ref_ag_chart1 = workbook.add_chart({'type': 'line'})
@@ -3285,9 +3468,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_ag_1_rows):
         ref_ag_chart1.add_series({
-            'name':       [economy + '_FED_agr_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_agr_ref', chart_height, 2, chart_height, ref_ag_1_cols - 1],
-            'values':     [economy + '_FED_agr_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
+            'name':       [economy + '_FED_agr', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_agr', chart_height, 2, chart_height, ref_ag_1_cols - 1],
+            'values':     [economy + '_FED_agr', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
             'line':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
@@ -3339,9 +3522,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_ag_1_rows):
         ref_ag_chart2.add_series({
-            'name':       [economy + '_FED_agr_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_agr_ref', chart_height, 2, chart_height, ref_ag_1_cols - 1],
-            'values':     [economy + '_FED_agr_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
+            'name':       [economy + '_FED_agr', chart_height + i + 1, 0],
+            'categories': [economy + '_FED_agr', chart_height, 2, chart_height, ref_ag_1_cols - 1],
+            'values':     [economy + '_FED_agr', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
             'fill':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
@@ -3393,9 +3576,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(ref_ag_2_rows):
         ref_ag_chart3.add_series({
-            'name':       [economy + '_FED_agr_ref', chart_height + ref_ag_1_rows + i + 4, 0],
-            'categories': [economy + '_FED_agr_ref', chart_height + ref_ag_1_rows + 3, 2, chart_height + ref_ag_1_rows + 3, ref_ag_2_cols - 1],
-            'values':     [economy + '_FED_agr_ref', chart_height + ref_ag_1_rows + i + 4, 2, chart_height + ref_ag_1_rows + i + 4, ref_ag_2_cols - 1],
+            'name':       [economy + '_FED_agr', chart_height + ref_ag_1_rows + i + 4, 0],
+            'categories': [economy + '_FED_agr', chart_height + ref_ag_1_rows + 3, 2, chart_height + ref_ag_1_rows + 3, ref_ag_2_cols - 1],
+            'values':     [economy + '_FED_agr', chart_height + ref_ag_1_rows + i + 4, 2, chart_height + ref_ag_1_rows + i + 4, ref_ag_2_cols - 1],
             'fill':       {'color': ref_ag_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -3408,12 +3591,12 @@ for economy in Economy_codes:
     hyd_worksheet1 = writer.sheets[economy + '_FED_hyd']
     
     # Comma format and header format        
-    comma_format = workbook.add_format({'num_format': '#,##0'})
-    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
-    cell_format1 = workbook.add_format({'bold': True})
+    # space_format = workbook.add_format({'num_format': '#,##0'})
+    # header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    # cell_format1 = workbook.add_format({'bold': True})
         
     # Apply comma format and header format to relevant data rows
-    hyd_worksheet1.set_column(1, ref_hyd_1_cols + 1, None, comma_format)
+    hyd_worksheet1.set_column(1, ref_hyd_1_cols + 1, None, space_format)
     hyd_worksheet1.set_row(chart_height, None, header_format)
     hyd_worksheet1.set_row(chart_height, None, header_format)
     hyd_worksheet1.set_row(chart_height + ref_hyd_1_rows + 3, None, header_format)
@@ -3539,19 +3722,19 @@ for economy in Economy_codes:
     # NET ZERO
 
     # Access the workbook and first sheet with data from df1
-    netz_worksheet1 = writer.sheets[economy + '_FED_fuel_netz']
+    # netz_worksheet1 = writer.sheets[economy + '_FED_fuel']
     
     # Comma format and header format        
-    comma_format = workbook.add_format({'num_format': '#,##0'})
-    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
-    cell_format1 = workbook.add_format({'bold': True})
+    # space_format = workbook.add_format({'num_format': '#,##0'})
+    # header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    # cell_format1 = workbook.add_format({'bold': True})
         
     # Apply comma format and header format to relevant data rows
-    netz_worksheet1.set_column(1, netz_fedfuel_1_cols + 1, None, comma_format)
-    netz_worksheet1.set_row(chart_height, None, header_format)
-    netz_worksheet1.set_row(chart_height, None, header_format)
-    netz_worksheet1.set_row(chart_height + netz_fedfuel_1_rows + 3, None, header_format)
-    netz_worksheet1.write(0, 0, economy + ' FED fuel', cell_format1)
+    # netz_worksheet1.set_column(1, netz_fedfuel_1_cols + 1, None, space_format)
+    # netz_worksheet1.set_row(chart_height, None, header_format)
+    # netz_worksheet1.set_row(chart_height, None, header_format)
+    # netz_worksheet1.set_row(chart_height + netz_fedfuel_1_rows + 3, None, header_format)
+    # netz_worksheet1.write(0, 0, economy + ' FED fuel', cell_format1)
 
     # FED Fuel REFERENCE charts
 
@@ -3601,14 +3784,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_fedfuel_1_rows):
         netz_fedfuel_chart1.add_series({
-            'name':       [economy + '_FED_fuel_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_fuel_netz', chart_height, 2, chart_height, netz_fedfuel_1_cols - 1],
-            'values':     [economy + '_FED_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_fedfuel_1_cols - 1],
+            'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 0],
+            'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 2,\
+                 (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, netz_fedfuel_1_cols - 1],
+            'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 2,\
+                 (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, netz_fedfuel_1_cols - 1],
             'fill':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
-    netz_worksheet1.insert_chart('B3', netz_fedfuel_chart1)
+    ref_worksheet1.insert_chart('B45', netz_fedfuel_chart1)
 
     ###################### Create another FED chart showing proportional share #################################
 
@@ -3658,14 +3843,16 @@ for economy in Economy_codes:
     for component in FED_agg_fuels:
         i = netz_fedfuel_2[netz_fedfuel_2['fuel_code'] == component].index[0]
         netz_fedfuel_chart2.add_series({
-            'name':       [economy + '_FED_fuel_netz', chart_height + netz_fedfuel_1_rows + i + 4, 0],
-            'categories': [economy + '_FED_fuel_netz', chart_height + netz_fedfuel_1_rows + 3, 2, chart_height + netz_fedfuel_1_rows + 3, netz_fedfuel_2_cols - 1],
-            'values':     [economy + '_FED_fuel_netz', chart_height + netz_fedfuel_1_rows + i + 4, 2, chart_height + netz_fedfuel_1_rows + i + 4, netz_fedfuel_2_cols - 1],
+            'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10, 0],
+            'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9,\
+                 2, (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9, netz_fedfuel_2_cols - 1],
+            'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10,\
+                 2, (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10, netz_fedfuel_2_cols - 1],
             'fill':       {'color': netz_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet1.insert_chart('J3', netz_fedfuel_chart2)
+    ref_worksheet1.insert_chart('J45', netz_fedfuel_chart2)
 
     # Create a FED line chart with higher level aggregation
     netz_fedfuel_chart3 = workbook.add_chart({'type': 'line'})
@@ -3713,25 +3900,27 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_fedfuel_1_rows):
         netz_fedfuel_chart3.add_series({
-            'name':       [economy + '_FED_fuel_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_fuel_netz', chart_height, 2, chart_height, netz_fedfuel_1_cols - 1],
-            'values':     [economy + '_FED_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_fedfuel_1_cols - 1],
+            'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 0],
+            'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 2,\
+                 (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, netz_fedfuel_1_cols - 1],
+            'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 2,\
+                 (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, netz_fedfuel_1_cols - 1],
             'line':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
-    netz_worksheet1.insert_chart('R3', netz_fedfuel_chart3)
+    ref_worksheet1.insert_chart('R45', netz_fedfuel_chart3)
 
     ############################## Next sheet: FED (TFC) by sector ##############################
     
     # Access the workbook and second sheet with data from df2
-    netz_worksheet2 = writer.sheets[economy + '_FED_sector_netz']
+    # netz_worksheet2 = writer.sheets[economy + '_FED_sector']
         
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet2.set_column(1, netz_fedsector_1_cols + 1, None, comma_format)
-    netz_worksheet2.set_row(chart_height, None, header_format)
-    netz_worksheet2.set_row(chart_height + netz_fedsector_2_rows + 3, None, header_format)
-    netz_worksheet2.set_row(chart_height + netz_fedsector_2_rows + netz_fedsector_3_rows + 6, None, header_format)
-    netz_worksheet2.write(0, 0, economy + ' FED sector', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet2.set_column(1, netz_fedsector_1_cols + 1, None, space_format)
+    # netz_worksheet2.set_row(chart_height, None, header_format)
+    # netz_worksheet2.set_row(chart_height + netz_fedsector_2_rows + 3, None, header_format)
+    # netz_worksheet2.set_row(chart_height + netz_fedsector_2_rows + netz_fedsector_3_rows + 6, None, header_format)
+    # netz_worksheet2.write(0, 0, economy + ' FED sector', cell_format1)
 
     # Create a FED sector area chart
 
@@ -3780,14 +3969,14 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_fedsector_2_rows):
         netz_fedsector_chart3.add_series({
-            'name':       [economy + '_FED_sector_netz', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_sector_netz', chart_height, 2, chart_height, netz_fedsector_2_cols - 1],
-            'values':     [economy + '_FED_sector_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_fedsector_2_cols - 1],
+            'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 1],
+            'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 2, (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, netz_fedsector_2_cols - 1],
+            'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 2, (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, netz_fedsector_2_cols - 1],
             'fill':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
-    netz_worksheet2.insert_chart('B3', netz_fedsector_chart3)
+    ref_worksheet2.insert_chart('B43', netz_fedsector_chart3)
 
     ###################### Create another FED chart showing proportional share #################################
 
@@ -3837,14 +4026,16 @@ for economy in Economy_codes:
     for component in FED_agg_sectors:
         i = netz_fedsector_3[netz_fedsector_3['item_code_new'] == component].index[0]
         netz_fedsector_chart4.add_series({
-            'name':       [economy + '_FED_sector_netz', chart_height + netz_fedsector_2_rows + i + 4, 1],
-            'categories': [economy + '_FED_sector_netz', chart_height + netz_fedsector_2_rows + 3, 2, chart_height + netz_fedsector_2_rows + 3, netz_fedsector_3_cols - 1],
-            'values':     [economy + '_FED_sector_netz', chart_height + netz_fedsector_2_rows + i + 4, 2, chart_height + netz_fedsector_2_rows + i + 4, netz_fedsector_3_cols - 1],
+            'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, 1],
+            'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, 2,\
+                (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, netz_fedsector_3_cols - 1],
+            'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, 2,\
+                (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, netz_fedsector_3_cols - 1],
             'fill':       {'color': netz_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet2.insert_chart('J3', netz_fedsector_chart4)
+    ref_worksheet2.insert_chart('J43', netz_fedsector_chart4)
 
     # Create a FED sector line chart
 
@@ -3893,24 +4084,26 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_fedsector_2_rows):
         netz_fedsector_chart5.add_series({
-            'name':       [economy + '_FED_sector_netz', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_sector_netz', chart_height, 2, chart_height, netz_fedsector_2_cols - 1],
-            'values':     [economy + '_FED_sector_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_fedsector_2_cols - 1],
+            'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 1],
+            'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 2,\
+                (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, netz_fedsector_2_cols - 1],
+            'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, netz_fedsector_2_cols - 1],
             'line':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
-    netz_worksheet2.insert_chart('R3', netz_fedsector_chart5)
+    ref_worksheet2.insert_chart('R43', netz_fedsector_chart5)
     
     ############################# Next sheet: FED (TFC) for building sector ##################################
     
     # Access the workbook and third sheet with data from bld_df1
-    netz_worksheet3 = writer.sheets[economy + '_FED_bld_netz']
+    # netz_worksheet3 = writer.sheets[economy + '_FED_bld']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet3.set_column(2, netz_bld_2_cols + 1, None, comma_format)
-    netz_worksheet3.set_row(chart_height, None, header_format)
-    netz_worksheet3.set_row(chart_height + netz_bld_2_rows + 3, None, header_format)
-    netz_worksheet3.write(0, 0, economy + ' buildings', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet3.set_column(2, netz_bld_2_cols + 1, None, space_format)
+    # netz_worksheet3.set_row(chart_height, None, header_format)
+    # netz_worksheet3.set_row(chart_height + netz_bld_2_rows + 3, None, header_format)
+    # netz_worksheet3.write(0, 0, economy + ' buildings', cell_format1)
     
     # Create a FED chart
     netz_fed_bld_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -3957,14 +4150,16 @@ for economy in Economy_codes:
     for component in FED_agg_fuels:
         i = netz_bld_2[netz_bld_2['fuel_code'] == component].index[0]
         netz_fed_bld_chart1.add_series({
-            'name':       [economy + '_FED_bld_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_bld_netz', chart_height, 2, chart_height, netz_bld_2_cols - 1],
-            'values':     [economy + '_FED_bld_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_bld_2_cols - 1],
+            'name':       [economy + '_FED_bld', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, 0],
+            'categories': [economy + '_FED_bld', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, 2,\
+                (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, netz_bld_2_cols - 1],
+            'values':     [economy + '_FED_bld', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, 2,\
+                (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, netz_bld_2_cols - 1],
             'fill':       {'color': netz_bld_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
 
-    netz_worksheet3.insert_chart('B3', netz_fed_bld_chart1)
+    ref_worksheet3.insert_chart('B38', netz_fed_bld_chart1)
     
     ################## FED building chart 2 (residential versus services) ###########################################
     
@@ -4013,25 +4208,27 @@ for economy in Economy_codes:
     for bld_sect in ['Services', 'Residential']:
         i = netz_bld_3[netz_bld_3['item_code_new'] == bld_sect].index[0]
         netz_fed_bld_chart2.add_series({
-            'name':       [economy + '_FED_bld_netz', chart_height + netz_bld_2_rows + 4 + i, 1],
-            'categories': [economy + '_FED_bld_netz', chart_height + netz_bld_2_rows + 3, 2, chart_height + netz_bld_2_rows + 3, netz_bld_3_cols - 1],
-            'values':     [economy + '_FED_bld_netz', chart_height + netz_bld_2_rows + 4 + i, 2, chart_height + netz_bld_2_rows + 4 + i, netz_bld_3_cols - 1],
+            'name':       [economy + '_FED_bld', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 10 + i, 1],
+            'categories': [economy + '_FED_bld', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 9, 2,\
+                (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 9, netz_bld_3_cols - 1],
+            'values':     [economy + '_FED_bld', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 10 + i, 2,\
+                (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 10 + i, netz_bld_3_cols - 1],
             'fill':       {'color': netz_bld_3['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet3.insert_chart('J3', netz_fed_bld_chart2)
+    ref_worksheet3.insert_chart('J38', netz_fed_bld_chart2)
     
     ############################# Next sheet: FED (TFC) for industry ##################################
     
-    # Access the workbook and fourth sheet with data from bld_df1
-    netz_worksheet4 = writer.sheets[economy + '_FED_ind_netz']
+    # # Access the workbook and fourth sheet with data from bld_df1
+    # netz_worksheet4 = writer.sheets[economy + '_FED_ind']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet4.set_column(2, netz_ind_1_cols + 1, None, comma_format)
-    netz_worksheet4.set_row(chart_height, None, header_format)
-    netz_worksheet4.set_row(chart_height + netz_ind_1_rows + 2, None, header_format)
-    netz_worksheet4.write(0, 0, economy + ' industry', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet4.set_column(2, netz_ind_1_cols + 1, None, space_format)
+    # netz_worksheet4.set_row(chart_height, None, header_format)
+    # netz_worksheet4.set_row(chart_height + netz_ind_1_rows + 2, None, header_format)
+    # netz_worksheet4.write(0, 0, economy + ' industry', cell_format1)
     
     # Create a industry subsector FED chart
     netz_fed_ind_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -4077,14 +4274,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_ind_1_rows):
         netz_fed_ind_chart1.add_series({
-            'name':       [economy + '_FED_ind_netz', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_ind_netz', chart_height, 2, chart_height, netz_ind_1_cols - 1],
-            'values':     [economy + '_FED_ind_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_ind_1_cols - 1],
+            'name':       [economy + '_FED_ind', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, 1],
+            'categories': [economy + '_FED_ind', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, 2,\
+                (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, netz_ind_1_cols - 1],
+            'values':     [economy + '_FED_ind', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, netz_ind_1_cols - 1],
             'fill':       {'color': netz_ind_1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
-    netz_worksheet4.insert_chart('B3', netz_fed_ind_chart1)
+    ref_worksheet4.insert_chart('B43', netz_fed_ind_chart1)
     
     ############# FED industry chart 2 (industry by fuel)
     
@@ -4133,25 +4332,27 @@ for economy in Economy_codes:
     for fuel_agg in FED_agg_fuels_ind:
         j = netz_ind_2[netz_ind_2['fuel_code'] == fuel_agg].index[0]
         netz_fed_ind_chart2.add_series({
-            'name':       [economy + '_FED_ind_netz', chart_height + netz_ind_1_rows + j + 3, 0],
-            'categories': [economy + '_FED_ind_netz', chart_height + netz_ind_1_rows + 2, 2, chart_height + netz_ind_1_rows + 2, netz_ind_2_cols - 1],
-            'values':     [economy + '_FED_ind_netz', chart_height + netz_ind_1_rows + j + 3, 2, chart_height + netz_ind_1_rows + j + 3, netz_ind_2_cols - 1],
+            'name':       [economy + '_FED_ind', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, 0],
+            'categories': [economy + '_FED_ind', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, 2,\
+                (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, netz_ind_2_cols - 1],
+            'values':     [economy + '_FED_ind', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, 2,\
+                (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, netz_ind_2_cols - 1],
             'fill':       {'color': netz_ind_2['fuel_code'].map(colours_dict).loc[j]},
             'border':     {'none': True}
         })
     
-    netz_worksheet4.insert_chart('J3', netz_fed_ind_chart2)
+    ref_worksheet4.insert_chart('J43', netz_fed_ind_chart2)
 
     ################################# NEXT SHEET: TRANSPORT FED ################################################################
 
     # Access the workbook and first sheet with data from df1
-    netz_worksheet5 = writer.sheets[economy + '_FED_trn_netz']
+    # netz_worksheet5 = writer.sheets[economy + '_FED_trn']
         
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet5.set_column(2, netz_trn_1_cols + 1, None, comma_format)
-    netz_worksheet5.set_row(chart_height, None, header_format)
-    netz_worksheet5.set_row(chart_height + netz_trn_1_rows + 3, None, header_format)
-    netz_worksheet5.write(0, 0, economy + ' FED transport', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet5.set_column(2, netz_trn_1_cols + 1, None, space_format)
+    # netz_worksheet5.set_row(chart_height, None, header_format)
+    # netz_worksheet5.set_row(chart_height + netz_trn_1_rows + 3, None, header_format)
+    # netz_worksheet5.write(0, 0, economy + ' FED transport', cell_format1)
     
     # Create a transport FED area chart
     netz_transport_chart1 = workbook.add_chart({'type': 'area', 
@@ -4200,14 +4401,16 @@ for economy in Economy_codes:
     for fuel_agg in Transport_fuels_agg:
         j = netz_trn_1[netz_trn_1['fuel_code'] == fuel_agg].index[0]
         netz_transport_chart1.add_series({
-            'name':       [economy + '_FED_trn_netz', chart_height + j + 1, 0],
-            'categories': [economy + '_FED_trn_netz', chart_height, 2, chart_height, netz_trn_1_cols - 1],
-            'values':     [economy + '_FED_trn_netz', chart_height + j + 1, 2, chart_height + j + 1, netz_trn_1_cols - 1],
+            'name':       [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, 0],
+            'categories': [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, 2,\
+                (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, netz_trn_1_cols - 1],
+            'values':     [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, 2,\
+                (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, netz_trn_1_cols - 1],
             'fill':       {'color': netz_trn_1['fuel_code'].map(colours_dict).loc[j]},
             'border':     {'none': True} 
         })
     
-    netz_worksheet5.insert_chart('B3', netz_transport_chart1)
+    ref_worksheet5.insert_chart('B42', netz_transport_chart1)
             
     ############# FED transport chart 2 (transport by modality)
     
@@ -4257,25 +4460,27 @@ for economy in Economy_codes:
     for modality in Transport_modal_agg:
         j = netz_trn_2[netz_trn_2['item_code_new'] == modality].index[0]
         netz_transport_chart2.add_series({
-            'name':       [economy + '_FED_trn_netz', chart_height + netz_trn_1_rows + j + 4, 1],
-            'categories': [economy + '_FED_trn_netz', chart_height + netz_trn_1_rows + 3, 2, chart_height + netz_trn_1_rows + 3, netz_trn_2_cols - 1],
-            'values':     [economy + '_FED_trn_netz', chart_height + netz_trn_1_rows + j + 4, 2, chart_height + netz_trn_1_rows + j + 4, netz_trn_2_cols - 1],
+            'name':       [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 1],
+            'categories': [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, 2,\
+                (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, netz_trn_2_cols - 1],
+            'values':     [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 2,\
+                (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, netz_trn_2_cols - 1],
             'fill':       {'color': netz_trn_2['item_code_new'].map(colours_dict).loc[j]},
             'border':     {'none': True}
         })
     
-    netz_worksheet5.insert_chart('J3', netz_transport_chart2)
+    ref_worksheet5.insert_chart('J42', netz_transport_chart2)
 
     ################################# NEXT SHEET: AGRICULTURE FED ################################################################
 
     # Access the workbook and first sheet with data from df1
-    netz_worksheet6 = writer.sheets[economy + '_FED_agr_netz']
+    # netz_worksheet6 = writer.sheets[economy + '_FED_agr']
         
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet6.set_column(2, netz_ag_1_cols + 1, None, comma_format)
-    netz_worksheet6.set_row(chart_height, None, header_format)
-    netz_worksheet6.set_row(chart_height + netz_ag_1_rows + 3, None, header_format)
-    netz_worksheet6.write(0, 0, economy + ' FED agriculture', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet6.set_column(2, netz_ag_1_cols + 1, None, space_format)
+    # netz_worksheet6.set_row(chart_height, None, header_format)
+    # netz_worksheet6.set_row(chart_height + netz_ag_1_rows + 3, None, header_format)
+    # netz_worksheet6.write(0, 0, economy + ' FED agriculture', cell_format1)
 
     # Create a Agriculture line chart 
     netz_ag_chart1 = workbook.add_chart({'type': 'line'})
@@ -4323,13 +4528,15 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_ag_1_rows):
         netz_ag_chart1.add_series({
-            'name':       [economy + '_FED_agr_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_agr_netz', chart_height, 2, chart_height, netz_ag_1_cols - 1],
-            'values':     [economy + '_FED_agr_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_ag_1_cols - 1],
+            'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
+            'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
+                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
+            'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
             'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
-    netz_worksheet6.insert_chart('B3', netz_ag_chart1)
+    ref_worksheet6.insert_chart('B45', netz_ag_chart1)
 
     # Create a Agriculture area chart
     netz_ag_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -4377,14 +4584,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_ag_1_rows):
         netz_ag_chart2.add_series({
-            'name':       [economy + '_FED_agr_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_agr_netz', chart_height, 2, chart_height, netz_ag_1_cols - 1],
-            'values':     [economy + '_FED_agr_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_ag_1_cols - 1],
+            'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
+            'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
+                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
+            'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
             'fill':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
-    netz_worksheet6.insert_chart('J3', netz_ag_chart2)
+    ref_worksheet6.insert_chart('J45', netz_ag_chart2)
 
     # Create a Agriculture stacked column
     netz_ag_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
@@ -4431,14 +4640,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(netz_ag_2_rows):
         netz_ag_chart3.add_series({
-            'name':       [economy + '_FED_agr_netz', chart_height + netz_ag_1_rows + i + 4, 0],
-            'categories': [economy + '_FED_agr_netz', chart_height + netz_ag_1_rows + 3, 2, chart_height + netz_ag_1_rows + 3, netz_ag_2_cols - 1],
-            'values':     [economy + '_FED_agr_netz', chart_height + netz_ag_1_rows + i + 4, 2, chart_height + netz_ag_1_rows + i + 4, netz_ag_2_cols - 1],
+            'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, 0],
+            'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, 2,\
+                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, netz_ag_2_cols - 1],
+            'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10,\
+                2, (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, netz_ag_2_cols - 1],
             'fill':       {'color': netz_ag_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet6.insert_chart('R3', netz_ag_chart3)
+    ref_worksheet6.insert_chart('R45', netz_ag_chart3)
 
     ############################################################################################################################
 
@@ -4447,13 +4658,16 @@ for economy in Economy_codes:
     ################################################################### CHARTS ###################################################################
     # REFERENCE
     # Access the sheet created using writer above
-    ref_worksheet11 = writer.sheets[economy + '_TPES_ref']
+    ref_worksheet11 = writer.sheets[economy + '_TPES']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet11.set_column(2, ref_tpes_1_cols + 1, None, comma_format)
+    ref_worksheet11.set_column(2, ref_tpes_1_cols + 1, None, space_format)
     ref_worksheet11.set_row(chart_height, None, header_format)
     ref_worksheet11.set_row(chart_height + ref_tpes_1_rows + 3, None, header_format)
+    ref_worksheet11.set_row((2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, None, header_format)
+    ref_worksheet11.set_row((2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + ref_tpes_1_rows + 9, None, header_format)
     ref_worksheet11.write(0, 0, economy + ' TPES fuel reference', cell_format1)
+    ref_worksheet11.write(36, 0, economy + ' TPES fuel net-zero', cell_format1)
 
     ######################################################
     # Create a TPES chart
@@ -4502,9 +4716,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_tpes_1_rows):
         ref_tpes_chart2.add_series({
-            'name':       [economy + '_TPES_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_ref', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
-            'values':     [economy + '_TPES_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
+            'name':       [economy + '_TPES', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
+            'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
             'fill':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
@@ -4559,9 +4773,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_tpes_1_rows):
         ref_tpes_chart4.add_series({
-            'name':       [economy + '_TPES_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_ref', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
-            'values':     [economy + '_TPES_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
+            'name':       [economy + '_TPES', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
+            'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
             'line':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1}
         })    
@@ -4616,9 +4830,9 @@ for economy in Economy_codes:
     for component in TPES_agg_fuels:
         i = ref_tpes_2[ref_tpes_2['fuel_code'] == component].index[0]
         ref_tpes_chart3.add_series({
-            'name':       [economy + '_TPES_ref', chart_height + ref_tpes_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES_ref', chart_height + ref_tpes_1_rows + 3, 2, chart_height + ref_tpes_1_rows + 3, ref_tpes_2_cols - 1],
-            'values':     [economy + '_TPES_ref', chart_height + ref_tpes_1_rows + i + 4, 2, chart_height + ref_tpes_1_rows + i + 4, ref_tpes_2_cols - 1],
+            'name':       [economy + '_TPES', chart_height + ref_tpes_1_rows + i + 4, 0],
+            'categories': [economy + '_TPES', chart_height + ref_tpes_1_rows + 3, 2, chart_height + ref_tpes_1_rows + 3, ref_tpes_2_cols - 1],
+            'values':     [economy + '_TPES', chart_height + ref_tpes_1_rows + i + 4, 2, chart_height + ref_tpes_1_rows + i + 4, ref_tpes_2_cols - 1],
             'fill':       {'color': ref_tpes_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -4628,13 +4842,18 @@ for economy in Economy_codes:
     ########################################### PRODUCTION CHARTS #############################################
     
     # access the sheet for production created above
-    ref_worksheet12 = writer.sheets[economy + '_prod_ref']
+    ref_worksheet12 = writer.sheets[economy + '_prod']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet12.set_column(2, ref_prod_1_cols + 1, None, comma_format)
+    ref_worksheet12.set_column(2, ref_prod_1_cols + 1, None, space_format)
     ref_worksheet12.set_row(chart_height, None, header_format)
     ref_worksheet12.set_row(chart_height + ref_prod_1_rows + 3, None, header_format)
+    ref_worksheet12.set_row((2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, None, header_format)
+    ref_worksheet12.set_row((2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, None, header_format)
     ref_worksheet12.write(0, 0, economy + ' prod fuel reference', cell_format1)
+    ref_worksheet12.write(36, 0, economy + ' prod fuel net-zero', cell_format1)
+
+    (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows
 
     ###################### Create another PRODUCTION chart with only 6 categories #################################
 
@@ -4684,9 +4903,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_prod_1_rows):
         ref_prod_chart2.add_series({
-            'name':       [economy + '_prod_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_prod_ref', chart_height, 2, chart_height, ref_prod_1_cols - 1],
-            'values':     [economy + '_prod_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
+            'name':       [economy + '_prod', chart_height + i + 1, 0],
+            'categories': [economy + '_prod', chart_height, 2, chart_height, ref_prod_1_cols - 1],
+            'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
             'fill':       {'color': ref_prod_1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
@@ -4741,9 +4960,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_prod_1_rows):
         ref_prod_chart2.add_series({
-            'name':       [economy + '_prod_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_prod_ref', chart_height, 2, chart_height, ref_prod_1_cols - 1],
-            'values':     [economy + '_prod_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
+            'name':       [economy + '_prod', chart_height + i + 1, 0],
+            'categories': [economy + '_prod', chart_height, 2, chart_height, ref_prod_1_cols - 1],
+            'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
             'line':       {'color': ref_prod_1['fuel_code'].map(colours_dict).loc[i],
                            'width': 1} 
         })    
@@ -4799,9 +5018,9 @@ for economy in Economy_codes:
     for component in TPES_agg_fuels:
         i = ref_prod_2[ref_prod_2['fuel_code'] == component].index[0]
         ref_prod_chart3.add_series({
-            'name':       [economy + '_prod_ref', chart_height + ref_prod_1_rows + i + 4, 0],
-            'categories': [economy + '_prod_ref', chart_height + ref_prod_1_rows + 3, 2, chart_height + ref_prod_1_rows + 3, ref_prod_2_cols - 1],
-            'values':     [economy + '_prod_ref', chart_height + ref_prod_1_rows + i + 4, 2, chart_height + ref_prod_1_rows + i + 4, ref_prod_2_cols - 1],
+            'name':       [economy + '_prod', chart_height + ref_prod_1_rows + i + 4, 0],
+            'categories': [economy + '_prod', chart_height + ref_prod_1_rows + 3, 2, chart_height + ref_prod_1_rows + 3, ref_prod_2_cols - 1],
+            'values':     [economy + '_prod', chart_height + ref_prod_1_rows + i + 4, 2, chart_height + ref_prod_1_rows + i + 4, ref_prod_2_cols - 1],
             'fill':       {'color': ref_prod_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -4811,16 +5030,16 @@ for economy in Economy_codes:
     ###################################### TPES components I ###########################################
     
     # access the sheet for production created above
-    ref_worksheet13 = writer.sheets[economy + '_TPES_comp_I_ref']
+    ref_worksheet13 = writer.sheets[economy + '_TPES_comp_ref']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet13.set_column(2, ref_imports_1_cols + 1, None, comma_format)
+    ref_worksheet13.set_column(2, ref_imports_1_cols + 1, None, space_format)
     ref_worksheet13.set_row(chart_height, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + 3, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, None, header_format)
-    ref_worksheet13.write(0, 0, economy + ' TPES components I reference', cell_format1)
+    ref_worksheet13.write(0, 0, economy + ' TPES components reference', cell_format1)
     
     # Create a TPES components chart
     ref_tpes_comp_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -4867,9 +5086,9 @@ for economy in Economy_codes:
     for component in ['Production', 'Net trade', 'Bunkers', 'Stock changes']:
         i = ref_tpes_comp_1[ref_tpes_comp_1['item_code_new'] == component].index[0]
         ref_tpes_comp_chart1.add_series({
-            'name':       [economy + '_TPES_comp_I_ref', chart_height + i + 1, 1],
-            'categories': [economy + '_TPES_comp_I_ref', chart_height, 2, chart_height, ref_tpes_comp_1_cols - 1],
-            'values':     [economy + '_TPES_comp_I_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_comp_1_cols - 1],
+            'name':       [economy + '_TPES_comp_ref', chart_height + i + 1, 1],
+            'categories': [economy + '_TPES_comp_ref', chart_height, 2, chart_height, ref_tpes_comp_1_cols - 1],
+            'values':     [economy + '_TPES_comp_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_comp_1_cols - 1],
             'fill':       {'color': ref_tpes_comp_1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -4924,9 +5143,9 @@ for economy in Economy_codes:
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = ref_imports_1[ref_imports_1['fuel_code'] == fuel].index[0]
         ref_imports_line.add_series({
-            'name':       [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + 3, 2, chart_height + ref_tpes_comp_1_rows + 3, ref_imports_1_cols - 1],
-            'values':     [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 2, chart_height + ref_tpes_comp_1_rows + i + 4, ref_imports_1_cols - 1],
+            'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 0],
+            'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + 3, 2, chart_height + ref_tpes_comp_1_rows + 3, ref_imports_1_cols - 1],
+            'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 2, chart_height + ref_tpes_comp_1_rows + i + 4, ref_imports_1_cols - 1],
             'line':       {'color': ref_imports_1['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1.25},
         })    
@@ -4977,9 +5196,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(ref_imports_2_rows):
         ref_imports_column.add_series({
-            'name':       [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 0],
-            'categories': [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, ref_imports_2_cols - 1],
-            'values':     [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, ref_imports_2_cols - 1],
+            'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 0],
+            'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, ref_imports_2_cols - 1],
+            'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, ref_imports_2_cols - 1],
             'fill':       {'color': ref_imports_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -5034,9 +5253,9 @@ for economy in Economy_codes:
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = ref_exports_1[ref_exports_1['fuel_code'] == fuel].index[0]
         ref_exports_line.add_series({
-            'name':       [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 0],
-            'categories': [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, ref_imports_1_cols - 1],
-            'values':     [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, ref_imports_1_cols - 1],
+            'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 0],
+            'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, ref_imports_1_cols - 1],
+            'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, ref_imports_1_cols - 1],
             'line':       {'color': ref_exports_1['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1.25},
         })    
@@ -5087,9 +5306,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(ref_exports_2_rows):
         ref_exports_column.add_series({
-            'name':       [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 0],
-            'categories': [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, ref_exports_2_cols - 1],
-            'values':     [economy + '_TPES_comp_I_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, ref_exports_2_cols - 1],
+            'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 0],
+            'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, ref_exports_2_cols - 1],
+            'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, ref_exports_2_cols - 1],
             'fill':       {'color': ref_exports_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -5099,13 +5318,16 @@ for economy in Economy_codes:
     ###################################### TPES components II ###########################################
     
     # access the sheet for production created above
-    ref_worksheet14 = writer.sheets[economy + '_TPES_comp_II_ref']
+    ref_worksheet14 = writer.sheets[economy + '_TPES_bunkers']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet14.set_column(2, ref_bunkers_1_cols + 1, None, comma_format)
+    ref_worksheet14.set_column(2, ref_bunkers_1_cols + 1, None, space_format)
     ref_worksheet14.set_row(chart_height, None, header_format)
     ref_worksheet14.set_row(chart_height + ref_bunkers_1_rows + 3, None, header_format)
-    ref_worksheet14.write(0, 0, economy + ' TPES components II reference', cell_format1)
+    ref_worksheet14.set_row((2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, None, header_format)
+    ref_worksheet14.set_row((2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9, None, header_format)
+    ref_worksheet14.write(0, 0, economy + ' TPES bunkers reference', cell_format1)
+    ref_worksheet14.write(28, 0, economy + ' TPES bunkers net-zero', cell_format1)
     
     # MARINE BUNKER: Create a line chart subset by fuel
     
@@ -5154,9 +5376,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_bunkers_1_rows):
         ref_marine_line.add_series({
-            'name':       [economy + '_TPES_comp_II_ref', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_comp_II_ref', chart_height, 2, chart_height, ref_bunkers_1_cols - 1],
-            'values':     [economy + '_TPES_comp_II_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_bunkers_1_cols - 1],
+            'name':       [economy + '_TPES_bunkers', chart_height + i + 1, 0],
+            'categories': [economy + '_TPES_bunkers', chart_height, 2, chart_height, ref_bunkers_1_cols - 1],
+            'values':     [economy + '_TPES_bunkers', chart_height + i + 1, 2, chart_height + i + 1, ref_bunkers_1_cols - 1],
             'line':       {'color': ref_bunkers_1['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1.25},
         })    
@@ -5210,9 +5432,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_bunkers_2_rows):
         ref_aviation_line.add_series({
-            'name':       [economy + '_TPES_comp_II_ref', chart_height + ref_bunkers_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES_comp_II_ref', chart_height + ref_bunkers_1_rows + 3, 2, chart_height + ref_bunkers_1_rows + 3, ref_bunkers_2_cols - 1],
-            'values':     [economy + '_TPES_comp_II_ref', chart_height + ref_bunkers_1_rows + i + 4, 2, chart_height + ref_bunkers_1_rows + i + 4, ref_bunkers_2_cols - 1],
+            'name':       [economy + '_TPES_bunkers', chart_height + ref_bunkers_1_rows + i + 4, 0],
+            'categories': [economy + '_TPES_bunkers', chart_height + ref_bunkers_1_rows + 3, 2, chart_height + ref_bunkers_1_rows + 3, ref_bunkers_2_cols - 1],
+            'values':     [economy + '_TPES_bunkers', chart_height + ref_bunkers_1_rows + i + 4, 2, chart_height + ref_bunkers_1_rows + i + 4, ref_bunkers_2_cols - 1],
             'line':       {'color': ref_bunkers_2['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1.25},
         })    
@@ -5222,13 +5444,13 @@ for economy in Economy_codes:
     ###############################################################################################################
     # Net-zero
     # Access the sheet created using writer above
-    netz_worksheet11 = writer.sheets[economy + '_TPES_netz']
+    # netz_worksheet11 = writer.sheets[economy + '_TPES']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet11.set_column(2, netz_tpes_1_cols + 1, None, comma_format)
-    netz_worksheet11.set_row(chart_height, None, header_format)
-    netz_worksheet11.set_row(chart_height + netz_tpes_1_rows + 3, None, header_format)
-    netz_worksheet11.write(0, 0, economy + ' TPES fuel net-zero', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet11.set_column(2, netz_tpes_1_cols + 1, None, space_format)
+    # netz_worksheet11.set_row(chart_height, None, header_format)
+    # netz_worksheet11.set_row(chart_height + netz_tpes_1_rows + 3, None, header_format)
+    # netz_worksheet11.write(0, 0, economy + ' TPES fuel net-zero', cell_format1)
 
     ######################################################
     # Create a TPES chart
@@ -5277,14 +5499,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_tpes_1_rows):
         netz_tpes_chart2.add_series({
-            'name':       [economy + '_TPES_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_netz', chart_height, 2, chart_height, netz_tpes_1_cols - 1],
-            'values':     [economy + '_TPES_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_tpes_1_cols - 1],
+            'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
+            'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
+                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
+            'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
             'fill':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
-    netz_worksheet11.insert_chart('B3', netz_tpes_chart2)
+    ref_worksheet11.insert_chart('B39', netz_tpes_chart2)
 
     ######## same chart as above but line
 
@@ -5334,14 +5558,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_tpes_1_rows):
         netz_tpes_chart4.add_series({
-            'name':       [economy + '_TPES_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_netz', chart_height, 2, chart_height, netz_tpes_1_cols - 1],
-            'values':     [economy + '_TPES_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_tpes_1_cols - 1],
+            'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
+            'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
+                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
+            'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
             'line':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1}
         })    
         
-    netz_worksheet11.insert_chart('R3', netz_tpes_chart4)
+    ref_worksheet11.insert_chart('R39', netz_tpes_chart4)
 
     ###################### Create another TPES chart showing proportional share #################################
 
@@ -5391,25 +5617,27 @@ for economy in Economy_codes:
     for component in TPES_agg_fuels:
         i = netz_tpes_2[netz_tpes_2['fuel_code'] == component].index[0]
         netz_tpes_chart3.add_series({
-            'name':       [economy + '_TPES_netz', chart_height + netz_tpes_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES_netz', chart_height + netz_tpes_1_rows + 3, 2, chart_height + netz_tpes_1_rows + 3, netz_tpes_2_cols - 1],
-            'values':     [economy + '_TPES_netz', chart_height + netz_tpes_1_rows + i + 4, 2, chart_height + netz_tpes_1_rows + i + 4, netz_tpes_2_cols - 1],
+            'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 0],
+            'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, 2,\
+                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, netz_tpes_2_cols - 1],
+            'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, netz_tpes_2_cols - 1],
             'fill':       {'color': netz_tpes_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet11.insert_chart('J3', netz_tpes_chart3)
+    ref_worksheet11.insert_chart('J39', netz_tpes_chart3)
 
     ########################################### PRODUCTION CHARTS #############################################
     
     # access the sheet for production created above
-    netz_worksheet12 = writer.sheets[economy + '_prod_netz']
+    # netz_worksheet12 = writer.sheets[economy + '_prod']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet12.set_column(2, netz_prod_1_cols + 1, None, comma_format)
-    netz_worksheet12.set_row(chart_height, None, header_format)
-    netz_worksheet12.set_row(chart_height + netz_prod_1_rows + 3, None, header_format)
-    netz_worksheet12.write(0, 0, economy + ' prod fuel net-zero', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet12.set_column(2, netz_prod_1_cols + 1, None, space_format)
+    # netz_worksheet12.set_row(chart_height, None, header_format)
+    # netz_worksheet12.set_row(chart_height + netz_prod_1_rows + 3, None, header_format)
+    # netz_worksheet12.write(0, 0, economy + ' prod fuel net-zero', cell_format1)
 
     ###################### Create another PRODUCTION chart with only 6 categories #################################
 
@@ -5459,14 +5687,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_prod_1_rows):
         netz_prod_chart2.add_series({
-            'name':       [economy + '_prod_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_prod_netz', chart_height, 2, chart_height, netz_prod_1_cols - 1],
-            'values':     [economy + '_prod_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_prod_1_cols - 1],
+            'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 0],
+            'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, 2,\
+                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, netz_prod_1_cols - 1],
+            'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, netz_prod_1_cols - 1],
             'fill':       {'color': netz_prod_1['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })    
         
-    netz_worksheet12.insert_chart('B3', netz_prod_chart2)
+    ref_worksheet12.insert_chart('B39', netz_prod_chart2)
 
     ############ Same as above but with a line ###########
 
@@ -5516,14 +5746,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_prod_1_rows):
         netz_prod_chart2.add_series({
-            'name':       [economy + '_prod_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_prod_netz', chart_height, 2, chart_height, netz_prod_1_cols - 1],
-            'values':     [economy + '_prod_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_prod_1_cols - 1],
+            'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 0],
+            'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, 2,\
+                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, netz_prod_1_cols - 1],
+            'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, netz_prod_1_cols - 1],
             'line':       {'color': netz_prod_1['fuel_code'].map(colours_dict).loc[i],
                            'width': 1} 
         })    
         
-    netz_worksheet12.insert_chart('R3', netz_prod_chart2)
+    ref_worksheet12.insert_chart('R39', netz_prod_chart2)
 
     ###################### Create another PRODUCTION chart showing proportional share #################################
 
@@ -5574,28 +5806,30 @@ for economy in Economy_codes:
     for component in TPES_agg_fuels:
         i = netz_prod_2[netz_prod_2['fuel_code'] == component].index[0]
         netz_prod_chart3.add_series({
-            'name':       [economy + '_prod_netz', chart_height + netz_prod_1_rows + i + 4, 0],
-            'categories': [economy + '_prod_netz', chart_height + netz_prod_1_rows + 3, 2, chart_height + netz_prod_1_rows + 3, netz_prod_2_cols - 1],
-            'values':     [economy + '_prod_netz', chart_height + netz_prod_1_rows + i + 4, 2, chart_height + netz_prod_1_rows + i + 4, netz_prod_2_cols - 1],
+            'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, 0],
+            'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, 2,\
+                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, netz_prod_2_cols - 1],
+            'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, netz_prod_2_cols - 1],
             'fill':       {'color': netz_prod_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet12.insert_chart('J3', netz_prod_chart3)
+    ref_worksheet12.insert_chart('J39', netz_prod_chart3)
     
     ###################################### TPES components I ###########################################
     
     # access the sheet for production created above
-    netz_worksheet13 = writer.sheets[economy + '_TPES_comp_I_netz']
+    netz_worksheet13 = writer.sheets[economy + '_TPES_comp_netz']
     
     # Apply comma format and header format to relevant data rows
-    netz_worksheet13.set_column(2, netz_imports_1_cols + 1, None, comma_format)
+    netz_worksheet13.set_column(2, netz_imports_1_cols + 1, None, space_format)
     netz_worksheet13.set_row(chart_height, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + 3, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, None, header_format)
-    netz_worksheet13.write(0, 0, economy + ' TPES components I net-zero', cell_format1)
+    netz_worksheet13.write(0, 0, economy + ' TPES components net-zero', cell_format1)
     
     # Create a TPES components chart
     netz_tpes_comp_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -5642,9 +5876,9 @@ for economy in Economy_codes:
     for component in ['Production', 'Net trade', 'Bunkers', 'Stock changes']:
         i = netz_tpes_comp_1[netz_tpes_comp_1['item_code_new'] == component].index[0]
         netz_tpes_comp_chart1.add_series({
-            'name':       [economy + '_TPES_comp_I_netz', chart_height + i + 1, 1],
-            'categories': [economy + '_TPES_comp_I_netz', chart_height, 2, chart_height, netz_tpes_comp_1_cols - 1],
-            'values':     [economy + '_TPES_comp_I_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_tpes_comp_1_cols - 1],
+            'name':       [economy + '_TPES_comp_netz', chart_height + i + 1, 1],
+            'categories': [economy + '_TPES_comp_netz', chart_height, 2, chart_height, netz_tpes_comp_1_cols - 1],
+            'values':     [economy + '_TPES_comp_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_tpes_comp_1_cols - 1],
             'fill':       {'color': netz_tpes_comp_1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -5699,9 +5933,9 @@ for economy in Economy_codes:
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = netz_imports_1[netz_imports_1['fuel_code'] == fuel].index[0]
         netz_imports_line.add_series({
-            'name':       [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + 3, 2, chart_height + netz_tpes_comp_1_rows + 3, netz_imports_1_cols - 1],
-            'values':     [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 2, chart_height + netz_tpes_comp_1_rows + i + 4, netz_imports_1_cols - 1],
+            'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 0],
+            'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + 3, 2, chart_height + netz_tpes_comp_1_rows + 3, netz_imports_1_cols - 1],
+            'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 2, chart_height + netz_tpes_comp_1_rows + i + 4, netz_imports_1_cols - 1],
             'line':       {'color': netz_imports_1['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1.25},
         })    
@@ -5752,9 +5986,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(netz_imports_2_rows):
         netz_imports_column.add_series({
-            'name':       [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 0],
-            'categories': [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, netz_imports_2_cols - 1],
-            'values':     [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, netz_imports_2_cols - 1],
+            'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 0],
+            'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, netz_imports_2_cols - 1],
+            'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, netz_imports_2_cols - 1],
             'fill':       {'color': netz_imports_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -5809,9 +6043,9 @@ for economy in Economy_codes:
     for fuel in ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']:
         i = netz_exports_1[netz_exports_1['fuel_code'] == fuel].index[0]
         netz_exports_line.add_series({
-            'name':       [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 0],
-            'categories': [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, netz_imports_1_cols - 1],
-            'values':     [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, netz_imports_1_cols - 1],
+            'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 0],
+            'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, netz_imports_1_cols - 1],
+            'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, netz_imports_1_cols - 1],
             'line':       {'color': netz_exports_1['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1.25},
         })    
@@ -5862,9 +6096,9 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for i in range(netz_exports_2_rows):
         netz_exports_column.add_series({
-            'name':       [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 0],
-            'categories': [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, netz_exports_2_cols - 1],
-            'values':     [economy + '_TPES_comp_I_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, netz_exports_2_cols - 1],
+            'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 0],
+            'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, netz_exports_2_cols - 1],
+            'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, netz_exports_2_cols - 1],
             'fill':       {'color': netz_exports_2['fuel_code'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
@@ -5874,13 +6108,13 @@ for economy in Economy_codes:
     ###################################### TPES components II ###########################################
     
     # access the sheet for production created above
-    netz_worksheet14 = writer.sheets[economy + '_TPES_comp_II_netz']
+    # netz_worksheet14 = writer.sheets[economy + '_TPES_bunkers']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet14.set_column(2, netz_bunkers_1_cols + 1, None, comma_format)
-    netz_worksheet14.set_row(chart_height, None, header_format)
-    netz_worksheet14.set_row(chart_height + netz_bunkers_1_rows + 3, None, header_format)
-    netz_worksheet14.write(0, 0, economy + ' TPES components II net-zero', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet14.set_column(2, netz_bunkers_1_cols + 1, None, space_format)
+    # netz_worksheet14.set_row(chart_height, None, header_format)
+    # netz_worksheet14.set_row(chart_height + netz_bunkers_1_rows + 3, None, header_format)
+    # netz_worksheet14.write(0, 0, economy + ' TPES components II net-zero', cell_format1)
     
     # MARINE BUNKER: Create a line chart subset by fuel
     
@@ -5929,14 +6163,16 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_bunkers_1_rows):
         netz_marine_line.add_series({
-            'name':       [economy + '_TPES_comp_II_netz', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES_comp_II_netz', chart_height, 2, chart_height, netz_bunkers_1_cols - 1],
-            'values':     [economy + '_TPES_comp_II_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_bunkers_1_cols - 1],
+            'name':       [economy + '_TPES_bunkers', (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + i + 7, 0],
+            'categories': [economy + '_TPES_bunkers', (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, 2,\
+                (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, netz_bunkers_1_cols - 1],
+            'values':     [economy + '_TPES_bunkers', (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + i + 7, netz_bunkers_1_cols - 1],
             'line':       {'color': netz_bunkers_1['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1.25},
         })    
         
-    netz_worksheet14.insert_chart('B3', netz_marine_line)
+    ref_worksheet14.insert_chart('B31', netz_marine_line)
 
     # AVIATION BUNKER: Create a line chart subset by fuel
     
@@ -5985,32 +6221,37 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_bunkers_2_rows):
         netz_aviation_line.add_series({
-            'name':       [economy + '_TPES_comp_II_netz', chart_height + netz_bunkers_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES_comp_II_netz', chart_height + netz_bunkers_1_rows + 3, 2, chart_height + netz_bunkers_1_rows + 3, netz_bunkers_2_cols - 1],
-            'values':     [economy + '_TPES_comp_II_netz', chart_height + netz_bunkers_1_rows + i + 4, 2, chart_height + netz_bunkers_1_rows + i + 4, netz_bunkers_2_cols - 1],
+            'name':       [economy + '_TPES_bunkers', (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + i + 10, 0],
+            'categories': [economy + '_TPES_bunkers', (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9, 2,\
+                (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9, netz_bunkers_2_cols - 1],
+            'values':     [economy + '_TPES_bunkers', (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + i + 10, netz_bunkers_2_cols - 1],
             'line':       {'color': netz_bunkers_2['fuel_code'].map(colours_dict).loc[i], 
                            'width': 1.25},
         })    
         
-    netz_worksheet14.insert_chart('J3', netz_aviation_line)
+    ref_worksheet14.insert_chart('J31', netz_aviation_line)
 
     #########################################################################################################################
 
     # TRANSFORMATION CHARTS
 
     # Access the workbook and first sheet with data from df1 
-    ref_worksheet21 = writer.sheets[economy + '_use_fuel_ref']
+    ref_worksheet21 = writer.sheets[economy + '_pow_input']
     
     # Comma format and header format        
-    comma_format = workbook.add_format({'num_format': '#,##0'})
-    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
-    cell_format1 = workbook.add_format({'bold': True})
+    # space_format = workbook.add_format({'num_format': '#,##0'})
+    # header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    # cell_format1 = workbook.add_format({'bold': True})
         
     # Apply comma format and header format to relevant data rows
-    ref_worksheet21.set_column(2, ref_pow_use_2_rows + 1, None, comma_format)
+    ref_worksheet21.set_column(2, ref_pow_use_2_cols + 1, None, space_format)
     ref_worksheet21.set_row(chart_height, None, header_format)
     ref_worksheet21.set_row(chart_height + ref_pow_use_2_rows + 3, None, header_format)
-    ref_worksheet21.write(0, 0, economy + ' transformation use fuel', cell_format1)
+    ref_worksheet21.set_row((2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, None, header_format)
+    ref_worksheet21.set_row((2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, None, header_format)
+    ref_worksheet21.write(0, 0, economy + ' power input fuel reference (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
+    ref_worksheet21.write(48, 0, economy + ' power input fuel net_zero (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
 
     # Create a use by fuel area chart
     if ref_pow_use_2_rows > 0:
@@ -6059,9 +6300,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_pow_use_2_rows):
             usefuel_chart1.add_series({
-                'name':       [economy + '_use_fuel_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_use_fuel_ref', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
-                'values':     [economy + '_use_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
+                'name':       [economy + '_pow_input', chart_height + i + 1, 0],
+                'categories': [economy + '_pow_input', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
+                'values':     [economy + '_pow_input', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
                 'fill':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6116,9 +6357,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.    
         for i in range(ref_pow_use_3_rows):
             usefuel_chart2.add_series({
-                'name':       [economy + '_use_fuel_ref', chart_height + ref_pow_use_2_rows + i + 4, 0],
-                'categories': [economy + '_use_fuel_ref', chart_height + ref_pow_use_2_rows + 3, 2, chart_height + ref_pow_use_2_rows + 3, ref_pow_use_3_cols - 1],
-                'values':     [economy + '_use_fuel_ref', chart_height + ref_pow_use_2_rows + i + 4, 2, chart_height + ref_pow_use_2_rows + i + 4, ref_pow_use_3_cols - 1],
+                'name':       [economy + '_pow_input', chart_height + ref_pow_use_2_rows + i + 4, 0],
+                'categories': [economy + '_pow_input', chart_height + ref_pow_use_2_rows + 3, 2, chart_height + ref_pow_use_2_rows + 3, ref_pow_use_3_cols - 1],
+                'values':     [economy + '_pow_input', chart_height + ref_pow_use_2_rows + i + 4, 2, chart_height + ref_pow_use_2_rows + i + 4, ref_pow_use_3_cols - 1],
                 'fill':       {'color': ref_pow_use_3['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })
@@ -6131,13 +6372,16 @@ for economy in Economy_codes:
     ############################# Next sheet: Production of electricity by technology ##################################
     
     # Access the workbook and second sheet
-    ref_worksheet22 = writer.sheets[economy + '_elec_gen_ref']
+    ref_worksheet22 = writer.sheets[economy + '_elec_gen']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet22.set_column(2, ref_elecgen_2_rows + 1, None, comma_format)
+    ref_worksheet22.set_column(2, ref_elecgen_2_cols + 1, None, space_format)
     ref_worksheet22.set_row(chart_height, None, header_format)
     ref_worksheet22.set_row(chart_height + ref_elecgen_2_rows + 3, None, header_format)
-    ref_worksheet22.write(0, 0, economy + ' electricity generation by technology', cell_format1)
+    ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, None, header_format)
+    ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, None, header_format)
+    ref_worksheet22.write(0, 0, economy + ' electricity generation reference', cell_format1)
+    ref_worksheet22.write(50, 0, economy + ' electricity generation net-zero', cell_format1)
     
     # Create a electricity production area chart
     if ref_elecgen_2_rows > 0:
@@ -6186,9 +6430,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_elecgen_2_rows):
             prodelec_bytech_chart1.add_series({
-                'name':       [economy + '_elec_gen_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_elec_gen_ref', chart_height, 2, chart_height, ref_elecgen_2_cols - 1],
-                'values':     [economy + '_elec_gen_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_2_cols - 1],
+                'name':       [economy + '_elec_gen', chart_height + i + 1, 0],
+                'categories': [economy + '_elec_gen', chart_height, 2, chart_height, ref_elecgen_2_cols - 1],
+                'values':     [economy + '_elec_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_2_cols - 1],
                 'fill':       {'color': ref_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6243,9 +6487,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_elecgen_3_rows):
             prodelec_bytech_chart2.add_series({
-                'name':       [economy + '_elec_gen_ref', chart_height + ref_elecgen_2_rows + i + 4, 0],
-                'categories': [economy + '_elec_gen_ref', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
-                'values':     [economy + '_elec_gen_ref', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
+                'name':       [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 0],
+                'categories': [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
+                'values':     [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
                 'fill':       {'color': ref_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6260,14 +6504,18 @@ for economy in Economy_codes:
     ## Refining sheet
 
     # Access the workbook and second sheet
-    ref_worksheet23 = writer.sheets[economy + '_refining_ref']
+    ref_worksheet23 = writer.sheets[economy + '_refining']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet23.set_column(2, ref_refinery_1_rows + 1, None, comma_format)
+    ref_worksheet23.set_column(2, ref_refinery_1_cols + 1, None, space_format)
     ref_worksheet23.set_row(chart_height, None, header_format)
     ref_worksheet23.set_row(chart_height + ref_refinery_1_rows + 3, None, header_format)
     ref_worksheet23.set_row(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, None, header_format)
-    ref_worksheet23.write(0, 0, economy + ' refining', cell_format1)
+    ref_worksheet23.set_row((2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, None, header_format)
+    ref_worksheet23.set_row((2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12, None, header_format)
+    ref_worksheet23.set_row((2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, None, header_format)
+    ref_worksheet23.write(0, 0, economy + ' refining reference', cell_format1)
+    ref_worksheet23.write(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, 0, economy + ' refining net-zero', cell_format1)
 
     # Create ainput refining line chart
     if ref_refinery_1_rows > 0:
@@ -6314,9 +6562,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_refinery_1_rows):
             refinery_chart1.add_series({
-                'name':       [economy + '_refining_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_refining_ref', chart_height, 2, chart_height, ref_refinery_1_cols - 1],
-                'values':     [economy + '_refining_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_refinery_1_cols - 1],
+                'name':       [economy + '_refining', chart_height + i + 1, 0],
+                'categories': [economy + '_refining', chart_height, 2, chart_height, ref_refinery_1_cols - 1],
+                'values':     [economy + '_refining', chart_height + i + 1, 2, chart_height + i + 1, ref_refinery_1_cols - 1],
                 'line':       {'color': ref_refinery_1['FUEL'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
@@ -6371,9 +6619,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_refinery_2_rows):
             refinery_chart2.add_series({
-                'name':       [economy + '_refining_ref', chart_height + ref_refinery_1_rows + i + 4, 0],
-                'categories': [economy + '_refining_ref', chart_height + ref_refinery_1_rows + 3, 2, chart_height + ref_refinery_1_rows + 3, ref_refinery_2_cols - 1],
-                'values':     [economy + '_refining_ref', chart_height + ref_refinery_1_rows + i + 4, 2, chart_height + ref_refinery_1_rows + i + 4, ref_refinery_2_cols - 1],
+                'name':       [economy + '_refining', chart_height + ref_refinery_1_rows + i + 4, 0],
+                'categories': [economy + '_refining', chart_height + ref_refinery_1_rows + 3, 2, chart_height + ref_refinery_1_rows + 3, ref_refinery_2_cols - 1],
+                'values':     [economy + '_refining', chart_height + ref_refinery_1_rows + i + 4, 2, chart_height + ref_refinery_1_rows + i + 4, ref_refinery_2_cols - 1],
                 'line':       {'color': ref_refinery_2['FUEL'].map(colours_dict).loc[i],
                                'width': 1}
             })    
@@ -6428,9 +6676,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_refinery_3_rows):
             refinery_chart3.add_series({
-                'name':       [economy + '_refining_ref', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 0],
-                'categories': [economy + '_refining_ref', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, ref_refinery_3_cols - 1],
-                'values':     [economy + '_refining_ref', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, ref_refinery_3_cols - 1],
+                'name':       [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 0],
+                'categories': [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, ref_refinery_3_cols - 1],
+                'values':     [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, ref_refinery_3_cols - 1],
                 'fill':       {'color': ref_refinery_3['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6443,13 +6691,16 @@ for economy in Economy_codes:
     ############################# Next sheet: Power capacity ##################################
     
     # Access the workbook and second sheet
-    ref_worksheet24 = writer.sheets[economy + '_pow_cap_ref']
+    ref_worksheet24 = writer.sheets[economy + '_pow_cap']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet24.set_column(1, ref_powcap_1_rows + 1, None, comma_format)
+    ref_worksheet24.set_column(1, ref_powcap_1_cols + 1, None, space_format)
     ref_worksheet24.set_row(chart_height, None, header_format)
     ref_worksheet24.set_row(chart_height + ref_powcap_1_rows + 3, None, header_format)
-    ref_worksheet24.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
+    ref_worksheet24.set_row((2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, None, header_format)
+    ref_worksheet24.set_row((2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, None, header_format)
+    ref_worksheet24.write(0, 0, economy + ' power capacity reference', cell_format1)
+    ref_worksheet24.write(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 6, 0, economy + ' power capacity net-zero', cell_format1)
     
     # Create a electricity production area chart
     if ref_powcap_1_rows > 0:
@@ -6498,9 +6749,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_powcap_1_rows):
             pow_cap_chart1.add_series({
-                'name':       [economy + '_pow_cap_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_pow_cap_ref', chart_height, 1, chart_height, ref_powcap_1_cols - 1],
-                'values':     [economy + '_pow_cap_ref', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_1_cols - 1],
+                'name':       [economy + '_pow_cap', chart_height + i + 1, 0],
+                'categories': [economy + '_pow_cap', chart_height, 1, chart_height, ref_powcap_1_cols - 1],
+                'values':     [economy + '_pow_cap', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_1_cols - 1],
                 'fill':       {'color': ref_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6555,9 +6806,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_powcap_2_rows):
             pow_cap_chart2.add_series({
-                'name':       [economy + '_pow_cap_ref', chart_height + ref_powcap_1_rows + i + 4, 0],
-                'categories': [economy + '_pow_cap_ref', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
-                'values':     [economy + '_pow_cap_ref', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
+                'name':       [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 0],
+                'categories': [economy + '_pow_cap', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
+                'values':     [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
                 'fill':       {'color': ref_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6570,13 +6821,16 @@ for economy in Economy_codes:
     ############################# Next sheet: Transformation sector ##################################
     
     # Access the workbook and second sheet
-    ref_worksheet25 = writer.sheets[economy + '_trnsfrm_ref']
+    ref_worksheet25 = writer.sheets[economy + '_trnsfrm']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet25.set_column(1, ref_trans_3_rows + 1, None, comma_format)
+    ref_worksheet25.set_column(1, ref_trans_3_cols + 1, None, space_format)
     ref_worksheet25.set_row(chart_height, None, header_format)
     ref_worksheet25.set_row(chart_height + ref_trans_3_rows + 3, None, header_format)
-    ref_worksheet25.write(0, 0, economy + ' transformation', cell_format1)
+    ref_worksheet25.set_row((2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + 6, None, header_format)
+    ref_worksheet25.set_row((2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + ref_trans_3_rows + 9, None, header_format)
+    ref_worksheet25.write(0, 0, economy + ' transformation reference', cell_format1)
+    ref_worksheet25.write(chart_height + ref_trans_3_rows + ref_trans_4_rows + 6, 0, economy + ' transformation net-zero', cell_format1)
 
     # Create a transformation area chart
     if ref_trans_3_rows > 0:
@@ -6625,9 +6879,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_trans_3_rows):
             ref_trnsfrm_chart1.add_series({
-                'name':       [economy + '_trnsfrm_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_trnsfrm_ref', chart_height, 1, chart_height, ref_trans_3_cols - 1],
-                'values':     [economy + '_trnsfrm_ref', chart_height + i + 1, 1, chart_height + i + 1, ref_trans_3_cols - 1],
+                'name':       [economy + '_trnsfrm', chart_height + i + 1, 0],
+                'categories': [economy + '_trnsfrm', chart_height, 1, chart_height, ref_trans_3_cols - 1],
+                'values':     [economy + '_trnsfrm', chart_height + i + 1, 1, chart_height + i + 1, ref_trans_3_cols - 1],
                 'fill':       {'color': ref_trans_3['Sector'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6684,9 +6938,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_trans_3_rows):
             ref_trnsfrm_chart2.add_series({
-                'name':       [economy + '_trnsfrm_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_trnsfrm_ref', chart_height, 1, chart_height, ref_trans_3_cols - 1],
-                'values':     [economy + '_trnsfrm_ref', chart_height + i + 1, 1, chart_height + i + 1, ref_trans_3_cols - 1],
+                'name':       [economy + '_trnsfrm', chart_height + i + 1, 0],
+                'categories': [economy + '_trnsfrm', chart_height, 1, chart_height, ref_trans_3_cols - 1],
+                'values':     [economy + '_trnsfrm', chart_height + i + 1, 1, chart_height + i + 1, ref_trans_3_cols - 1],
                 'line':       {'color': ref_trans_3['Sector'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
@@ -6742,9 +6996,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_trans_4_rows):
             ref_trnsfrm_chart3.add_series({
-                'name':       [economy + '_trnsfrm_ref', chart_height + ref_trans_3_rows + i + 4, 0],
-                'categories': [economy + '_trnsfrm_ref', chart_height + ref_trans_3_rows + 3, 1, chart_height + ref_trans_3_rows + 3, ref_trans_4_cols - 1],
-                'values':     [economy + '_trnsfrm_ref', chart_height + ref_trans_3_rows + i + 4, 1, chart_height + ref_trans_3_rows + i + 4, ref_trans_4_cols - 1],
+                'name':       [economy + '_trnsfrm', chart_height + ref_trans_3_rows + i + 4, 0],
+                'categories': [economy + '_trnsfrm', chart_height + ref_trans_3_rows + 3, 1, chart_height + ref_trans_3_rows + 3, ref_trans_4_cols - 1],
+                'values':     [economy + '_trnsfrm', chart_height + ref_trans_3_rows + i + 4, 1, chart_height + ref_trans_3_rows + i + 4, ref_trans_4_cols - 1],
                 'fill':       {'color': ref_trans_4['Sector'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6758,13 +7012,16 @@ for economy in Economy_codes:
     # Own use charts
     
     # Access the workbook and second sheet
-    ref_worksheet26 = writer.sheets[economy + '_own_ref']
+    ref_worksheet26 = writer.sheets[economy + '_ownuse']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet26.set_column(2, ref_ownuse_1_rows + 1, None, comma_format)
+    ref_worksheet26.set_column(2, ref_ownuse_1_cols + 1, None, space_format)
     ref_worksheet26.set_row(chart_height, None, header_format)
     ref_worksheet26.set_row(chart_height + ref_ownuse_1_rows + 3, None, header_format)
-    ref_worksheet26.write(0, 0, economy + ' own use and losses', cell_format1)
+    ref_worksheet26.set_row((2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, None, header_format)
+    ref_worksheet26.set_row((2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, None, header_format)
+    ref_worksheet26.write(0, 0, economy + ' own use and losses reference', cell_format1)
+    ref_worksheet26.write(38, 0, economy + ' own use and losses net-zero', cell_format1)
 
     # Createn own-use transformation area chart by fuel
     if ref_ownuse_1_rows > 0:
@@ -6813,9 +7070,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_ownuse_1_rows):
             ref_own_chart1.add_series({
-                'name':       [economy + '_own_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_own_ref', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
-                'values':     [economy + '_own_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
+                'name':       [economy + '_ownuse', chart_height + i + 1, 0],
+                'categories': [economy + '_ownuse', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
+                'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
                 'fill':       {'color': ref_ownuse_1['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6872,9 +7129,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_ownuse_1_rows):
             ref_own_chart2.add_series({
-                'name':       [economy + '_own_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_own_ref', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
-                'values':     [economy + '_own_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
+                'name':       [economy + '_ownuse', chart_height + i + 1, 0],
+                'categories': [economy + '_ownuse', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
+                'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
                 'line':       {'color': ref_ownuse_1['FUEL'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
@@ -6930,9 +7187,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_ownuse_2_rows):
             ref_own_chart3.add_series({
-                'name':       [economy + '_own_ref', chart_height + ref_ownuse_1_rows + i + 4, 0],
-                'categories': [economy + '_own_ref', chart_height + ref_ownuse_1_rows + 3, 2, chart_height + ref_ownuse_1_rows + 3, ref_ownuse_2_cols - 1],
-                'values':     [economy + '_own_ref', chart_height + ref_ownuse_1_rows + i + 4, 2, chart_height + ref_ownuse_1_rows + i + 4, ref_ownuse_2_cols - 1],
+                'name':       [economy + '_ownuse', chart_height + ref_ownuse_1_rows + i + 4, 0],
+                'categories': [economy + '_ownuse', chart_height + ref_ownuse_1_rows + 3, 2, chart_height + ref_ownuse_1_rows + 3, ref_ownuse_2_cols - 1],
+                'values':     [economy + '_ownuse', chart_height + ref_ownuse_1_rows + i + 4, 2, chart_height + ref_ownuse_1_rows + i + 4, ref_ownuse_2_cols - 1],
                 'fill':       {'color': ref_ownuse_2['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -6945,13 +7202,16 @@ for economy in Economy_codes:
     ############## HEAT Charts #########################################
 
     # Access the workbook and second sheet
-    ref_worksheet27 = writer.sheets[economy + '_heat_ref']
+    ref_worksheet27 = writer.sheets[economy + '_heat_gen']
     
     # Apply comma format and header format to relevant data rows
-    ref_worksheet27.set_column(2, ref_heatgen_2_rows + 1, None, comma_format)
+    ref_worksheet27.set_column(2, ref_heatgen_2_cols + 1, None, space_format)
     ref_worksheet27.set_row(chart_height, None, header_format)
     ref_worksheet27.set_row(chart_height + ref_heatgen_2_rows + 3, None, header_format)
-    ref_worksheet27.write(0, 0, economy + ' heat generation by technology', cell_format1)
+    ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, None, header_format)
+    ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, None, header_format)
+    ref_worksheet27.write(0, 0, economy + ' heat generation reference', cell_format1)
+    ref_worksheet27.write(40, 0, economy + ' heat generation net-zero', cell_format1)
     
     # Create a electricity production area chart
     if ref_heatgen_2_rows > 0:
@@ -7000,9 +7260,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_heatgen_2_rows):
             heatgen_bytech_chart1.add_series({
-                'name':       [economy + '_heat_ref', chart_height + i + 1, 0],
-                'categories': [economy + '_heat_ref', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
-                'values':     [economy + '_heat_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_heatgen_2_cols - 1],
+                'name':       [economy + '_heat_gen', chart_height + i + 1, 0],
+                'categories': [economy + '_heat_gen', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
+                'values':     [economy + '_heat_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_heatgen_2_cols - 1],
                 'fill':       {'color': ref_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -7057,9 +7317,9 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_heatgen_3_rows):
             heatgen_bytech_chart2.add_series({
-                'name':       [economy + '_heat_ref', chart_height + ref_heatgen_2_rows + i + 4, 0],
-                'categories': [economy + '_heat_ref', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
-                'values':     [economy + '_heat_ref', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
+                'name':       [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 0],
+                'categories': [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
+                'values':     [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
                 'fill':       {'color': ref_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
@@ -7074,18 +7334,18 @@ for economy in Economy_codes:
     ################# NET ZERO CHARTS ######################################################################################################
 
     # Access the workbook and first sheet with data from df1
-    netz_worksheet21 = writer.sheets[economy + '_use_fuel_netz']
+    # netz_worksheet21 = writer.sheets[economy + '_pow_input']
     
-    # Comma format and header format        
-    comma_format = workbook.add_format({'num_format': '#,##0'})
-    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
-    cell_format1 = workbook.add_format({'bold': True})
+    # # Comma format and header format        
+    # # space_format = workbook.add_format({'num_format': '#,##0'})
+    # # header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    # # cell_format1 = workbook.add_format({'bold': True})
         
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet21.set_column(2, netz_pow_use_2_rows + 1, None, comma_format)
-    netz_worksheet21.set_row(chart_height, None, header_format)
-    netz_worksheet21.set_row(chart_height + netz_pow_use_2_rows + 3, None, header_format)
-    netz_worksheet21.write(0, 0, economy + ' transformation use fuel', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet21.set_column(2, netz_pow_use_2_cols + 1, None, space_format)
+    # netz_worksheet21.set_row(chart_height, None, header_format)
+    # netz_worksheet21.set_row(chart_height + netz_pow_use_2_rows + 3, None, header_format)
+    # netz_worksheet21.write(0, 0, economy + ' transformation use fuel', cell_format1)
 
     # Create a use by fuel area chart
     if netz_pow_use_2_rows > 0:
@@ -7134,14 +7394,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_pow_use_2_rows):
             netz_usefuel_chart1.add_series({
-                'name':       [economy + '_use_fuel_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_use_fuel_netz', chart_height, 2, chart_height, netz_pow_use_2_cols - 1],
-                'values':     [economy + '_use_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_pow_use_2_cols - 1],
+                'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
+                'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
+                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
+                'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
                 'fill':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet21.insert_chart('B3', netz_usefuel_chart1)
+        ref_worksheet21.insert_chart('B51', netz_usefuel_chart1)
 
     else:
         pass
@@ -7191,14 +7453,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.    
         for i in range(netz_pow_use_3_rows):
             netz_usefuel_chart2.add_series({
-                'name':       [economy + '_use_fuel_netz', chart_height + netz_pow_use_2_rows + i + 4, 0],
-                'categories': [economy + '_use_fuel_netz', chart_height + netz_pow_use_2_rows + 3, 2, chart_height + netz_pow_use_2_rows + 3, netz_pow_use_3_cols - 1],
-                'values':     [economy + '_use_fuel_netz', chart_height + netz_pow_use_2_rows + i + 4, 2, chart_height + netz_pow_use_2_rows + i + 4, netz_pow_use_3_cols - 1],
+                'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 0],
+                'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, 2,\
+                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, netz_pow_use_3_cols - 1],
+                'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, netz_pow_use_3_cols - 1],
                 'fill':       {'color': netz_pow_use_3['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })
 
-        netz_worksheet21.insert_chart('J3', netz_usefuel_chart2)
+        ref_worksheet21.insert_chart('J51', netz_usefuel_chart2)
 
     else:
         pass
@@ -7206,13 +7470,13 @@ for economy in Economy_codes:
     ############################# Next sheet: Production of electricity by technology ##################################
     
     # Access the workbook and second sheet
-    netz_worksheet22 = writer.sheets[economy + '_elec_gen_netz']
+    # netz_worksheet22 = writer.sheets[economy + '_elec_gen']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet22.set_column(2, netz_elecgen_2_rows + 1, None, comma_format)
-    netz_worksheet22.set_row(chart_height, None, header_format)
-    netz_worksheet22.set_row(chart_height + netz_elecgen_2_rows + 3, None, header_format)
-    netz_worksheet22.write(0, 0, economy + ' electricity generation by technology', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet22.set_column(2, netz_elecgen_2_cols + 1, None, space_format)
+    # netz_worksheet22.set_row(chart_height, None, header_format)
+    # netz_worksheet22.set_row(chart_height + netz_elecgen_2_rows + 3, None, header_format)
+    # netz_worksheet22.write(0, 0, economy + ' electricity generation by technology', cell_format1)
     
     # Create a electricity production area chart
     if netz_elecgen_2_rows > 0:
@@ -7261,14 +7525,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_elecgen_2_rows):
             netz_prodelec_bytech_chart1.add_series({
-                'name':       [economy + '_elec_gen_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_elec_gen_netz', chart_height, 2, chart_height, netz_elecgen_2_cols - 1],
-                'values':     [economy + '_elec_gen_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_elecgen_2_cols - 1],
+                'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 0],
+                'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 2,\
+                    (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, netz_elecgen_2_cols - 1],
+                'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, netz_elecgen_2_cols - 1],
                 'fill':       {'color': netz_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet22.insert_chart('B3', netz_prodelec_bytech_chart1)
+        ref_worksheet22.insert_chart('B53', netz_prodelec_bytech_chart1)
 
     else: 
         pass
@@ -7318,14 +7584,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_elecgen_3_rows):
             netz_prodelec_bytech_chart2.add_series({
-                'name':       [economy + '_elec_gen_netz', chart_height + netz_elecgen_2_rows + i + 4, 0],
-                'categories': [economy + '_elec_gen_netz', chart_height + netz_elecgen_2_rows + 3, 2, chart_height + netz_elecgen_2_rows + 3, netz_elecgen_3_cols - 1],
-                'values':     [economy + '_elec_gen_netz', chart_height + netz_elecgen_2_rows + i + 4, 2, chart_height + netz_elecgen_2_rows + i + 4, netz_elecgen_3_cols - 1],
+                'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 0],
+                'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, 2,\
+                    (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, netz_elecgen_3_cols - 1],
+                'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, netz_elecgen_3_cols - 1],
                 'fill':       {'color': netz_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet22.insert_chart('J3', netz_prodelec_bytech_chart2)
+        ref_worksheet22.insert_chart('J53', netz_prodelec_bytech_chart2)
     
     else:
         pass
@@ -7335,14 +7603,14 @@ for economy in Economy_codes:
     ## Refining sheet
 
     # Access the workbook and second sheet
-    netz_worksheet23 = writer.sheets[economy + '_refining_netz']
+    # netz_worksheet23 = writer.sheets[economy + '_refining']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet23.set_column(2, netz_refinery_1_rows + 1, None, comma_format)
-    netz_worksheet23.set_row(chart_height, None, header_format)
-    netz_worksheet23.set_row(chart_height + netz_refinery_1_rows + 3, None, header_format)
-    netz_worksheet23.set_row(chart_height + netz_refinery_1_rows + netz_refinery_2_rows + 6, None, header_format)
-    netz_worksheet23.write(0, 0, economy + ' refining', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet23.set_column(2, netz_refinery_1_cols + 1, None, space_format)
+    # netz_worksheet23.set_row(chart_height, None, header_format)
+    # netz_worksheet23.set_row(chart_height + netz_refinery_1_rows + 3, None, header_format)
+    # netz_worksheet23.set_row(chart_height + netz_refinery_1_rows + netz_refinery_2_rows + 6, None, header_format)
+    # netz_worksheet23.write(0, 0, economy + ' refining', cell_format1)
 
     # Create ainput refining line chart
     if netz_refinery_1_rows > 0:
@@ -7389,14 +7657,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_refinery_1_rows):
             netz_refinery_chart1.add_series({
-                'name':       [economy + '_refining_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_refining_netz', chart_height, 2, chart_height, netz_refinery_1_cols - 1],
-                'values':     [economy + '_refining_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_refinery_1_cols - 1],
+                'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, 0],
+                'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, 2,\
+                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, netz_refinery_1_cols - 1],
+                'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, netz_refinery_1_cols - 1],
                 'line':       {'color': netz_refinery_1['FUEL'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
-        netz_worksheet23.insert_chart('B3', netz_refinery_chart1)
+        ref_worksheet23.insert_chart('B54', netz_refinery_chart1)
 
     else:
         pass
@@ -7446,14 +7716,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_refinery_2_rows):
             netz_refinery_chart2.add_series({
-                'name':       [economy + '_refining_netz', chart_height + netz_refinery_1_rows + i + 4, 0],
-                'categories': [economy + '_refining_netz', chart_height + netz_refinery_1_rows + 3, 2, chart_height + netz_refinery_1_rows + 3, netz_refinery_2_cols - 1],
-                'values':     [economy + '_refining_netz', chart_height + netz_refinery_1_rows + i + 4, 2, chart_height + netz_refinery_1_rows + i + 4, netz_refinery_2_cols - 1],
+                'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, 0],
+                'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12, 2,\
+                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12, netz_refinery_2_cols - 1],
+                'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, 2,\
+                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, netz_refinery_2_cols - 1],
                 'line':       {'color': netz_refinery_2['FUEL'].map(colours_dict).loc[i],
                                'width': 1}
             })    
             
-        netz_worksheet23.insert_chart('J3', netz_refinery_chart2)
+        ref_worksheet23.insert_chart('J54', netz_refinery_chart2)
 
     else: 
         pass
@@ -7503,14 +7775,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_refinery_3_rows):
             netz_refinery_chart3.add_series({
-                'name':       [economy + '_refining_netz', chart_height + netz_refinery_1_rows + netz_refinery_2_rows + i + 7, 0],
-                'categories': [economy + '_refining_netz', chart_height + netz_refinery_1_rows + netz_refinery_2_rows + 6, 2, chart_height + netz_refinery_1_rows + netz_refinery_2_rows + 6, netz_refinery_3_cols - 1],
-                'values':     [economy + '_refining_netz', chart_height + netz_refinery_1_rows + netz_refinery_2_rows + i + 7, 2, chart_height + netz_refinery_1_rows + netz_refinery_2_rows + i + 7, netz_refinery_3_cols - 1],
+                'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, 0],
+                'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, 2,\
+                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, netz_refinery_3_cols - 1],
+                'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, 2,\
+                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, netz_refinery_3_cols - 1],
                 'fill':       {'color': netz_refinery_3['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet23.insert_chart('R3', netz_refinery_chart3)
+        ref_worksheet23.insert_chart('R54', netz_refinery_chart3)
 
     else:
         pass
@@ -7518,13 +7792,13 @@ for economy in Economy_codes:
     ############################# Next sheet: Power capacity ##################################
     
     # Access the workbook and second sheet
-    netz_worksheet24 = writer.sheets[economy + '_pow_cap_netz']
+    # netz_worksheet24 = writer.sheets[economy + '_pow_cap']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet24.set_column(1, netz_powcap_1_rows + 1, None, comma_format)
-    netz_worksheet24.set_row(chart_height, None, header_format)
-    netz_worksheet24.set_row(chart_height + netz_powcap_1_rows + 3, None, header_format)
-    netz_worksheet24.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet24.set_column(1, netz_powcap_1_cols + 1, None, space_format)
+    # netz_worksheet24.set_row(chart_height, None, header_format)
+    # netz_worksheet24.set_row(chart_height + netz_powcap_1_rows + 3, None, header_format)
+    # netz_worksheet24.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
     
     # Create a electricity production area chart
     if netz_powcap_1_rows > 0:
@@ -7573,14 +7847,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_powcap_1_rows):
             netz_pow_cap_chart1.add_series({
-                'name':       [economy + '_pow_cap_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_pow_cap_netz', chart_height, 1, chart_height, netz_powcap_1_cols - 1],
-                'values':     [economy + '_pow_cap_netz', chart_height + i + 1, 1, chart_height + i + 1, netz_powcap_1_cols - 1],
+                'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 0],
+                'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, 1,\
+                    (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, netz_powcap_1_cols - 1],
+                'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 1,\
+                    (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, netz_powcap_1_cols - 1],
                 'fill':       {'color': netz_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet24.insert_chart('B3', netz_pow_cap_chart1)
+        ref_worksheet24.insert_chart('B45', netz_pow_cap_chart1)
 
     else:
         pass
@@ -7630,14 +7906,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_powcap_2_rows):
             netz_pow_cap_chart2.add_series({
-                'name':       [economy + '_pow_cap_netz', chart_height + netz_powcap_1_rows + i + 4, 0],
-                'categories': [economy + '_pow_cap_netz', chart_height + netz_powcap_1_rows + 3, 1, chart_height + netz_powcap_1_rows + 3, netz_powcap_2_cols - 1],
-                'values':     [economy + '_pow_cap_netz', chart_height + netz_powcap_1_rows + i + 4, 1, chart_height + netz_powcap_1_rows + i + 4, netz_powcap_2_cols - 1],
+                'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 0],
+                'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, 1,\
+                    (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, netz_powcap_2_cols - 1],
+                'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 1,\
+                    (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, netz_powcap_2_cols - 1],
                 'fill':       {'color': netz_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet24.insert_chart('J3', netz_pow_cap_chart2)
+        ref_worksheet24.insert_chart('J45', netz_pow_cap_chart2)
 
     else:
         pass
@@ -7645,13 +7923,13 @@ for economy in Economy_codes:
     ############################# Next sheet: Transformation sector ##################################
     
     # Access the workbook and second sheet
-    netz_worksheet25 = writer.sheets[economy + '_trnsfrm_netz']
+    # netz_worksheet25 = writer.sheets[economy + '_trnsfrm']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet25.set_column(1, netz_trans_3_rows + 1, None, comma_format)
-    netz_worksheet25.set_row(chart_height, None, header_format)
-    netz_worksheet25.set_row(chart_height + netz_trans_3_rows + 3, None, header_format)
-    netz_worksheet25.write(0, 0, economy + ' transformation', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet25.set_column(1, netz_trans_3_cols + 1, None, space_format)
+    # netz_worksheet25.set_row(chart_height, None, header_format)
+    # netz_worksheet25.set_row(chart_height + netz_trans_3_rows + 3, None, header_format)
+    # netz_worksheet25.write(0, 0, economy + ' transformation', cell_format1)
 
     # Create a transformation area chart
     if netz_trans_3_rows > 0:
@@ -7700,14 +7978,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_trans_3_rows):
             netz_trnsfrm_chart1.add_series({
-                'name':       [economy + '_trnsfrm_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_trnsfrm_netz', chart_height, 1, chart_height, netz_trans_3_cols - 1],
-                'values':     [economy + '_trnsfrm_netz', chart_height + i + 1, 1, chart_height + i + 1, netz_trans_3_cols - 1],
+                'name':       [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + i + 7, 0],
+                'categories': [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + 6, 1,\
+                    (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + 6, netz_trans_3_cols - 1],
+                'values':     [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + i + 7, 1,\
+                    (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + i + 7, netz_trans_3_cols - 1],
                 'fill':       {'color': netz_trans_3['Sector'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet25.insert_chart('B3', netz_trnsfrm_chart1)
+        ref_worksheet25.insert_chart('B31', netz_trnsfrm_chart1)
 
     else:
         pass
@@ -7759,14 +8039,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_trans_3_rows):
             netz_trnsfrm_chart2.add_series({
-                'name':       [economy + '_trnsfrm_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_trnsfrm_netz', chart_height, 1, chart_height, netz_trans_3_cols - 1],
-                'values':     [economy + '_trnsfrm_netz', chart_height + i + 1, 1, chart_height + i + 1, netz_trans_3_cols - 1],
+                'name':       [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + i + 7, 0],
+                'categories': [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + 6, 1,\
+                    (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + 6, netz_trans_3_cols - 1],
+                'values':     [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + i + 7, 1,\
+                    (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + i + 7, netz_trans_3_cols - 1],
                 'line':       {'color': netz_trans_3['Sector'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
-        netz_worksheet25.insert_chart('J3', netz_trnsfrm_chart2)
+        ref_worksheet25.insert_chart('J31', netz_trnsfrm_chart2)
 
     else:
         pass
@@ -7817,14 +8099,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_trans_4_rows):
             netz_trnsfrm_chart3.add_series({
-                'name':       [economy + '_trnsfrm_netz', chart_height + netz_trans_3_rows + i + 4, 0],
-                'categories': [economy + '_trnsfrm_netz', chart_height + netz_trans_3_rows + 3, 1, chart_height + netz_trans_3_rows + 3, netz_trans_4_cols - 1],
-                'values':     [economy + '_trnsfrm_netz', chart_height + netz_trans_3_rows + i + 4, 1, chart_height + netz_trans_3_rows + i + 4, netz_trans_4_cols - 1],
+                'name':       [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + netz_trans_3_rows + i + 10, 0],
+                'categories': [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + netz_trans_3_rows + 9, 1,\
+                    (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + netz_trans_3_rows + 9, netz_trans_4_cols - 1],
+                'values':     [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + netz_trans_3_rows + i + 10, 1,\
+                    (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + netz_trans_3_rows + i + 10, netz_trans_4_cols - 1],
                 'fill':       {'color': netz_trans_4['Sector'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet25.insert_chart('R3', netz_trnsfrm_chart3)
+        ref_worksheet25.insert_chart('R31', netz_trnsfrm_chart3)
 
     else:
         pass
@@ -7833,13 +8117,13 @@ for economy in Economy_codes:
     # Own use charts
     
     # Access the workbook and second sheet
-    netz_worksheet26 = writer.sheets[economy + '_own_netz']
+    # netz_worksheet26 = writer.sheets[economy + '_ownuse']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet26.set_column(2, netz_ownuse_1_rows + 1, None, comma_format)
-    netz_worksheet26.set_row(chart_height, None, header_format)
-    netz_worksheet26.set_row(chart_height + netz_ownuse_1_rows + 3, None, header_format)
-    netz_worksheet26.write(0, 0, economy + ' own use and losses', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet26.set_column(2, netz_ownuse_1_cols + 1, None, space_format)
+    # netz_worksheet26.set_row(chart_height, None, header_format)
+    # netz_worksheet26.set_row(chart_height + netz_ownuse_1_rows + 3, None, header_format)
+    # netz_worksheet26.write(0, 0, economy + ' own use and losses', cell_format1)
 
     # Createn own-use transformation area chart by fuel
     if netz_ownuse_1_rows > 0:
@@ -7888,14 +8172,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_ownuse_1_rows):
             netz_own_chart1.add_series({
-                'name':       [economy + '_own_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_own_netz', chart_height, 2, chart_height, netz_ownuse_1_cols - 1],
-                'values':     [economy + '_own_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_ownuse_1_cols - 1],
+                'name':       [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, 0],
+                'categories': [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, netz_ownuse_1_cols - 1],
+                'values':     [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, netz_ownuse_1_cols - 1],
                 'fill':       {'color': netz_ownuse_1['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet26.insert_chart('B3', netz_own_chart1)
+        ref_worksheet26.insert_chart('B41', netz_own_chart1)
 
     else:
         pass
@@ -7947,14 +8233,14 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_ownuse_1_rows):
             netz_own_chart2.add_series({
-                'name':       [economy + '_own_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_own_netz', chart_height, 2, chart_height, netz_ownuse_1_cols - 1],
-                'values':     [economy + '_own_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_ownuse_1_cols - 1],
+                'name':       [economy + '_ownuse', chart_height + i + 1, 0],
+                'categories': [economy + '_ownuse', chart_height, 2, chart_height, netz_ownuse_1_cols - 1],
+                'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, netz_ownuse_1_cols - 1],
                 'line':       {'color': netz_ownuse_1['FUEL'].map(colours_dict).loc[i],
                                'width': 1.25}
             })    
             
-        netz_worksheet26.insert_chart('J3', netz_own_chart2)
+        ref_worksheet26.insert_chart('J41', netz_own_chart2)
 
     else:
         pass
@@ -8005,14 +8291,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_ownuse_2_rows):
             netz_own_chart3.add_series({
-                'name':       [economy + '_own_netz', chart_height + netz_ownuse_1_rows + i + 4, 0],
-                'categories': [economy + '_own_netz', chart_height + netz_ownuse_1_rows + 3, 2, chart_height + netz_ownuse_1_rows + 3, netz_ownuse_2_cols - 1],
-                'values':     [economy + '_own_netz', chart_height + netz_ownuse_1_rows + i + 4, 2, chart_height + netz_ownuse_1_rows + i + 4, netz_ownuse_2_cols - 1],
+                'name':       [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, 0],
+                'categories': [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, netz_ownuse_2_cols - 1],
+                'values':     [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, netz_ownuse_2_cols - 1],
                 'fill':       {'color': netz_ownuse_2['FUEL'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet26.insert_chart('R3', netz_own_chart3)
+        ref_worksheet26.insert_chart('R41', netz_own_chart3)
 
     else:
         pass
@@ -8020,13 +8308,13 @@ for economy in Economy_codes:
     ##################### HEAT Charts ###########################################
 
     # Access the workbook and second sheet
-    netz_worksheet27 = writer.sheets[economy + '_heat_netz']
+    # netz_worksheet27 = writer.sheets[economy + '_heat_gen']
     
-    # Apply comma format and header format to relevant data rows
-    netz_worksheet27.set_column(2, netz_heatgen_2_rows + 1, None, comma_format)
-    netz_worksheet27.set_row(chart_height, None, header_format)
-    netz_worksheet27.set_row(chart_height + netz_heatgen_2_rows + 3, None, header_format)
-    netz_worksheet27.write(0, 0, economy + ' heat generation by technology', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # netz_worksheet27.set_column(2, netz_heatgen_2_cols + 1, None, space_format)
+    # netz_worksheet27.set_row(chart_height, None, header_format)
+    # netz_worksheet27.set_row(chart_height + netz_heatgen_2_rows + 3, None, header_format)
+    # netz_worksheet27.write(0, 0, economy + ' heat generation by technology', cell_format1)
     
     # Create a electricity production area chart
     if netz_heatgen_2_rows > 0:
@@ -8075,14 +8363,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_heatgen_2_rows):
             heatgen_bytech_chart1.add_series({
-                'name':       [economy + '_heat_netz', chart_height + i + 1, 0],
-                'categories': [economy + '_heat_netz', chart_height, 2, chart_height, netz_heatgen_2_cols - 1],
-                'values':     [economy + '_heat_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_heatgen_2_cols - 1],
+                'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 0],
+                'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 2,\
+                    (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, netz_heatgen_2_cols - 1],
+                'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, netz_heatgen_2_cols - 1],
                 'fill':       {'color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet27.insert_chart('B3', heatgen_bytech_chart1)
+        ref_worksheet27.insert_chart('B43', heatgen_bytech_chart1)
 
     else: 
         pass
@@ -8132,22 +8422,407 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_heatgen_3_rows):
             heatgen_bytech_chart2.add_series({
-                'name':       [economy + '_heat_netz', chart_height + netz_heatgen_2_rows + i + 4, 0],
-                'categories': [economy + '_heat_netz', chart_height + netz_heatgen_2_rows + 3, 2, chart_height + netz_heatgen_2_rows + 3, netz_heatgen_3_cols - 1],
-                'values':     [economy + '_heat_netz', chart_height + netz_heatgen_2_rows + i + 4, 2, chart_height + netz_heatgen_2_rows + i + 4, netz_heatgen_3_cols - 1],
+                'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 0],
+                'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, 2,\
+                    (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, netz_heatgen_3_cols - 1],
+                'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, netz_heatgen_3_cols - 1],
                 'fill':       {'color': netz_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        netz_worksheet27.insert_chart('J3', heatgen_bytech_chart2)
+        ref_worksheet27.insert_chart('J43', heatgen_bytech_chart2)
     
     else:
         pass
 
     # Miscellaneous
 
+    # Access the workbook and second sheet
+    both_worksheet31 = writer.sheets[economy + '_mod_renew']
+    
+    # Apply comma format and header format to relevant data rows
+    both_worksheet31.set_column(2, ref_modren_4_cols + 1, None, space_format)
+    both_worksheet31.set_row(chart_height, None, header_format)
+    both_worksheet31.set_row(chart_height + ref_modren_4_rows + 3, None, header_format)
+    both_worksheet31.set_row(chart_height + 3, None, percentage_format)
+    both_worksheet31.set_row(chart_height + ref_modren_4_rows + 6, None, percentage_format)
+    both_worksheet31.write(0, 0, economy + ' modern renewables', cell_format1)
 
+    # line chart
+    modren_chart1 = workbook.add_chart({'type': 'line'})
+    modren_chart1.set_size({
+        'width': 500,            
+        'height': 300
+    })
         
+    modren_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+        
+    modren_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+            
+    modren_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Proportion',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+            
+    modren_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+            
+    modren_chart1.set_title({
+        'none': True
+    })
+        
+    # Configure the series of the chart from the dataframe data.
+    # for component in ['Reference proportion', 'Net-zero proportion']:
+    i = ref_modren_4[ref_modren_4['item_code_new'] == 'Reference'].index[0]
+    modren_chart1.add_series({
+        'name':       [economy + '_mod_renew', chart_height + i + 1, 1],
+        'categories': [economy + '_mod_renew', chart_height, 2, chart_height, ref_modren_4_cols - 1],
+        'values':     [economy + '_mod_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_modren_4_cols - 1],
+        'line':       {'color': ref_modren_4['item_code_new'].map(colours_dict).loc[i],
+                        'width': 1.5}
+    })
+    j = netz_modren_4[netz_modren_4['item_code_new'] == 'Net-zero'].index[0]
+    modren_chart1.add_series({
+        'name':       [economy + '_mod_renew', chart_height + ref_modren_4_rows + j + 4, 1],
+        'categories': [economy + '_mod_renew', chart_height + ref_modren_4_rows + 3, 2, chart_height + ref_modren_4_rows + 3, netz_modren_4_cols - 1],
+        'values':     [economy + '_mod_renew', chart_height + ref_modren_4_rows + j + 4, 2, chart_height + ref_modren_4_rows + j + 4, netz_modren_4_cols - 1],
+        'line':       {'color': netz_modren_4['item_code_new'].map(colours_dict).loc[j],
+                        'width': 1.5}
+    })    
+            
+    both_worksheet31.insert_chart('B3', modren_chart1)
+
+    ##############################################################
+    # Energy intensity chart
+
+    # Access the workbook and second sheet
+    both_worksheet33 = writer.sheets[economy + '_eintensity']
+    
+    # Apply comma format and header format to relevant data rows
+    both_worksheet33.set_column(2, ref_enint_3_cols + 1, None, space_format)
+    both_worksheet33.set_row(chart_height, None, header_format)
+    both_worksheet33.set_row(chart_height + ref_enint_3_rows + 3, None, header_format)
+    both_worksheet33.write(0, 0, economy + ' energy intensity', cell_format1)
+
+    # line chart
+    enint_chart1 = workbook.add_chart({'type': 'line'})
+    enint_chart1.set_size({
+        'width': 500,            
+        'height': 300
+    })
+        
+    enint_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+        
+    enint_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+            
+    enint_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'TFEC energy intensity (2005 = 100)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+            
+    enint_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+            
+    enint_chart1.set_title({
+        'none': True
+    })
+        
+    # Configure the series of the chart from the dataframe data.
+    i = ref_enint_3[ref_enint_3['Series'] == 'Reference'].index[0]
+    enint_chart1.add_series({
+        'name':       [economy + '_eintensity', chart_height + i + 1, 1],
+        'categories': [economy + '_eintensity', chart_height, 2, chart_height, ref_enint_3_cols - 1],
+        'values':     [economy + '_eintensity', chart_height + i + 1, 2, chart_height + i + 1, ref_enint_3_cols - 1],
+        'line':       {'color': ref_enint_3['Series'].map(colours_dict).loc[i],
+                        'width': 1.5}
+    })
+    j = netz_enint_3[netz_enint_3['Series'] == 'Net-zero'].index[0]
+    enint_chart1.add_series({
+        'name':       [economy + '_eintensity', chart_height + ref_enint_3_rows + j + 4, 1],
+        'categories': [economy + '_eintensity', chart_height + ref_enint_3_rows + 3, 2, chart_height + ref_enint_3_rows + 3, netz_enint_3_cols - 1],
+        'values':     [economy + '_eintensity', chart_height + ref_enint_3_rows + j + 4, 2, chart_height + ref_enint_3_rows + j + 4, netz_enint_3_cols - 1],
+        'line':       {'color': netz_enint_3['Series'].map(colours_dict).loc[j],
+                        'width': 1.5}
+    })    
+            
+    both_worksheet33.insert_chart('B3', enint_chart1)
+
+    ################################################
+    # Macro charts
+
+    # Access the workbook and second sheet
+    both_worksheet32 = writer.sheets[economy + '_macro']
+    
+    # Apply comma format and header format to relevant data rows
+    both_worksheet32.set_column(2, macro_1_cols + 1, None, space_format)
+    both_worksheet32.set_row(chart_height, None, header_format)
+    both_worksheet32.set_row(chart_height + 2, None, percentage_format)
+    both_worksheet32.write(0, 0, economy + ' macro assumptions', cell_format1)
+
+    # line chart
+    GDP_chart1 = workbook.add_chart({'type': 'line'})
+    GDP_chart1.set_size({
+        'width': 500,            
+        'height': 300
+    })
+        
+    GDP_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+        
+    GDP_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+            
+    GDP_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'GDP (millions 2018 USD PPP 2018)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+            
+    GDP_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10},
+        'none': True
+    })
+            
+    GDP_chart1.set_title({
+        'none': True
+    })
+        
+    # Configure the series of the chart from the dataframe data.
+    # for component in ['Reference proportion', 'Net-zero proportion']:
+    i = macro_1[macro_1['Series'] == 'GDP 2018 USD PPP'].index[0]
+    GDP_chart1.add_series({
+        'name':       [economy + '_macro', chart_height + i + 1, 1],
+        'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+        'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+        'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
+                        'width': 1.5}
+    })
+
+    both_worksheet32.insert_chart('B3', GDP_chart1)
+
+    # column chart
+    GDP_chart2 = workbook.add_chart({'type': 'column'})
+    GDP_chart2.set_size({
+        'width': 500,            
+        'height': 300
+    })
+        
+    GDP_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+        
+    GDP_chart2.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        #'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+            
+    GDP_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'GDP growth',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+            
+    GDP_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10},
+        'none': True
+    })
+            
+    GDP_chart2.set_title({
+        'none': True
+    })
+        
+    # Configure the series of the chart from the dataframe data.
+    i = macro_1[macro_1['Series'] == 'GDP growth'].index[0]
+    GDP_chart2.add_series({
+        'name':       [economy + '_macro', chart_height + i + 1, 1],
+        'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+        'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+        'fill':       {'color': macro_1['Series'].map(colours_dict).loc[i]},
+        'border':     {'none': True}
+    })
+             
+    both_worksheet32.insert_chart('J3', GDP_chart2)
+
+    # Population line chart
+    pop_chart1 = workbook.add_chart({'type': 'line'})
+    pop_chart1.set_size({
+        'width': 500,            
+        'height': 300
+    })
+        
+    pop_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+        
+    pop_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+            
+    pop_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Population (millions)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+            
+    pop_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10},
+        'none': True
+    })
+            
+    pop_chart1.set_title({
+        'none': True
+    })
+        
+    # Configure the series of the chart from the dataframe data.
+    # for component in ['Reference proportion', 'Net-zero proportion']:
+    i = macro_1[macro_1['Series'] == 'Population'].index[0]
+    pop_chart1.add_series({
+        'name':       [economy + '_macro', chart_height + i + 1, 1],
+        'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+        'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+        'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
+                        'width': 1.5}
+    })
+
+    both_worksheet32.insert_chart('R3', pop_chart1)  
+
+    # GDP pc line chart
+    GDPpc_chart1 = workbook.add_chart({'type': 'line'})
+    GDPpc_chart1.set_size({
+        'width': 500,            
+        'height': 300
+    })
+        
+    GDPpc_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+        
+    GDPpc_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+            
+    GDPpc_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'GDP per capita (2018 USD PPP)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+            
+    GDPpc_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10},
+        'none': True
+    })
+            
+    GDPpc_chart1.set_title({
+        'none': True
+    })
+        
+    # Configure the series of the chart from the dataframe data.
+    # for component in ['Reference proportion', 'Net-zero proportion']:
+    i = macro_1[macro_1['Series'] == 'GDP per capita'].index[0]
+    GDPpc_chart1.add_series({
+        'name':       [economy + '_macro', chart_height + i + 1, 1],
+        'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+        'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+        'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
+                        'width': 1.5}
+    })
+
+    both_worksheet32.insert_chart('Z3', GDPpc_chart1)   
+
     writer.save()
 
 print('Bling blang blaow, you have some charts now')
