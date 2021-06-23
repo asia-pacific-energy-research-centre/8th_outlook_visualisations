@@ -28,7 +28,7 @@ netz_refownsup_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_refownsup_netzero.csv
 netz_pow_capacity_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_powcapacity_netzero.csv').loc[:,:'2050']
 netz_trans_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_netzero.csv').loc[:,:'2050']
 
-macro_GDP = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'GDP')
+macro_GDP = pd.read_excel('./data/2_Mapping_and_other/macro_APEC.xlsx', sheet_name = 'GDP')
 macro_GDP.columns = macro_GDP.columns.astype(str) 
 macro_GDP['Series'] = 'GDP 2018 USD PPP'
 macro_GDP = macro_GDP[['Economy', 'Series'] + list(macro_GDP.loc[:, '2000':'2050'])]
@@ -37,12 +37,12 @@ macro_GDP = macro_GDP[['Economy', 'Series'] + list(macro_GDP.loc[:, '2000':'2050
 GDP = macro_GDP.select_dtypes(include=[np.number]) / 1000000 
 macro_GDP[GDP.columns] = GDP
 
-macro_GDP_growth = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'GDP_growth')
+macro_GDP_growth = pd.read_excel('./data/2_Mapping_and_other/macro_APEC.xlsx', sheet_name = 'GDP_growth')
 macro_GDP_growth.columns = macro_GDP_growth.columns.astype(str) 
 macro_GDP_growth['Series'] = 'GDP growth'
 macro_GDP_growth = macro_GDP_growth[['Economy', 'Series'] + list(macro_GDP_growth.loc[:, '2000':'2050'])]
 
-macro_pop = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'Population')
+macro_pop = pd.read_excel('./data/2_Mapping_and_other/macro_APEC.xlsx', sheet_name = 'Population')
 macro_pop.columns = macro_pop.columns.astype(str) 
 macro_pop['Series'] = 'Population'
 macro_pop = macro_pop[['Economy', 'Series'] + list(macro_pop.loc[:, '2000':'2050'])]
@@ -51,7 +51,7 @@ macro_pop = macro_pop[['Economy', 'Series'] + list(macro_pop.loc[:, '2000':'2050
 pop = macro_pop.select_dtypes(include=[np.number]) / 1000 
 macro_pop[pop.columns] = pop
 
-macro_GDPpc = pd.read_excel('./data/2_Mapping_and_other/Key Inputs.xlsx', sheet_name = 'GDP per capita')
+macro_GDPpc = pd.read_excel('./data/2_Mapping_and_other/macro_APEC.xlsx', sheet_name = 'GDP per capita')
 macro_GDPpc.columns = macro_GDPpc.columns.astype(str)
 macro_GDPpc['Series'] = 'GDP per capita' 
 macro_GDPpc = macro_GDPpc[['Economy', 'Series'] + list(macro_GDPpc.loc[:, '2000':'2050'])]
@@ -461,7 +461,7 @@ EGEDA_hist_eh = pd.read_csv('./data/4_Joined/EGEDA_hist_eh.csv')
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['06_HKC', '10_MAS']
+# Economy_codes = ['06_HKC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
