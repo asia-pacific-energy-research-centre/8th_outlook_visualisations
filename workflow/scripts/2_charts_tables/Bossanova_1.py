@@ -461,7 +461,7 @@ EGEDA_hist_eh = pd.read_csv('./data/4_Joined/EGEDA_hist_eh.csv')
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-Economy_codes = ['01_AUS']
+# Economy_codes = ['22_SEA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2504,49 +2504,60 @@ for economy in Economy_codes:
     # Energy intensity
     # REFERENCE
 
-    ref_enint_1 = ref_tfec_1.copy()
-    ref_enint_1['Economy'] = economy
-    ref_enint_1['Series'] = 'TFEC'
+    if any(economy in s for s in list(macro_GDP['Economy'])):
 
-    ref_enint_1 = ref_enint_1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
+        ref_enint_1 = ref_tfec_1.copy()
+        ref_enint_1['Economy'] = economy
+        ref_enint_1['Series'] = 'TFEC'
 
-    ref_enint_1 = ref_enint_1[['Economy', 'Series'] + list(ref_enint_1.loc[:,'2000':'2050'])]
+        ref_enint_1 = ref_enint_1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
 
-    ref_ei_calc1 = [economy, 'TFEC energy intensity'] + list(ref_enint_1.iloc[0, 2:] / ref_enint_1.iloc[1, 2:])
-    ref_ei_series1 = pd.Series(ref_ei_calc1, index = ref_enint_1.columns)
+        ref_enint_1 = ref_enint_1[['Economy', 'Series'] + list(ref_enint_1.loc[:,'2000':'2050'])]
 
-    ref_enint_2 = ref_enint_1.append(ref_ei_series1, ignore_index = True).reset_index(drop = True)
+        ref_ei_calc1 = [economy, 'TFEC energy intensity'] + list(ref_enint_1.iloc[0, 2:] / ref_enint_1.iloc[1, 2:])
+        ref_ei_series1 = pd.Series(ref_ei_calc1, index = ref_enint_1.columns)
 
-    ref_ei_calc2 = [economy, 'Reference'] + list(ref_enint_2.iloc[2, 2:] / ref_enint_2.iloc[2, 7] * 100)
-    ref_ei_series2 = pd.Series(ref_ei_calc2, index = ref_enint_2.columns)
+        ref_enint_2 = ref_enint_1.append(ref_ei_series1, ignore_index = True).reset_index(drop = True)
 
-    ref_enint_3 = ref_enint_2.append(ref_ei_series2, ignore_index = True).reset_index(drop = True)
+        ref_ei_calc2 = [economy, 'Reference'] + list(ref_enint_2.iloc[2, 2:] / ref_enint_2.iloc[2, 7] * 100)
+        ref_ei_series2 = pd.Series(ref_ei_calc2, index = ref_enint_2.columns)
 
-    ref_enint_3_rows = ref_enint_3.shape[0]
-    ref_enint_3_cols = ref_enint_3.shape[1]
+        ref_enint_3 = ref_enint_2.append(ref_ei_series2, ignore_index = True).reset_index(drop = True)
 
-    # NET-ZERO
+        ref_enint_3_rows = ref_enint_3.shape[0]
+        ref_enint_3_cols = ref_enint_3.shape[1]
 
-    netz_enint_1 = netz_tfec_1.copy()
-    netz_enint_1['Economy'] = economy
-    netz_enint_1['Series'] = 'TFEC'
+        # NET-ZERO
 
-    netz_enint_1 = netz_enint_1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
+        netz_enint_1 = netz_tfec_1.copy()
+        netz_enint_1['Economy'] = economy
+        netz_enint_1['Series'] = 'TFEC'
 
-    netz_enint_1 = netz_enint_1[['Economy', 'Series'] + list(netz_enint_1.loc[:,'2000':'2050'])]
+        netz_enint_1 = netz_enint_1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
 
-    netz_ei_calc1 = [economy, 'TFEC energy intensity'] + list(netz_enint_1.iloc[0, 2:] / netz_enint_1.iloc[1, 2:])
-    netz_ei_series1 = pd.Series(netz_ei_calc1, index = netz_enint_1.columns)
+        netz_enint_1 = netz_enint_1[['Economy', 'Series'] + list(netz_enint_1.loc[:,'2000':'2050'])]
 
-    netz_enint_2 = netz_enint_1.append(netz_ei_series1, ignore_index = True).reset_index(drop = True)
+        netz_ei_calc1 = [economy, 'TFEC energy intensity'] + list(netz_enint_1.iloc[0, 2:] / netz_enint_1.iloc[1, 2:])
+        netz_ei_series1 = pd.Series(netz_ei_calc1, index = netz_enint_1.columns)
 
-    netz_ei_calc2 = [economy, 'Net-zero'] + list(netz_enint_2.iloc[2, 2:] / netz_enint_2.iloc[2, 7] * 100)
-    netz_ei_series2 = pd.Series(netz_ei_calc2, index = netz_enint_2.columns)
+        netz_enint_2 = netz_enint_1.append(netz_ei_series1, ignore_index = True).reset_index(drop = True)
 
-    netz_enint_3 = netz_enint_2.append(netz_ei_series2, ignore_index = True).reset_index(drop = True)
+        netz_ei_calc2 = [economy, 'Net-zero'] + list(netz_enint_2.iloc[2, 2:] / netz_enint_2.iloc[2, 7] * 100)
+        netz_ei_series2 = pd.Series(netz_ei_calc2, index = netz_enint_2.columns)
 
-    netz_enint_3_rows = netz_enint_3.shape[0]
-    netz_enint_3_cols = netz_enint_3.shape[1]
+        netz_enint_3 = netz_enint_2.append(netz_ei_series2, ignore_index = True).reset_index(drop = True)
+
+        netz_enint_3_rows = netz_enint_3.shape[0]
+        netz_enint_3_cols = netz_enint_3.shape[1]
+
+    else:
+        ref_enint_3 = pd.DataFrame()
+        ref_enint_3_rows = ref_enint_3.shape[0]
+        ref_enint_r_cols = ref_enint_3.shape[1]
+
+        netz_enint_3 = pd.DataFrame()
+        netz_enint_3_rows = netz_enint_3.shape[0]
+        netz_enint_r_cols = netz_enint_3.shape[1]
 
     # Df builds are complete
 
@@ -8450,68 +8461,72 @@ for economy in Economy_codes:
     both_worksheet31.write(0, 0, economy + ' modern renewables', cell_format1)
 
     # line chart
-    modren_chart1 = workbook.add_chart({'type': 'line'})
-    modren_chart1.set_size({
-        'width': 500,            
-        'height': 300
-    })
-        
-    modren_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-        
-    modren_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if ref_modren_4_rows > 0 & netz_modren_4_rows > 0:
+        modren_chart1 = workbook.add_chart({'type': 'line'})
+        modren_chart1.set_size({
+            'width': 500,            
+            'height': 300
+        })
             
-    modren_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Proportion',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        modren_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+            
+        modren_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+                
+        modren_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Proportion',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+                
+        modren_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+                
+        modren_chart1.set_title({
+            'none': True
+        })
             
-    modren_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-            
-    modren_chart1.set_title({
-        'none': True
-    })
-        
-    # Configure the series of the chart from the dataframe data.
-    # for component in ['Reference proportion', 'Net-zero proportion']:
-    i = ref_modren_4[ref_modren_4['item_code_new'] == 'Reference'].index[0]
-    modren_chart1.add_series({
-        'name':       [economy + '_mod_renew', chart_height + i + 1, 1],
-        'categories': [economy + '_mod_renew', chart_height, 2, chart_height, ref_modren_4_cols - 1],
-        'values':     [economy + '_mod_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_modren_4_cols - 1],
-        'line':       {'color': ref_modren_4['item_code_new'].map(colours_dict).loc[i],
-                        'width': 1.5}
-    })
-    j = netz_modren_4[netz_modren_4['item_code_new'] == 'Net-zero'].index[0]
-    modren_chart1.add_series({
-        'name':       [economy + '_mod_renew', chart_height + ref_modren_4_rows + j + 4, 1],
-        'categories': [economy + '_mod_renew', chart_height + ref_modren_4_rows + 3, 2, chart_height + ref_modren_4_rows + 3, netz_modren_4_cols - 1],
-        'values':     [economy + '_mod_renew', chart_height + ref_modren_4_rows + j + 4, 2, chart_height + ref_modren_4_rows + j + 4, netz_modren_4_cols - 1],
-        'line':       {'color': netz_modren_4['item_code_new'].map(colours_dict).loc[j],
-                        'width': 1.5}
-    })    
-            
-    both_worksheet31.insert_chart('B3', modren_chart1)
+        # Configure the series of the chart from the dataframe data.
+        # for component in ['Reference proportion', 'Net-zero proportion']:
+        i = ref_modren_4[ref_modren_4['item_code_new'] == 'Reference'].index[0]
+        modren_chart1.add_series({
+            'name':       [economy + '_mod_renew', chart_height + i + 1, 1],
+            'categories': [economy + '_mod_renew', chart_height, 2, chart_height, ref_modren_4_cols - 1],
+            'values':     [economy + '_mod_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_modren_4_cols - 1],
+            'line':       {'color': ref_modren_4['item_code_new'].map(colours_dict).loc[i],
+                            'width': 1.5}
+        })
+        j = netz_modren_4[netz_modren_4['item_code_new'] == 'Net-zero'].index[0]
+        modren_chart1.add_series({
+            'name':       [economy + '_mod_renew', chart_height + ref_modren_4_rows + j + 4, 1],
+            'categories': [economy + '_mod_renew', chart_height + ref_modren_4_rows + 3, 2, chart_height + ref_modren_4_rows + 3, netz_modren_4_cols - 1],
+            'values':     [economy + '_mod_renew', chart_height + ref_modren_4_rows + j + 4, 2, chart_height + ref_modren_4_rows + j + 4, netz_modren_4_cols - 1],
+            'line':       {'color': netz_modren_4['item_code_new'].map(colours_dict).loc[j],
+                            'width': 1.5}
+        })    
+                
+        both_worksheet31.insert_chart('B3', modren_chart1)
+    
+    else:
+        pass
 
     ##############################################################
     # Energy intensity chart
@@ -8526,67 +8541,71 @@ for economy in Economy_codes:
     both_worksheet33.write(0, 0, economy + ' energy intensity', cell_format1)
 
     # line chart
-    enint_chart1 = workbook.add_chart({'type': 'line'})
-    enint_chart1.set_size({
-        'width': 500,            
-        'height': 300
-    })
-        
-    enint_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-        
-    enint_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if ref_enint_3_rows > 0 & netz_enint_3_rows > 0:
+        enint_chart1 = workbook.add_chart({'type': 'line'})
+        enint_chart1.set_size({
+            'width': 500,            
+            'height': 300
+        })
             
-    enint_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'TFEC energy intensity (2005 = 100)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        enint_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+            
+        enint_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+                
+        enint_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'TFEC energy intensity (2005 = 100)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+                
+        enint_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+                
+        enint_chart1.set_title({
+            'none': True
+        })
             
-    enint_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-            
-    enint_chart1.set_title({
-        'none': True
-    })
-        
-    # Configure the series of the chart from the dataframe data.
-    i = ref_enint_3[ref_enint_3['Series'] == 'Reference'].index[0]
-    enint_chart1.add_series({
-        'name':       [economy + '_eintensity', chart_height + i + 1, 1],
-        'categories': [economy + '_eintensity', chart_height, 2, chart_height, ref_enint_3_cols - 1],
-        'values':     [economy + '_eintensity', chart_height + i + 1, 2, chart_height + i + 1, ref_enint_3_cols - 1],
-        'line':       {'color': ref_enint_3['Series'].map(colours_dict).loc[i],
-                        'width': 1.5}
-    })
-    j = netz_enint_3[netz_enint_3['Series'] == 'Net-zero'].index[0]
-    enint_chart1.add_series({
-        'name':       [economy + '_eintensity', chart_height + ref_enint_3_rows + j + 4, 1],
-        'categories': [economy + '_eintensity', chart_height + ref_enint_3_rows + 3, 2, chart_height + ref_enint_3_rows + 3, netz_enint_3_cols - 1],
-        'values':     [economy + '_eintensity', chart_height + ref_enint_3_rows + j + 4, 2, chart_height + ref_enint_3_rows + j + 4, netz_enint_3_cols - 1],
-        'line':       {'color': netz_enint_3['Series'].map(colours_dict).loc[j],
-                        'width': 1.5}
-    })    
-            
-    both_worksheet33.insert_chart('B3', enint_chart1)
+        # Configure the series of the chart from the dataframe data.
+        i = ref_enint_3[ref_enint_3['Series'] == 'Reference'].index[0]
+        enint_chart1.add_series({
+            'name':       [economy + '_eintensity', chart_height + i + 1, 1],
+            'categories': [economy + '_eintensity', chart_height, 2, chart_height, ref_enint_3_cols - 1],
+            'values':     [economy + '_eintensity', chart_height + i + 1, 2, chart_height + i + 1, ref_enint_3_cols - 1],
+            'line':       {'color': ref_enint_3['Series'].map(colours_dict).loc[i],
+                            'width': 1.5}
+        })
+        j = netz_enint_3[netz_enint_3['Series'] == 'Net-zero'].index[0]
+        enint_chart1.add_series({
+            'name':       [economy + '_eintensity', chart_height + ref_enint_3_rows + j + 4, 1],
+            'categories': [economy + '_eintensity', chart_height + ref_enint_3_rows + 3, 2, chart_height + ref_enint_3_rows + 3, netz_enint_3_cols - 1],
+            'values':     [economy + '_eintensity', chart_height + ref_enint_3_rows + j + 4, 2, chart_height + ref_enint_3_rows + j + 4, netz_enint_3_cols - 1],
+            'line':       {'color': netz_enint_3['Series'].map(colours_dict).loc[j],
+                            'width': 1.5}
+        })    
+                
+        both_worksheet33.insert_chart('B3', enint_chart1)
+
+    else:
+        pass
 
     ################################################
     # Macro charts
@@ -8601,227 +8620,231 @@ for economy in Economy_codes:
     both_worksheet32.write(0, 0, economy + ' macro assumptions', cell_format1)
 
     # line chart
-    GDP_chart1 = workbook.add_chart({'type': 'line'})
-    GDP_chart1.set_size({
-        'width': 500,            
-        'height': 300
-    })
-        
-    GDP_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-        
-    GDP_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if macro_1_rows > 0:
+        GDP_chart1 = workbook.add_chart({'type': 'line'})
+        GDP_chart1.set_size({
+            'width': 500,            
+            'height': 300
+        })
             
-    GDP_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'GDP (millions 2018 USD PPP 2018)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        GDP_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+            
+        GDP_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-            
-    GDP_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10},
-        'none': True
-    })
-            
-    GDP_chart1.set_title({
-        'none': True
-    })
-        
-    # Configure the series of the chart from the dataframe data.
-    # for component in ['Reference proportion', 'Net-zero proportion']:
-    i = macro_1[macro_1['Series'] == 'GDP 2018 USD PPP'].index[0]
-    GDP_chart1.add_series({
-        'name':       [economy + '_macro', chart_height + i + 1, 1],
-        'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
-        'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
-        'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
-                        'width': 1.5}
-    })
-
-    both_worksheet32.insert_chart('B3', GDP_chart1)
-
-    # column chart
-    GDP_chart2 = workbook.add_chart({'type': 'column'})
-    GDP_chart2.set_size({
-        'width': 500,            
-        'height': 300
-    })
-        
-    GDP_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-        
-    GDP_chart2.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        #'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
-            
-    GDP_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'GDP growth',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        })
+                
+        GDP_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'GDP (millions 2018 USD PPP 2018)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+                
+        GDP_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10},
+            'none': True
+        })
+                
+        GDP_chart1.set_title({
+            'none': True
+        })
             
-    GDP_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10},
-        'none': True
-    })
-            
-    GDP_chart2.set_title({
-        'none': True
-    })
-        
-    # Configure the series of the chart from the dataframe data.
-    i = macro_1[macro_1['Series'] == 'GDP growth'].index[0]
-    GDP_chart2.add_series({
-        'name':       [economy + '_macro', chart_height + i + 1, 1],
-        'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
-        'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
-        'fill':       {'color': macro_1['Series'].map(colours_dict).loc[i]},
-        'border':     {'none': True}
-    })
-             
-    both_worksheet32.insert_chart('J3', GDP_chart2)
+        # Configure the series of the chart from the dataframe data.
+        # for component in ['Reference proportion', 'Net-zero proportion']:
+        i = macro_1[macro_1['Series'] == 'GDP 2018 USD PPP'].index[0]
+        GDP_chart1.add_series({
+            'name':       [economy + '_macro', chart_height + i + 1, 1],
+            'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+            'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+            'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
+                            'width': 1.5}
+        })
 
-    # Population line chart
-    pop_chart1 = workbook.add_chart({'type': 'line'})
-    pop_chart1.set_size({
-        'width': 500,            
-        'height': 300
-    })
-        
-    pop_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-        
-    pop_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+        both_worksheet32.insert_chart('B3', GDP_chart1)
+
+        # column chart
+        GDP_chart2 = workbook.add_chart({'type': 'column'})
+        GDP_chart2.set_size({
+            'width': 500,            
+            'height': 300
+        })
             
-    pop_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Population (millions)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        GDP_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+            
+        GDP_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            #'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-            
-    pop_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10},
-        'none': True
-    })
-            
-    pop_chart1.set_title({
-        'none': True
-    })
-        
-    # Configure the series of the chart from the dataframe data.
-    # for component in ['Reference proportion', 'Net-zero proportion']:
-    i = macro_1[macro_1['Series'] == 'Population'].index[0]
-    pop_chart1.add_series({
-        'name':       [economy + '_macro', chart_height + i + 1, 1],
-        'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
-        'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
-        'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
-                        'width': 1.5}
-    })
-
-    both_worksheet32.insert_chart('R3', pop_chart1)  
-
-    # GDP pc line chart
-    GDPpc_chart1 = workbook.add_chart({'type': 'line'})
-    GDPpc_chart1.set_size({
-        'width': 500,            
-        'height': 300
-    })
-        
-    GDPpc_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-        
-    GDPpc_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
-            
-    GDPpc_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'GDP per capita (2018 USD PPP)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
+        })
+                
+        GDP_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'GDP growth',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+                
+        GDP_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10},
+            'none': True
+        })
+                
+        GDP_chart2.set_title({
+            'none': True
+        })
             
-    GDPpc_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10},
-        'none': True
-    })
-            
-    GDPpc_chart1.set_title({
-        'none': True
-    })
-        
-    # Configure the series of the chart from the dataframe data.
-    # for component in ['Reference proportion', 'Net-zero proportion']:
-    i = macro_1[macro_1['Series'] == 'GDP per capita'].index[0]
-    GDPpc_chart1.add_series({
-        'name':       [economy + '_macro', chart_height + i + 1, 1],
-        'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
-        'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
-        'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
-                        'width': 1.5}
-    })
+        # Configure the series of the chart from the dataframe data.
+        i = macro_1[macro_1['Series'] == 'GDP growth'].index[0]
+        GDP_chart2.add_series({
+            'name':       [economy + '_macro', chart_height + i + 1, 1],
+            'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+            'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+            'fill':       {'color': macro_1['Series'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+                
+        both_worksheet32.insert_chart('J3', GDP_chart2)
 
-    both_worksheet32.insert_chart('Z3', GDPpc_chart1)   
+        # Population line chart
+        pop_chart1 = workbook.add_chart({'type': 'line'})
+        pop_chart1.set_size({
+            'width': 500,            
+            'height': 300
+        })
+            
+        pop_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+            
+        pop_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+                
+        pop_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Population (millions)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+                
+        pop_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10},
+            'none': True
+        })
+                
+        pop_chart1.set_title({
+            'none': True
+        })
+            
+        # Configure the series of the chart from the dataframe data.
+        # for component in ['Reference proportion', 'Net-zero proportion']:
+        i = macro_1[macro_1['Series'] == 'Population'].index[0]
+        pop_chart1.add_series({
+            'name':       [economy + '_macro', chart_height + i + 1, 1],
+            'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+            'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+            'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
+                            'width': 1.5}
+        })
+
+        both_worksheet32.insert_chart('R3', pop_chart1)  
+
+        # GDP pc line chart
+        GDPpc_chart1 = workbook.add_chart({'type': 'line'})
+        GDPpc_chart1.set_size({
+            'width': 500,            
+            'height': 300
+        })
+            
+        GDPpc_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+            
+        GDPpc_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+                
+        GDPpc_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'GDP per capita (2018 USD PPP)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+                
+        GDPpc_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10},
+            'none': True
+        })
+                
+        GDPpc_chart1.set_title({
+            'none': True
+        })
+            
+        # Configure the series of the chart from the dataframe data.
+        # for component in ['Reference proportion', 'Net-zero proportion']:
+        i = macro_1[macro_1['Series'] == 'GDP per capita'].index[0]
+        GDPpc_chart1.add_series({
+            'name':       [economy + '_macro', chart_height + i + 1, 1],
+            'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+            'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+            'line':       {'color': macro_1['Series'].map(colours_dict).loc[i],
+                            'width': 1.5}
+        })
+
+        both_worksheet32.insert_chart('Z3', GDPpc_chart1)
+
+    else:
+        pass   
 
     writer.save()
 
