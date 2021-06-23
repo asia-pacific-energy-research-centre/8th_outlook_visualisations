@@ -461,7 +461,7 @@ EGEDA_hist_eh = pd.read_csv('./data/4_Joined/EGEDA_hist_eh.csv')
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['22_SEA']
+# Economy_codes = ['06_HKC', '10_MAS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2491,13 +2491,20 @@ for economy in Economy_codes:
 
     # Macro dataframe
 
-    macro_1 = macro_GDP[macro_GDP['Economy'] == economy].copy().\
-        append(macro_GDP_growth[macro_GDP_growth['Economy'] == economy].copy()).\
-            append(macro_pop[macro_pop['Economy'] == economy].copy()).\
-                append(macro_GDPpc[macro_GDPpc['Economy'] == economy].copy()).reset_index(drop = True)    
+    if any(economy in s for s in list(macro_GDP['Economy'])):
 
-    macro_1_rows = macro_1.shape[0]
-    macro_1_cols = macro_1.shape[1]
+        macro_1 = macro_GDP[macro_GDP['Economy'] == economy].copy().\
+            append(macro_GDP_growth[macro_GDP_growth['Economy'] == economy].copy()).\
+                append(macro_pop[macro_pop['Economy'] == economy].copy()).\
+                    append(macro_GDPpc[macro_GDPpc['Economy'] == economy].copy()).reset_index(drop = True)    
+
+        macro_1_rows = macro_1.shape[0]
+        macro_1_cols = macro_1.shape[1]
+
+    else:
+        macro_1 = pd.DataFrame()
+        macro_1_rows = macro_1.shape[0]
+        macro_1_cols = macro_1.shape[1]
 
     #############################################################################################################
 
@@ -8677,59 +8684,63 @@ for economy in Economy_codes:
         both_worksheet32.insert_chart('B3', GDP_chart1)
 
         # column chart
-        GDP_chart2 = workbook.add_chart({'type': 'column'})
-        GDP_chart2.set_size({
-            'width': 500,            
-            'height': 300
-        })
-            
-        GDP_chart2.set_chartarea({
-            'border': {'none': True}
-        })
-            
-        GDP_chart2.set_x_axis({
-            'name': 'Year',
-            'label_position': 'low',
-            'major_tick_mark': 'none',
-            'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-            #'position_axis': 'on_tick',
-            'interval_unit': 4,
-            'line': {'color': '#bebebe'}
-        })
+        if any('GDP growth' in s for s in list(macro_1['Series'])):
+            GDP_chart2 = workbook.add_chart({'type': 'column'})
+            GDP_chart2.set_size({
+                'width': 500,            
+                'height': 300
+            })
                 
-        GDP_chart2.set_y_axis({
-            'major_tick_mark': 'none', 
-            'minor_tick_mark': 'none',
-            'name': 'GDP growth',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-            'major_gridlines': {
-                'visible': True,
+            GDP_chart2.set_chartarea({
+                'border': {'none': True}
+            })
+                
+            GDP_chart2.set_x_axis({
+                'name': 'Year',
+                'label_position': 'low',
+                'major_tick_mark': 'none',
+                'minor_tick_mark': 'none',
+                'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+                #'position_axis': 'on_tick',
+                'interval_unit': 4,
                 'line': {'color': '#bebebe'}
-            },
-            'line': {'color': '#bebebe'}
-        })
+            })
+                    
+            GDP_chart2.set_y_axis({
+                'major_tick_mark': 'none', 
+                'minor_tick_mark': 'none',
+                'name': 'GDP growth',
+                'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+                'major_gridlines': {
+                    'visible': True,
+                    'line': {'color': '#bebebe'}
+                },
+                'line': {'color': '#bebebe'}
+            })
+                    
+            GDP_chart2.set_legend({
+                'font': {'font': 'Segoe UI', 'size': 10},
+                'none': True
+            })
+                    
+            GDP_chart2.set_title({
+                'none': True
+            })
                 
-        GDP_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10},
-            'none': True
-        })
-                
-        GDP_chart2.set_title({
-            'none': True
-        })
-            
-        # Configure the series of the chart from the dataframe data.
-        i = macro_1[macro_1['Series'] == 'GDP growth'].index[0]
-        GDP_chart2.add_series({
-            'name':       [economy + '_macro', chart_height + i + 1, 1],
-            'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
-            'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
-            'fill':       {'color': macro_1['Series'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-                
-        both_worksheet32.insert_chart('J3', GDP_chart2)
+            # Configure the series of the chart from the dataframe data.
+            i = macro_1[macro_1['Series'] == 'GDP growth'].index[0]
+            GDP_chart2.add_series({
+                'name':       [economy + '_macro', chart_height + i + 1, 1],
+                'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
+                'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
+                'fill':       {'color': macro_1['Series'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+                    
+            both_worksheet32.insert_chart('J3', GDP_chart2)
+
+        else:
+            pass
 
         # Population line chart
         pop_chart1 = workbook.add_chart({'type': 'line'})
