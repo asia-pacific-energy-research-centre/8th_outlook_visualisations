@@ -207,7 +207,8 @@ use_agg_fuels_2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other', 'Impo
 
 coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
 oil_tech = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
-gas_tech = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
+gas_tech = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
+gas_ccs_tech = ['POW_CCGT_CCS_PP']
 nuclear_tech = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
 hydro_tech = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP']
 solar_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
@@ -231,12 +232,20 @@ modren_elec_heat = ['POW_Hydro_PP', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 
                     'POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP', 'POW_Geothermal_PP', 'POW_TIDAL_PP', 
                     'POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP']
 
+all_elec_heat = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_Ultra_BituCoal_PP', 
+                 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP', 'POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP',
+                 'POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP', 'POW_Nuclear_PP', 'POW_IMP_Nuclear_PP',
+                 'POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
+                 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP', 'POW_WindOff_PP', 'POW_Wind_PP', 'POW_Solid_Biomass_PP', 
+                 'POW_CHP_BIO_PP', 'POW_Biogas_PP', 'POW_Geothermal_PP', 'POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage',
+                 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP', 'POW_CHP_PP']
+
 # 'POW_Pumped_Hydro'?? in the above
 
 # POW_EXPORT_ELEC_PP need to work this in
 
-prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
-prod_agg_tech2 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
+prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
+prod_agg_tech2 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
                  'Biomass', 'Geothermal', 'Storage', 'Other', 'Imports']
 
 heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste', 'Heat only', 'Other']
@@ -253,7 +262,8 @@ refinery_new_output = ['7_1_from_ref', '7_2_from_ref', '7_3_from_ref', '7_jet_fr
 # Capacity vectors
     
 coal_cap = ['POW_Black_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_CHP_COAL_PP', 'POW_Other_Coal_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP']
-gas_cap = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
+gas_cap = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
+gas_ccs_cap = ['POW_CCGT_CCS_PP']
 oil_cap = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
 nuclear_cap = ['POW_Nuclear_PP', 'POW_IMP_Nuclear_PP']
 hydro_cap = ['POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP']
@@ -271,8 +281,8 @@ lignite_cap = ['POW_Sub_Brown_PP']
 thermal_coal_cap = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
 
 
-pow_capacity_agg = ['Coal', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
-pow_capacity_agg2 = ['Coal', 'Lignite', 'Gas', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 
+pow_capacity_agg = ['Coal', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
+pow_capacity_agg2 = ['Coal', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 
                      'Solar', 'Geothermal', 'Storage', 'Other']
 
 # Heat power plants
@@ -456,12 +466,28 @@ EGEDA_hist_eh = EGEDA_hist_eh.groupby(['economy', 'fuel_code', 'item_code_new'])
 EGEDA_hist_eh.to_csv('./data/4_Joined/EGEDA_hist_eh.csv', index = False)
 EGEDA_hist_eh = pd.read_csv('./data/4_Joined/EGEDA_hist_eh.csv')
 
+#########################################################################################################################
+
+EGEDA_hist_eh2 = EGEDA_data[(EGEDA_data['item_code_new'].isin(['18_electricity_output_in_pj', '19_heat_output_in_pj'])) &
+                           (EGEDA_data['fuel_code'] == '19_total')].copy().reset_index(drop = True)
+
+EGEDA_hist_eh2 = EGEDA_hist_eh2[['economy', 'fuel_code', 'item_code_new'] + list(range(2000, 2019))].\
+    groupby(['economy']).sum().reset_index()
+
+EGEDA_hist_eh2['fuel_code'] = 'Total'
+EGEDA_hist_eh2['item_code_new'] = 'Electricity and heat'
+
+EGEDA_hist_eh2 = EGEDA_hist_eh2[['economy', 'fuel_code', 'item_code_new'] + list(range(2000, 2019))].reset_index(drop = True)
+
+EGEDA_hist_eh2.to_csv('./data/4_Joined/EGEDA_hist_eh2.csv', index = False)
+EGEDA_hist_eh2 = pd.read_csv('./data/4_Joined/EGEDA_hist_eh2.csv')
+
 #########################################################################################################################################
 
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['06_HKC']
+# Economy_codes = ['20_USA', 'APEC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1363,6 +1389,9 @@ for economy in Economy_codes:
     ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
     ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
 
+    # Make bunkers data non-negative
+    ref_bunkers_1.update(ref_bunkers_1.select_dtypes(include = [np.number]).abs())
+
     ref_bunkers_1_rows = ref_bunkers_1.shape[0]
     ref_bunkers_1_cols = ref_bunkers_1.shape[1]
 
@@ -1383,6 +1412,9 @@ for economy in Economy_codes:
     ref_bunkers_2 = ref_bunkers_2[ref_bunkers_2['fuel_code'].isin(avi_bunker)]\
         .set_index('fuel_code').loc[avi_bunker].reset_index()\
             [['fuel_code', 'item_code_new'] + list(ref_bunkers_2.loc[:, '2000':])]
+
+    # Make bunkers data non-negative
+    ref_bunkers_2.update(ref_bunkers_2.select_dtypes(include = [np.number]).abs())
 
     ref_bunkers_2_rows = ref_bunkers_2.shape[0]
     ref_bunkers_2_cols = ref_bunkers_2.shape[1]
@@ -1566,6 +1598,9 @@ for economy in Economy_codes:
     netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
     netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
 
+    # Make bunkers data non-negative
+    netz_bunkers_1.update(netz_bunkers_1.select_dtypes(include = [np.number]).abs())
+
     netz_bunkers_1_rows = netz_bunkers_1.shape[0]
     netz_bunkers_1_cols = netz_bunkers_1.shape[1]
 
@@ -1586,6 +1621,9 @@ for economy in Economy_codes:
     netz_bunkers_2 = netz_bunkers_2[netz_bunkers_2['fuel_code'].isin(avi_bunker)]\
         .set_index('fuel_code').loc[avi_bunker].reset_index()\
             [['fuel_code', 'item_code_new'] + list(netz_bunkers_2.loc[:, '2000':])]
+
+    # Make bunkers data non-negative
+    netz_bunkers_2.update(netz_bunkers_2.select_dtypes(include = [np.number]).abs())
 
     netz_bunkers_2_rows = netz_bunkers_2.shape[0]
     netz_bunkers_2_cols = netz_bunkers_2.shape[1]
@@ -1703,6 +1741,7 @@ for economy in Economy_codes:
     coal_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
     oil_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(oil_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(gas_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    gas_ccs_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(gas_ccs_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas CCS')
     storage_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(storage_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Storage')
     # chp_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(chp_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Cogeneration')
     nuclear_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(nuclear_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
@@ -1721,7 +1760,7 @@ for economy in Economy_codes:
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    ref_elecgen_2 = ref_elecgen_1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, storage_pp, nuclear_pp,\
+    ref_elecgen_2 = ref_elecgen_1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
         bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
         [['TECHNOLOGY'] + list(ref_elecgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                                                                    
 
@@ -1819,6 +1858,7 @@ for economy in Economy_codes:
     wind_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(wind_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Wind')
     storage_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(storage_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Storage')
     gas_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(gas_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Gas')
+    gas_ccs_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(gas_ccs_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Gas CCS')
     hydro_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(hydro_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Hydro')
     solar_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(solar_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Solar')
     nuclear_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(nuclear_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Nuclear')
@@ -1833,7 +1873,7 @@ for economy in Economy_codes:
 
     # Capacity by tech dataframe (with the above aggregations added)
 
-    ref_powcap_1 = ref_powcap_1.append([coal_capacity, gas_capacity, oil_capacity, nuclear_capacity,
+    ref_powcap_1 = ref_powcap_1.append([coal_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
                                             storage_capacity, geo_capacity, other_capacity])\
         [['TECHNOLOGY'] + list(ref_powcap_1.loc[:, '2017':'2050'])].reset_index(drop = True) 
@@ -2084,6 +2124,7 @@ for economy in Economy_codes:
     coal_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
     oil_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(oil_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(gas_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    gas_ccs_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(gas_ccs_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas CCS')
     storage_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(storage_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Storage')
     # chp_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(chp_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Cogeneration')
     nuclear_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(nuclear_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
@@ -2102,7 +2143,7 @@ for economy in Economy_codes:
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    netz_elecgen_2 = netz_elecgen_1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, storage_pp, nuclear_pp,\
+    netz_elecgen_2 = netz_elecgen_1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
         bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
         [['TECHNOLOGY'] + list(netz_elecgen_1.loc[:,'2017':'2050'])].reset_index(drop = True)                                                                                                    
 
@@ -2200,6 +2241,7 @@ for economy in Economy_codes:
     wind_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(wind_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Wind')
     storage_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(storage_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Storage')
     gas_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(gas_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Gas')
+    gas_ccs_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(gas_ccs_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Gas CCS')
     hydro_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(hydro_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Hydro')
     solar_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(solar_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Solar')
     nuclear_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(nuclear_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Nuclear')
@@ -2214,7 +2256,7 @@ for economy in Economy_codes:
 
     # Capacity by tech dataframe (with the above aggregations added)
 
-    netz_powcap_1 = netz_powcap_1.append([coal_capacity, gas_capacity, oil_capacity, nuclear_capacity,
+    netz_powcap_1 = netz_powcap_1.append([coal_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
                                             storage_capacity, geo_capacity, other_capacity])\
         [['TECHNOLOGY'] + list(netz_powcap_1.loc[:,'2017':'2050'])].reset_index(drop = True) 
@@ -2397,7 +2439,16 @@ for economy in Economy_codes:
     ref_modren_elecheat['fuel_code'] = 'Modern renewables'
     ref_modren_elecheat['item_code_new'] = 'Electricity and heat'
 
-    # Grab historical
+    ref_elecheat = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                                 (ref_power_df1['Sheet_energy'] == 'ProductionByTechnology') &
+                                 (ref_power_df1['FUEL'].isin(['17_electricity', '17_electricity_Dx', '18_heat'])) &
+                                 (ref_power_df1['TECHNOLOGY'].isin(all_elec_heat))].copy().groupby(['economy'])\
+                                     .sum().reset_index(drop = True)
+
+    ref_elecheat['fuel_code'] = 'Total'
+    ref_elecheat['item_code_new'] = 'Electricity and heat'
+
+    # Grab historical for modern renewables
     historical_eh = EGEDA_hist_eh[EGEDA_hist_eh['economy'] == economy].copy().iloc[:,1:-2]
 
     ref_modren_elecheat = historical_eh.merge(ref_modren_elecheat, how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
@@ -2411,14 +2462,24 @@ for economy in Economy_codes:
     ref_modren_2.iloc[6, 0] = 'Modern renewables'
     ref_modren_2.iloc[6, 1] = 'Total'
 
-    ref_modren_3 = ref_modren_2.append(ref_tfec_1).reset_index(drop = True)
+    # Grab historical for all electricity and heat
+    historical_eh2 = EGEDA_hist_eh2[EGEDA_hist_eh2['economy'] == economy].copy().iloc[:, 1:-2]
 
-    modren_prop1 = ['Modern renewables', 'Reference'] + list(ref_modren_3.iloc[6, 2:] / ref_modren_3.iloc[7, 2:])
+    ref_all_elecheat = historical_eh2.merge(ref_elecheat, how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    ref_all_elecheat = ref_all_elecheat[['fuel_code', 'item_code_new'] + list(ref_all_elecheat.loc[:, '2000':'2050'])]
+
+    ref_modren_3 = ref_modren_2.append([ref_all_elecheat, ref_tfec_1]).reset_index(drop = True)
+
+    non_ren_eh1 = ['Non modern renewables', 'Electricity and heat'] + list(ref_modren_3.iloc[7, 2:] - ref_modren_3.iloc[5, 2:])
+    non_ren_series1 = pd.Series(non_ren_eh1, index = ref_modren_3.columns)
+
+    modren_prop1 = ['Modern renewables', 'Reference'] + list(ref_modren_3.iloc[6, 2:] / ref_modren_3.iloc[8, 2:])
     modren_prop_series1 = pd.Series(modren_prop1, index = ref_modren_3.columns)
 
-    ref_modren_4 = ref_modren_3.append(modren_prop_series1, ignore_index = True).reset_index(drop = True)
+    ref_modren_4 = ref_modren_3.append([non_ren_series1, modren_prop_series1], ignore_index = True).reset_index(drop = True)
 
-    ref_modren_4 = ref_modren_4[ref_modren_4['item_code_new'].isin(['Total', 'TFEC', 'Reference'])].copy().reset_index(drop = True)
+    #ref_modren_4 = ref_modren_4[ref_modren_4['item_code_new'].isin(['Total', 'TFEC', 'Reference'])].copy().reset_index(drop = True)
 
     ref_modren_4_rows = ref_modren_4.shape[0]
     ref_modren_4_cols = ref_modren_4.shape[1]
@@ -2463,7 +2524,16 @@ for economy in Economy_codes:
     netz_modren_elecheat['fuel_code'] = 'Modern renewables'
     netz_modren_elecheat['item_code_new'] = 'Electricity and heat'
 
-    # Grab historical
+    netz_elecheat = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                                 (netz_power_df1['Sheet_energy'] == 'ProductionByTechnology') &
+                                 (netz_power_df1['FUEL'].isin(['17_electricity', '17_electricity_Dx', '18_heat'])) &
+                                 (netz_power_df1['TECHNOLOGY'].isin(all_elec_heat))].copy().groupby(['economy'])\
+                                     .sum().reset_index(drop = True)
+
+    netz_elecheat['fuel_code'] = 'Total'
+    netz_elecheat['item_code_new'] = 'Electricity and heat'
+
+    # Grab historical for modern renewables
     historical_eh = EGEDA_hist_eh[EGEDA_hist_eh['economy'] == economy].copy().iloc[:,1:-2]
 
     netz_modren_elecheat = historical_eh.merge(netz_modren_elecheat, how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
@@ -2477,14 +2547,24 @@ for economy in Economy_codes:
     netz_modren_2.iloc[6, 0] = 'Modern renewables'
     netz_modren_2.iloc[6, 1] = 'Total'
 
-    netz_modren_3 = netz_modren_2.append(netz_tfec_1).reset_index(drop = True)
+    # Grab historical for all electricity and heat
+    historical_eh2 = EGEDA_hist_eh2[EGEDA_hist_eh2['economy'] == economy].copy().iloc[:, 1:-2]
 
-    modren_prop1 = ['Modern renewables', 'Net-zero'] + list(netz_modren_3.iloc[6, 2:] / netz_modren_3.iloc[7, 2:])
+    netz_all_elecheat = historical_eh2.merge(netz_elecheat, how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_all_elecheat = netz_all_elecheat[['fuel_code', 'item_code_new'] + list(netz_all_elecheat.loc[:, '2000':'2050'])]
+
+    netz_modren_3 = netz_modren_2.append([netz_all_elecheat, netz_tfec_1]).reset_index(drop = True)
+
+    non_ren_eh1 = ['Non modern renewables', 'Electricity and heat'] + list(netz_modren_3.iloc[7, 2:] - netz_modren_3.iloc[5, 2:])
+    non_ren_series1 = pd.Series(non_ren_eh1, index = netz_modren_3.columns)
+
+    modren_prop1 = ['Modern renewables', 'Net-zero'] + list(netz_modren_3.iloc[6, 2:] / netz_modren_3.iloc[8, 2:])
     modren_prop_series1 = pd.Series(modren_prop1, index = netz_modren_3.columns)
 
-    netz_modren_4 = netz_modren_3.append(modren_prop_series1, ignore_index = True).reset_index(drop = True)
+    netz_modren_4 = netz_modren_3.append([non_ren_series1, modren_prop_series1], ignore_index = True).reset_index(drop = True)
 
-    netz_modren_4 = netz_modren_4[netz_modren_4['item_code_new'].isin(['Total', 'TFEC', 'Net-zero'])].copy().reset_index(drop = True)
+    #netz_modren_4 = netz_modren_4[netz_modren_4['item_code_new'].isin(['Total', 'TFEC', 'Net-zero'])].copy().reset_index(drop = True)
 
     netz_modren_4_rows = netz_modren_4.shape[0]
     netz_modren_4_cols = netz_modren_4.shape[1]
@@ -2531,6 +2611,15 @@ for economy in Economy_codes:
 
         ref_enint_3 = ref_enint_2.append(ref_ei_series2, ignore_index = True).reset_index(drop = True)
 
+        if economy == 'APEC':
+            target_row = ['APEC', 'Target'] + [55] * 51
+            target_series = pd.Series(target_row, index = ref_enint_3.columns)
+
+            ref_enint_3 = ref_enint_3.append(target_series, ignore_index = True).reset_index(drop = True)
+
+        else:
+            pass
+
         ref_enint_3_rows = ref_enint_3.shape[0]
         ref_enint_3_cols = ref_enint_3.shape[1]
 
@@ -2553,6 +2642,15 @@ for economy in Economy_codes:
         netz_ei_series2 = pd.Series(netz_ei_calc2, index = netz_enint_2.columns)
 
         netz_enint_3 = netz_enint_2.append(netz_ei_series2, ignore_index = True).reset_index(drop = True)
+
+        if economy == 'APEC':
+            target_row2 = ['APEC', 'Target'] + [55] * 51
+            target_series2 = pd.Series(target_row2, index = netz_enint_3.columns)
+
+            netz_enint_3 = netz_enint_3.append(target_series2, ignore_index = True).reset_index(drop = True)
+
+        else:
+            pass
 
         netz_enint_3_rows = netz_enint_3.shape[0]
         netz_enint_3_cols = netz_enint_3.shape[1]
@@ -2729,6 +2827,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -2841,6 +2940,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -2912,6 +3012,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3025,6 +3126,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3091,6 +3193,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3147,6 +3250,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3215,6 +3319,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3270,6 +3375,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3341,6 +3447,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3397,6 +3504,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3467,6 +3575,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3521,6 +3630,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3647,6 +3757,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3702,6 +3813,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3783,6 +3895,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3899,6 +4012,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -3968,6 +4082,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4083,6 +4198,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4148,6 +4264,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4206,6 +4323,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4273,6 +4391,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4330,6 +4449,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4400,6 +4520,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4458,6 +4579,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4527,6 +4649,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4583,6 +4706,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4715,6 +4839,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4772,6 +4897,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4795,7 +4921,7 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
             'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
             'line':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1}
+                           'width': 1.25}
         })    
         
     ref_worksheet11.insert_chart('R3', ref_tpes_chart4)
@@ -4902,6 +5028,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4959,6 +5086,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -4982,7 +5110,7 @@ for economy in Economy_codes:
             'categories': [economy + '_prod', chart_height, 2, chart_height, ref_prod_1_cols - 1],
             'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
             'line':       {'color': ref_prod_1['fuel_code'].map(colours_dict).loc[i],
-                           'width': 1} 
+                           'width': 1.25} 
         })    
         
     ref_worksheet12.insert_chart('R3', ref_prod_chart2)
@@ -5084,6 +5212,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5141,6 +5270,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Imports (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5195,6 +5325,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Imports by fuel (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5251,6 +5382,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Exports (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5305,6 +5437,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Exports by fuel (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5375,6 +5508,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Marine bunkers (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5431,6 +5565,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Aviation bunkers (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5498,6 +5633,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5557,6 +5693,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5686,6 +5823,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5745,6 +5883,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5874,6 +6013,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'PJ',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5931,6 +6071,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Imports (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -5985,6 +6126,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Imports by fuel (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -6041,6 +6183,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Exports (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -6095,6 +6238,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Exports by fuel (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -6162,6 +6306,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Marine bunkers (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -6220,6 +6365,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'Aviation bunkers (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -6299,6 +6445,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6356,6 +6503,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6429,6 +6577,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'TWh',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6486,6 +6635,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'TWh',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6561,6 +6711,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6618,6 +6769,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6675,6 +6827,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6748,6 +6901,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'GW',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6805,6 +6959,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'GW',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6878,6 +7033,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6937,6 +7093,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -6995,6 +7152,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7069,6 +7227,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7128,6 +7287,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7186,6 +7346,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7259,6 +7420,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7316,6 +7478,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7393,6 +7556,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7452,6 +7616,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7524,6 +7689,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'TWh',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7583,6 +7749,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'TWh',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7656,6 +7823,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7715,6 +7883,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7774,6 +7943,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7846,6 +8016,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'GW',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7905,6 +8076,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'GW',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7977,6 +8149,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8038,6 +8211,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8098,6 +8272,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8171,6 +8346,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8232,6 +8408,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8290,6 +8467,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8362,6 +8540,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8421,6 +8600,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'PJ',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8463,12 +8643,12 @@ for economy in Economy_codes:
     both_worksheet31.set_column(2, ref_modren_4_cols + 1, None, space_format)
     both_worksheet31.set_row(chart_height, None, header_format)
     both_worksheet31.set_row(chart_height + ref_modren_4_rows + 3, None, header_format)
-    both_worksheet31.set_row(chart_height + 3, None, percentage_format)
-    both_worksheet31.set_row(chart_height + ref_modren_4_rows + 6, None, percentage_format)
+    both_worksheet31.set_row(chart_height + 11, None, percentage_format)
+    both_worksheet31.set_row(chart_height + ref_modren_4_rows + 14, None, percentage_format)
     both_worksheet31.write(0, 0, economy + ' modern renewables', cell_format1)
 
     # line chart
-    if ref_modren_4_rows > 0 & netz_modren_4_rows > 0:
+    if (ref_modren_4_rows > 0) & (netz_modren_4_rows > 0):
         modren_chart1 = workbook.add_chart({'type': 'line'})
         modren_chart1.set_size({
             'width': 500,            
@@ -8531,6 +8711,118 @@ for economy in Economy_codes:
         })    
                 
         both_worksheet31.insert_chart('B3', modren_chart1)
+
+        # Stacked area electricity and heat
+        modren_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'percent_stacked'})
+        modren_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        modren_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        modren_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'interval_unit': 5,
+            'line': {'color': '#bebebe'}
+        })
+            
+        modren_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Reference modern renewable electricity share',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        modren_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        modren_chart2.set_title({
+            'none': True
+        })
+
+        # Configure the series of the chart from the dataframe data.    
+        for option in ['Modern renewables', 'Non modern renewables']:
+            i = ref_modren_4[(ref_modren_4['item_code_new'] == 'Electricity and heat') &
+                             (ref_modren_4['fuel_code'] == option)].index[0]
+            modren_chart2.add_series({
+                'name':       [economy + '_mod_renew', chart_height + i + 1, 0],
+                'categories': [economy + '_mod_renew', chart_height, 2, chart_height, ref_modren_4_cols - 1],
+                'values':     [economy + '_mod_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_modren_4_cols - 1],
+                'fill':       {'color': ref_modren_4['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+        
+        both_worksheet31.insert_chart('J3', modren_chart2)
+
+        # Stacked area electricity and heat
+        modren_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'percent_stacked'})
+        modren_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        modren_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        modren_chart3.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'interval_unit': 5,
+            'line': {'color': '#bebebe'}
+        })
+            
+        modren_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Net-zero modern renewable electricity share',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        modren_chart3.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        modren_chart3.set_title({
+            'none': True
+        })
+
+        # Configure the series of the chart from the dataframe data.    
+        for option in ['Modern renewables', 'Non modern renewables']:
+            i = netz_modren_4[(netz_modren_4['item_code_new'] == 'Electricity and heat') &
+                             (netz_modren_4['fuel_code'] == option)].index[0]
+            modren_chart3.add_series({
+                'name':       [economy + '_mod_renew', chart_height + ref_modren_4_rows + i + 4, 0],
+                'categories': [economy + '_mod_renew', chart_height + ref_modren_4_rows + 3, 2, chart_height + ref_modren_4_rows + 3, netz_modren_4_cols - 1],
+                'values':     [economy + '_mod_renew', chart_height + ref_modren_4_rows + i + 4, 2, chart_height + ref_modren_4_rows + i + 4, netz_modren_4_cols - 1],
+                'fill':       {'color': netz_modren_4['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+        
+        both_worksheet31.insert_chart('R3', modren_chart3)
     
     else:
         pass
@@ -8548,7 +8840,7 @@ for economy in Economy_codes:
     both_worksheet33.write(0, 0, economy + ' energy intensity', cell_format1)
 
     # line chart
-    if ref_enint_3_rows > 0 & netz_enint_3_rows > 0:
+    if (ref_enint_3_rows > 0) & (netz_enint_3_rows > 0):
         enint_chart1 = workbook.add_chart({'type': 'line'})
         enint_chart1.set_size({
             'width': 500,            
@@ -8575,6 +8867,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'TFEC energy intensity (2005 = 100)',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8607,7 +8900,16 @@ for economy in Economy_codes:
             'values':     [economy + '_eintensity', chart_height + ref_enint_3_rows + j + 4, 2, chart_height + ref_enint_3_rows + j + 4, netz_enint_3_cols - 1],
             'line':       {'color': netz_enint_3['Series'].map(colours_dict).loc[j],
                             'width': 1.5}
-        })    
+        })
+        if economy == 'APEC':
+            k = ref_enint_3[ref_enint_3['Series'] == 'Target'].index[0]
+            enint_chart1.add_series({
+                'name':       [economy + '_eintensity', chart_height + k + 1, 1],
+                'categories': [economy + '_eintensity', chart_height, 2, chart_height, ref_enint_3_cols - 1],
+                'values':     [economy + '_eintensity', chart_height + k + 1, 2, chart_height + k + 1, ref_enint_3_cols - 1],
+                'line':       {'color': ref_enint_3['Series'].map(colours_dict).loc[k],
+                                'width': 1.5}
+            })    
                 
         both_worksheet33.insert_chart('B3', enint_chart1)
 
@@ -8654,6 +8956,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'GDP (millions 2018 USD PPP 2018)',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8711,6 +9014,7 @@ for economy in Economy_codes:
                 'minor_tick_mark': 'none',
                 'name': 'GDP growth',
                 'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+                'num_format': '0%',
                 'major_gridlines': {
                     'visible': True,
                     'line': {'color': '#bebebe'}
@@ -8769,6 +9073,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'Population (millions)',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -8825,6 +9130,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'GDP per capita (2018 USD PPP)',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
