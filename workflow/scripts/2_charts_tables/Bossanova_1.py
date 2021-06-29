@@ -182,6 +182,9 @@ coal_fuel_2 = ['1_x_coal_thermal', '1_5_lignite', '2_coal_products']
 renewables_fuel_2 = ['10_hydro', '11_geothermal', '12_1_of_which_photovoltaics', '13_tide_wave_ocean', '14_wind', '15_1_fuelwood_and_woodwaste', 
                      '15_2_bagasse', '15_4_black_liquor', '15_5_other_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable']
 
+# For heat
+waste_fuel = ['16_2_industrial_waste', '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable']
+
 # Own use fuels
 coal_ou = ['1_x_coal_thermal', '1_5_lignite', '2_coal_products', '1_1_coking_coal']
 oil_ou = ['6_1_crude_oil', '6_x_ngls', '7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_6_kerosene',
@@ -202,6 +205,8 @@ own_use_fuels = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat', 'Oth
 use_agg_fuels_1 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Nuclear', 'Hydro', 'Solar', 'Wind', 
                    'Biomass', 'Geothermal', 'Other renewables', 'Other', 'Imports']
 use_agg_fuels_2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other', 'Imports']
+
+heat_agg_fuels = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste']
 
 # TECHNOLOGY aggregations for ProductionByTechnology
 
@@ -484,10 +489,73 @@ EGEDA_hist_eh2 = pd.read_csv('./data/4_Joined/EGEDA_hist_eh2.csv')
 
 #########################################################################################################################################
 
+# OSeMOSYS demand reults dataframes
+
+# Read heavyind mapping file
+heavyind_mapping = pd.read_csv('./data/2_Mapping_and_other/heavyind_mapping.csv',\
+    header = None, index_col = 0, squeeze = True).to_dict()
+
+# Need a couple of strings for steel
+steel_ind = ['IND_steel', 'IND_hysteel']
+
+# REFERENCE
+
+ref_osemo_1 = pd.read_csv('./data/4_Joined/OSeMOSYS_only_reference.csv')
+
+# Heavy industry dataframes
+
+ref_steel_1 = ref_osemo_1[ref_osemo_1['TECHNOLOGY'].str.contains('|'.join(steel_ind))].copy()
+ref_steel_1['tech_mix'] = ref_osemo_1['TECHNOLOGY'].map(heavyind_mapping)
+
+ref_chem_1 = ref_osemo_1[ref_osemo_1['TECHNOLOGY'].str.contains('IND_chem')].copy()
+ref_chem_1['tech_mix'] = ref_osemo_1['TECHNOLOGY'].map(heavyind_mapping)
+
+ref_cement_1 = ref_osemo_1[ref_osemo_1['TECHNOLOGY'].str.contains('IND_cem')].copy()
+ref_cement_1['tech_mix'] = ref_osemo_1['TECHNOLOGY'].map(heavyind_mapping)
+
+ref_steel_2 = ref_steel_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
+ref_steel_2['Industry'] = 'Steel'
+ref_steel_2 = ref_steel_2[['REGION', 'Industry', 'tech_mix'] + list(ref_steel_2.loc[:,'2017':'2050'])]
+
+ref_chem_2 = ref_chem_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
+ref_chem_2['Industry'] = 'Chemical'
+ref_chem_2 = ref_chem_2[['REGION', 'Industry', 'tech_mix'] + list(ref_chem_2.loc[:,'2017':'2050'])]
+
+ref_cement_2 = ref_cement_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
+ref_cement_2['Industry'] = 'Cement'
+ref_cement_2 = ref_cement_2[['REGION', 'Industry', 'tech_mix'] + list(ref_cement_2.loc[:,'2017':'2050'])]
+
+# NET-ZERO
+
+netz_osemo_1 = pd.read_csv('./data/4_Joined/OSeMOSYS_only_netzero.csv')
+
+# Heavy industry dataframes
+
+netz_steel_1 = netz_osemo_1[netz_osemo_1['TECHNOLOGY'].str.contains('|'.join(steel_ind))].copy()
+netz_steel_1['tech_mix'] = netz_osemo_1['TECHNOLOGY'].map(heavyind_mapping)
+
+netz_chem_1 = netz_osemo_1[netz_osemo_1['TECHNOLOGY'].str.contains('IND_chem')].copy()
+netz_chem_1['tech_mix'] = netz_osemo_1['TECHNOLOGY'].map(heavyind_mapping)
+
+netz_cement_1 = netz_osemo_1[netz_osemo_1['TECHNOLOGY'].str.contains('IND_cem')].copy()
+netz_cement_1['tech_mix'] = netz_osemo_1['TECHNOLOGY'].map(heavyind_mapping)
+
+netz_steel_2 = netz_steel_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
+netz_steel_2['Industry'] = 'Steel'
+netz_steel_2 = netz_steel_2[['REGION', 'Industry', 'tech_mix'] + list(netz_steel_2.loc[:,'2017':'2050'])]
+
+netz_chem_2 = netz_chem_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
+netz_chem_2['Industry'] = 'Chemical'
+netz_chem_2 = netz_chem_2[['REGION', 'Industry', 'tech_mix'] + list(netz_chem_2.loc[:,'2017':'2050'])]
+
+netz_cement_2 = netz_cement_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
+netz_cement_2['Industry'] = 'Cement'
+netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cement_2.loc[:,'2017':'2050'])]
+
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA', 'APEC']
+# Economy_codes = ['20_USA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2014,6 +2082,55 @@ for economy in Economy_codes:
     ref_heatgen_3_rows = ref_heatgen_3.shape[0]
     ref_heatgen_3_cols = ref_heatgen_3.shape[1]
 
+    ################################################################################
+
+    # Heat use dataframes
+
+    # REFERENCE
+
+    ref_heat_use_1 = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                                   (ref_power_df1['Sheet_energy'] == 'UseByTechnology') &
+                                   (ref_power_df1['TECHNOLOGY'].isin(['POW_FuelOil_HP', 'POW_HEAT_HP']))].reset_index(drop = True)
+
+    coal = ref_heat_use_1[ref_heat_use_1['FUEL'].isin(coal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Coal',
+                                                                                                      TECHNOLOGY = 'Coal heat')
+
+    lignite = ref_heat_use_1[ref_heat_use_1['FUEL'].isin(lignite_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Lignite',
+                                                                                              TECHNOLOGY = 'Lignite heat')                                                                                      
+
+    oil = ref_heat_use_1[ref_heat_use_1['FUEL'].isin(oil_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Oil',
+                                                                                    TECHNOLOGY = 'Oil heat')
+
+    gas = ref_heat_use_1[ref_heat_use_1['FUEL'].isin(gas_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Gas',
+                                                                                      TECHNOLOGY = 'Gas heat')
+
+    biomass = ref_heat_use_1[ref_heat_use_1['FUEL'].isin(biomass_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Biomass',
+                                                                                                        TECHNOLOGY = 'Biomass heat')
+
+    waste = ref_heat_use_1[ref_heat_use_1['FUEL'].isin(waste_fuel)].groupby(['economy']).sum().assign(FUEL = 'Waste',
+                                                                                               TECHNOLOGY = 'Waste heat')
+
+    ref_heat_use_2 = ref_heat_use_1.append([coal, lignite, oil, gas, biomass, waste])\
+        [['FUEL', 'TECHNOLOGY'] + list(ref_heat_use_1.loc[:,'2017':'2050'])].reset_index(drop = True)
+
+    ref_heat_use_2 = ref_heat_use_2[ref_heat_use_2['FUEL'].isin(heat_agg_fuels)].copy().set_index('FUEL').reset_index()
+
+    ref_heat_use_2 = ref_heat_use_2.groupby('FUEL').sum().reset_index()
+    ref_heat_use_2['Transformation'] = 'Heat plant input fuel'
+    ref_heat_use_2['FUEL'] = pd.Categorical(ref_heat_use_2['FUEL'], heat_agg_fuels)
+
+    ref_heat_use_2 = ref_heat_use_2.sort_values('FUEL').reset_index(drop = True)
+
+    ref_heat_use_2 = ref_heat_use_2[['FUEL', 'Transformation'] + list(ref_heat_use_2.loc[:,'2017':'2050'])]
+
+    ref_heat_use_2_rows = ref_heat_use_2.shape[0]
+    ref_heat_use_2_cols = ref_heat_use_2.shape[1]
+
+    ref_heat_use_3 = ref_heat_use_2[['FUEL', 'Transformation'] + trans_col_chart]
+
+    ref_heat_use_3_rows = ref_heat_use_3.shape[0]
+    ref_heat_use_3_cols = ref_heat_use_3.shape[1]
+
     ######################################################################################################################
     
     # NET-ZERO dataframes
@@ -2397,6 +2514,55 @@ for economy in Economy_codes:
     netz_heatgen_3_rows = netz_heatgen_3.shape[0]
     netz_heatgen_3_cols = netz_heatgen_3.shape[1]
 
+    #######################################################################################
+     
+    # Heat use dataframes
+
+    # NET-ZERO
+
+    netz_heat_use_1 = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                                   (netz_power_df1['Sheet_energy'] == 'UseByTechnology') &
+                                   (netz_power_df1['TECHNOLOGY'].isin(['POW_FuelOil_HP', 'POW_HEAT_HP']))].reset_index(drop = True)
+
+    coal = netz_heat_use_1[netz_heat_use_1['FUEL'].isin(coal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Coal',
+                                                                                                      TECHNOLOGY = 'Coal heat')
+
+    lignite = netz_heat_use_1[netz_heat_use_1['FUEL'].isin(lignite_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Lignite',
+                                                                                              TECHNOLOGY = 'Lignite heat')                                                                                      
+
+    oil = netz_heat_use_1[netz_heat_use_1['FUEL'].isin(oil_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Oil',
+                                                                                    TECHNOLOGY = 'Oil heat')
+
+    gas = netz_heat_use_1[netz_heat_use_1['FUEL'].isin(gas_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Gas',
+                                                                                      TECHNOLOGY = 'Gas heat')
+
+    biomass = netz_heat_use_1[netz_heat_use_1['FUEL'].isin(biomass_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Biomass',
+                                                                                                        TECHNOLOGY = 'Biomass heat')
+
+    waste = netz_heat_use_1[netz_heat_use_1['FUEL'].isin(waste_fuel)].groupby(['economy']).sum().assign(FUEL = 'Waste',
+                                                                                               TECHNOLOGY = 'Waste heat')
+
+    netz_heat_use_2 = netz_heat_use_1.append([coal, lignite, oil, gas, biomass, waste])\
+        [['FUEL', 'TECHNOLOGY'] + list(netz_heat_use_1.loc[:,'2017':'2050'])].reset_index(drop = True)
+
+    netz_heat_use_2 = netz_heat_use_2[netz_heat_use_2['FUEL'].isin(heat_agg_fuels)].copy().set_index('FUEL').reset_index()
+
+    netz_heat_use_2 = netz_heat_use_2.groupby('FUEL').sum().reset_index()
+    netz_heat_use_2['Transformation'] = 'Heat plant input fuel'
+    netz_heat_use_2['FUEL'] = pd.Categorical(netz_heat_use_2['FUEL'], heat_agg_fuels)
+
+    netz_heat_use_2 = netz_heat_use_2.sort_values('FUEL').reset_index(drop = True)
+
+    netz_heat_use_2 = netz_heat_use_2[['FUEL', 'Transformation'] + list(netz_heat_use_2.loc[:,'2017':'2050'])]
+
+    netz_heat_use_2_rows = netz_heat_use_2.shape[0]
+    netz_heat_use_2_cols = netz_heat_use_2.shape[1]
+
+    netz_heat_use_3 = netz_heat_use_2[['FUEL', 'Transformation'] + trans_col_chart]
+
+    netz_heat_use_3_rows = netz_heat_use_3.shape[0]
+    netz_heat_use_3_cols = netz_heat_use_3.shape[1]
+
     #############################################################################################################################
 
     # REFERENCE: Modern renewables
@@ -2664,6 +2830,96 @@ for economy in Economy_codes:
         netz_enint_3_rows = netz_enint_3.shape[0]
         netz_enint_r_cols = netz_enint_3.shape[1]
 
+    ##############################################################################################################
+
+    # OSeMOSYS datafrane builds
+
+    # REFERENCE
+    # Steel
+    if any(economy in s for s in list(ref_steel_2['REGION'])):
+        
+        ref_steel_3 = ref_steel_2[ref_steel_2['REGION'] == economy].copy()\
+            [['Industry', 'tech_mix'] + list(ref_steel_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+        ref_steel_3_rows = ref_steel_3.shape[0]
+        ref_steel_3_cols = ref_steel_3.shape[1]
+
+    else:
+        ref_steel_3 = pd.DataFrame()
+        ref_steel_3_rows = ref_steel_3.shape[0]
+        ref_steel_3_cols = ref_steel_3.shape[1]
+
+    # Chemicals
+    if any(economy in s for s in list(ref_chem_2['REGION'])):
+        
+        ref_chem_3 = ref_chem_2[ref_chem_2['REGION'] == economy].copy()\
+            [['Industry', 'tech_mix'] + list(ref_chem_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+        ref_chem_3_rows = ref_chem_3.shape[0]
+        ref_chem_3_cols = ref_chem_3.shape[1]
+
+    else:
+        ref_chem_3 = pd.DataFrame()
+        ref_chem_3_rows = ref_chem_3.shape[0]
+        ref_chem_3_cols = ref_chem_3.shape[1]
+
+    # Cement
+    if any(economy in s for s in list(ref_cement_2['REGION'])):
+        
+        ref_cement_3 = ref_cement_2[ref_cement_2['REGION'] == economy].copy()\
+            [['Industry', 'tech_mix'] + list(ref_cement_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+        ref_cement_3_rows = ref_cement_3.shape[0]
+        ref_cement_3_cols = ref_cement_3.shape[1]
+
+    else:
+        ref_cement_3 = pd.DataFrame()
+        ref_cement_3_rows = ref_cement_3.shape[0]
+        ref_cement_3_cols = ref_cement_3.shape[1]
+
+    # NET-ZERO
+    # Steel
+    if any(economy in s for s in list(netz_steel_2['REGION'])):
+        
+        netz_steel_3 = netz_steel_2[netz_steel_2['REGION'] == economy].copy()\
+            [['Industry', 'tech_mix'] + list(netz_steel_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+        netz_steel_3_rows = netz_steel_3.shape[0]
+        netz_steel_3_cols = netz_steel_3.shape[1]
+
+    else:
+        netz_steel_3 = pd.DataFrame()
+        netz_steel_3_rows = netz_steel_3.shape[0]
+        netz_steel_3_cols = netz_steel_3.shape[1]
+
+    # Chemicals
+    if any(economy in s for s in list(netz_chem_2['REGION'])):
+        
+        netz_chem_3 = netz_chem_2[netz_chem_2['REGION'] == economy].copy()\
+            [['Industry', 'tech_mix'] + list(netz_chem_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+        netz_chem_3_rows = netz_chem_3.shape[0]
+        netz_chem_3_cols = netz_chem_3.shape[1]
+
+    else:
+        netz_chem_3 = pd.DataFrame()
+        netz_chem_3_rows = netz_chem_3.shape[0]
+        netz_chem_3_cols = netz_chem_3.shape[1]
+
+    # Cement
+    if any(economy in s for s in list(netz_cement_2['REGION'])):
+        
+        netz_cement_3 = netz_cement_2[netz_cement_2['REGION'] == economy].copy()\
+            [['Industry', 'tech_mix'] + list(netz_cement_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+
+        netz_cement_3_rows = netz_cement_3.shape[0]
+        netz_cement_3_cols = netz_cement_3.shape[1]
+
+    else:
+        netz_cement_3 = pd.DataFrame()
+        netz_cement_3_rows = netz_cement_3.shape[0]
+        netz_cement_3_cols = netz_cement_3.shape[1]
+
     # Df builds are complete
 
     ##############################################################################################################################
@@ -2700,6 +2956,12 @@ for economy in Economy_codes:
     netz_ind_1.to_excel(writer, sheet_name = economy + '_FED_ind', index = False, startrow = (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6)
     ref_ind_2.to_excel(writer, sheet_name = economy + '_FED_ind', index = False, startrow = chart_height + ref_ind_1_rows + 3)
     netz_ind_2.to_excel(writer, sheet_name = economy + '_FED_ind', index = False, startrow = (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9)
+    ref_steel_3.to_excel(writer, sheet_name = economy + '_heavyind', index = False, startrow = chart_height)
+    ref_chem_3.to_excel(writer, sheet_name = economy + '_heavyind', index = False, startrow = chart_height + ref_steel_3_rows + 3)
+    ref_cement_3.to_excel(writer, sheet_name = economy + '_heavyind', index = False, startrow = chart_height + ref_steel_3_rows + ref_chem_3_rows + 6)
+    netz_steel_3.to_excel(writer, sheet_name = economy + '_heavyind', index = False, startrow = (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 9)
+    netz_chem_3.to_excel(writer, sheet_name = economy + '_heavyind', index = False, startrow = (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + 12)
+    netz_cement_3.to_excel(writer, sheet_name = economy + '_heavyind', index = False, startrow = (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + netz_chem_3_rows + 15)
     ref_trn_1.to_excel(writer, sheet_name = economy + '_FED_trn', index = False, startrow = chart_height)
     netz_trn_1.to_excel(writer, sheet_name = economy + '_FED_trn', index = False, startrow = (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6)
     ref_trn_2.to_excel(writer, sheet_name = economy + '_FED_trn', index = False, startrow = chart_height + ref_trn_1_rows + 3)
@@ -2762,6 +3024,10 @@ for economy in Economy_codes:
     netz_ownuse_1.to_excel(writer, sheet_name = economy + '_ownuse', index = False, startrow = (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6)
     ref_ownuse_2.to_excel(writer, sheet_name = economy + '_ownuse', index = False, startrow = chart_height + ref_ownuse_1_rows + 3)
     netz_ownuse_2.to_excel(writer, sheet_name = economy + '_ownuse', index = False, startrow = (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9)
+    ref_heat_use_2.to_excel(writer, sheet_name = economy + '_heat_input', index = False, startrow = chart_height)
+    netz_heat_use_2.to_excel(writer, sheet_name = economy + '_heat_input', index = False, startrow = (2 * chart_height) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6)
+    ref_heat_use_3.to_excel(writer, sheet_name = economy + '_heat_input', index = False, startrow = chart_height + ref_heat_use_2_rows + 3)
+    netz_heat_use_3.to_excel(writer, sheet_name = economy + '_heat_input', index = False, startrow = (2 * chart_height) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9)
     ref_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = chart_height)
     netz_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6)
     ref_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = chart_height + ref_heatgen_2_rows + 3)
@@ -2773,7 +3039,7 @@ for economy in Economy_codes:
     ref_enint_3.to_excel(writer, sheet_name = economy + '_eintensity', index = False, startrow = chart_height)
     netz_enint_3.to_excel(writer, sheet_name = economy + '_eintensity', index = False, startrow = chart_height + ref_enint_3_rows + 3)
     macro_1.to_excel(writer, sheet_name = economy + '_macro', index = False, startrow = chart_height)
-    
+
     ################################################################################################################################
 
     # CHARTS
@@ -6415,7 +6681,7 @@ for economy in Economy_codes:
     ref_worksheet21.set_row((2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, None, header_format)
     ref_worksheet21.set_row((2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, None, header_format)
     ref_worksheet21.write(0, 0, economy + ' power input fuel reference (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
-    ref_worksheet21.write(48, 0, economy + ' power input fuel net_zero (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
+    ref_worksheet21.write(48, 0, economy + ' power input fuel net-zero (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
 
     # Create a use by fuel area chart
     if ref_pow_use_2_rows > 0:
@@ -7507,6 +7773,144 @@ for economy in Economy_codes:
             
         ref_worksheet27.insert_chart('J3', heatgen_bytech_chart2)
     
+    else:
+        pass
+
+    ##########################################################################
+
+    # Access the workbook and first sheet with data from df1 
+    ref_worksheet28 = writer.sheets[economy + '_heat_input']
+    
+    # Comma format and header format        
+    # space_format = workbook.add_format({'num_format': '#,##0'})
+    # header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    # cell_format1 = workbook.add_format({'bold': True})
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet28.set_column(2, ref_heat_use_2_cols + 1, None, space_format)
+    ref_worksheet28.set_row(chart_height, None, header_format)
+    ref_worksheet28.set_row(chart_height + ref_heat_use_2_rows + 3, None, header_format)
+    ref_worksheet28.set_row((2 * chart_height) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, None, header_format)
+    ref_worksheet28.set_row((2 * chart_height) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9, None, header_format)
+    ref_worksheet28.write(0, 0, economy + ' heat input fuel reference', cell_format1)
+    ref_worksheet28.write(chart_height + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, 0,\
+        economy + ' heat input fuel net-zero', cell_format1)
+
+    # Create a use by fuel area chart
+    if ref_heat_use_2_rows > 0:
+        ref_heatuse_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        ref_heatuse_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_heatuse_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_heatuse_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_heatuse_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_heatuse_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_heatuse_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_heat_use_2_rows):
+            ref_heatuse_chart1.add_series({
+                'name':       [economy + '_heat_input', chart_height + i + 1, 0],
+                'categories': [economy + '_heat_input', chart_height, 2, chart_height, ref_heat_use_2_cols - 1],
+                'values':     [economy + '_heat_input', chart_height + i + 1, 2, chart_height + i + 1, ref_heat_use_2_cols - 1],
+                'fill':       {'color': ref_heat_use_2['FUEL'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        ref_worksheet28.insert_chart('B3', ref_heatuse_chart1)
+
+    else:
+        pass
+
+    # Create a use column chart
+    if ref_heat_use_3_rows > 0:
+        ref_heatuse_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        ref_heatuse_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_heatuse_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_heatuse_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_heatuse_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_heatuse_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_heatuse_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(ref_heat_use_3_rows):
+            ref_heatuse_chart2.add_series({
+                'name':       [economy + '_heat_input', chart_height + ref_heat_use_2_rows + i + 4, 0],
+                'categories': [economy + '_heat_input', chart_height + ref_heat_use_2_rows + 3, 2, chart_height + ref_heat_use_2_rows + 3, ref_heat_use_3_cols - 1],
+                'values':     [economy + '_heat_input', chart_height + ref_heat_use_2_rows + i + 4, 2, chart_height + ref_heat_use_2_rows + i + 4, ref_heat_use_3_cols - 1],
+                'fill':       {'color': ref_heat_use_3['FUEL'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        ref_worksheet28.insert_chart('J3', ref_heatuse_chart2)
+
     else:
         pass
 
@@ -8634,6 +9038,130 @@ for economy in Economy_codes:
     else:
         pass
 
+    #################################################################################
+
+    # Create a use by fuel area chart
+    if netz_heat_use_2_rows > 0:
+        netz_heatuse_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_heatuse_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_heatuse_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_heatuse_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_heatuse_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_heatuse_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_heatuse_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_heat_use_2_rows):
+            netz_heatuse_chart1.add_series({
+                'name':       [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, 0],
+                'categories': [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, 2,\
+                    (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, netz_heat_use_2_cols - 1],
+                'values':     [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, 2,\
+                    (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, netz_heat_use_2_cols - 1],
+                'fill':       {'color': netz_heat_use_2['FUEL'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        ref_worksheet28.insert_chart('B35', netz_heatuse_chart1)
+
+    else:
+        pass
+
+    # Create a use column chart
+    if netz_heat_use_3_rows > 0:
+        netz_heatuse_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        netz_heatuse_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_heatuse_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_heatuse_chart2.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_heatuse_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_heatuse_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_heatuse_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(netz_heat_use_3_rows):
+            netz_heatuse_chart2.add_series({
+                'name':       [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, 0],
+                'categories': [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9, 2,\
+                    (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9, netz_heat_use_3_cols - 1],
+                'values':     [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, 2,\
+                    (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, netz_heat_use_3_cols - 1],
+                'fill':       {'color': netz_heat_use_3['FUEL'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        ref_worksheet28.insert_chart('J35', netz_heatuse_chart2)
+
+    else:
+        pass
+
     # Miscellaneous
 
     # Access the workbook and second sheet
@@ -9161,7 +9689,393 @@ for economy in Economy_codes:
         both_worksheet32.insert_chart('Z3', GDPpc_chart1)
 
     else:
-        pass   
+        pass
+
+    ################################################
+    # Macro charts
+
+    # Access the workbook and second sheet
+    both_worksheet33 = writer.sheets[economy + '_heavyind']
+    
+    # Apply comma format and header format to relevant data rows
+    both_worksheet33.set_column(2, macro_1_cols + 1, None, space_format)
+    both_worksheet33.set_row(chart_height, None, header_format)
+    both_worksheet33.set_row(chart_height + ref_steel_3_rows + 3, None, header_format)
+    both_worksheet33.set_row(chart_height + ref_steel_3_rows + ref_chem_3_rows + 6, None, header_format)
+    both_worksheet33.set_row((2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 9, None, header_format)
+    both_worksheet33.set_row((2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + 12, None, header_format)
+    both_worksheet33.set_row((2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + netz_chem_3_rows + 15, None, header_format)
+    both_worksheet33.write(0, 0, economy + ' heavy industry fuel use reference', cell_format1)
+    both_worksheet33.write(chart_height + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 9, 0,\
+        economy + ' heavy industry fuel use net-zero', cell_format1)
+
+    # Steel stacked chart
+    if ref_steel_3_rows > 0:
+        ref_steel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        ref_steel_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_steel_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_steel_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_steel_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_steel_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_steel_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_steel_3_rows):
+            ref_steel_chart1.add_series({
+                'name':       [economy + '_heavyind', chart_height + i + 1, 1],
+                'categories': [economy + '_heavyind', chart_height, 2, chart_height, ref_steel_3_cols - 1],
+                'values':     [economy + '_heavyind', chart_height + i + 1, 2, chart_height + i + 1, ref_steel_3_cols - 1],
+                'fill':       {'color': ref_steel_3['tech_mix'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        both_worksheet33.insert_chart('B3', ref_steel_chart1)
+
+    else: 
+        pass
+
+    # Chemicals stacked chart
+    if ref_chem_3_rows > 0:
+        ref_chem_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        ref_chem_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_chem_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_chem_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_chem_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_chem_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_chem_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_chem_3_rows):
+            ref_chem_chart1.add_series({
+                'name':       [economy + '_heavyind', chart_height + ref_steel_3_rows + i + 4, 1],
+                'categories': [economy + '_heavyind', chart_height + ref_steel_3_rows + 3, 2, chart_height + ref_steel_3_rows + 3, ref_chem_3_cols - 1],
+                'values':     [economy + '_heavyind', chart_height + ref_steel_3_rows + i + 4, 2, chart_height + ref_steel_3_rows + i + 4, ref_chem_3_cols - 1],
+                'fill':       {'color': ref_chem_3['tech_mix'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        both_worksheet33.insert_chart('J3', ref_chem_chart1)
+
+    else: 
+        pass
+
+    # Cement stacked chart
+    if ref_cement_3_rows > 0:
+        ref_cement_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        ref_cement_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_cement_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_cement_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_cement_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_cement_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_cement_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_cement_3_rows):
+            ref_cement_chart1.add_series({
+                'name':       [economy + '_heavyind', chart_height + ref_steel_3_rows + ref_chem_3_rows + i + 7, 1],
+                'categories': [economy + '_heavyind', chart_height + ref_steel_3_rows + ref_chem_3_rows + 6, 2,\
+                    chart_height + ref_steel_3_rows + ref_chem_3_rows + 6, ref_cement_3_cols - 1],
+                'values':     [economy + '_heavyind', chart_height + ref_steel_3_rows + ref_chem_3_rows + i + 7, 2,\
+                    chart_height + ref_steel_3_rows + ref_chem_3_rows + i + 7, ref_cement_3_cols - 1],
+                'fill':       {'color': ref_cement_3['tech_mix'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        both_worksheet33.insert_chart('R3', ref_cement_chart1)
+
+    else: 
+        pass
+
+    # NZS Steel stacked chart
+    if netz_steel_3_rows > 0:
+        netz_steel_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_steel_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_steel_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_steel_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_steel_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_steel_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_steel_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_steel_3_rows):
+            netz_steel_chart1.add_series({
+                'name':       [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + i + 10, 1],
+                'categories': [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 9, 2,\
+                    (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 9, netz_steel_3_cols - 1],
+                'values':     [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + i + 10, netz_steel_3_cols - 1],
+                'fill':       {'color': netz_steel_3['tech_mix'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        both_worksheet33.insert_chart('B47', netz_steel_chart1)
+
+    else: 
+        pass
+
+    # NZS Chemicals stacked chart
+    if netz_chem_3_rows > 0:
+        netz_chem_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_chem_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_chem_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_chem_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_chem_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_chem_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_chem_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_chem_3_rows):
+            netz_chem_chart1.add_series({
+                'name':       [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + i + 13, 1],
+                'categories': [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + 12, 2,\
+                    (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + 12, netz_chem_3_cols - 1],
+                'values':     [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + i + 13, 2,\
+                    (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + i + 13, netz_chem_3_cols - 1],
+                'fill':       {'color': netz_chem_3['tech_mix'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        both_worksheet33.insert_chart('J47', netz_chem_chart1)
+
+    else: 
+        pass
+
+    # NZS Cement stacked chart
+    if netz_cement_3_rows > 0:
+        netz_cement_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_cement_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_cement_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_cement_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_cement_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_cement_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_cement_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_cement_3_rows):
+            netz_cement_chart1.add_series({
+                'name':       [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + netz_chem_3_rows + i + 16, 1],
+                'categories': [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + netz_chem_3_rows + 15, 2,\
+                    (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + netz_chem_3_rows + 15, netz_cement_3_cols - 1],
+                'values':     [economy + '_heavyind', (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + netz_chem_3_rows + i + 16, 2,\
+                    (2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + netz_chem_3_rows + i + 16, netz_cement_3_cols - 1],
+                'fill':       {'color': netz_cement_3['tech_mix'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        both_worksheet33.insert_chart('R47', netz_cement_chart1)
+
+    else: 
+        pass
 
     writer.save()
 

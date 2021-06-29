@@ -749,6 +749,13 @@ netz_refownsup_df1.to_csv(path_final + '/OSeMOSYS_refownsup_netzero.csv', index 
 netz_pow_capacity_df1.to_csv(path_final + '/OSeMOSYS_powcapacity_netzero.csv', index = False)
 netz_trans_df1.to_csv(path_final + '/OSeMOSYS_transformation_netzero.csv', index = False)
 
+# Dataframes for demand sectors
+
+# Save OSeMOSYS results dataframes 
+
+ref_aggregate_df1.to_csv(path_final + '/OSeMOSYS_only_reference.csv', index = False)
+netz_aggregate_df1.to_csv(path_final + '/OSeMOSYS_only_netzero.csv', index = False)
+
 # # Macro dataframes (opens in Bossanova)
 
 # macro_GDP = pd.read_excel(path_mapping + '/Key Inputs.xlsx', sheet_name = 'GDP')
