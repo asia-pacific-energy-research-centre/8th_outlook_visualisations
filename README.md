@@ -21,8 +21,6 @@ Create a folder on your computer called `GitHub`. Open your command prompt and n
 
 Navigate into the folder by typing `cd 8th_outlook_visualisations`
 
-After awhile the software will be ready. Every time you want to run the charts you will need to activate this environment by typing `conda activate ./env`
-
 ### 3. Add the necessary files
 
 Copy the following files from the Integration\Historical Energy Balances\2018 folder:
@@ -30,12 +28,6 @@ Copy the following files from the Integration\Historical Energy Balances\2018 fo
 - EGEDA_FC_CO2_Emissions_years_2018
 
 Save those files in 8th_outlook_visualisations\data\1_EGEDA.
-
-Copy the following files from the Charts and tables\Mapping folder:
-- colours_dict
-- heavyind_mapping
-- macro_APEC
-- OSeMOSYS_mapping_2021
 
 Save those files in 8th_outlook_visualisations\data\2_Mapping_and_other.
 
