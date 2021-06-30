@@ -35,7 +35,7 @@ This requires the cd command to navigate to the appropriate folder executed at t
 
 NB: You only need to do this once. i.e. once you've cloned the repository and created the environment with the command below, the environment is created and ready to activate (as per step 5)
 ```bash
-conda env create --prefix ./env --file ./workflow/environment.yml 
+conda env create --prefix ./env --file environment.yml 
 ```
 
 #### 5. Activate the conda environment
