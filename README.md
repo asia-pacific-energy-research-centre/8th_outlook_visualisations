@@ -21,8 +21,6 @@ Create a folder on your computer called `GitHub`. Open your command prompt and n
 
 Navigate into the folder by typing `cd 8th_outlook_visualisations`
 
-Install the software using conda by typing `conda env create --prefix ./env --file environment.yml`
-
 After awhile the software will be ready. Every time you want to run the charts you will need to activate this environment by typing `conda activate ./env`
 
 ### 3. Add the necessary files
@@ -44,8 +42,6 @@ Save those files in 8th_outlook_visualisations\data\2_Mapping_and_other.
 Take your results files and save them in 8th_outlook_visualisations\data\3_OSeMOSYS_output.
 
 ### 4. Run the script
-
-A batch script will run the charts. Type `make_new_charts.bat`
 
 ### 5. View charts
 
