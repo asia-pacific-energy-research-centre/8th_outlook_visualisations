@@ -297,8 +297,12 @@ lignite_heat = ['POW_Sub_Brown_PP']
 gas_heat = ['POW_CCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
 oil_heat = ['POW_FuelOil_HP', 'POW_Diesel_PP']
 bio_heat = ['POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP']
-waste_heat = ['POW_WasteToEnergy_PP']
+waste_heat = ['POW_WasteToEnergy_PP', 'POW_WasteToHeat_HP']
 combination_heat = ['POW_HEAT_HP']
+
+# Heat only power plants
+
+heat_only = ['POW_FuelOil_HP', 'POW_HEAT_HP', 'POW_WasteToHeat_HP']
 
 # Make space for charts (before data/tables)
 chart_height = 18 # number of excel rows before the data is written (can change this)
@@ -1491,9 +1495,9 @@ for economy in Economy_codes:
 
     # TPES NET-ZERO DATA FRAMES
     # First data frame: TPES by fuels (and also fourth and sixth dataframe with slight tweaks)
-    netz_tpes_df = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                          (EGEDA_years_reference['item_code_new'] == '7_total_primary_energy_supply') &
-                          (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
+    netz_tpes_df = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                          (EGEDA_years_netzero['item_code_new'] == '7_total_primary_energy_supply') &
+                          (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
 
     coal = netz_tpes_df[netz_tpes_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                   item_code_new = '7_total_primary_energy_supply')
@@ -1524,9 +1528,9 @@ for economy in Economy_codes:
     netz_tpes_2_cols = netz_tpes_2.shape[1]
     
     # Second data frame: production (and also fifth and seventh data frames with slight tweaks)
-    netz_prod_df = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                          (EGEDA_years_reference['item_code_new'] == '1_indigenous_production') &
-                          (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
+    netz_prod_df = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                          (EGEDA_years_netzero['item_code_new'] == '1_indigenous_production') &
+                          (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
 
     coal = netz_prod_df[netz_prod_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                   item_code_new = '1_indigenous_production')
@@ -1558,8 +1562,8 @@ for economy in Economy_codes:
     
     # Third data frame: production; net exports; bunkers; stock changes
     
-    netz_tpes_comp_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                           (EGEDA_years_reference['item_code_new'].isin(tpes_items)) &
+    netz_tpes_comp_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                           (EGEDA_years_netzero['item_code_new'].isin(tpes_items)) &
                            (EGEDA_years_reference['fuel_code'] == '19_total')]
     
     net_trade = netz_tpes_comp_1[netz_tpes_comp_1['item_code_new'].isin(['2_imports', 
@@ -1587,9 +1591,9 @@ for economy in Economy_codes:
 
     # Imports/exports data frame
 
-    netz_imports_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                              (EGEDA_years_reference['item_code_new'] == '2_imports') & 
-                              (EGEDA_years_reference['fuel_code'].isin(Required_fuels))]
+    netz_imports_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                              (EGEDA_years_netzero['item_code_new'] == '2_imports') & 
+                              (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))]
 
     coal = netz_imports_1[netz_imports_1['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
                                                                                                           item_code_new = '2_imports')
@@ -1619,9 +1623,9 @@ for economy in Economy_codes:
     netz_imports_2_rows = netz_imports_2.shape[0]
     netz_imports_2_cols = netz_imports_2.shape[1]                             
 
-    netz_exports_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                              (EGEDA_years_reference['item_code_new'] == '3_exports') & 
-                              (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].copy()
+    netz_exports_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                              (EGEDA_years_netzero['item_code_new'] == '3_exports') & 
+                              (EGEDA_years_netzero['fuel_code'].isin(Required_fuels))].copy()
 
     # Change export values to positive rather than negative
 
@@ -1657,9 +1661,9 @@ for economy in Economy_codes:
 
     # Bunkers dataframes
 
-    netz_bunkers_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                              (EGEDA_years_reference['item_code_new'] == '4_international_marine_bunkers') & 
-                              (EGEDA_years_reference['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
+    netz_bunkers_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                              (EGEDA_years_netzero['item_code_new'] == '4_international_marine_bunkers') & 
+                              (EGEDA_years_netzero['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
 
     netz_bunkers_1 = netz_bunkers_1[['fuel_code', 'item_code_new'] + list(netz_bunkers_1.loc[:, '2000':])].reset_index(drop = True)
 
@@ -1672,9 +1676,9 @@ for economy in Economy_codes:
     netz_bunkers_1_rows = netz_bunkers_1.shape[0]
     netz_bunkers_1_cols = netz_bunkers_1.shape[1]
 
-    netz_bunkers_2 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                              (EGEDA_years_reference['item_code_new'] == '5_international_aviation_bunkers') & 
-                              (EGEDA_years_reference['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_2_aviation_gasoline']))]
+    netz_bunkers_2 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                              (EGEDA_years_netzero['item_code_new'] == '5_international_aviation_bunkers') & 
+                              (EGEDA_years_netzero['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_2_aviation_gasoline']))]
 
     jetfuel = netz_bunkers_2[netz_bunkers_2['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel'])]\
         .groupby(['item_code_new']).sum().assign(fuel_code = 'Jet fuel',
@@ -2090,7 +2094,7 @@ for economy in Economy_codes:
 
     ref_heat_use_1 = ref_power_df1[(ref_power_df1['economy'] == economy) &
                                    (ref_power_df1['Sheet_energy'] == 'UseByTechnology') &
-                                   (ref_power_df1['TECHNOLOGY'].isin(['POW_FuelOil_HP', 'POW_HEAT_HP']))].reset_index(drop = True)
+                                   (ref_power_df1['TECHNOLOGY'].isin(heat_only))].reset_index(drop = True)
 
     coal = ref_heat_use_1[ref_heat_use_1['FUEL'].isin(coal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Coal',
                                                                                                       TECHNOLOGY = 'Coal heat')
@@ -3062,7 +3066,7 @@ for economy in Economy_codes:
     ref_worksheet1.set_row((2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, None, header_format)
     ref_worksheet1.set_row((2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9, None, header_format)
     ref_worksheet1.write(0, 0, economy + ' FED fuel reference', cell_format1)
-    ref_worksheet1.write(42, 0, economy + ' FED fuel net-zero', cell_format1)
+    ref_worksheet1.write(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 0, economy + ' FED fuel net-zero', cell_format1)
 
     # FED Fuel REFERENCE charts
 
@@ -3248,7 +3252,7 @@ for economy in Economy_codes:
     ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, None, header_format)
     ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + netz_fedsector_3_rows + 15, None, header_format)
     ref_worksheet2.write(0, 0, economy + ' FED sector reference', cell_format1)
-    ref_worksheet2.write(40, 0, economy + ' FED sector net-zero', cell_format1)
+    ref_worksheet2.write(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 0, economy + ' FED sector net-zero', cell_format1)
 
     # Create a FED sector area chart
 
@@ -3432,7 +3436,7 @@ for economy in Economy_codes:
     ref_worksheet3.set_row((2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, None, header_format)
     ref_worksheet3.set_row((2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 9, None, header_format)
     ref_worksheet3.write(0, 0, economy + ' buildings reference', cell_format1)
-    ref_worksheet3.write(35, 0, economy + ' buildings net-zero', cell_format1)
+    ref_worksheet3.write(chart_height + ref_bld_2_rows + ref_bld_3_rows + 6, 0, economy + ' buildings net-zero', cell_format1)
     
     # Create a FED chart
     ref_fed_bld_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -3558,7 +3562,7 @@ for economy in Economy_codes:
     ref_worksheet4.set_row((2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, None, header_format)
     ref_worksheet4.set_row((2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, None, header_format)
     ref_worksheet4.write(0, 0, economy + ' industry reference', cell_format1)
-    ref_worksheet4.write(40, 0, economy + ' industry net-zero', cell_format1)
+    ref_worksheet4.write(chart_height + ref_ind_1_rows + ref_ind_2_rows + 6, 0, economy + ' industry net-zero', cell_format1)
     
     # Create a industry subsector FED chart
     ref_fed_ind_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -3683,7 +3687,7 @@ for economy in Economy_codes:
     ref_worksheet5.set_row((2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, None, header_format)
     ref_worksheet5.set_row((2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, None, header_format)
     ref_worksheet5.write(0, 0, economy + ' FED transport reference', cell_format1)
-    ref_worksheet5.write(39, 0, economy + ' FED transport net-zero', cell_format1)
+    ref_worksheet5.write(chart_height + ref_trn_1_rows + ref_trn_2_rows + 6, 0, economy + ' FED transport net-zero', cell_format1)
     
     # Create a transport FED area chart
     ref_transport_chart1 = workbook.add_chart({'type': 'area', 
@@ -3812,7 +3816,7 @@ for economy in Economy_codes:
     ref_worksheet6.set_row((2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, None, header_format)
     ref_worksheet6.set_row((2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, None, header_format)
     ref_worksheet6.write(0, 0, economy + ' FED agriculture reference', cell_format1)
-    ref_worksheet6.write(42, 0, economy + ' FED agriculture net-zero', cell_format1)
+    ref_worksheet6.write(chart_height + ref_ag_1_rows + ref_ag_2_rows + 6, 0, economy + ' FED agriculture net-zero', cell_format1)
 
     # Create a Agriculture line chart 
     ref_ag_chart1 = workbook.add_chart({'type': 'line'})
@@ -5075,7 +5079,7 @@ for economy in Economy_codes:
     ref_worksheet11.set_row((2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, None, header_format)
     ref_worksheet11.set_row((2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + ref_tpes_1_rows + 9, None, header_format)
     ref_worksheet11.write(0, 0, economy + ' TPES fuel reference', cell_format1)
-    ref_worksheet11.write(36, 0, economy + ' TPES fuel net-zero', cell_format1)
+    ref_worksheet11.write(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 6, 0, economy + ' TPES fuel net-zero', cell_format1)
 
     ######################################################
     # Create a TPES chart
@@ -5261,7 +5265,7 @@ for economy in Economy_codes:
     ref_worksheet12.set_row((2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, None, header_format)
     ref_worksheet12.set_row((2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, None, header_format)
     ref_worksheet12.write(0, 0, economy + ' prod fuel reference', cell_format1)
-    ref_worksheet12.write(36, 0, economy + ' prod fuel net-zero', cell_format1)
+    ref_worksheet12.write(chart_height + ref_prod_1_rows + ref_prod_2_rows + 6, 0, economy + ' prod fuel net-zero', cell_format1)
 
     (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows
 
@@ -5744,7 +5748,7 @@ for economy in Economy_codes:
     ref_worksheet14.set_row((2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, None, header_format)
     ref_worksheet14.set_row((2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9, None, header_format)
     ref_worksheet14.write(0, 0, economy + ' TPES bunkers reference', cell_format1)
-    ref_worksheet14.write(28, 0, economy + ' TPES bunkers net-zero', cell_format1)
+    ref_worksheet14.write(chart_height + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, 0, economy + ' TPES bunkers net-zero', cell_format1)
     
     # MARINE BUNKER: Create a line chart subset by fuel
     
@@ -6681,7 +6685,8 @@ for economy in Economy_codes:
     ref_worksheet21.set_row((2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, None, header_format)
     ref_worksheet21.set_row((2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, None, header_format)
     ref_worksheet21.write(0, 0, economy + ' power input fuel reference (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
-    ref_worksheet21.write(48, 0, economy + ' power input fuel net-zero (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
+    ref_worksheet21.write(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 0,\
+        economy + ' power input fuel net-zero (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
 
     # Create a use by fuel area chart
     if ref_pow_use_2_rows > 0:
@@ -6813,7 +6818,7 @@ for economy in Economy_codes:
     ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, None, header_format)
     ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, None, header_format)
     ref_worksheet22.write(0, 0, economy + ' electricity generation reference', cell_format1)
-    ref_worksheet22.write(50, 0, economy + ' electricity generation net-zero', cell_format1)
+    ref_worksheet22.write(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 0, economy + ' electricity generation net-zero', cell_format1)
     
     # Create a electricity production area chart
     if ref_elecgen_2_rows > 0:
@@ -7463,7 +7468,7 @@ for economy in Economy_codes:
     ref_worksheet26.set_row((2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, None, header_format)
     ref_worksheet26.set_row((2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, None, header_format)
     ref_worksheet26.write(0, 0, economy + ' own use and losses reference', cell_format1)
-    ref_worksheet26.write(38, 0, economy + ' own use and losses net-zero', cell_format1)
+    ref_worksheet26.write(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, 0, economy + ' own use and losses net-zero', cell_format1)
 
     # Createn own-use transformation area chart by fuel
     if ref_ownuse_1_rows > 0:
@@ -7656,7 +7661,7 @@ for economy in Economy_codes:
     ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, None, header_format)
     ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, None, header_format)
     ref_worksheet27.write(0, 0, economy + ' heat generation reference', cell_format1)
-    ref_worksheet27.write(40, 0, economy + ' heat generation net-zero', cell_format1)
+    ref_worksheet27.write(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 0, economy + ' heat generation net-zero', cell_format1)
     
     # Create a electricity production area chart
     if ref_heatgen_2_rows > 0:
