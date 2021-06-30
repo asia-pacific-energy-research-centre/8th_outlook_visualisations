@@ -23,6 +23,7 @@ Save ‘EGEDA_2018_years.csv’ in 8th_outlook_visualisations/data/1_EGEDA/
   (available in 'Historical Energy Balances' in the 'Integration' Teams channel)
 
 Save 
+
 ‘colours_dict.csv’
 
 ‘emissions_order_2018.csv.csv’
@@ -30,6 +31,8 @@ Save
 ‘heavyind_mapping.csv’
 
 ‘macro_APEC.xlsx’
+
+‘OSeMOSYS_mapping_2021.xlsx’
 
 in 8th_outlook_visualisations/data/2_Mapping_and_other/
   (available in 'Charts and tables' teams folder)
