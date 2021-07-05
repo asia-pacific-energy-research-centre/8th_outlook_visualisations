@@ -559,7 +559,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA']
+# Economy_codes = ['06_HKC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1469,9 +1469,9 @@ for economy in Economy_codes:
 
     ref_bunkers_2 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                               (EGEDA_years_reference['item_code_new'] == '5_international_aviation_bunkers') & 
-                              (EGEDA_years_reference['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_2_aviation_gasoline']))]
+                              (EGEDA_years_reference['fuel_code'].isin(['7_x_jet_fuel', '7_2_aviation_gasoline']))]
 
-    jetfuel = ref_bunkers_2[ref_bunkers_2['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel'])]\
+    jetfuel = ref_bunkers_2[ref_bunkers_2['fuel_code'].isin(['7_x_jet_fuel'])]\
         .groupby(['item_code_new']).sum().assign(fuel_code = 'Jet fuel',
                                                  item_code_new = '5_international_aviation_bunkers')
     
@@ -1678,9 +1678,9 @@ for economy in Economy_codes:
 
     netz_bunkers_2 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                               (EGEDA_years_netzero['item_code_new'] == '5_international_aviation_bunkers') & 
-                              (EGEDA_years_netzero['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel', '7_2_aviation_gasoline']))]
+                              (EGEDA_years_netzero['fuel_code'].isin(['7_x_jet_fuel', '7_2_aviation_gasoline']))]
 
-    jetfuel = netz_bunkers_2[netz_bunkers_2['fuel_code'].isin(['7_4_gasoline_type_jet_fuel', '7_5_kerosene_type_jet_fuel'])]\
+    jetfuel = netz_bunkers_2[netz_bunkers_2['fuel_code'].isin(['7_x_jet_fuel'])]\
         .groupby(['item_code_new']).sum().assign(fuel_code = 'Jet fuel',
                                                  item_code_new = '5_international_aviation_bunkers')
     
