@@ -15,7 +15,11 @@ You will need several software programs on your computer:
 The following instructions assume you have installed Visual Studio Code, Miniconda, and GitHub Desktop.
 
 ### 1. Clone ‘8th_outlook_visualisations’
-Create a folder on your computer called `GitHub`. Open your command prompt and navigate to that folder, for example: `cd GitHub`. Clone this repository by typing `git clone https://github.com/asia-pacific-energy-research-centre/8th_outlook_visualisations.git`
+Create a folder on your computer called `GitHub`. 
+
+Open your command prompt and navigate to that folder, for example: `cd GitHub`. 
+
+Clone this repository by typing `git clone https://github.com/asia-pacific-energy-research-centre/8th_outlook_visualisations.git`
 
 ### 2. Install the necessary software in the 8th_outlook_visualisations folder
 
@@ -28,6 +32,12 @@ Copy the following files from the Integration\Historical Energy Balances\2018 fo
 - EGEDA_FC_CO2_Emissions_years_2018
 
 Save those files in 8th_outlook_visualisations\data\1_EGEDA.
+
+Copy the following files from the Charts and tables\Mapping:
+- colours_dict
+- heavyind_mapping
+- macro_APEC
+- OSeMOSYS_mapping_2021
 
 Save those files in 8th_outlook_visualisations\data\2_Mapping_and_other.
 
