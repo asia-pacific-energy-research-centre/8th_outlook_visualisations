@@ -46,10 +46,11 @@ Mapping_TFC_TPES = Mapping_file[Mapping_file['Balance'].isin(['TFC', 'TPES'])]
 
 Map_trans = Mapping_file[Mapping_file['Balance'] == 'TRANS'].reset_index(drop = True)
 
-# A mapping just for i) power and ii) ref, own, sup
+# A mapping just for i) power, ii) ref, own, sup and iii) hydrogen
 
 Map_power = Map_trans[Map_trans['Sector'] == 'POW'].reset_index(drop = True)
 Map_refownsup = Map_trans[Map_trans['Sector'].isin(['REF', 'SUP', 'OWN'])].reset_index(drop = True)
+Map_hydrogen = Map_trans[Map_trans['Sector'] == 'HYD'].reset_index(drop = True)
 
 # Define unique workbook and sheet combinations for TFC and TPES
 Unique_TFC_TPES = Mapping_TFC_TPES.groupby(['Workbook', 'Sheet_energy']).size().reset_index().loc[:, ['Workbook', 'Sheet_energy']]
@@ -735,6 +736,10 @@ netz_refownsup_df1 = netz_refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet
 ref_trans_df1 = ref_power_df1.append(ref_refownsup_df1)
 netz_trans_df1 = netz_power_df1.append(netz_refownsup_df1)
 
+#################################################################
+
+# Hydrogen sector
+
 # Save the required dataframes for transformation charts in bossanova script
 
 # Reference
@@ -870,13 +875,19 @@ for region in EGEDA_emissions['economy'].unique():
     power_total = interim_df4[interim_df4['item_code_new'].isin(power_agg)].groupby(['fuel_code'])\
         .sum().assign(item_code_new = '9_x_power').reset_index()
 
+    hydrogen_total = interim_df4[interim_df4['item_code_new'] == '8_transfers'].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '9_x_hydrogen').reset_index()
+
+    s = hydrogen_total.select_dtypes(include = [np.number]) * 0
+    hydrogen_total[s.columns] = s
+
     # tfc = interim_df5[interim_df5['item_code_new'].isin(tfc_agg)].groupby(['fuel_code'])\
     #     .sum().assign(item_code_new = '12_total_final_consumption').reset_index()
 
     # tfec = interim_df5[interim_df5['item_code_new'].isin(tfec_agg)].groupby(['fuel_code'])\
     #     .sum().assign(item_code_new = '13_total_final_energy_consumption').reset_index()
 
-    interim_df5 = interim_df4.append([power_total]).reset_index(drop = True)                                      
+    interim_df5 = interim_df4.append([power_total, hydrogen_total]).reset_index(drop = True)                                      
 
     interim_df5['economy'] = region
 
@@ -894,19 +905,19 @@ change_to_negative[s.columns] = s
 
 EGEDA_aggregate = everything_else.append(change_to_negative).reset_index(drop = True)
 
-# Aggregate for demand sectors, power and own use and losses (EMISSIONS)
+# Aggregate for demand sectors, power, own use and losses, and hydrogen sector (EMISSIONS)
 
 EGEDA_aggregate2 = pd.DataFrame()
 
 for region in EGEDA_aggregate['economy'].unique():
     interim_df1 = EGEDA_aggregate[EGEDA_aggregate['economy'] == region]
 
-    dem_pow_own = interim_df1[interim_df1['item_code_new']\
-        .isin(['9_x_power', '10_losses_and_own_use', '13_total_final_energy_consumption'])]\
+    dem_pow_own_hyd = interim_df1[interim_df1['item_code_new']\
+        .isin(['9_x_power', '9_x_hydrogen', '10_losses_and_own_use', '13_total_final_energy_consumption'])]\
             .groupby(['fuel_code'])\
-                .sum().assign(item_code_new = '13_x_dem_pow_own').reset_index()
+                .sum().assign(item_code_new = '13_x_dem_pow_own_hyd').reset_index()
 
-    interim_df2 = interim_df1.append([dem_pow_own]).reset_index(drop = True)
+    interim_df2 = interim_df1.append([dem_pow_own_hyd]).reset_index(drop = True)
 
     interim_df2['economy'] = region
 
@@ -942,7 +953,7 @@ EGEDA_aggregate_sorted.to_csv('./data/1_EGEDA/EGEDA_2018_emissions.csv', index =
 
 # Now moving everything from OSeMOSYS to EGEDA (Only demand sectors and own use for now)
 
-Mapping_file_emiss = Mapping_file[Mapping_file['Sector'].isin(['AGR', 'BLD', 'IND', 'TRN', 'PIP', 'NON', 'OWN', 'POW'])].copy() 
+Mapping_file_emiss = Mapping_file[Mapping_file['Sector'].isin(['AGR', 'BLD', 'IND', 'TRN', 'PIP', 'NON', 'OWN', 'POW', 'HYD'])].copy() 
 Mapping_file_emiss = Mapping_file_emiss[Mapping_file_emiss['item_code_new'].notna()].copy().reset_index(drop = True)
 
 # Define unique workbook and sheet combinations
@@ -1034,7 +1045,7 @@ OSeMOSYS_years_netz = list(range(2017, netz_max_year + 1))
 
 # Vector not defined above
 
-dem_pow_own_agg = ['9_x_power', '10_losses_and_own_use', '13_total_final_energy_consumption']
+dem_pow_own_hyd_agg = ['9_x_power', '9_x_hydrogen', '10_losses_and_own_use', '13_total_final_energy_consumption']
 
 ###################################################################################################
 
@@ -1048,7 +1059,7 @@ ref_aggemiss_df2 = pd.DataFrame()
 
 for region in ref_aggemiss_df1['REGION'].unique():
     interim_df1 = ref_aggemiss_df1[ref_aggemiss_df1['REGION'] == region]
-    interim_df1 = interim_df1.merge(Mapping_file, how = 'left', on = ['TECHNOLOGY', 'EMISSION'])
+    interim_df1 = interim_df1.merge(Mapping_file_emiss, how = 'left', on = ['TECHNOLOGY', 'EMISSION'])
     interim_df1 = interim_df1.groupby(['item_code_new', 'fuel_code']).sum().reset_index()
 
     ########################### Aggregate fuel_code for new variables ###################################
@@ -1110,10 +1121,10 @@ for region in ref_aggemiss_df1['REGION'].unique():
 
     interim_df5 = interim_df4.append([tpes, tfc, tfec]).reset_index(drop = True)
 
-    dem_pow_own = interim_df5[interim_df5['item_code_new'].isin(dem_pow_own_agg)].groupby(['fuel_code'])\
-        .sum().assign(item_code_new = '13_x_dem_pow_own').reset_index()
+    dem_pow_own_hyd = interim_df5[interim_df5['item_code_new'].isin(dem_pow_own_hyd_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '13_x_dem_pow_own_hyd').reset_index()
 
-    interim_df6 = interim_df5.append(dem_pow_own).reset_index(drop = True)
+    interim_df6 = interim_df5.append(dem_pow_own_hyd).reset_index(drop = True)
 
     # Now add in economy reference
     interim_df6['economy'] = region
@@ -1130,7 +1141,7 @@ netz_aggemiss_df2 = pd.DataFrame()
 
 for region in netz_aggemiss_df1['REGION'].unique():
     interim_df1 = netz_aggemiss_df1[netz_aggemiss_df1['REGION'] == region]
-    interim_df1 = interim_df1.merge(Mapping_file, how = 'left', on = ['TECHNOLOGY', 'EMISSION'])
+    interim_df1 = interim_df1.merge(Mapping_file_emiss, how = 'left', on = ['TECHNOLOGY', 'EMISSION'])
     interim_df1 = interim_df1.groupby(['item_code_new', 'fuel_code']).sum().reset_index()
 
     ########################### Aggregate fuel_code for new variables ###################################
@@ -1192,10 +1203,10 @@ for region in netz_aggemiss_df1['REGION'].unique():
 
     interim_df5 = interim_df4.append([tpes, tfc, tfec]).reset_index(drop = True)
 
-    dem_pow_own = interim_df5[interim_df5['item_code_new'].isin(dem_pow_own_agg)].groupby(['fuel_code'])\
-        .sum().assign(item_code_new = '13_x_dem_pow_own').reset_index()
+    dem_pow_own_hyd = interim_df5[interim_df5['item_code_new'].isin(dem_pow_own_hyd_agg)].groupby(['fuel_code'])\
+        .sum().assign(item_code_new = '13_x_dem_pow_own_hyd').reset_index()
 
-    interim_df6 = interim_df5.append(dem_pow_own).reset_index(drop = True)
+    interim_df6 = interim_df5.append(dem_pow_own_hyd).reset_index(drop = True)
 
     # Now add in economy reference
     interim_df6['economy'] = region

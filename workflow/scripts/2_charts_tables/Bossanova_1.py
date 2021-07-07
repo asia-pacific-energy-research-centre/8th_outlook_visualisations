@@ -28,7 +28,7 @@ netz_refownsup_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_refownsup_netzero.csv
 netz_pow_capacity_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_powcapacity_netzero.csv').loc[:,:'2050']
 netz_trans_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_netzero.csv').loc[:,:'2050']
 
-# Emissions dataframe
+# Emissions dataframe 
 
 EGEDA_emissions_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_reference.csv')
 EGEDA_emissions_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_netzero.csv')
@@ -128,7 +128,7 @@ Petroleum_fuels = ['7_petroleum_products', '7_1_motor_gasoline', '7_2_aviation_g
 Transport_fuels = ['1_1_coking_coal', '1_5_lignite', '1_x_coal_thermal', '2_coal_products', '7_1_motor_gasoline', '7_2_aviation_gasoline',
                    '7_x_jet_fuel', '7_7_gas_diesel_oil', '7_8_fuel_oil', '7_9_lpg',
                    '7_x_other_petroleum_products', '8_1_natural_gas', '16_5_biogasoline', '16_6_biodiesel',
-                   '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels', '16_9_other_sources', '17_electricity'] 
+                   '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels', '16_x_hydrogen', '17_electricity'] 
 
 Renew_fuel = ['16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels']
 
@@ -600,7 +600,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -633,7 +633,7 @@ for economy in Economy_codes:
 
     ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
-    ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_fedfuel_1.loc[ref_fedfuel_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -672,7 +672,7 @@ for economy in Economy_codes:
 
     ref_tradbio_2.loc[ref_tradbio_2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_tradbio_2.loc[ref_tradbio_2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
-    ref_tradbio_2.loc[ref_tradbio_2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    ref_tradbio_2.loc[ref_tradbio_2['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     ref_tradbio_2.loc[ref_tradbio_2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_tradbio_2.loc[ref_tradbio_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -776,7 +776,7 @@ for economy in Economy_codes:
 
     ref_bld_2.loc[ref_bld_2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_bld_2.loc[ref_bld_2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
-    ref_bld_2.loc[ref_bld_2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    ref_bld_2.loc[ref_bld_2['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     ref_bld_2.loc[ref_bld_2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_bld_2.loc[ref_bld_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -841,7 +841,7 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(ref_ind_2.loc[:, '2000':])].reset_index(drop = True)
 
     ref_ind_2.loc[ref_ind_2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    ref_ind_2.loc[ref_ind_2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    ref_ind_2.loc[ref_ind_2['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     ref_ind_2.loc[ref_ind_2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_ind_2.loc[ref_ind_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -876,7 +876,7 @@ for economy in Economy_codes:
     ref_trn_1.loc[ref_trn_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Diesel'
     ref_trn_1.loc[ref_trn_1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
     ref_trn_1.loc[ref_trn_1['fuel_code'] == '7_9_lpg', 'fuel_code'] = 'LPG'
-    ref_trn_1.loc[ref_trn_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    ref_trn_1.loc[ref_trn_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     ref_trn_1.loc[ref_trn_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
     ref_trn_1 = ref_trn_1[ref_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
@@ -926,7 +926,7 @@ for economy in Economy_codes:
 
     ref_ag_1.loc[ref_ag_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_ag_1.loc[ref_ag_1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
-    ref_ag_1.loc[ref_ag_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    ref_ag_1.loc[ref_ag_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     ref_ag_1.loc[ref_ag_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_ag_1.loc[ref_ag_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -944,7 +944,7 @@ for economy in Economy_codes:
 
     ref_hyd_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
                                         (EGEDA_years_reference['item_code_new'].isin(Sectors_tfc)) &
-                                        (EGEDA_years_reference['fuel_code'] == '16_9_other_sources')].groupby('item_code_new').sum().assign(fuel_code = 'Hydrogen').reset_index()
+                                        (EGEDA_years_reference['fuel_code'] == '16_x_hydrogen')].groupby('item_code_new').sum().assign(fuel_code = 'Hydrogen').reset_index()
 
     buildings_hy = ref_hyd_1[ref_hyd_1['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])].groupby('fuel_code')\
         .sum().assign(item_code_new = 'Buildings', fuel_code = 'Hydrogen')
@@ -995,7 +995,7 @@ for economy in Economy_codes:
 
     netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'    
-    netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_fedfuel_1.loc[netz_fedfuel_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -1034,7 +1034,7 @@ for economy in Economy_codes:
 
     netz_tradbio_2.loc[netz_tradbio_2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_tradbio_2.loc[netz_tradbio_2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
-    netz_tradbio_2.loc[netz_tradbio_2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    netz_tradbio_2.loc[netz_tradbio_2['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     netz_tradbio_2.loc[netz_tradbio_2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_tradbio_2.loc[netz_tradbio_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -1136,7 +1136,7 @@ for economy in Economy_codes:
 
     netz_bld_2.loc[netz_bld_2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_bld_2.loc[netz_bld_2['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
-    netz_bld_2.loc[netz_bld_2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    netz_bld_2.loc[netz_bld_2['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     netz_bld_2.loc[netz_bld_2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_bld_2.loc[netz_bld_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -1200,7 +1200,7 @@ for economy in Economy_codes:
         [['fuel_code', 'item_code_new'] + list(netz_ind_2.loc[:, '2000':])].reset_index(drop = True)
 
     netz_ind_2.loc[netz_ind_2['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
-    netz_ind_2.loc[netz_ind_2['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    netz_ind_2.loc[netz_ind_2['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     netz_ind_2.loc[netz_ind_2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_ind_2.loc[netz_ind_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -1235,7 +1235,7 @@ for economy in Economy_codes:
     netz_trn_1.loc[netz_trn_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Diesel'
     netz_trn_1.loc[netz_trn_1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
     netz_trn_1.loc[netz_trn_1['fuel_code'] == '7_9_lpg', 'fuel_code'] = 'LPG'
-    netz_trn_1.loc[netz_trn_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    netz_trn_1.loc[netz_trn_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     netz_trn_1.loc[netz_trn_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
     netz_trn_1 = netz_trn_1[netz_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
@@ -1285,7 +1285,7 @@ for economy in Economy_codes:
 
     netz_ag_1.loc[netz_ag_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_ag_1.loc[netz_ag_1['fuel_code'] == '15_solid_biomass', 'fuel_code'] = 'Biomass'
-    netz_ag_1.loc[netz_ag_1['fuel_code'] == '16_9_other_sources', 'fuel_code'] = 'Hydrogen'
+    netz_ag_1.loc[netz_ag_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     netz_ag_1.loc[netz_ag_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_ag_1.loc[netz_ag_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
@@ -1303,7 +1303,7 @@ for economy in Economy_codes:
 
     netz_hyd_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) &
                                         (EGEDA_years_netzero['item_code_new'].isin(Sectors_tfc)) &
-                                        (EGEDA_years_netzero['fuel_code'] == '16_9_other_sources')].groupby('item_code_new').sum().assign(fuel_code = 'Hydrogen').reset_index()
+                                        (EGEDA_years_netzero['fuel_code'] == '16_x_hydrogen')].groupby('item_code_new').sum().assign(fuel_code = 'Hydrogen').reset_index()
 
     buildings_hy = netz_hyd_1[netz_hyd_1['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])].groupby('fuel_code')\
         .sum().assign(item_code_new = 'Buildings', fuel_code = 'Hydrogen')
@@ -2971,19 +2971,19 @@ for economy in Economy_codes:
 
     # First data frame construction: Emissions by fuels
     ref_emiss_1 = EGEDA_emissions_reference[(EGEDA_emissions_reference['economy'] == economy) & 
-                          (EGEDA_emissions_reference['item_code_new'].isin(['13_x_dem_pow_own'])) &
+                          (EGEDA_emissions_reference['item_code_new'].isin(['13_x_dem_pow_own_hyd'])) &
                           (EGEDA_emissions_reference['fuel_code'].isin(Required_emiss))].loc[:, 'fuel_code':].reset_index(drop = True)
 
     # Now build aggregate variables of the first level fuels in EGEDA
 
     coal = ref_emiss_1[ref_emiss_1['fuel_code'].isin(Coal_emiss)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
-                                                                                                    item_code_new = '13_x_dem_pow_own')
+                                                                                                    item_code_new = '13_x_dem_pow_own_hyd')
     
     oil = ref_emiss_1[ref_emiss_1['fuel_code'].isin(Oil_emiss)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
-                                                                                                  item_code_new = '13_x_dem_pow_own')
+                                                                                                  item_code_new = '13_x_dem_pow_own_hyd')
     
     heat_others = ref_emiss_1[ref_emiss_1['fuel_code'].isin(Heat_others_emiss)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
-                                                                                                                  item_code_new = '13_x_dem_pow_own')
+                                                                                                                  item_code_new = '13_x_dem_pow_own_hyd')
 
     # EMISSIONS fuel data frame 1 (data frame 6)
 
@@ -3047,19 +3047,19 @@ for economy in Economy_codes:
     # NET ZERO DATA FRAMES
     # First data frame construction: Emissions by fuels
     netz_emiss_1 = EGEDA_emissions_netzero[(EGEDA_emissions_netzero['economy'] == economy) & 
-                          (EGEDA_emissions_netzero['item_code_new'].isin(['13_x_dem_pow_own'])) &
+                          (EGEDA_emissions_netzero['item_code_new'].isin(['13_x_dem_pow_own_hyd'])) &
                           (EGEDA_emissions_netzero['fuel_code'].isin(Required_emiss))].loc[:, 'fuel_code':].reset_index(drop = True)
 
     # Now build aggregate variables of the first level fuels in EGEDA
 
     coal = netz_emiss_1[netz_emiss_1['fuel_code'].isin(Coal_emiss)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
-                                                                                                    item_code_new = '13_x_dem_pow_own')
+                                                                                                    item_code_new = '13_x_dem_pow_own_hyd')
     
     oil = netz_emiss_1[netz_emiss_1['fuel_code'].isin(Oil_emiss)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
-                                                                                                  item_code_new = '13_x_dem_pow_own')
+                                                                                                  item_code_new = '13_x_dem_pow_own_hyd')
     
     heat_others = netz_emiss_1[netz_emiss_1['fuel_code'].isin(Heat_others_emiss)].groupby(['item_code_new']).sum().assign(fuel_code = 'Heat & others',
-                                                                                                                  item_code_new = '13_x_dem_pow_own')
+                                                                                                                  item_code_new = '13_x_dem_pow_own_hyd')
 
     # EMISSIONS fuel data frame 1 (data frame 6)
 
