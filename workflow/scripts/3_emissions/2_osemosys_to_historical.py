@@ -18,7 +18,7 @@ path_output = './data/3_OSeMOSYS_output'
 # Path for OSeMOSYS to EGEDA mapping
 path_mapping = './data/2_Mapping_and_other'
 
-# Where to save finalised dataframe
+# Where to save finalised dataframe 
 path_final = './data/4_Joined'
 
 # OSeMOSYS results files
