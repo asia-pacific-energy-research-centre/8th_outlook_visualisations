@@ -600,7 +600,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+# Economy_codes = ['12_NZ']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
