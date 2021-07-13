@@ -320,9 +320,11 @@ powinput_fuel = ['Coal', 'Lignite', 'Oil', 'Gas', 'Hydro', 'Nuclear', 'Wind', 'S
 
 # Refinery vectors
 
-refinery_input = ['6_1_crude_oil', '6_x_ngls']
-refinery_output = ['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha', '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
-              '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane', '7_x_other_petroleum_products']
+refinery_input = ['d_ref_6_1_crude_oil', 'd_ref_6_x_ngls']
+refinery_output = ['d_ref_7_1_motor_gasoline_refine', 'd_ref_7_2_aviation_gasoline_refine', 'd_ref_7_3_naphtha_refine', 
+                   'd_ref_7_x_jet_fuel_refine', 'd_ref_7_6_kerosene_refine', 'd_ref_7_7_gas_diesel_oil_refine', 
+                   'd_ref_7_8_fuel_oil_refine', 'd_ref_7_9_lpg_refine', 'd_ref_7_10_refinery_gas_not_liquefied_refine', 
+                   'd_ref_7_11_ethane_refine', 'd_ref_7_x_other_petroleum_products_refine']
 
 refinery_new_output = ['7_1_from_ref', '7_2_from_ref', '7_3_from_ref', '7_jet_from_ref', '7_6_from_ref', '7_7_from_ref',
                        '7_8_from_ref', '7_9_from_ref', '7_10_from_ref', '7_11_from_ref', '7_other_from_ref']
@@ -677,7 +679,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA']
+Economy_codes = ['20_USA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2004,34 +2006,35 @@ for economy in Economy_codes:
     ref_refinery_1['Transformation'] = 'Input to refinery'
     ref_refinery_1 = ref_refinery_1[['FUEL', 'Transformation'] + list(ref_refinery_1.loc[:, '2017':'2050'])].reset_index(drop = True)
 
-    ref_refinery_1.loc[ref_refinery_1['FUEL'] == '6_1_crude_oil', 'FUEL'] = 'Crude oil'
-    ref_refinery_1.loc[ref_refinery_1['FUEL'] == '6_x_ngls', 'FUEL'] = 'NGLs'
+    ref_refinery_1.loc[ref_refinery_1['FUEL'] == 'd_ref_6_1_crude_oil', 'FUEL'] = 'Crude oil'
+    ref_refinery_1.loc[ref_refinery_1['FUEL'] == 'd_ref_6_x_ngls', 'FUEL'] = 'NGLs'
 
     ref_refinery_1_rows = ref_refinery_1.shape[0]
     ref_refinery_1_cols = ref_refinery_1.shape[1]
 
     ref_refinery_2 = ref_refownsup_df1[(ref_refownsup_df1['economy'] == economy) &
                                  (ref_refownsup_df1['Sector'] == 'REF') & 
-                                 (ref_refownsup_df1['FUEL'].isin(refinery_new_output))].copy()
+                                 (ref_refownsup_df1['FUEL'].isin(refinery_output))].copy()
 
     ref_refinery_2['Transformation'] = 'Output from refinery'
     ref_refinery_2 = ref_refinery_2[['FUEL', 'Transformation'] + list(ref_refinery_2.loc[:, '2017':'2050'])].reset_index(drop = True)
 
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_1_from_ref', 'FUEL'] = 'Motor gasoline'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_2_from_ref', 'FUEL'] = 'Aviation gasoline'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_3_from_ref', 'FUEL'] = 'Naphtha'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_jet_from_ref', 'FUEL'] = 'Jet fuel'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_6_from_ref', 'FUEL'] = 'Other kerosene'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_7_from_ref', 'FUEL'] = 'Gas diesel oil'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_8_from_ref', 'FUEL'] = 'Fuel oil'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_9_from_ref', 'FUEL'] = 'LPG'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_10_from_ref', 'FUEL'] = 'Refinery gas'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_11_from_ref', 'FUEL'] = 'Ethane'
-    ref_refinery_2.loc[ref_refinery_2['FUEL'] == '7_other_from_ref', 'FUEL'] = 'Other'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_1_motor_gasoline_refine', 'FUEL'] = 'Motor gasoline'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_2_aviation_gasoline_refine', 'FUEL'] = 'Aviation gasoline'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_3_naphtha_refine', 'FUEL'] = 'Naphtha'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_x_jet_fuel_refine', 'FUEL'] = 'Jet fuel'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_6_kerosene_refine', 'FUEL'] = 'Other kerosene'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_7_gas_diesel_oil_refine', 'FUEL'] = 'Gas diesel oil'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_8_fuel_oil_refine', 'FUEL'] = 'Fuel oil'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_9_lpg_refine', 'FUEL'] = 'LPG'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_10_refinery_gas_not_liquefied_refine', 'FUEL'] = 'Refinery gas'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_11_ethane_refine', 'FUEL'] = 'Ethane'
+    ref_refinery_2.loc[ref_refinery_2['FUEL'] == 'd_ref_7_x_other_petroleum_products_refine', 'FUEL'] = 'Other'
 
     ref_refinery_2['FUEL'] = pd.Categorical(
         ref_refinery_2['FUEL'], 
-        categories = ['Motor gasoline', 'Aviation gasoline', 'Naphtha', 'Jet fuel', 'Other kerosene', 'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other'], 
+        categories = ['Motor gasoline', 'Aviation gasoline', 'Naphtha', 'Jet fuel', 'Other kerosene', 
+                      'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other'], 
         ordered = True)
 
     ref_refinery_2 = ref_refinery_2.sort_values('FUEL')
@@ -2441,36 +2444,37 @@ for economy in Economy_codes:
                                  (netz_refownsup_df1['FUEL'].isin(refinery_input))].copy()
 
     netz_refinery_1['Transformation'] = 'Input to refinery'
-    netz_refinery_1 = netz_refinery_1[['FUEL', 'Transformation'] + list(netz_refinery_1.loc[:,'2017':'2050'])].reset_index(drop = True)
+    netz_refinery_1 = netz_refinery_1[['FUEL', 'Transformation'] + list(netz_refinery_1.loc[:, '2017':'2050'])].reset_index(drop = True)
 
-    netz_refinery_1.loc[netz_refinery_1['FUEL'] == '6_1_crude_oil', 'FUEL'] = 'Crude oil'
-    netz_refinery_1.loc[netz_refinery_1['FUEL'] == '6_x_ngls', 'FUEL'] = 'NGLs'
+    netz_refinery_1.loc[netz_refinery_1['FUEL'] == 'd_ref_6_1_crude_oil', 'FUEL'] = 'Crude oil'
+    netz_refinery_1.loc[netz_refinery_1['FUEL'] == 'd_ref_6_x_ngls', 'FUEL'] = 'NGLs'
 
     netz_refinery_1_rows = netz_refinery_1.shape[0]
     netz_refinery_1_cols = netz_refinery_1.shape[1]
 
     netz_refinery_2 = netz_refownsup_df1[(netz_refownsup_df1['economy'] == economy) &
                                  (netz_refownsup_df1['Sector'] == 'REF') & 
-                                 (netz_refownsup_df1['FUEL'].isin(refinery_new_output))].copy()
+                                 (netz_refownsup_df1['FUEL'].isin(refinery_output))].copy()
 
     netz_refinery_2['Transformation'] = 'Output from refinery'
-    netz_refinery_2 = netz_refinery_2[['FUEL', 'Transformation'] + list(netz_refinery_2.loc[:,'2017':'2050'])].reset_index(drop = True)
+    netz_refinery_2 = netz_refinery_2[['FUEL', 'Transformation'] + list(netz_refinery_2.loc[:, '2017':'2050'])].reset_index(drop = True)
 
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_1_from_ref', 'FUEL'] = 'Motor gasoline'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_2_from_ref', 'FUEL'] = 'Aviation gasoline'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_3_from_ref', 'FUEL'] = 'Naphtha'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_jet_from_ref', 'FUEL'] = 'Jet fuel'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_6_from_ref', 'FUEL'] = 'Other kerosene'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_7_from_ref', 'FUEL'] = 'Gas diesel oil'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_8_from_ref', 'FUEL'] = 'Fuel oil'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_9_from_ref', 'FUEL'] = 'LPG'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_10_from_ref', 'FUEL'] = 'Refinery gas'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_11_from_ref', 'FUEL'] = 'Ethane'
-    netz_refinery_2.loc[netz_refinery_2['FUEL'] == '7_other_from_ref', 'FUEL'] = 'Other'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_1_motor_gasoline_refine', 'FUEL'] = 'Motor gasoline'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_2_aviation_gasoline_refine', 'FUEL'] = 'Aviation gasoline'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_3_naphtha_refine', 'FUEL'] = 'Naphtha'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_x_jet_fuel_refine', 'FUEL'] = 'Jet fuel'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_6_kerosene_refine', 'FUEL'] = 'Other kerosene'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_7_gas_diesel_oil_refine', 'FUEL'] = 'Gas diesel oil'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_8_fuel_oil_refine', 'FUEL'] = 'Fuel oil'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_9_lpg_refine', 'FUEL'] = 'LPG'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_10_refinery_gas_not_liquefied_refine', 'FUEL'] = 'Refinery gas'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_11_ethane_refine', 'FUEL'] = 'Ethane'
+    netz_refinery_2.loc[netz_refinery_2['FUEL'] == 'd_ref_7_x_other_petroleum_products_refine', 'FUEL'] = 'Other'
 
     netz_refinery_2['FUEL'] = pd.Categorical(
         netz_refinery_2['FUEL'], 
-        categories = ['Motor gasoline', 'Aviation gasoline', 'Naphtha', 'Jet fuel', 'Other kerosene', 'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other'], 
+        categories = ['Motor gasoline', 'Aviation gasoline', 'Naphtha', 'Jet fuel', 'Other kerosene', 
+                      'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other'], 
         ordered = True)
 
     netz_refinery_2 = netz_refinery_2.sort_values('FUEL')
