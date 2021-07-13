@@ -99,7 +99,7 @@ required_fuels_heat = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_
                        '16_9_other_sources', '17_electricity', '18_heat']
 
 required_power_input = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
-                        '8_gas', '9_nuclear', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass', 
+                        '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass', 
                         '16_1_biogas', '16_2_industrial_waste', '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable', 
                         '16_6_biodiesel', '16_8_other_liquid_biofuels', '16_9_other_sources']
 
