@@ -733,7 +733,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-Economy_codes = ['20_USA']
+# Economy_codes = ['20_USA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -3594,6 +3594,7 @@ for economy in Economy_codes:
     ###########################################################################################
 
     # Fuel consummption data frame builds
+    # REFERENCE
 
     # Industry
     # Transport
@@ -3607,7 +3608,15 @@ for economy in Economy_codes:
 
     # Coal
 
-    
+    ref_coal_ind = ref_ind_2[ref_ind_2['fuel_code'] == 'Coal']
+
+    ref_
+
+
+
+
+
+
 
     # Df builds are complete
 
