@@ -1476,14 +1476,8 @@ for economy in Economy_codes:
     # Third data frame: production; net exports; bunkers; stock changes
     
     ref_tpes_comp_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                           (EGEDA_years_reference['item_code_new'].isin(tpes_items)) &
-                           (EGEDA_years_reference['fuel_code'] == '19_total')]
-
-    ref_tpes_elec_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                           (EGEDA_years_reference['item_code_new'].isin(['2_imports', '3_exports'])) &
-                           (EGEDA_years_reference['fuel_code'] == '17_electricity')]
-
-    ref_tpes_comp_1 = ref_tpes_comp_1.append(ref_tpes_elec_1).copy().reset_index(drop = True)
+                                            (EGEDA_years_reference['item_code_new'].isin(tpes_items)) &
+                                            (EGEDA_years_reference['fuel_code'] == '19_total')]
     
     net_trade = ref_tpes_comp_1[ref_tpes_comp_1['item_code_new'].isin(['2_imports', '3_exports'])]\
         .groupby(['economy']).sum().assign(fuel_code = '19_total', item_code_new = 'Net trade')
@@ -1691,12 +1685,6 @@ for economy in Economy_codes:
     netz_tpes_comp_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                            (EGEDA_years_netzero['item_code_new'].isin(tpes_items)) &
                            (EGEDA_years_netzero['fuel_code'] == '19_total')]
-    
-    netz_tpes_elec_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                           (EGEDA_years_netzero['item_code_new'].isin(['2_imports', '3_exports'])) &
-                           (EGEDA_years_netzero['fuel_code'] == '17_electricity')]
-
-    netz_tpes_comp_1 = netz_tpes_comp_1.append(netz_tpes_elec_1).copy().reset_index(drop = True)
     
     net_trade = netz_tpes_comp_1[netz_tpes_comp_1['item_code_new'].isin(['2_imports', '3_exports'])]\
         .groupby(['economy']).sum().assign(fuel_code = '19_total', item_code_new = 'Net trade')
@@ -12228,7 +12216,7 @@ for economy in Economy_codes:
     netz_tpes_biofuel_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Biofuels (PJ)',
+        'name': 'Biofuels (PJ)',s
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
