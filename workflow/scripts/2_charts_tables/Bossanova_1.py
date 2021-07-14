@@ -103,6 +103,10 @@ required_power_input = ['1_coal', '1_5_lignite', '2_coal_products', '6_crude_oil
                         '16_1_biogas', '16_2_industrial_waste', '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable', 
                         '16_6_biodiesel', '16_8_other_liquid_biofuels', '16_9_other_sources']
 
+required_ol_input = ['1_coal', '1_5_lignite', '2_coal_products', '3_peat', '4_peat_products', '6_crude_oil_and_ngl', 
+                     '7_petroleum_products', '8_gas', '15_solid_biomass', '16_1_biogas', '16_2_industrial_waste',  
+                     '16_6_biodiesel', '17_electricity', '18_heat']
+
 Coal_fuels = ['1_coal', '2_coal_products', '3_peat', '4_peat_products']
 
 Oil_fuels = ['6_crude_oil_and_ngl', '7_petroleum_products', '5_oil_shale_and_oil_sands']
@@ -613,6 +617,54 @@ EGEDA_hist_power[neg_to_pos.columns] = neg_to_pos
 EGEDA_hist_power.to_csv('./data/4_Joined/EGEDA_hist_power.csv', index = False)
 EGEDA_hist_power = pd.read_csv('./data/4_Joined/EGEDA_hist_power.csv')
 
+################################################################################
+
+# Own use and losses historical
+
+EGEDA_hist_own = EGEDA_data[(EGEDA_data['item_code_new'].isin(['10_losses_and_own_use'])) &
+                              (EGEDA_data['fuel_code'].isin(required_ol_input))].copy().reset_index(drop = True)
+
+# China only having data for 1_coal requires workaround to keep lignite data
+lignite_alt = EGEDA_hist_own[EGEDA_hist_own['fuel_code'] == '1_5_lignite'].copy()\
+    .set_index(['economy', 'fuel_code', 'item_code_new']) * -1
+
+lignite_alt = lignite_alt.reset_index()
+
+new_coal = EGEDA_hist_own[EGEDA_hist_own['fuel_code'] == '1_coal'].copy().reset_index(drop = True)
+
+lig_coal = new_coal.append(lignite_alt).reset_index(drop = True).groupby(['economy', 'item_code_new']).sum().reset_index()
+lig_coal['fuel_code'] = '1_coal'
+
+no_coal = EGEDA_hist_own[EGEDA_hist_own['fuel_code'] != '1_coal'].copy().reset_index(drop = True)
+
+EGEDA_hist_own = no_coal.append(lig_coal).reset_index(drop = True)
+
+EGEDA_hist_own['FUEL'] = EGEDA_hist_own['fuel_code'].map({'1_coal': 'Coal', 
+                                                          '1_5_lignite': 'Coal', 
+                                                          '2_coal_products': 'Coal',
+                                                          '3_peat': 'Coal',
+                                                          '4_peat_products': 'Coal',
+                                                          '6_crude_oil_and_ngl': 'Oil',
+                                                          '7_petroleum_products': 'Oil',
+                                                          '8_gas': 'Gas',  
+                                                          '15_solid_biomass': 'Renewables', 
+                                                          '16_1_biogas': 'Renewables',
+                                                          '16_2_industrial_waste': 'Other',
+                                                          '16_6_biodiesel': 'Renewables',
+                                                          '17_electricity': 'Electricity',
+                                                          '18_heat': 'Heat'})
+
+EGEDA_hist_own['Sector'] = 'Own-use and losses'
+
+EGEDA_hist_own = EGEDA_hist_own[['economy', 'FUEL', 'Sector'] + list(range(2000, 2019))].copy()\
+    .groupby(['economy', 'FUEL', 'Sector']).sum().reset_index()
+
+neg_to_pos = EGEDA_hist_own.select_dtypes(include=[np.number]) * -1  
+EGEDA_hist_own[neg_to_pos.columns] = neg_to_pos
+
+EGEDA_hist_own.to_csv('./data/4_Joined/EGEDA_hist_own.csv', index = False)
+EGEDA_hist_own = pd.read_csv('./data/4_Joined/EGEDA_hist_own.csv')
+
 #########################################################################################################################################
 
 # OSeMOSYS demand reults dataframes
@@ -681,7 +733,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA']
+Economy_codes = ['20_USA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2148,10 +2200,22 @@ for economy in Economy_codes:
 
     ref_ownuse_1 = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(own_use_fuels)].reset_index(drop = True)
 
+    #################################################################################
+    historical_input = EGEDA_hist_own[EGEDA_hist_own['economy'] == economy].copy().\
+        iloc[:,:-2][['FUEL', 'Sector'] + list(EGEDA_hist_own.loc[:, '2000':'2016'])]
+
+    ref_ownuse_1 = historical_input.merge(ref_ownuse_1, how = 'right', on = ['FUEL', 'Sector']).replace(np.nan, 0)
+
+    ref_ownuse_1['FUEL'] = pd.Categorical(ref_ownuse_1['FUEL'], own_use_fuels)
+
+    ref_ownuse_1 = ref_ownuse_1.sort_values('FUEL').reset_index(drop = True)
+
+    ref_ownuse_1 = ref_ownuse_1[['FUEL', 'Sector'] + list(ref_ownuse_1.loc[:, '2000':'2050'])]
+
     ref_ownuse_1_rows = ref_ownuse_1.shape[0]
     ref_ownuse_1_cols = ref_ownuse_1.shape[1]
 
-    ref_ownuse_2 = ref_ownuse_1[['FUEL', 'Sector'] + trans_col_chart]
+    ref_ownuse_2 = ref_ownuse_1[['FUEL', 'Sector'] + col_chart_years]
 
     ref_ownuse_2_rows = ref_ownuse_2.shape[0]
     ref_ownuse_2_cols = ref_ownuse_2.shape[1]
@@ -2588,10 +2652,22 @@ for economy in Economy_codes:
 
     netz_ownuse_1 = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(own_use_fuels)].reset_index(drop = True)
 
+    #################################################################################
+    historical_input = EGEDA_hist_own[EGEDA_hist_own['economy'] == economy].copy().\
+        iloc[:,:-2][['FUEL', 'Sector'] + list(EGEDA_hist_own.loc[:, '2000':'2016'])]
+
+    netz_ownuse_1 = historical_input.merge(netz_ownuse_1, how = 'right', on = ['FUEL', 'Sector']).replace(np.nan, 0)
+
+    netz_ownuse_1['FUEL'] = pd.Categorical(netz_ownuse_1['FUEL'], own_use_fuels)
+
+    netz_ownuse_1 = netz_ownuse_1.sort_values('FUEL').reset_index(drop = True)
+
+    netz_ownuse_1 = netz_ownuse_1[['FUEL', 'Sector'] + list(netz_ownuse_1.loc[:, '2000':'2050'])]
+
     netz_ownuse_1_rows = netz_ownuse_1.shape[0]
     netz_ownuse_1_cols = netz_ownuse_1.shape[1]
 
-    netz_ownuse_2 = netz_ownuse_1[['FUEL', 'Sector'] + trans_col_chart]
+    netz_ownuse_2 = netz_ownuse_1[['FUEL', 'Sector'] + col_chart_years]
 
     netz_ownuse_2_rows = netz_ownuse_2.shape[0]
     netz_ownuse_2_cols = netz_ownuse_2.shape[1]
@@ -3514,6 +3590,24 @@ for economy in Economy_codes:
 
     netz_biofuel_2_rows = netz_biofuel_2.shape[0]
     netz_biofuel_2_cols = netz_biofuel_2.shape[1]
+
+    ###########################################################################################
+
+    # Fuel consummption data frame builds
+
+    # Industry
+    # Transport
+    # Buildings
+    # Agriculture
+    # Non-specified
+    # Non-energy
+    # Own-use
+    # Power (including heat)
+    # Total
+
+    # Coal
+
+    
 
     # Df builds are complete
 
@@ -12216,7 +12310,7 @@ for economy in Economy_codes:
     netz_tpes_biofuel_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Biofuels (PJ)',s
+        'name': 'Biofuels (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
