@@ -3609,14 +3609,18 @@ for economy in Economy_codes:
     # Coal
 
     ref_coal_ind = ref_ind_2[ref_ind_2['fuel_code'] == 'Coal']
+    ref_coal_bld = ref_bld_2[ref_bld_2['fuel_code'] == 'Coal']
+    ref_coal_ag = ref_ag_1[ref_ag_1['fuel_code'] == 'Coal']
 
-    ref_
+    ref_coal_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                          (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
+                          (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                              '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
+                                  .sum().reset_index().assign(fuel_code = 'Coal')
 
+    ref_coal_trn = ref_coal_trn[['fuel_code', 'item_code_new'] + list(ref_coal_trn.loc[:, '2000':'2050'])]
 
-
-
-
-
+    #ref_
 
     # Df builds are complete
 
