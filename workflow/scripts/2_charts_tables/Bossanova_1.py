@@ -617,6 +617,24 @@ EGEDA_hist_power[neg_to_pos.columns] = neg_to_pos
 EGEDA_hist_power.to_csv('./data/4_Joined/EGEDA_hist_power.csv', index = False)
 EGEDA_hist_power = pd.read_csv('./data/4_Joined/EGEDA_hist_power.csv')
 
+### Extra grab for consumption chart
+
+EGEDA_histpower_oil = EGEDA_data[(EGEDA_data['item_code_new'].isin(['9_1_main_activity_producer', '9_2_autoproducers'])) &
+                                 (EGEDA_data['fuel_code'].isin(['6_crude_oil_and_ngl', '7_petroleum_products']))]\
+                                    .copy().reset_index(drop = True)
+
+EGEDA_histpower_oil['FUEL'] = EGEDA_histpower_oil['fuel_code'].map({'6_crude_oil_and_ngl': 'Crude oil & NGL',
+                                                                    '7_petroleum_products': 'Petroleum products'})
+
+EGEDA_histpower_oil = EGEDA_histpower_oil.groupby(['economy', 'FUEL']).sum().reset_index().assign(item_code_new = 'Power')\
+    [['economy', 'FUEL', 'item_code_new'] + list(range(2000, 2019))]\
+
+neg_to_pos = EGEDA_histpower_oil.select_dtypes(include = [np.number]) * -1
+EGEDA_histpower_oil[neg_to_pos.columns] = neg_to_pos
+
+EGEDA_histpower_oil.to_csv('./data/4_Joined/EGEDA_histpower_oil.csv', index = False)
+EGEDA_histpower_oil = pd.read_csv('./data/4_Joined/EGEDA_histpower_oil.csv')
+
 ################################################################################
 
 # Own use and losses historical
@@ -664,6 +682,38 @@ EGEDA_hist_own[neg_to_pos.columns] = neg_to_pos
 
 EGEDA_hist_own.to_csv('./data/4_Joined/EGEDA_hist_own.csv', index = False)
 EGEDA_hist_own = pd.read_csv('./data/4_Joined/EGEDA_hist_own.csv')
+
+### Extra grab for consumption chart
+
+EGEDA_hist_own_oil = EGEDA_data[(EGEDA_data['item_code_new'].isin(['10_losses_and_own_use'])) &
+                                (EGEDA_data['fuel_code'].isin(['6_crude_oil_and_ngl', '7_petroleum_products']))]\
+                                  .copy().reset_index(drop = True)
+
+EGEDA_hist_own_oil['FUEL'] = EGEDA_hist_own_oil['fuel_code'].map({'6_crude_oil_and_ngl': 'Crude oil & NGL',
+                                                                  '7_petroleum_products': 'Petroleum products'})
+
+EGEDA_hist_own_oil = EGEDA_hist_own_oil[['economy', 'FUEL', 'item_code_new'] + list(range(2000, 2019))]\
+                        .copy().reset_index(drop = True)
+
+neg_to_pos = EGEDA_hist_own_oil.select_dtypes(include = [np.number]) * -1
+EGEDA_hist_own_oil[neg_to_pos.columns] = neg_to_pos
+
+EGEDA_hist_own_oil.to_csv('./data/4_Joined/EGEDA_hist_own_oil.csv', index = False)
+EGEDA_hist_own_oil = pd.read_csv('./data/4_Joined/EGEDA_hist_own_oil.csv')
+
+# Refining historical
+
+EGEDA_hist_refining = EGEDA_data[(EGEDA_data['item_code_new'].isin(['9_4_oil_refineries'])) &
+                                 (EGEDA_data['fuel_code'].isin(['6_crude_oil_and_ngl']))].copy().reset_index(drop = True)
+
+EGEDA_hist_refining = EGEDA_hist_refining[['economy', 'fuel_code', 'item_code_new'] + list(range(2000, 2019))]\
+                        .copy().reset_index(drop = True)
+
+neg_to_pos = EGEDA_hist_refining.select_dtypes(include = [np.number]) * -1
+EGEDA_hist_refining[neg_to_pos.columns] = neg_to_pos
+
+EGEDA_hist_refining.to_csv('./data/4_Joined/EGEDA_hist_refining.csv', index = False)
+EGEDA_hist_refining = pd.read_csv('./data/4_Joined/EGEDA_hist_refining.csv')
 
 #########################################################################################################################################
 
@@ -3613,14 +3663,627 @@ for economy in Economy_codes:
     ref_coal_ag = ref_ag_1[ref_ag_1['fuel_code'] == 'Coal']
 
     ref_coal_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                          (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
-                          (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                              '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
-                                  .sum().reset_index().assign(fuel_code = 'Coal')
+                                         (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
+                                         (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Coal')
 
     ref_coal_trn = ref_coal_trn[['fuel_code', 'item_code_new'] + list(ref_coal_trn.loc[:, '2000':'2050'])]
 
-    #ref_
+    ref_coal_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                        (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
+                                        (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Coal')
+
+    ref_coal_ne = ref_coal_ne[['fuel_code', 'item_code_new'] + list(ref_coal_ne.loc[:, '2000':'2050'])]
+
+    ref_coal_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                        (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                        (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Coal')
+
+    ref_coal_ns = ref_coal_ns[['fuel_code', 'item_code_new'] + list(ref_coal_ns.loc[:, '2000':'2050'])]
+
+    ref_coal_own = ref_ownuse_1[ref_ownuse_1['FUEL'] == 'Coal']
+    ref_coal_own = ref_coal_own.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
+
+    ref_coal_pow = ref_pow_use_2[ref_pow_use_2['FUEL'].isin(['Coal', 'Lignite'])].copy().groupby(['Transformation']).sum()\
+                        .reset_index(drop = True).assign(fuel_code = 'Coal', item_code_new = 'Power')
+
+    ref_coal_pow = ref_coal_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
+
+
+    ref_coalcons_1 = ref_coal_ind.append([ref_coal_bld, ref_coal_ag, ref_coal_trn, ref_coal_ne, 
+                                          ref_coal_ns, ref_coal_own, ref_coal_pow]).copy().reset_index(drop = True)
+
+    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
+    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+
+    ref_coalcons_1_rows = ref_coalcons_1.shape[0]
+    ref_coalcons_1_cols = ref_coalcons_1.shape[1]
+
+    # Natural gas
+
+    ref_gas_ind = ref_ind_2[ref_ind_2['fuel_code'] == 'Gas']
+    ref_gas_bld = ref_bld_2[ref_bld_2['fuel_code'] == 'Gas']
+    ref_gas_ag = ref_ag_1[ref_ag_1['fuel_code'] == 'Gas']
+    ref_gas_trn = ref_trn_1[ref_trn_1['fuel_code'] == 'Gas']
+
+    ref_gas_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                        (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
+                                        (EGEDA_years_reference['fuel_code'].isin(['8_gas']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Gas')
+
+    ref_gas_ne = ref_gas_ne[['fuel_code', 'item_code_new'] + list(ref_gas_ne.loc[:, '2000':'2050'])]
+
+    ref_gas_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                        (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                        (EGEDA_years_reference['fuel_code'].isin(['8_gas']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Gas')
+
+    ref_gas_ns = ref_gas_ns[['fuel_code', 'item_code_new'] + list(ref_gas_ns.loc[:, '2000':'2050'])]
+
+    ref_gas_own = ref_ownuse_1[ref_ownuse_1['FUEL'] == 'Gas']
+    ref_gas_own = ref_gas_own.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
+
+    ref_gas_pow = ref_pow_use_2[ref_pow_use_2['FUEL'] == 'Gas']
+    ref_gas_pow = ref_gas_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
+
+
+    ref_gascons_1 = ref_gas_ind.append([ref_gas_bld, ref_gas_ag, ref_gas_trn, ref_gas_ne, 
+                                          ref_gas_ns, ref_gas_own, ref_gas_pow]).copy().reset_index(drop = True)
+
+    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
+    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Power'
+
+    ref_gascons_1_rows = ref_gascons_1.shape[0]
+    ref_gascons_1_cols = ref_gascons_1.shape[1]
+
+    # Crude oil
+
+    ref_crude_ind = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                         (EGEDA_years_reference['item_code_new'].isin(['14_industry_sector'])) &
+                                         (EGEDA_years_reference['fuel_code'].isin(['6_crude_oil_and_ngl']))]\
+                                             .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_crude_ind = ref_crude_ind[['fuel_code', 'item_code_new'] + list(ref_crude_ind.loc[:, '2000':'2050'])]
+    ref_crude_ind.loc[ref_crude_ind['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    ref_crude_bld = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                          (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                          (EGEDA_years_reference['fuel_code'].isin(['6_crude_oil_and_ngl']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Crude oil & NGL', item_code_new = 'Buildings')
+
+    ref_crude_bld = ref_crude_bld[['fuel_code', 'item_code_new'] + list(ref_crude_bld.loc[:, '2000':'2050'])]
+
+    ref_crude_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                          (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
+                                          (EGEDA_years_reference['fuel_code'].isin(['6_crude_oil_and_ngl']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Crude oil & NGL', item_code_new = 'Agriculture')
+
+    ref_crude_ag = ref_crude_ag[['fuel_code', 'item_code_new'] + list(ref_crude_ag.loc[:, '2000':'2050'])]
+
+    ref_crude_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                          (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
+                                          (EGEDA_years_reference['fuel_code'].isin(['6_crude_oil_and_ngl']))]\
+                                              .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_crude_trn = ref_crude_trn[['fuel_code', 'item_code_new'] + list(ref_crude_trn.loc[:, '2000':'2050'])]
+    ref_crude_trn.loc[ref_crude_trn['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    ref_crude_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                        (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
+                                        (EGEDA_years_reference['fuel_code'].isin(['6_crude_oil_and_ngl']))]\
+                                            .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_crude_ne = ref_crude_ne[['fuel_code', 'item_code_new'] + list(ref_crude_ne.loc[:, '2000':'2050'])]
+    ref_crude_ne.loc[ref_crude_ne['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    ref_crude_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                        (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                        (EGEDA_years_reference['fuel_code'].isin(['6_crude_oil_and_ngl']))]\
+                                            .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_crude_ns = ref_crude_ns[['fuel_code', 'item_code_new'] + list(ref_crude_ns.loc[:, '2000':'2050'])]
+    ref_crude_ns.loc[ref_crude_ns['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    # Own-use
+    ref_crude_own = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
+                                  (ref_trans_df1['Sector'] == 'OWN') &
+                                  (ref_trans_df1['FUEL'].isin(['6_1_crude_oil', '6_x_ngls']))]\
+                                      .copy().reset_index(drop = True)
+
+    ref_crude_own = ref_crude_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                        .assign(fuel_code = 'Crude oil & NGL', item_code_new = '10_losses_and_own_use')
+
+    #################################################################################
+    hist_ownoil = EGEDA_hist_own_oil[(EGEDA_hist_own_oil['economy'] == economy) &
+                                     (EGEDA_hist_own_oil['FUEL'] == 'Crude oil & NGL')].copy().\
+                                        iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_hist_own_oil.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    ref_crude_own = hist_ownoil.merge(ref_crude_own, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    ref_crude_own = ref_crude_own[['fuel_code', 'item_code_new'] + list(ref_crude_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    # Power
+    ref_crude_power = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                                    (ref_power_df1['FUEL'].isin(['6_1_crude_oil', '6_x_ngls']))].copy().reset_index(drop = True)
+
+    ref_crude_power = ref_crude_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                          .assign(fuel_code = 'Crude oil & NGL', item_code_new = 'Power')
+
+    #################################################################################
+    hist_poweroil = EGEDA_histpower_oil[(EGEDA_histpower_oil['economy'] == economy) &
+                                        (EGEDA_histpower_oil['FUEL'] == 'Crude oil & NGL')].copy()\
+                                            .iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_histpower_oil.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    ref_crude_power = hist_poweroil.merge(ref_crude_power, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    ref_crude_power = ref_crude_power[['fuel_code', 'item_code_new'] + list(ref_crude_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+    
+    # Refining
+    ref_crude_refinery = ref_refinery_1.copy().groupby(['Transformation']).sum().reset_index(drop = True)\
+                            .assign(fuel_code = '6_crude_oil_and_ngl', item_code_new = '9_4_oil_refineries')
+
+    hist_refine = EGEDA_hist_refining[EGEDA_hist_refining['economy'] == economy].copy()\
+                     .iloc[:,:-2][['fuel_code', 'item_code_new'] + list(EGEDA_hist_refining.loc[:, '2000':'2016'])]\
+                     .reset_index(drop = True)
+
+
+    ref_crude_refinery = hist_refine.merge(ref_crude_refinery, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    ref_crude_refinery = ref_crude_refinery[['fuel_code', 'item_code_new'] + list(ref_crude_refinery.loc[:, '2000': '2050'])]
+
+    ref_crude_refinery.loc[ref_crude_refinery['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    ref_crudecons_1 = ref_crude_ind.append([ref_crude_bld, ref_crude_ag, ref_crude_trn, ref_crude_ne, 
+                                            ref_crude_ns, ref_crude_own, ref_crude_power, ref_crude_refinery])\
+                                               .copy().reset_index(drop = True)
+
+    ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+    ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+    ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '9_4_oil_refineries', 'item_code_new'] = 'Refining'
+
+    ref_crudecons_1_rows = ref_crudecons_1.shape[0]
+    ref_crudecons_1_cols = ref_crudecons_1.shape[1]
+
+    # Petroleum products
+
+    ref_petprod_ind = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                            (EGEDA_years_reference['item_code_new'].isin(['14_industry_sector'])) &
+                                            (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))]\
+                                                .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_petprod_ind = ref_petprod_ind[['fuel_code', 'item_code_new'] + list(ref_petprod_ind.loc[:, '2000':'2050'])]
+    ref_petprod_ind.loc[ref_petprod_ind['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+
+    ref_petprod_bld = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                            (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                            (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Buildings')
+
+    ref_petprod_bld = ref_petprod_bld[['fuel_code', 'item_code_new'] + list(ref_petprod_bld.loc[:, '2000':'2050'])]
+
+    ref_petprod_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                           (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
+                                           (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Agriculture')
+
+    ref_petprod_ag = ref_petprod_ag[['fuel_code', 'item_code_new'] + list(ref_petprod_ag.loc[:, '2000':'2050'])]
+
+    ref_petprod_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                            (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
+                                            (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))]\
+                                                .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_petprod_trn = ref_petprod_trn[['fuel_code', 'item_code_new'] + list(ref_petprod_trn.loc[:, '2000':'2050'])]
+    ref_petprod_trn.loc[ref_petprod_trn['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+
+    ref_petprod_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                           (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
+                                           (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))]\
+                                               .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_petprod_ne = ref_petprod_ne[['fuel_code', 'item_code_new'] + list(ref_petprod_ne.loc[:, '2000':'2050'])]
+    ref_petprod_ne.loc[ref_petprod_ne['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+
+    ref_petprod_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                           (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                           (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))]\
+                                               .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_petprod_ns = ref_petprod_ns[['fuel_code', 'item_code_new'] + list(ref_petprod_ns.loc[:, '2000':'2050'])]
+    ref_petprod_ns.loc[ref_petprod_ns['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+
+    # Own-use
+    ref_petprod_own = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
+                                    (ref_trans_df1['Sector'] == 'OWN') &
+                                    (ref_trans_df1['FUEL'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha',
+                                                                 '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
+                                                                 '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane',
+                                                                 '7_x_other_petroleum_products']))]\
+                                                                     .copy().reset_index(drop = True)
+
+    ref_petprod_own = ref_petprod_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                        .assign(fuel_code = 'Petroleum products', item_code_new = '10_losses_and_own_use')
+
+    #################################################################################
+    hist_ownoil = EGEDA_hist_own_oil[(EGEDA_hist_own_oil['economy'] == economy) &
+                                     (EGEDA_hist_own_oil['FUEL'] == 'Petroleum products')].copy().\
+                                        iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_hist_own_oil.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    ref_petprod_own = hist_ownoil.merge(ref_petprod_own, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    ref_petprod_own = ref_petprod_own[['fuel_code', 'item_code_new'] + list(ref_petprod_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    # Power
+    ref_petprod_power = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                                    (ref_power_df1['FUEL'].isin(['7_3_naphtha', '7_7_gas_diesel_oil', '7_8_fuel_oil',
+                                                                 '7_9_lpg', '7_10_refinery_gas_not_liquefied',
+                                                                 '7_x_other_petroleum_products', '7_16_petroleum_coke']))]\
+                                                                     .copy().reset_index(drop = True)
+
+    ref_petprod_power = ref_petprod_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                            .assign(fuel_code = 'Petroleum products', item_code_new = 'Power')
+
+    #################################################################################
+    hist_poweroil = EGEDA_histpower_oil[(EGEDA_histpower_oil['economy'] == economy) &
+                                        (EGEDA_histpower_oil['FUEL'] == 'Petroleum products')].copy()\
+                                            .iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_histpower_oil.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    ref_petprod_power = hist_poweroil.merge(ref_petprod_power, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    ref_petprod_power = ref_petprod_power[['fuel_code', 'item_code_new'] + list(ref_petprod_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    ref_petprodcons_1 = ref_petprod_ind.append([ref_petprod_bld, ref_petprod_ag, ref_petprod_trn, ref_petprod_ne, 
+                                                ref_petprod_ns, ref_petprod_own, ref_petprod_power])\
+                                                    .copy().reset_index(drop = True)
+
+    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+    
+    ref_petprodcons_1_rows = ref_petprodcons_1.shape[0]
+    ref_petprodcons_1_cols = ref_petprodcons_1.shape[1]
+
+        # NET-ZERO
+
+    # Industry
+    # Transport
+    # Buildings
+    # Agriculture
+    # Non-specified
+    # Non-energy
+    # Own-use
+    # Power (including heat)
+    # Refining for petroleum products
+    # Total
+
+    # Coal
+
+    netz_coal_ind = netz_ind_2[netz_ind_2['fuel_code'] == 'Coal']
+    netz_coal_bld = netz_bld_2[netz_bld_2['fuel_code'] == 'Coal']
+    netz_coal_ag = netz_ag_1[netz_ag_1['fuel_code'] == 'Coal']
+
+    netz_coal_trn = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                         (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
+                                         (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Coal')
+
+    netz_coal_trn = netz_coal_trn[['fuel_code', 'item_code_new'] + list(netz_coal_trn.loc[:, '2000':'2050'])]
+
+    netz_coal_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                        (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
+                                        (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Coal')
+
+    netz_coal_ne = netz_coal_ne[['fuel_code', 'item_code_new'] + list(netz_coal_ne.loc[:, '2000':'2050'])]
+
+    netz_coal_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                        (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                        (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Coal')
+
+    netz_coal_ns = netz_coal_ns[['fuel_code', 'item_code_new'] + list(netz_coal_ns.loc[:, '2000':'2050'])]
+
+    netz_coal_own = netz_ownuse_1[netz_ownuse_1['FUEL'] == 'Coal']
+    netz_coal_own = netz_coal_own.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
+
+    netz_coal_pow = netz_pow_use_2[netz_pow_use_2['FUEL'].isin(['Coal', 'Lignite'])].copy().groupby(['Transformation']).sum()\
+                        .reset_index(drop = True).assign(fuel_code = 'Coal', item_code_new = 'Power')
+
+    netz_coal_pow = netz_coal_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
+
+
+    netz_coalcons_1 = netz_coal_ind.append([netz_coal_bld, netz_coal_ag, netz_coal_trn, netz_coal_ne, 
+                                          netz_coal_ns, netz_coal_own, netz_coal_pow]).copy().reset_index(drop = True)
+
+    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
+    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+
+    netz_coalcons_1_rows = netz_coalcons_1.shape[0]
+    netz_coalcons_1_cols = netz_coalcons_1.shape[1]
+
+    # Natural gas
+
+    netz_gas_ind = netz_ind_2[netz_ind_2['fuel_code'] == 'Gas']
+    netz_gas_bld = netz_bld_2[netz_bld_2['fuel_code'] == 'Gas']
+    netz_gas_ag = netz_ag_1[netz_ag_1['fuel_code'] == 'Gas']
+    netz_gas_trn = netz_trn_1[netz_trn_1['fuel_code'] == 'Gas']
+
+    netz_gas_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                        (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
+                                        (EGEDA_years_netzero['fuel_code'].isin(['8_gas']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Gas')
+
+    netz_gas_ne = netz_gas_ne[['fuel_code', 'item_code_new'] + list(netz_gas_ne.loc[:, '2000':'2050'])]
+
+    netz_gas_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                        (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                        (EGEDA_years_netzero['fuel_code'].isin(['8_gas']))].copy().groupby(['item_code_new'])\
+                                                .sum().reset_index().assign(fuel_code = 'Gas')
+
+    netz_gas_ns = netz_gas_ns[['fuel_code', 'item_code_new'] + list(netz_gas_ns.loc[:, '2000':'2050'])]
+
+    netz_gas_own = netz_ownuse_1[netz_ownuse_1['FUEL'] == 'Gas']
+    netz_gas_own = netz_gas_own.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
+
+    netz_gas_pow = netz_pow_use_2[netz_pow_use_2['FUEL'] == 'Gas']
+    netz_gas_pow = netz_gas_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
+
+
+    netz_gascons_1 = netz_gas_ind.append([netz_gas_bld, netz_gas_ag, netz_gas_trn, netz_gas_ne, 
+                                          netz_gas_ns, netz_gas_own, netz_gas_pow]).copy().reset_index(drop = True)
+
+    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
+    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Power'
+
+    netz_gascons_1_rows = netz_gascons_1.shape[0]
+    netz_gascons_1_cols = netz_gascons_1.shape[1]
+
+    # Crude oil
+
+    netz_crude_ind = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                         (EGEDA_years_netzero['item_code_new'].isin(['14_industry_sector'])) &
+                                         (EGEDA_years_netzero['fuel_code'].isin(['6_crude_oil_and_ngl']))]\
+                                             .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_crude_ind = netz_crude_ind[['fuel_code', 'item_code_new'] + list(netz_crude_ind.loc[:, '2000':'2050'])]
+    netz_crude_ind.loc[netz_crude_ind['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    netz_crude_bld = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                          (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                          (EGEDA_years_netzero['fuel_code'].isin(['6_crude_oil_and_ngl']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Crude oil & NGL', item_code_new = 'Buildings')
+
+    netz_crude_bld = netz_crude_bld[['fuel_code', 'item_code_new'] + list(netz_crude_bld.loc[:, '2000':'2050'])]
+
+    netz_crude_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                          (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
+                                          (EGEDA_years_netzero['fuel_code'].isin(['6_crude_oil_and_ngl']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Crude oil & NGL', item_code_new = 'Agriculture')
+
+    netz_crude_ag = netz_crude_ag[['fuel_code', 'item_code_new'] + list(netz_crude_ag.loc[:, '2000':'2050'])]
+
+    netz_crude_trn = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                          (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
+                                          (EGEDA_years_netzero['fuel_code'].isin(['6_crude_oil_and_ngl']))]\
+                                              .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_crude_trn = netz_crude_trn[['fuel_code', 'item_code_new'] + list(netz_crude_trn.loc[:, '2000':'2050'])]
+    netz_crude_trn.loc[netz_crude_trn['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    netz_crude_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                        (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
+                                        (EGEDA_years_netzero['fuel_code'].isin(['6_crude_oil_and_ngl']))]\
+                                            .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_crude_ne = netz_crude_ne[['fuel_code', 'item_code_new'] + list(netz_crude_ne.loc[:, '2000':'2050'])]
+    netz_crude_ne.loc[netz_crude_ne['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    netz_crude_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                        (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                        (EGEDA_years_netzero['fuel_code'].isin(['6_crude_oil_and_ngl']))]\
+                                            .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_crude_ns = netz_crude_ns[['fuel_code', 'item_code_new'] + list(netz_crude_ns.loc[:, '2000':'2050'])]
+    netz_crude_ns.loc[netz_crude_ns['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    # Own-use
+    netz_crude_own = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
+                                  (netz_trans_df1['Sector'] == 'OWN') &
+                                  (netz_trans_df1['FUEL'].isin(['6_1_crude_oil', '6_x_ngls']))]\
+                                      .copy().reset_index(drop = True)
+
+    netz_crude_own = netz_crude_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                        .assign(fuel_code = 'Crude oil & NGL', item_code_new = '10_losses_and_own_use')
+
+    #################################################################################
+    hist_ownoil = EGEDA_hist_own_oil[(EGEDA_hist_own_oil['economy'] == economy) &
+                                     (EGEDA_hist_own_oil['FUEL'] == 'Crude oil & NGL')].copy().\
+                                        iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_hist_own_oil.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    netz_crude_own = hist_ownoil.merge(netz_crude_own, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_crude_own = netz_crude_own[['fuel_code', 'item_code_new'] + list(netz_crude_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    # Power
+    netz_crude_power = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                                    (netz_power_df1['FUEL'].isin(['6_1_crude_oil', '6_x_ngls']))].copy().reset_index(drop = True)
+
+    netz_crude_power = netz_crude_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                          .assign(fuel_code = 'Crude oil & NGL', item_code_new = 'Power')
+
+    #################################################################################
+    hist_poweroil = EGEDA_histpower_oil[(EGEDA_histpower_oil['economy'] == economy) &
+                                        (EGEDA_histpower_oil['FUEL'] == 'Crude oil & NGL')].copy()\
+                                            .iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_histpower_oil.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    netz_crude_power = hist_poweroil.merge(netz_crude_power, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_crude_power = netz_crude_power[['fuel_code', 'item_code_new'] + list(netz_crude_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+    
+    # Refining
+    netz_crude_refinery = netz_refinery_1.copy().groupby(['Transformation']).sum().reset_index(drop = True)\
+                            .assign(fuel_code = '6_crude_oil_and_ngl', item_code_new = '9_4_oil_refineries')
+
+    hist_refine = EGEDA_hist_refining[EGEDA_hist_refining['economy'] == economy].copy()\
+                     .iloc[:,:-2][['fuel_code', 'item_code_new'] + list(EGEDA_hist_refining.loc[:, '2000':'2016'])]\
+                     .reset_index(drop = True)
+
+
+    netz_crude_refinery = hist_refine.merge(netz_crude_refinery, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_crude_refinery = netz_crude_refinery[['fuel_code', 'item_code_new'] + list(netz_crude_refinery.loc[:, '2000': '2050'])]
+
+    netz_crude_refinery.loc[netz_crude_refinery['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
+
+    netz_crudecons_1 = netz_crude_ind.append([netz_crude_bld, netz_crude_ag, netz_crude_trn, netz_crude_ne, 
+                                            netz_crude_ns, netz_crude_own, netz_crude_power, netz_crude_refinery])\
+                                               .copy().reset_index(drop = True)
+
+    netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+    netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+    netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '9_4_oil_refineries', 'item_code_new'] = 'Refining'
+
+    netz_crudecons_1_rows = netz_crudecons_1.shape[0]
+    netz_crudecons_1_cols = netz_crudecons_1.shape[1]
+
+    # Petroleum products
+
+    netz_petprod_ind = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                            (EGEDA_years_netzero['item_code_new'].isin(['14_industry_sector'])) &
+                                            (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))]\
+                                                .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_petprod_ind = netz_petprod_ind[['fuel_code', 'item_code_new'] + list(netz_petprod_ind.loc[:, '2000':'2050'])]
+    netz_petprod_ind.loc[netz_petprod_ind['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+
+    netz_petprod_bld = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                            (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                            (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Buildings')
+
+    netz_petprod_bld = netz_petprod_bld[['fuel_code', 'item_code_new'] + list(netz_petprod_bld.loc[:, '2000':'2050'])]
+
+    netz_petprod_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                           (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
+                                           (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Agriculture')
+
+    netz_petprod_ag = netz_petprod_ag[['fuel_code', 'item_code_new'] + list(netz_petprod_ag.loc[:, '2000':'2050'])]
+
+    netz_petprod_trn = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                            (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
+                                            (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))]\
+                                                .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_petprod_trn = netz_petprod_trn[['fuel_code', 'item_code_new'] + list(netz_petprod_trn.loc[:, '2000':'2050'])]
+    netz_petprod_trn.loc[netz_petprod_trn['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+
+    netz_petprod_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                           (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
+                                           (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))]\
+                                               .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_petprod_ne = netz_petprod_ne[['fuel_code', 'item_code_new'] + list(netz_petprod_ne.loc[:, '2000':'2050'])]
+    netz_petprod_ne.loc[netz_petprod_ne['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+
+    netz_petprod_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                           (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                           (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))]\
+                                               .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_petprod_ns = netz_petprod_ns[['fuel_code', 'item_code_new'] + list(netz_petprod_ns.loc[:, '2000':'2050'])]
+    netz_petprod_ns.loc[netz_petprod_ns['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+
+    # Own-use
+    netz_petprod_own = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
+                                    (netz_trans_df1['Sector'] == 'OWN') &
+                                    (netz_trans_df1['FUEL'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha',
+                                                                 '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
+                                                                 '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane',
+                                                                 '7_x_other_petroleum_products']))]\
+                                                                     .copy().reset_index(drop = True)
+
+    netz_petprod_own = netz_petprod_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                        .assign(fuel_code = 'Petroleum products', item_code_new = '10_losses_and_own_use')
+
+    #################################################################################
+    hist_ownoil = EGEDA_hist_own_oil[(EGEDA_hist_own_oil['economy'] == economy) &
+                                     (EGEDA_hist_own_oil['FUEL'] == 'Petroleum products')].copy().\
+                                        iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_hist_own_oil.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    netz_petprod_own = hist_ownoil.merge(netz_petprod_own, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_petprod_own = netz_petprod_own[['fuel_code', 'item_code_new'] + list(netz_petprod_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    # Power
+    netz_petprod_power = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                                    (netz_power_df1['FUEL'].isin(['7_3_naphtha', '7_7_gas_diesel_oil', '7_8_fuel_oil',
+                                                                 '7_9_lpg', '7_10_refinery_gas_not_liquefied',
+                                                                 '7_x_other_petroleum_products', '7_16_petroleum_coke']))]\
+                                                                     .copy().reset_index(drop = True)
+
+    netz_petprod_power = netz_petprod_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                            .assign(fuel_code = 'Petroleum products', item_code_new = 'Power')
+
+    #################################################################################
+    hist_poweroil = EGEDA_histpower_oil[(EGEDA_histpower_oil['economy'] == economy) &
+                                        (EGEDA_histpower_oil['FUEL'] == 'Petroleum products')].copy()\
+                                            .iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_histpower_oil.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    netz_petprod_power = hist_poweroil.merge(netz_petprod_power, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_petprod_power = netz_petprod_power[['fuel_code', 'item_code_new'] + list(netz_petprod_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    netz_petprodcons_1 = netz_petprod_ind.append([netz_petprod_bld, netz_petprod_ag, netz_petprod_trn, netz_petprod_ne, 
+                                                netz_petprod_ns, netz_petprod_own, netz_petprod_power])\
+                                                    .copy().reset_index(drop = True)
+
+    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
+    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+    
+    netz_petprodcons_1_rows = netz_petprodcons_1.shape[0]
+    netz_petprodcons_1_cols = netz_petprodcons_1.shape[1]
 
     # Df builds are complete
 
@@ -3698,20 +4361,6 @@ for economy in Economy_codes:
     netz_bunkers_1.to_excel(writer, sheet_name = economy + '_TPES_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6)
     ref_bunkers_2.to_excel(writer, sheet_name = economy + '_TPES_bunkers', index = False, startrow = chart_height + ref_bunkers_1_rows + 3)
     netz_bunkers_2.to_excel(writer, sheet_name = economy + '_TPES_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9)
-    ref_coal_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height)
-    ref_crude_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height + ref_coal_1_rows + 3)
-    ref_petprod_2.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height + ref_coal_1_rows + ref_crude_1_rows + 6)
-    ref_gas_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + 9)
-    ref_nuke_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + 12)
-    ref_biomass_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + 15)
-    ref_biofuel_2.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + ref_biomass_1_rows + 18)
-    netz_coal_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height)
-    netz_crude_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height + netz_coal_1_rows + 3)
-    netz_petprod_2.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height + netz_coal_1_rows + netz_crude_1_rows + 6)
-    netz_gas_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + 9)
-    netz_nuke_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + 12)
-    netz_biomass_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + 15)
-    netz_biofuel_2.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + netz_biomass_1_rows + 18)
 
     # Transformation
     ref_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = chart_height)
@@ -3747,7 +4396,33 @@ for economy in Economy_codes:
     ref_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = chart_height)
     netz_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6)
     ref_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = chart_height + ref_heatgen_2_rows + 3)
-    netz_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9) 
+    netz_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9)
+
+    # Fuels
+    ref_coalcons_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = chart_height)
+    ref_coal_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = chart_height + ref_coalcons_1_rows + 3)
+    ref_gascons_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = chart_height)
+    ref_gas_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = chart_height + ref_gascons_1_rows + 3)
+    ref_crudecons_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = chart_height)
+    ref_crude_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = chart_height + ref_crudecons_1_rows + 3)
+    ref_petprodcons_1.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = chart_height)
+    ref_petprod_2.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = chart_height + ref_petprodcons_1_rows + 3)
+    netz_coalcons_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6)
+    netz_coal_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + 9)
+    netz_gascons_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6)
+    netz_gas_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9)
+    netz_crudecons_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6)
+    netz_crude_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9)
+    netz_petprodcons_1.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6)
+    netz_petprod_2.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9)
+
+    # More fuels
+    ref_nuke_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height)
+    ref_biomass_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height + ref_nuke_1_rows + 3)
+    ref_biofuel_2.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height + ref_nuke_1_rows + ref_biomass_1_rows + 6)
+    netz_nuke_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height)
+    netz_biomass_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height + netz_nuke_1_rows + 3)
+    netz_biofuel_2.to_excel(writer, sheet_name = economy + '_TPES_fuel_netz', index = False, startrow = chart_height + netz_nuke_1_rows + netz_biomass_1_rows + 6)
 
     # Miscellaneous 
     ref_modren_4.to_excel(writer, sheet_name = economy + '_mod_renew', index = False, startrow = chart_height)
@@ -11537,239 +12212,9 @@ for economy in Economy_codes:
     # Apply comma format and header format to relevant data rows
     ref_worksheet15.set_column(2, ref_coal_1_cols + 1, None, space_format)
     ref_worksheet15.set_row(chart_height, None, header_format)
-    ref_worksheet15.set_row(chart_height + ref_coal_1_rows + 3, None, header_format)
-    ref_worksheet15.set_row(chart_height + ref_coal_1_rows + ref_crude_1_rows + 6, None, header_format)
-    ref_worksheet15.set_row(chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + 9, None, header_format)
-    ref_worksheet15.set_row(chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + 12, None, header_format)
-    ref_worksheet15.set_row(chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + 15, None, header_format)
-    ref_worksheet15.set_row(chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + ref_biomass_1_rows + 18, None, header_format)
-    ref_worksheet15.write(0, 0, economy + ' TPES fuel reference', cell_format1)
-    
-    # Create a TPES coal chart
-    ref_tpes_coal_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    ref_tpes_coal_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_tpes_coal_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_tpes_coal_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_coal_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Coal (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_coal_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_tpes_coal_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
-        i = ref_coal_1[ref_coal_1['item_code_new'] == component].index[0]
-        ref_tpes_coal_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_ref', chart_height + i + 1, 1],
-            'categories': [economy + '_TPES_fuel_ref', chart_height, 2, chart_height, ref_coal_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_coal_1_cols - 1],
-            'fill':       {'color': ref_coal_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-    
-    ref_worksheet15.insert_chart('B3', ref_tpes_coal_chart1)
-
-    # Create a TPES crude oil chart
-    ref_tpes_crude_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    ref_tpes_crude_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_tpes_crude_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_tpes_crude_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_crude_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Crude oil and NGL (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_crude_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_tpes_crude_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
-        i = ref_crude_1[ref_crude_1['item_code_new'] == component].index[0]
-        ref_tpes_crude_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + i + 4, 1],
-            'categories': [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + 3, 2,\
-                chart_height + ref_coal_1_rows + 3, ref_crude_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + i + 4, 2,\
-                chart_height + ref_coal_1_rows + i + 4, ref_crude_1_cols - 1],
-            'fill':       {'color': ref_crude_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-    
-    ref_worksheet15.insert_chart('J3', ref_tpes_crude_chart1)
-
-    # Create a TPES petroleum products chart
-    ref_tpes_petprod_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    ref_tpes_petprod_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_tpes_petprod_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_tpes_petprod_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_petprod_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Petroleum products (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_petprod_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_tpes_petprod_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
-        i = ref_petprod_2[ref_petprod_2['item_code_new'] == component].index[0]
-        ref_tpes_petprod_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + i + 7, 1],
-            'categories': [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + 6, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + 6, ref_petprod_2_cols - 1],
-            'values':     [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + i + 7, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + i + 7, ref_petprod_2_cols - 1],
-            'fill':       {'color': ref_petprod_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-    
-    ref_worksheet15.insert_chart('R3', ref_tpes_petprod_chart1)
-
-    # Create a TPES gas chart
-    ref_tpes_gas_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    ref_tpes_gas_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_tpes_gas_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_tpes_gas_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_gas_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Gas (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_gas_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_tpes_gas_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
-        i = ref_gas_1[ref_gas_1['item_code_new'] == component].index[0]
-        ref_tpes_gas_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + i + 10, 1],
-            'categories': [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + 9, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + 9, ref_gas_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + i + 10, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + i + 10, ref_gas_1_cols - 1],
-            'fill':       {'color': ref_gas_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-    
-    ref_worksheet15.insert_chart('Z3', ref_tpes_gas_chart1)
+    ref_worksheet15.set_row(chart_height + ref_nuke_1_rows + 3, None, header_format)
+    ref_worksheet15.set_row(chart_height + ref_nuke_1_rows + ref_biomass_1_rows + 6, None, header_format)
+    ref_worksheet15.write(0, 0, economy + ' TPES nuclear, biomass and biofuels reference', cell_format1)
 
     # Create a TPES nuclear  chart
     ref_tpes_nuke_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -11817,16 +12262,14 @@ for economy in Economy_codes:
     for component in ['Production']:
         i = ref_nuke_1[ref_nuke_1['item_code_new'] == component].index[0]
         ref_tpes_nuke_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + i + 13, 1],
-            'categories': [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + 12, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + 12, ref_nuke_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + i + 13, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + i + 13, ref_nuke_1_cols - 1],
+            'name':       [economy + '_TPES_fuel_ref', chart_height + i + 1, 1],
+            'categories': [economy + '_TPES_fuel_ref', chart_height, 2, chart_height, ref_nuke_1_cols - 1],
+            'values':     [economy + '_TPES_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_nuke_1_cols - 1],
             'fill':       {'color': ref_nuke_1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    ref_worksheet15.insert_chart('AH3', ref_tpes_nuke_chart1)
+    ref_worksheet15.insert_chart('B3', ref_tpes_nuke_chart1)
 
     # Create a TPES biomass chart
     ref_tpes_biomass_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -11874,16 +12317,16 @@ for economy in Economy_codes:
     for component in ['Production', 'Imports', 'Exports', 'Stock change']:
         i = ref_biomass_1[ref_biomass_1['item_code_new'] == component].index[0]
         ref_tpes_biomass_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + i + 16, 1],
-            'categories': [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + 15, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + 15, ref_biomass_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + i + 16, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + i + 16, ref_biomass_1_cols - 1],
+            'name':       [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + i + 4, 1],
+            'categories': [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + 3, 2,\
+                chart_height + ref_nuke_1_rows + 3, ref_biomass_1_cols - 1],
+            'values':     [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + i + 4, 2,\
+                chart_height + ref_nuke_1_rows + i + 4, ref_biomass_1_cols - 1],
             'fill':       {'color': ref_biomass_1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    ref_worksheet15.insert_chart('AP3', ref_tpes_biomass_chart1)
+    ref_worksheet15.insert_chart('J3', ref_tpes_biomass_chart1)
 
     # Create a TPES biofuel chart
     ref_tpes_biofuel_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -11931,16 +12374,16 @@ for economy in Economy_codes:
     for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
         i = ref_biofuel_2[ref_biofuel_2['item_code_new'] == component].index[0]
         ref_tpes_biofuel_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + ref_biomass_1_rows + i + 19, 1],
-            'categories': [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + ref_biomass_1_rows + 18, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + ref_biomass_1_rows + 18, ref_biofuel_2_cols - 1],
-            'values':     [economy + '_TPES_fuel_ref', chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + ref_biomass_1_rows + i + 19, 2,\
-                chart_height + ref_coal_1_rows + ref_crude_1_rows + ref_petprod_2_rows + ref_gas_1_rows + ref_nuke_1_rows + ref_biomass_1_rows + i + 19, ref_biofuel_2_cols - 1],
+            'name':       [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + ref_biomass_1_rows + i + 7, 1],
+            'categories': [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + ref_biomass_1_rows + 6, 2,\
+                chart_height + ref_nuke_1_rows + ref_biomass_1_rows + 6, ref_biofuel_2_cols - 1],
+            'values':     [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + ref_biomass_1_rows + i + 7, 2,\
+                chart_height + ref_nuke_1_rows + ref_biomass_1_rows + i + 7, ref_biofuel_2_cols - 1],
             'fill':       {'color': ref_biofuel_2['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    ref_worksheet15.insert_chart('AX3', ref_tpes_biofuel_chart1)
+    ref_worksheet15.insert_chart('R3', ref_tpes_biofuel_chart1)
 
     ##############################################################
 
@@ -11952,240 +12395,10 @@ for economy in Economy_codes:
     # Apply comma format and header format to relevant data rows
     netz_worksheet16.set_column(2, netz_coal_1_cols + 1, None, space_format)
     netz_worksheet16.set_row(chart_height, None, header_format)
-    netz_worksheet16.set_row(chart_height + netz_coal_1_rows + 3, None, header_format)
-    netz_worksheet16.set_row(chart_height + netz_coal_1_rows + netz_crude_1_rows + 6, None, header_format)
-    netz_worksheet16.set_row(chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + 9, None, header_format)
-    netz_worksheet16.set_row(chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + 12, None, header_format)
-    netz_worksheet16.set_row(chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + 15, None, header_format)
-    netz_worksheet16.set_row(chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + netz_biomass_1_rows + 18, None, header_format)
-    netz_worksheet16.write(0, 0, economy + ' TPES fuel net-zero', cell_format1)
+    netz_worksheet16.set_row(chart_height + netz_nuke_1_rows + 3, None, header_format)
+    netz_worksheet16.set_row(chart_height + netz_nuke_1_rows + netz_biomass_1_rows + 6, None, header_format)
+    netz_worksheet16.write(0, 0, economy + ' TPES nuclear, biomass and biofuels net-zero', cell_format1)
     
-    # Create a TPES coal chart
-    netz_tpes_coal_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    netz_tpes_coal_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_tpes_coal_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_tpes_coal_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_coal_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Coal (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_coal_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_tpes_coal_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
-        i = netz_coal_1[netz_coal_1['item_code_new'] == component].index[0]
-        netz_tpes_coal_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_netz', chart_height + i + 1, 1],
-            'categories': [economy + '_TPES_fuel_netz', chart_height, 2, chart_height, netz_coal_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_coal_1_cols - 1],
-            'fill':       {'color': netz_coal_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-    
-    netz_worksheet16.insert_chart('B3', netz_tpes_coal_chart1)
-
-    # Create a TPES crude oil chart
-    netz_tpes_crude_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    netz_tpes_crude_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_tpes_crude_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_tpes_crude_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_crude_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Crude oil and NGL (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_crude_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_tpes_crude_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
-        i = netz_crude_1[netz_crude_1['item_code_new'] == component].index[0]
-        netz_tpes_crude_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + i + 4, 1],
-            'categories': [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + 3, 2,\
-                chart_height + netz_coal_1_rows + 3, netz_crude_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + i + 4, 2,\
-                chart_height + netz_coal_1_rows + i + 4, netz_crude_1_cols - 1],
-            'fill':       {'color': netz_crude_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-    
-    netz_worksheet16.insert_chart('J3', netz_tpes_crude_chart1)
-
-    # Create a TPES petroleum products chart
-    netz_tpes_petprod_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    netz_tpes_petprod_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_tpes_petprod_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_tpes_petprod_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_petprod_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Petroleum products (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_petprod_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_tpes_petprod_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
-        i = netz_petprod_2[netz_petprod_2['item_code_new'] == component].index[0]
-        netz_tpes_petprod_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + i + 7, 1],
-            'categories': [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + 6, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + 6, netz_petprod_2_cols - 1],
-            'values':     [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + i + 7, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + i + 7, netz_petprod_2_cols - 1],
-            'fill':       {'color': netz_petprod_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-    
-    netz_worksheet16.insert_chart('R3', netz_tpes_petprod_chart1)
-
-    # Create a TPES gas chart
-    netz_tpes_gas_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    netz_tpes_gas_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_tpes_gas_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_tpes_gas_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_gas_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Gas (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_gas_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_tpes_gas_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
-        i = netz_gas_1[netz_gas_1['item_code_new'] == component].index[0]
-        netz_tpes_gas_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + i + 10, 1],
-            'categories': [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + 9, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + 9, netz_gas_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + i + 10, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + i + 10, netz_gas_1_cols - 1],
-            'fill':       {'color': netz_gas_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
-    
-    netz_worksheet16.insert_chart('Z3', netz_tpes_gas_chart1)
-
     # Create a TPES nuclear  chart
     netz_tpes_nuke_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
     netz_tpes_nuke_chart1.set_size({
@@ -12232,16 +12445,14 @@ for economy in Economy_codes:
     for component in ['Production']:
         i = netz_nuke_1[netz_nuke_1['item_code_new'] == component].index[0]
         netz_tpes_nuke_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + i + 13, 1],
-            'categories': [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + 12, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + 12, netz_nuke_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + i + 13, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + i + 13, netz_nuke_1_cols - 1],
+            'name':       [economy + '_TPES_fuel_netz', chart_height + i + 1, 1],
+            'categories': [economy + '_TPES_fuel_netz', chart_height, 2, chart_height, netz_nuke_1_cols - 1],
+            'values':     [economy + '_TPES_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_nuke_1_cols - 1],
             'fill':       {'color': netz_nuke_1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet16.insert_chart('AH3', netz_tpes_nuke_chart1)
+    netz_worksheet16.insert_chart('B3', netz_tpes_nuke_chart1)
 
     # Create a TPES biomass chart
     netz_tpes_biomass_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -12289,16 +12500,16 @@ for economy in Economy_codes:
     for component in ['Production', 'Imports', 'Exports', 'Stock change']:
         i = netz_biomass_1[netz_biomass_1['item_code_new'] == component].index[0]
         netz_tpes_biomass_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + i + 16, 1],
-            'categories': [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + 15, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + 15, netz_biomass_1_cols - 1],
-            'values':     [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + i + 16, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + i + 16, netz_biomass_1_cols - 1],
+            'name':       [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + i + 4, 1],
+            'categories': [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + 3, 2,\
+                chart_height + netz_nuke_1_rows + 3, netz_biomass_1_cols - 1],
+            'values':     [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + i + 4, 2,\
+                chart_height + netz_nuke_1_rows + i + 4, netz_biomass_1_cols - 1],
             'fill':       {'color': netz_biomass_1['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet16.insert_chart('AP3', netz_tpes_biomass_chart1)
+    netz_worksheet16.insert_chart('J3', netz_tpes_biomass_chart1)
 
     # Create a TPES biofuel chart
     netz_tpes_biofuel_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -12346,16 +12557,1005 @@ for economy in Economy_codes:
     for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
         i = netz_biofuel_2[netz_biofuel_2['item_code_new'] == component].index[0]
         netz_tpes_biofuel_chart1.add_series({
-            'name':       [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + netz_biomass_1_rows + i + 19, 1],
-            'categories': [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + netz_biomass_1_rows + 18, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + netz_biomass_1_rows + 18, netz_biofuel_2_cols - 1],
-            'values':     [economy + '_TPES_fuel_netz', chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + netz_biomass_1_rows + i + 19, 2,\
-                chart_height + netz_coal_1_rows + netz_crude_1_rows + netz_petprod_2_rows + netz_gas_1_rows + netz_nuke_1_rows + netz_biomass_1_rows + i + 19, netz_biofuel_2_cols - 1],
+            'name':       [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + netz_biomass_1_rows + i + 7, 1],
+            'categories': [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + netz_biomass_1_rows + 6, 2,\
+                chart_height + netz_nuke_1_rows + netz_biomass_1_rows + 6, netz_biofuel_2_cols - 1],
+            'values':     [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + netz_biomass_1_rows + i + 7, 2,\
+                chart_height + netz_nuke_1_rows + netz_biomass_1_rows + i + 7, netz_biofuel_2_cols - 1],
             'fill':       {'color': netz_biofuel_2['item_code_new'].map(colours_dict).loc[i]},
             'border':     {'none': True}
         })
     
-    netz_worksheet16.insert_chart('AX3', netz_tpes_biofuel_chart1)
+    netz_worksheet16.insert_chart('R3', netz_tpes_biofuel_chart1)
+
+    #############################################################################################
+
+    # FUEL consumptions and supply sheet
+
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet41 = writer.sheets[economy + '_coal']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet41.set_column(1, ref_coalcons_1_cols + 1, None, space_format)
+    ref_worksheet41.set_row(chart_height, None, header_format)
+    ref_worksheet41.set_row(chart_height + ref_coalcons_1_rows + 3, None, header_format)
+    ref_worksheet41.set_row((2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6, None, header_format)
+    ref_worksheet41.set_row((2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + 9, None, header_format)
+    ref_worksheet41.write(0, 0, economy + ' coal reference', cell_format1)
+    ref_worksheet41.write(chart_height + ref_coalcons_1_rows + ref_coal_1_rows + 6, 0, economy + ' coal net-zero', cell_format1)
+
+    # Create a FED sector area chart
+
+    ref_coalcons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_coalcons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_coalcons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_coalcons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_coalcons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_coalcons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_coalcons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_coalcons_1_rows):
+        ref_coalcons_chart1.add_series({
+            'name':       [economy + '_coal', chart_height + i + 1, 1],
+            'categories': [economy + '_coal', chart_height, 2, chart_height, ref_coalcons_1_cols - 1],
+            'values':     [economy + '_coal', chart_height + i + 1, 2, chart_height + i + 1, ref_coalcons_1_cols - 1],
+            'fill':       {'color': ref_coalcons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet41.insert_chart('B3', ref_coalcons_chart1)
+
+    # Create a TPES coal chart
+    ref_tpes_coal_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_tpes_coal_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_tpes_coal_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_tpes_coal_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_coal_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Coal (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_coal_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_tpes_coal_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+        i = ref_coal_1[ref_coal_1['item_code_new'] == component].index[0]
+        ref_tpes_coal_chart1.add_series({
+            'name':       [economy + '_coal', chart_height + ref_coalcons_1_rows + i + 4, 1],
+            'categories': [economy + '_coal', chart_height + ref_coalcons_1_rows + 3, 2,\
+                chart_height + ref_coalcons_1_rows + 3, ref_coal_1_cols - 1],
+            'values':     [economy + '_coal', chart_height + ref_coalcons_1_rows + i + 4, 2,\
+                chart_height + ref_coalcons_1_rows + i + 4, ref_coal_1_cols - 1],
+            'fill':       {'color': ref_coal_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet41.insert_chart('J3', ref_tpes_coal_chart1)
+
+    # Net-zero coal charts
+
+    # Create a FED sector area chart
+
+    netz_coalcons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_coalcons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_coalcons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_coalcons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_coalcons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_coalcons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_coalcons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_coalcons_1_rows):
+        netz_coalcons_chart1.add_series({
+            'name':       [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, 1],
+            'categories': [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6, 2,\
+                (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6, netz_coalcons_1_cols - 1],
+            'values':     [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, 2,\
+                (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, netz_coalcons_1_cols - 1],
+            'fill':       {'color': netz_coalcons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet41.insert_chart('B40', netz_coalcons_chart1)
+
+    # Create a TPES coal chart
+    netz_tpes_coal_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_tpes_coal_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_coal_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_coal_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_coal_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Coal (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_coal_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_coal_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+        i = netz_coal_1[netz_coal_1['item_code_new'] == component].index[0]
+        netz_tpes_coal_chart1.add_series({
+            'name':       [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + i + 10, 1],
+            'categories': [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + 9, 2,\
+                (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + 9, netz_coal_1_cols - 1],
+            'values':     [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + i + 10, netz_coal_1_cols - 1],
+            'fill':       {'color': netz_coal_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet41.insert_chart('J40', netz_tpes_coal_chart1)
+
+    ##############
+    # Natural gas
+    
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet42 = writer.sheets[economy + '_gas']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet42.set_column(1, ref_gascons_1_cols + 1, None, space_format)
+    ref_worksheet42.set_row(chart_height, None, header_format)
+    ref_worksheet42.set_row(chart_height + ref_gascons_1_rows + 3, None, header_format)
+    ref_worksheet42.set_row((2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6, None, header_format)
+    ref_worksheet42.set_row((2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9, None, header_format)
+    ref_worksheet42.write(0, 0, economy + ' gas reference', cell_format1)
+    ref_worksheet42.write(chart_height + ref_gascons_1_rows + ref_gas_1_rows + 6, 0, economy + ' gas net-zero', cell_format1)
+
+    # Create a FED sector area chart
+
+    ref_gascons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_gascons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_gascons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_gascons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_gascons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_gascons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_gascons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_gascons_1_rows):
+        ref_gascons_chart1.add_series({
+            'name':       [economy + '_gas', chart_height + i + 1, 1],
+            'categories': [economy + '_gas', chart_height, 2, chart_height, ref_gascons_1_cols - 1],
+            'values':     [economy + '_gas', chart_height + i + 1, 2, chart_height + i + 1, ref_gascons_1_cols - 1],
+            'fill':       {'color': ref_gascons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet42.insert_chart('B3', ref_gascons_chart1)
+
+    # Create a TPES gas chart
+    ref_tpes_gas_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_tpes_gas_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_tpes_gas_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_tpes_gas_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_gas_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Gas (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_gas_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_tpes_gas_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+        i = ref_gas_1[ref_gas_1['item_code_new'] == component].index[0]
+        ref_tpes_gas_chart1.add_series({
+            'name':       [economy + '_gas', chart_height + ref_gascons_1_rows + i + 4, 1],
+            'categories': [economy + '_gas', chart_height + ref_gascons_1_rows + 3, 2,\
+                chart_height + ref_gascons_1_rows + 3, ref_gas_1_cols - 1],
+            'values':     [economy + '_gas', chart_height + ref_gascons_1_rows + i + 4, 2,\
+                chart_height + ref_gascons_1_rows + i + 4, ref_gas_1_cols - 1],
+            'fill':       {'color': ref_gas_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet42.insert_chart('J3', ref_tpes_gas_chart1)
+
+    # Net-zero 
+
+    # Create a FED sector area chart
+
+    netz_gascons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_gascons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_gascons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_gascons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_gascons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_gascons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_gascons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_gascons_1_rows):
+        netz_gascons_chart1.add_series({
+            'name':       [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, 1],
+            'categories': [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6, 2,\
+                (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6, netz_gascons_1_cols - 1],
+            'values':     [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, 2,\
+                (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, netz_gascons_1_cols - 1],
+            'fill':       {'color': netz_gascons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet42.insert_chart('B40', netz_gascons_chart1)
+
+    # Create a TPES gas chart
+    netz_tpes_gas_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_tpes_gas_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_gas_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_gas_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_gas_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Gas (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_gas_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_gas_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+        i = netz_gas_1[netz_gas_1['item_code_new'] == component].index[0]
+        netz_tpes_gas_chart1.add_series({
+            'name':       [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + i + 10, 1],
+            'categories': [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9, 2,\
+                (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9, netz_gas_1_cols - 1],
+            'values':     [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + i + 10, netz_gas_1_cols - 1],
+            'fill':       {'color': netz_gas_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet42.insert_chart('J40', netz_tpes_gas_chart1)
+
+    ##############
+    # Crude
+    
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet43 = writer.sheets[economy + '_crude_NGL']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet43.set_column(1, ref_crudecons_1_cols + 1, None, space_format)
+    ref_worksheet43.set_row(chart_height, None, header_format)
+    ref_worksheet43.set_row(chart_height + ref_crudecons_1_rows + 3, None, header_format)
+    ref_worksheet43.set_row((2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6, None, header_format)
+    ref_worksheet43.set_row((2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9, None, header_format)
+    ref_worksheet43.write(0, 0, economy + ' crude & NGL reference', cell_format1)
+    ref_worksheet43.write(chart_height + ref_crudecons_1_rows + ref_crude_1_rows + 6, 0, economy + ' crude & NGL net-zero', cell_format1)
+
+    # Create a FED sector area chart
+
+    ref_crudecons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_crudecons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_crudecons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_crudecons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_crudecons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_crudecons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_crudecons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_crudecons_1_rows):
+        ref_crudecons_chart1.add_series({
+            'name':       [economy + '_crude_NGL', chart_height + i + 1, 1],
+            'categories': [economy + '_crude_NGL', chart_height, 2, chart_height, ref_crudecons_1_cols - 1],
+            'values':     [economy + '_crude_NGL', chart_height + i + 1, 2, chart_height + i + 1, ref_crudecons_1_cols - 1],
+            'fill':       {'color': ref_crudecons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet43.insert_chart('B3', ref_crudecons_chart1)
+
+    # Create a TPES crude oil and NGL chart
+    ref_tpes_crude_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_tpes_crude_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_tpes_crude_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_tpes_crude_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_crude_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Crude oil & NGL (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_crude_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_tpes_crude_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+        i = ref_crude_1[ref_crude_1['item_code_new'] == component].index[0]
+        ref_tpes_crude_chart1.add_series({
+            'name':       [economy + '_crude_NGL', chart_height + ref_crudecons_1_rows + i + 4, 1],
+            'categories': [economy + '_crude_NGL', chart_height + ref_crudecons_1_rows + 3, 2,\
+                chart_height + ref_crudecons_1_rows + 3, ref_crude_1_cols - 1],
+            'values':     [economy + '_crude_NGL', chart_height + ref_crudecons_1_rows + i + 4, 2,\
+                chart_height + ref_crudecons_1_rows + i + 4, ref_crude_1_cols - 1],
+            'fill':       {'color': ref_crude_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet43.insert_chart('J3', ref_tpes_crude_chart1)
+
+    # Net-zero
+
+    # Create a FED sector area chart
+
+    netz_crudecons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_crudecons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_crudecons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_crudecons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_crudecons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_crudecons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_crudecons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_crudecons_1_rows):
+        netz_crudecons_chart1.add_series({
+            'name':       [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, 1],
+            'categories': [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6, 2,\
+                (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6, netz_crudecons_1_cols - 1],
+            'values':     [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, 2,\
+                (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, netz_crudecons_1_cols - 1],
+            'fill':       {'color': netz_crudecons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet43.insert_chart('B41', netz_crudecons_chart1)
+
+    # Create a TPES gas chart
+    netz_tpes_crude_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_tpes_crude_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_crude_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_crude_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_crude_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Crude oil & NGL (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_crude_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_crude_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+        i = netz_crude_1[netz_crude_1['item_code_new'] == component].index[0]
+        netz_tpes_crude_chart1.add_series({
+            'name':       [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + i + 10, 1],
+            'categories': [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9, 2,\
+                (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9, netz_crude_1_cols - 1],
+            'values':     [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + i + 10, netz_crude_1_cols - 1],
+            'fill':       {'color': netz_crude_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet43.insert_chart('J41', netz_tpes_crude_chart1)
+
+    ##############
+    # Petroleum products
+    
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet44 = writer.sheets[economy + '_petprod']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet44.set_column(1, ref_petprodcons_1_cols + 1, None, space_format)
+    ref_worksheet44.set_row(chart_height, None, header_format)
+    ref_worksheet44.set_row(chart_height + ref_petprodcons_1_rows + 3, None, header_format)
+    ref_worksheet44.set_row((2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, None, header_format)
+    ref_worksheet44.set_row((2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, None, header_format)
+    ref_worksheet44.write(0, 0, economy + ' petroleum products reference', cell_format1)
+    ref_worksheet44.write(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 0, economy + ' petroleum products net-zero', cell_format1)
+
+    # Create a FED sector area chart
+
+    ref_petprodcons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_petprodcons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_petprodcons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_petprodcons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_petprodcons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_petprodcons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_petprodcons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_petprodcons_1_rows):
+        ref_petprodcons_chart1.add_series({
+            'name':       [economy + '_petprod', chart_height + i + 1, 1],
+            'categories': [economy + '_petprod', chart_height, 2, chart_height, ref_petprodcons_1_cols - 1],
+            'values':     [economy + '_petprod', chart_height + i + 1, 2, chart_height + i + 1, ref_petprodcons_1_cols - 1],
+            'fill':       {'color': ref_petprodcons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet44.insert_chart('B3', ref_petprodcons_chart1)
+
+    # Create a TPES petroleum products chart
+    ref_tpes_petprod_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_tpes_petprod_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_tpes_petprod_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_tpes_petprod_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_petprod_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Petroleum products (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_petprod_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_tpes_petprod_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+        i = ref_petprod_2[ref_petprod_2['item_code_new'] == component].index[0]
+        ref_tpes_petprod_chart1.add_series({
+            'name':       [economy + '_petprod', chart_height + ref_petprodcons_1_rows + i + 4, 1],
+            'categories': [economy + '_petprod', chart_height + ref_petprodcons_1_rows + 3, 2,\
+                chart_height + ref_petprodcons_1_rows + 3, ref_petprod_2_cols - 1],
+            'values':     [economy + '_petprod', chart_height + ref_petprodcons_1_rows + i + 4, 2,\
+                chart_height + ref_petprodcons_1_rows + i + 4, ref_petprod_2_cols - 1],
+            'fill':       {'color': ref_petprod_2['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet44.insert_chart('J3', ref_tpes_petprod_chart1)
+
+    # Net-zero
+    
+    # Create a FED sector area chart
+
+    netz_petprodcons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_petprodcons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_petprodcons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_petprodcons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_petprodcons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_petprodcons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_petprodcons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_petprodcons_1_rows):
+        netz_petprodcons_chart1.add_series({
+            'name':       [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 1],
+            'categories': [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 2,\
+                (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, netz_petprodcons_1_cols - 1],
+            'values':     [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, netz_petprodcons_1_cols - 1],
+            'fill':       {'color': netz_petprodcons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet44.insert_chart('B41', netz_petprodcons_chart1)
+
+    # Create a TPES petroleum products chart
+    netz_tpes_petprod_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_tpes_petprod_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_petprod_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_petprod_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_petprod_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Petroleum products (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_petprod_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_petprod_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+        i = netz_petprod_2[netz_petprod_2['item_code_new'] == component].index[0]
+        netz_tpes_petprod_chart1.add_series({
+            'name':       [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, 1],
+            'categories': [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, 2,\
+                (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, netz_petprod_2_cols - 1],
+            'values':     [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, netz_petprod_2_cols - 1],
+            'fill':       {'color': netz_petprod_2['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet44.insert_chart('J41', netz_tpes_petprod_chart1)
 
     writer.save()
 
