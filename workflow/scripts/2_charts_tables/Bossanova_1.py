@@ -274,6 +274,7 @@ heat_agg_fuels = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste']
 # TECHNOLOGY aggregations for ProductionByTechnology
 
 coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
+coal_ccs_tech = ['POW_COAL_CCS_PP']
 oil_tech = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
 gas_tech = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
 gas_ccs_tech = ['POW_CCGT_CCS_PP']
@@ -301,7 +302,7 @@ modren_elec_heat = ['POW_Hydro_PP', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 
                     'POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP']
 
 all_elec_heat = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_Ultra_BituCoal_PP', 
-                 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP', 'POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP',
+                 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP', 'POW_COAL_CCS_PP', 'POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP',
                  'POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP', 'POW_Nuclear_PP', 'POW_IMP_Nuclear_PP',
                  'POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
                  'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP', 'POW_WindOff_PP', 'POW_Wind_PP', 'POW_Solid_Biomass_PP', 
@@ -312,8 +313,8 @@ all_elec_heat = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP'
 
 # POW_EXPORT_ELEC_PP need to work this in
 
-prod_agg_tech = ['Coal', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 'Geothermal', 'Storage', 'Other', 'Imports']
-prod_agg_tech2 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
+prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 'Geothermal', 'Storage', 'Other', 'Imports']
+prod_agg_tech2 = ['Coal', 'Coal CCS', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
                  'Bio', 'Geothermal', 'Storage', 'Other', 'Imports']
 
 heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste', 'Heat only', 'Other']
@@ -337,6 +338,7 @@ refinery_new_output = ['7_1_from_ref', '7_2_from_ref', '7_3_from_ref', '7_jet_fr
 # Capacity vectors
     
 coal_cap = ['POW_Black_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_CHP_COAL_PP', 'POW_Other_Coal_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP']
+coal_ccs_cap = ['POW_COAL_CCS_PP']
 gas_cap = ['POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP']
 gas_ccs_cap = ['POW_CCGT_CCS_PP']
 oil_cap = ['POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP']
@@ -356,8 +358,8 @@ lignite_cap = ['POW_Sub_Brown_PP']
 thermal_coal_cap = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
 
 
-pow_capacity_agg = ['Coal', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
-pow_capacity_agg2 = ['Coal', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 
+pow_capacity_agg = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
+pow_capacity_agg2 = ['Coal', 'Coal CCS', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 
                      'Solar', 'Geothermal', 'Storage', 'Other']
 
 # Heat power plants
@@ -783,7 +785,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA']
+# Economy_codes = ['07_INA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2038,6 +2040,7 @@ for economy in Economy_codes:
     # Now build the aggregations of technology (power plants)
 
     coal_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    coal_ccs_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(coal_ccs_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal CCS')
     oil_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(oil_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(gas_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
     gas_ccs_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(gas_ccs_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas CCS')
@@ -2059,7 +2062,7 @@ for economy in Economy_codes:
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    ref_elecgen_2 = ref_elecgen_1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
+    ref_elecgen_2 = ref_elecgen_1.append([coal_pp2, coal_ccs_pp, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
         bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
         [['TECHNOLOGY'] + list(ref_elecgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                                                                    
 
@@ -2154,6 +2157,7 @@ for economy in Economy_codes:
     ref_powcap_1 = ref_pow_capacity_df1[ref_pow_capacity_df1['REGION'] == economy]
 
     coal_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
+    coal_ccs_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(coal_ccs_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal CCS')
     oil_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(oil_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Oil')
     wind_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(wind_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Wind')
     storage_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(storage_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Storage')
@@ -2173,7 +2177,7 @@ for economy in Economy_codes:
 
     # Capacity by tech dataframe (with the above aggregations added)
 
-    ref_powcap_1 = ref_powcap_1.append([coal_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
+    ref_powcap_1 = ref_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
                                             storage_capacity, geo_capacity, other_capacity])\
         [['TECHNOLOGY'] + list(ref_powcap_1.loc[:, '2017':'2050'])].reset_index(drop = True) 
@@ -2490,6 +2494,7 @@ for economy in Economy_codes:
     # Now build the aggregations of technology (power plants)
 
     coal_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
+    coal_ccs_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(coal_ccs_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal CCS')
     oil_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(oil_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(gas_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
     gas_ccs_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(gas_ccs_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas CCS')
@@ -2511,7 +2516,7 @@ for economy in Economy_codes:
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    netz_elecgen_2 = netz_elecgen_1.append([coal_pp2, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
+    netz_elecgen_2 = netz_elecgen_1.append([coal_pp2, coal_ccs_pp, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
         bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
         [['TECHNOLOGY'] + list(netz_elecgen_1.loc[:,'2017':'2050'])].reset_index(drop = True)                                                                                                    
 
@@ -2606,6 +2611,7 @@ for economy in Economy_codes:
     netz_powcap_1 = netz_pow_capacity_df1[netz_pow_capacity_df1['REGION'] == economy]
 
     coal_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
+    coal_ccs_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(coal_ccs_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal CCS')
     oil_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(oil_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Oil')
     wind_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(wind_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Wind')
     storage_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(storage_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Storage')
@@ -2625,7 +2631,7 @@ for economy in Economy_codes:
 
     # Capacity by tech dataframe (with the above aggregations added)
 
-    netz_powcap_1 = netz_powcap_1.append([coal_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
+    netz_powcap_1 = netz_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
                                             storage_capacity, geo_capacity, other_capacity])\
         [['TECHNOLOGY'] + list(netz_powcap_1.loc[:,'2017':'2050'])].reset_index(drop = True) 
@@ -9522,7 +9528,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet22.insert_chart('B53', netz_prodelec_bytech_chart1)
+        ref_worksheet22.insert_chart('B57', netz_prodelec_bytech_chart1)
 
     else: 
         pass
@@ -9582,7 +9588,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet22.insert_chart('J53', netz_prodelec_bytech_chart2)
+        ref_worksheet22.insert_chart('J57', netz_prodelec_bytech_chart2)
     
     else:
         pass
