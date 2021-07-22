@@ -77,7 +77,7 @@ colours_dict = pd.read_csv('./data/2_Mapping_and_other/colours_dict.csv',\
 
 # FED and TPES: vectors for impending df builds
 
-# Fuels
+# Fuelsa
 
 First_level_fuels = ['1_coal', '2_coal_products', '5_oil_shale_and_oil_sands', '6_crude_oil_and_ngl', '7_petroleum_products',
                      '8_gas', '9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass',
@@ -113,7 +113,7 @@ Oil_fuels = ['6_crude_oil_and_ngl', '7_petroleum_products', '5_oil_shale_and_oil
 
 Other_fuels_FED = ['9_nuclear', '16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable']
 
-Other_fuels_TPES = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_9_other_sources']
+Other_fuels_TPES = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_x_hydrogen', '16_9_other_sources']
 
 Other_fuels_industry = ['9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '16_1_biogas',
                          '16_2_industrial_waste', '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable', 
@@ -302,12 +302,12 @@ modren_elec_heat = ['POW_Hydro_PP', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 
                     'POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP']
 
 all_elec_heat = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Sub_Brown_PP', 'POW_Ultra_BituCoal_PP', 
-                 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP', 'POW_COAL_CCS_PP', 'POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP', 'POW_PetCoke_PP',
+                 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP', 'POW_COAL_CCS_PP', 'POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_FuelOil_HP', 'POW_OilProducts_PP', 'POW_PetCoke_PP',
                  'POW_CCGT_PP', 'POW_OCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP', 'POW_Nuclear_PP', 'POW_IMP_Nuclear_PP',
                  'POW_Hydro_PP', 'POW_Pumped_Hydro', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
                  'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP', 'POW_WindOff_PP', 'POW_Wind_PP', 'POW_Solid_Biomass_PP', 
                  'POW_CHP_BIO_PP', 'POW_Biogas_PP', 'POW_Geothermal_PP', 'POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage',
-                 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP', 'POW_CHP_PP']
+                 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP', 'POW_WasteToHeat_HP', 'POW_CHP_PP', 'POW_HEAT_HP', 'YYY_18_heat']
 
 # 'POW_Pumped_Hydro'?? in the above
 
@@ -317,7 +317,7 @@ prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear'
 prod_agg_tech2 = ['Coal', 'Coal CCS', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
                  'Bio', 'Geothermal', 'Storage', 'Other', 'Imports']
 
-heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste', 'Heat only', 'Other']
+heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Nuclear', 'Biomass', 'Waste', 'Heat only', 'Non-specified', 'Other']
 
 # Power input fuel categories
 
@@ -367,14 +367,16 @@ pow_capacity_agg2 = ['Coal', 'Coal CCS', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nu
 coal_heat = ['POW_CHP_COAL_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP', 'POW_HEAT_COKE_HP', 'POW_Sub_BituCoal_PP', 'POW_Other_Coal_PP']
 lignite_heat = ['POW_Sub_Brown_PP']
 gas_heat = ['POW_CCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
-oil_heat = ['POW_FuelOil_HP', 'POW_Diesel_PP']
-bio_heat = ['POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP']
+oil_heat = ['POW_FuelOil_HP', 'POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP']
+bio_heat = ['POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP', 'POW_Biogas_PP']
+nuke_heat = ['POW_Nuclear_PP']
 waste_heat = ['POW_WasteToEnergy_PP', 'POW_WasteToHeat_HP']
-combination_heat = ['POW_HEAT_HP']
+combination_heat = ['POW_HEAT_HP', 'YYY_18_heat']
+nons_heat = ['POW_CHP_PP']
 
 # Heat only power plants
 
-heat_only = ['POW_FuelOil_HP', 'POW_HEAT_HP', 'POW_WasteToHeat_HP']
+heat_only = ['POW_FuelOil_HP', 'POW_HEAT_HP', 'POW_WasteToHeat_HP', 'POW_HEAT_COKE_HP', 'YYY_18_heat']
 
 # Make space for charts (before data/tables)
 chart_height = 18 # number of excel rows before the data is written (can change this)
@@ -637,6 +639,31 @@ EGEDA_histpower_oil[neg_to_pos.columns] = neg_to_pos
 EGEDA_histpower_oil.to_csv('./data/4_Joined/EGEDA_histpower_oil.csv', index = False)
 EGEDA_histpower_oil = pd.read_csv('./data/4_Joined/EGEDA_histpower_oil.csv')
 
+### liquid and solid renewables
+
+EGEDA_histpower_renew = EGEDA_data[(EGEDA_data['item_code_new'].isin(['9_1_main_activity_producer', '9_2_autoproducers'])) &
+                                 (EGEDA_data['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))]\
+                                    .copy().reset_index(drop = True)
+
+EGEDA_histpower_renew['FUEL'] = EGEDA_histpower_renew['fuel_code'].map({'15_solid_biomass': 'Liquid and solid renewables', 
+                                                                        '16_1_biogas': 'Liquid and solid renewables', 
+                                                                        '16_5_biogasoline': 'Liquid and solid renewables', 
+                                                                        '16_6_biodiesel': 'Liquid and solid renewables', 
+                                                                        '16_7_bio_jet_kerosene': 'Liquid and solid renewables', 
+                                                                        '16_8_other_liquid_biofuels': 'Liquid and solid renewables'})
+
+EGEDA_histpower_renew = EGEDA_histpower_renew.groupby(['economy', 'FUEL']).sum().reset_index().assign(item_code_new = 'Power')\
+    [['economy', 'FUEL', 'item_code_new'] + list(range(2000, 2019))]\
+
+neg_to_pos = EGEDA_histpower_renew.select_dtypes(include = [np.number]) * -1
+EGEDA_histpower_renew[neg_to_pos.columns] = neg_to_pos
+
+EGEDA_histpower_renew.to_csv('./data/4_Joined/EGEDA_histpower_renew.csv', index = False)
+EGEDA_histpower_renew = pd.read_csv('./data/4_Joined/EGEDA_histpower_renew.csv')
+
+
 ################################################################################
 
 # Own use and losses historical
@@ -717,6 +744,30 @@ EGEDA_hist_refining[neg_to_pos.columns] = neg_to_pos
 EGEDA_hist_refining.to_csv('./data/4_Joined/EGEDA_hist_refining.csv', index = False)
 EGEDA_hist_refining = pd.read_csv('./data/4_Joined/EGEDA_hist_refining.csv')
 
+# liquid and solid renewables historical
+
+EGEDA_hist_own_renew = EGEDA_data[(EGEDA_data['item_code_new'].isin(['10_losses_and_own_use'])) &
+                                (EGEDA_data['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))]\
+                                  .copy().reset_index(drop = True)
+
+EGEDA_hist_own_renew['FUEL'] = EGEDA_hist_own_renew['fuel_code'].map({'15_solid_biomass': 'Liquid and solid renewables', 
+                                                                      '16_1_biogas': 'Liquid and solid renewables', 
+                                                                      '16_5_biogasoline': 'Liquid and solid renewables', 
+                                                                      '16_6_biodiesel': 'Liquid and solid renewables', 
+                                                                      '16_7_bio_jet_kerosene': 'Liquid and solid renewables', 
+                                                                      '16_8_other_liquid_biofuels': 'Liquid and solid renewables'})
+
+EGEDA_hist_own_renew = EGEDA_hist_own_renew[['economy', 'FUEL', 'item_code_new'] + list(range(2000, 2019))]\
+                        .copy().reset_index(drop = True)
+
+neg_to_pos = EGEDA_hist_own_renew.select_dtypes(include = [np.number]) * -1
+EGEDA_hist_own_renew[neg_to_pos.columns] = neg_to_pos
+
+EGEDA_hist_own_renew.to_csv('./data/4_Joined/EGEDA_hist_own_renew.csv', index = False)
+EGEDA_hist_own_renew = pd.read_csv('./data/4_Joined/EGEDA_hist_own_renew.csv')
+
 #########################################################################################################################################
 
 # OSeMOSYS demand reults dataframes
@@ -785,7 +836,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['07_INA']
+# Economy_codes = ['20_USA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2150,6 +2201,51 @@ for economy in Economy_codes:
     ref_refinery_3_rows = ref_refinery_3.shape[0]
     ref_refinery_3_cols = ref_refinery_3.shape[1]
 
+    ##################################################################
+    # Hydrogen output (similar to refinery output)
+
+    ref_hydrogen_1 = ref_refownsup_df1[(ref_refownsup_df1['economy'] == economy) &
+                                         (ref_refownsup_df1['Sector'] == 'HYD') & 
+                                         (ref_refownsup_df1['FUEL'].isin(['16_x_hydrogen']))].copy()
+
+    ref_hydrogen_1 = ref_hydrogen_1[['FUEL', 'TECHNOLOGY'] + list(ref_hydrogen_1.loc[:, '2017':'2050'])]\
+        .rename(columns = {'FUEL': 'Fuel', 'TECHNOLOGY': 'Technology'}).reset_index(drop = True)
+
+    ref_hydrogen_1.loc[ref_hydrogen_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
+    ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr', 'Technology'] = 'Steam methane reforming'
+    ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs', 'Technology'] = 'Steam methane reforming CCS'
+    ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_pem_elyzer', 'Technology'] = 'Electrolysis'
+
+    # Hydrogen trade
+    ref_hydrogen_trade_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                                (EGEDA_years_reference['fuel_code'] == '16_x_hydrogen') &
+                                                (EGEDA_years_reference['item_code_new'].isin(['2_imports', '3_exports']))]\
+                                                    .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    ref_hydrogen_trade_1 = ref_hydrogen_trade_1[['fuel_code', 'item_code_new'] + list(ref_hydrogen_trade_1.loc[:, '2017': '2050'])]\
+        .rename(columns = {'fuel_code': 'Fuel', 'item_code_new': 'Technology'}).reset_index(drop = True)
+
+    ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
+    ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Technology'] == '2_imports', 'Technology'] = 'Imports'
+    ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Technology'] == '3_exports', 'Technology'] = 'Exports'
+
+    ref_hydrogen_2 = ref_hydrogen_1.append(ref_hydrogen_trade_1).copy().reset_index(drop = True)
+
+    ref_hydrogen_2['Technology'] = pd.Categorical(
+        ref_hydrogen_2['Technology'], 
+        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Electrolysis', 'Imports', 'Exports'], 
+        ordered = True)
+
+    ref_hydrogen_2 = ref_hydrogen_2.sort_values('Technology')
+
+    ref_hydrogen_2_rows = ref_hydrogen_2.shape[0]
+    ref_hydrogen_2_cols = ref_hydrogen_2.shape[1]
+
+    ref_hydrogen_3 = ref_hydrogen_2[['Fuel', 'Technology'] + trans_col_chart]
+
+    ref_hydrogen_3_rows = ref_hydrogen_3.shape[0]
+    ref_hydrogen_3_cols = ref_hydrogen_3.shape[1]
+
     #####################################################################################################################################################################
 
     # Create some power capacity dataframes
@@ -2288,13 +2384,15 @@ for economy in Economy_codes:
     lignite_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(lignite_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
     oil_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(oil_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(gas_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    nuclear_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(nuke_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     waste_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
     comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only')
+    nons_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(nons_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Non-specified')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    ref_heatgen_2 = ref_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, bio_hp, waste_hp, comb_hp])\
+    ref_heatgen_2 = ref_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, nuclear_hp, bio_hp, waste_hp, comb_hp, nons_hp])\
         [['TECHNOLOGY'] + list(ref_heatgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                                                                    
 
     ref_heatgen_2['Generation'] = 'Heat'
@@ -2604,6 +2702,52 @@ for economy in Economy_codes:
     netz_refinery_3_rows = netz_refinery_3.shape[0]
     netz_refinery_3_cols = netz_refinery_3.shape[1]
 
+    #############################################################
+
+    # Hydrogen output (similar to refinery output)
+
+    netz_hydrogen_1 = netz_refownsup_df1[(netz_refownsup_df1['economy'] == economy) &
+                                         (netz_refownsup_df1['Sector'] == 'HYD') & 
+                                         (netz_refownsup_df1['FUEL'].isin(['16_x_hydrogen']))].copy()
+
+    netz_hydrogen_1 = netz_hydrogen_1[['FUEL', 'TECHNOLOGY'] + list(netz_hydrogen_1.loc[:, '2017':'2050'])]\
+        .rename(columns = {'FUEL': 'Fuel', 'TECHNOLOGY': 'Technology'}).reset_index(drop = True)
+
+    netz_hydrogen_1.loc[netz_hydrogen_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
+    netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr', 'Technology'] = 'Steam methane reforming'
+    netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs', 'Technology'] = 'Steam methane reforming CCS'
+    netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_pem_elyzer', 'Technology'] = 'Electrolysis'
+
+    # Hydrogen trade
+    netz_hydrogen_trade_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                                (EGEDA_years_netzero['fuel_code'] == '16_x_hydrogen') &
+                                                (EGEDA_years_netzero['item_code_new'].isin(['2_imports', '3_exports']))]\
+                                                    .copy().replace(np.nan, 0).reset_index(drop = True)
+
+    netz_hydrogen_trade_1 = netz_hydrogen_trade_1[['fuel_code', 'item_code_new'] + list(netz_hydrogen_trade_1.loc[:, '2017': '2050'])]\
+        .rename(columns = {'fuel_code': 'Fuel', 'item_code_new': 'Technology'}).reset_index(drop = True)
+
+    netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
+    netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Technology'] == '2_imports', 'Technology'] = 'Imports'
+    netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Technology'] == '3_exports', 'Technology'] = 'Exports'
+
+    netz_hydrogen_2 = netz_hydrogen_1.append(netz_hydrogen_trade_1).copy().reset_index(drop = True)
+
+    netz_hydrogen_2['Technology'] = pd.Categorical(
+        netz_hydrogen_2['Technology'], 
+        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Electrolysis', 'Imports', 'Exports'], 
+        ordered = True)
+
+    netz_hydrogen_2 = netz_hydrogen_2.sort_values('Technology')
+
+    netz_hydrogen_2_rows = netz_hydrogen_2.shape[0]
+    netz_hydrogen_2_cols = netz_hydrogen_2.shape[1]
+
+    netz_hydrogen_3 = netz_hydrogen_2[['Fuel', 'Technology'] + trans_col_chart]
+
+    netz_hydrogen_3_rows = netz_hydrogen_3.shape[0]
+    netz_hydrogen_3_cols = netz_hydrogen_3.shape[1]
+
     #####################################################################################################################################################################
 
     # Create some power capacity dataframes
@@ -2742,13 +2886,15 @@ for economy in Economy_codes:
     lignite_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(lignite_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
     oil_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(oil_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(gas_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    nuclear_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(nuke_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     waste_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
     comb_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only')
+    nons_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(nons_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Non-specified')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    netz_heatgen_2 = netz_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, bio_hp, waste_hp, comb_hp])\
+    netz_heatgen_2 = netz_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, nuclear_hp, bio_hp, waste_hp, comb_hp, nons_hp])\
         [['TECHNOLOGY'] + list(netz_heatgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                              
 
     netz_heatgen_2['Generation'] = 'Heat'
@@ -2792,7 +2938,7 @@ for economy in Economy_codes:
 
     netz_heat_use_1 = netz_power_df1[(netz_power_df1['economy'] == economy) &
                                    (netz_power_df1['Sheet_energy'] == 'UseByTechnology') &
-                                   (netz_power_df1['TECHNOLOGY'].isin(['POW_FuelOil_HP', 'POW_HEAT_HP']))].reset_index(drop = True)
+                                   (netz_power_df1['TECHNOLOGY'].isin(heat_only))].reset_index(drop = True)
 
     coal = netz_heat_use_1[netz_heat_use_1['FUEL'].isin(coal_fuel_1)].groupby(['economy']).sum().assign(FUEL = 'Coal',
                                                                                                       TECHNOLOGY = 'Coal heat')
@@ -3500,6 +3646,34 @@ for economy in Economy_codes:
     ref_biofuel_2_rows = ref_biofuel_2.shape[0]
     ref_biofuel_2_cols = ref_biofuel_2.shape[1]
 
+    # liquid and solid renewables
+
+    ref_renew_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                        (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
+                                        (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))]\
+                                           .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Liquid and solid renewables').reset_index()\
+                                           [['fuel_code', 'item_code_new'] + col_chart_years] 
+
+    renew_bunkers = ref_renew_1[ref_renew_1['item_code_new'].isin(['4_international_marine_bunkers',
+                                                                         '5_international_aviation_bunkers'])]\
+                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Liquid and solid renewables',
+                                                                                                                  item_code_new = 'Bunkers')
+
+    ref_renew_2 = netz_renew_1.append([renew_bunkers]).reset_index(drop = True)
+
+    ref_renew_2.loc[ref_renew_2['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
+    ref_renew_2.loc[ref_renew_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
+    ref_renew_2.loc[ref_renew_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
+    ref_renew_2.loc[ref_renew_2['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
+    ref_renew_2.loc[ref_renew_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
+
+    ref_renew_2 = ref_renew_2[ref_renew_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
+
+    ref_renew_2_rows = ref_renew_2.shape[0]
+    ref_renew_2_cols = ref_renew_2.shape[1]
+
     # NET-ZERO
 
     netz_coal_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
@@ -3646,6 +3820,34 @@ for economy in Economy_codes:
 
     netz_biofuel_2_rows = netz_biofuel_2.shape[0]
     netz_biofuel_2_cols = netz_biofuel_2.shape[1]
+
+    # liquid and solid renewables
+
+    netz_renew_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                        (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
+                                        (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))]\
+                                           .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Liquid and solid renewables').reset_index()\
+                                           [['fuel_code', 'item_code_new'] + col_chart_years] 
+
+    renew_bunkers = netz_renew_1[netz_renew_1['item_code_new'].isin(['4_international_marine_bunkers',
+                                                                         '5_international_aviation_bunkers'])]\
+                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Liquid and solid renewables',
+                                                                                                                  item_code_new = 'Bunkers')
+
+    netz_renew_2 = netz_renew_1.append([renew_bunkers]).reset_index(drop = True)
+
+    netz_renew_2.loc[netz_renew_2['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
+    netz_renew_2.loc[netz_renew_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
+    netz_renew_2.loc[netz_renew_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
+    netz_renew_2.loc[netz_renew_2['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
+    netz_renew_2.loc[netz_renew_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
+
+    netz_renew_2 = netz_renew_2[netz_renew_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
+
+    netz_renew_2_rows = netz_renew_2.shape[0]
+    netz_renew_2_cols = netz_renew_2.shape[1]
 
     ###########################################################################################
 
@@ -3970,7 +4172,114 @@ for economy in Economy_codes:
     ref_petprodcons_1_rows = ref_petprodcons_1.shape[0]
     ref_petprodcons_1_cols = ref_petprodcons_1.shape[1]
 
-        # NET-ZERO
+    # Liquid and solid renewables
+
+    ref_renew_ind = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                            (EGEDA_years_reference['item_code_new'].isin(['14_industry_sector'])) &
+                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))]\
+                                                .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index(drop = True)\
+                                                    .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Industry')
+
+    ref_renew_ind = ref_renew_ind[['fuel_code', 'item_code_new'] + list(ref_renew_ind.loc[:, '2000':'2050'])]
+
+    ref_renew_bld = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                            (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
+
+    ref_renew_bld = ref_renew_bld[['fuel_code', 'item_code_new'] + list(ref_renew_bld.loc[:, '2000':'2050'])]
+
+    ref_renew_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                           (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
+                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Agriculture')
+
+    ref_renew_ag = ref_renew_ag[['fuel_code', 'item_code_new'] + list(ref_renew_ag.loc[:, '2000':'2050'])]
+
+    ref_renew_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                            (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
+                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Transport')
+
+    ref_renew_trn = ref_renew_trn[['fuel_code', 'item_code_new'] + list(ref_renew_trn.loc[:, '2000':'2050'])]
+
+    ref_renew_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                           (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
+                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-energy')
+
+    ref_renew_ne = ref_renew_ne[['fuel_code', 'item_code_new'] + list(ref_renew_ne.loc[:, '2000':'2050'])]
+    
+    ref_renew_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                           (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-specified')
+
+    ref_renew_ns = ref_renew_ns[['fuel_code', 'item_code_new'] + list(ref_renew_ns.loc[:, '2000':'2050'])]
+
+    # Own-use
+    ref_renew_own = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
+                                    (ref_trans_df1['Sector'] == 'OWN') &
+                                    (ref_trans_df1['FUEL'].isin(['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_5_other_biomass', 
+                                                                 '16_1_biogas', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                 '16_8_other_liquid_biofuels']))]\
+                                                                     .copy().reset_index(drop = True)
+                                                                     
+    ref_renew_own = ref_renew_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                        .assign(fuel_code = 'Liquid and solid renewables', item_code_new = '10_losses_and_own_use')
+
+    #################################################################################
+    hist_ownrenew = EGEDA_hist_own_renew[(EGEDA_hist_own_renew['economy'] == economy) &
+                                         (EGEDA_hist_own_renew['FUEL'] == 'Liquid and solid renewables')].copy().reset_index(drop = True)\
+                                             .groupby(['economy']).sum().reset_index(drop = True)\
+                                                 .assign(fuel_code = 'Liquid and solid renewables', item_code_new = '10_losses_and_own_use')\
+                                                     [['fuel_code', 'item_code_new'] + list(EGEDA_hist_own_renew.loc[:, '2000':'2016'])]
+
+    ref_renew_own = hist_ownrenew.merge(ref_renew_own, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    ref_renew_own = ref_renew_own[['fuel_code', 'item_code_new'] + list(ref_renew_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    # Power
+    ref_renew_power = ref_power_df1[(ref_power_df1['economy'] == economy) &
+                                    (ref_power_df1['FUEL'].isin(['15_4_black_liquor', '15_5_other_biomass']))]\
+                                                                     .copy().reset_index(drop = True)
+
+    ref_renew_power = ref_renew_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                            .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Power')
+
+    #################################################################################
+    hist_powerrenew = EGEDA_histpower_renew[(EGEDA_histpower_renew['economy'] == economy) &
+                                        (EGEDA_histpower_renew['FUEL'] == 'Liquid and solid renewables')].copy()\
+                                            .iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_histpower_renew.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    ref_renew_power = hist_powerrenew.merge(ref_renew_power, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    ref_renew_power = ref_renew_power[['fuel_code', 'item_code_new'] + list(ref_renew_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    ref_renewcons_1 = ref_renew_ind.append([ref_renew_bld, ref_renew_ag, ref_renew_trn, ref_renew_ne, 
+                                                ref_renew_ns, ref_renew_own, ref_renew_power])\
+                                                    .copy().reset_index(drop = True)
+
+    ref_renewcons_1.loc[ref_renewcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+    
+    ref_renewcons_1_rows = ref_renewcons_1.shape[0]
+    ref_renewcons_1_cols = ref_renewcons_1.shape[1]
+
+    ##########
+    # NET-ZERO
 
     # Industry
     # Transport
@@ -4291,6 +4600,112 @@ for economy in Economy_codes:
     netz_petprodcons_1_rows = netz_petprodcons_1.shape[0]
     netz_petprodcons_1_cols = netz_petprodcons_1.shape[1]
 
+    # Liquid and solid renewables
+
+    netz_renew_ind = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                            (EGEDA_years_netzero['item_code_new'].isin(['14_industry_sector'])) &
+                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))]\
+                                                .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index(drop = True)\
+                                                    .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Industry')
+
+    netz_renew_ind = netz_renew_ind[['fuel_code', 'item_code_new'] + list(netz_renew_ind.loc[:, '2000':'2050'])]
+
+    netz_renew_bld = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                            (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
+
+    netz_renew_bld = netz_renew_bld[['fuel_code', 'item_code_new'] + list(netz_renew_bld.loc[:, '2000':'2050'])]
+
+    netz_renew_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                           (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
+                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Agriculture')
+
+    netz_renew_ag = netz_renew_ag[['fuel_code', 'item_code_new'] + list(netz_renew_ag.loc[:, '2000':'2050'])]
+
+    netz_renew_trn = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                            (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
+                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Transport')
+
+    netz_renew_trn = netz_renew_trn[['fuel_code', 'item_code_new'] + list(netz_renew_trn.loc[:, '2000':'2050'])]
+
+    netz_renew_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                           (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
+                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-energy')
+
+    netz_renew_ne = netz_renew_ne[['fuel_code', 'item_code_new'] + list(netz_renew_ne.loc[:, '2000':'2050'])]
+    
+    netz_renew_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                           (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-specified')
+
+    netz_renew_ns = netz_renew_ns[['fuel_code', 'item_code_new'] + list(netz_renew_ns.loc[:, '2000':'2050'])]
+
+    # Own-use
+    netz_renew_own = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
+                                    (netz_trans_df1['Sector'] == 'OWN') &
+                                    (netz_trans_df1['FUEL'].isin(['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_5_other_biomass', 
+                                                                 '16_1_biogas', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                 '16_8_other_liquid_biofuels']))]\
+                                                                     .copy().reset_index(drop = True)
+                                                                     
+    netz_renew_own = netz_renew_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                        .assign(fuel_code = 'Liquid and solid renewables', item_code_new = '10_losses_and_own_use')
+
+    #################################################################################
+    hist_ownrenew = EGEDA_hist_own_renew[(EGEDA_hist_own_renew['economy'] == economy) &
+                                         (EGEDA_hist_own_renew['FUEL'] == 'Liquid and solid renewables')].copy().reset_index(drop = True)\
+                                             .groupby(['economy']).sum().reset_index(drop = True)\
+                                                 .assign(fuel_code = 'Liquid and solid renewables', item_code_new = '10_losses_and_own_use')\
+                                                     [['fuel_code', 'item_code_new'] + list(EGEDA_hist_own_renew.loc[:, '2000':'2016'])]
+
+    netz_renew_own = hist_ownrenew.merge(netz_renew_own, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_renew_own = netz_renew_own[['fuel_code', 'item_code_new'] + list(netz_renew_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    # Power
+    netz_renew_power = netz_power_df1[(netz_power_df1['economy'] == economy) &
+                                    (netz_power_df1['FUEL'].isin(['15_4_black_liquor', '15_5_other_biomass']))]\
+                                                                     .copy().reset_index(drop = True)
+
+    netz_renew_power = netz_renew_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
+                            .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Power')
+
+    #################################################################################
+    hist_powerrenew = EGEDA_histpower_renew[(EGEDA_histpower_renew['economy'] == economy) &
+                                        (EGEDA_histpower_renew['FUEL'] == 'Liquid and solid renewables')].copy()\
+                                            .iloc[:,:-2][['FUEL', 'item_code_new'] + list(EGEDA_histpower_renew.loc[:, '2000':'2016'])]\
+                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
+
+    netz_renew_power = hist_powerrenew.merge(netz_renew_power, how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    netz_renew_power = netz_renew_power[['fuel_code', 'item_code_new'] + list(netz_renew_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
+
+    netz_renewcons_1 = netz_renew_ind.append([netz_renew_bld, netz_renew_ag, netz_renew_trn, netz_renew_ne, 
+                                                netz_renew_ns, netz_renew_own, netz_renew_power])\
+                                                    .copy().reset_index(drop = True)
+
+    netz_renewcons_1.loc[netz_renewcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+    
+    netz_renewcons_1_rows = netz_renewcons_1.shape[0]
+    netz_renewcons_1_cols = netz_renewcons_1.shape[1]
+
     # Df builds are complete
 
     ##############################################################################################################################
@@ -4341,8 +4756,8 @@ for economy in Economy_codes:
     netz_ag_1.to_excel(writer, sheet_name = economy + '_FED_agr', index = False, startrow = (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6)
     ref_ag_2.to_excel(writer, sheet_name = economy + '_FED_agr', index = False, startrow = chart_height + ref_ag_1_rows + 3)
     netz_ag_2.to_excel(writer, sheet_name = economy + '_FED_agr', index = False, startrow = (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9)
-    ref_hyd_1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height)
-    netz_hyd_1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height + ref_hyd_1_rows + 3)
+    # ref_hyd_1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height)
+    # netz_hyd_1.to_excel(writer, sheet_name = economy + '_FED_hyd', index = False, startrow = chart_height + ref_hyd_1_rows + 3)
 
     # TPES
     ref_tpes_1.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height)
@@ -4421,6 +4836,14 @@ for economy in Economy_codes:
     netz_crude_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9)
     netz_petprodcons_1.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6)
     netz_petprod_2.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9)
+    ref_renewcons_1.to_excel(writer, sheet_name = economy + '_renew', index = False, startrow = chart_height)
+    ref_renew_2.to_excel(writer, sheet_name = economy + '_renew', index = False, startrow = chart_height + ref_renewcons_1_rows + 3)
+    netz_renewcons_1.to_excel(writer, sheet_name = economy + '_renew', index = False, startrow = (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6)
+    netz_renew_2.to_excel(writer, sheet_name = economy + '_renew', index = False, startrow = (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9)
+    ref_hyd_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = chart_height)
+    ref_hydrogen_3.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = chart_height + ref_hyd_1_rows + 3)
+    netz_hyd_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6)
+    netz_hydrogen_3.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9)
 
     # More fuels
     ref_nuke_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height)
@@ -5384,134 +5807,134 @@ for economy in Economy_codes:
     
     ref_worksheet6.insert_chart('R3', ref_ag_chart3)
 
-    # HYDROGEN CHARTS
+    # HYDROGEN CHARTS (REDUNDANT)
 
     # Access the workbook and first sheet with data from df1
-    hyd_worksheet1 = writer.sheets[economy + '_FED_hyd']
+    # hyd_worksheet1 = writer.sheets[economy + '_FED_hyd']
     
-    # Comma format and header format        
-    # space_format = workbook.add_format({'num_format': '#,##0'})
-    # header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
-    # cell_format1 = workbook.add_format({'bold': True})
+    # # Comma format and header format        
+    # # space_format = workbook.add_format({'num_format': '#,##0'})
+    # # header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    # # cell_format1 = workbook.add_format({'bold': True})
         
-    # Apply comma format and header format to relevant data rows
-    hyd_worksheet1.set_column(1, ref_hyd_1_cols + 1, None, space_format)
-    hyd_worksheet1.set_row(chart_height, None, header_format)
-    hyd_worksheet1.set_row(chart_height, None, header_format)
-    hyd_worksheet1.set_row(chart_height + ref_hyd_1_rows + 3, None, header_format)
-    hyd_worksheet1.write(0, 0, economy + ' FED hydrogen', cell_format1)
+    # # Apply comma format and header format to relevant data rows
+    # hyd_worksheet1.set_column(1, ref_hyd_1_cols + 1, None, space_format)
+    # hyd_worksheet1.set_row(chart_height, None, header_format)
+    # hyd_worksheet1.set_row(chart_height, None, header_format)
+    # hyd_worksheet1.set_row(chart_height + ref_hyd_1_rows + 3, None, header_format)
+    # hyd_worksheet1.write(0, 0, economy + ' FED hydrogen', cell_format1)
 
-    # Create a HYDROGEN area chart
-    ref_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    ref_hyd_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
+    # # Create a HYDROGEN area chart
+    # ref_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    # ref_hyd_chart1.set_size({
+    #     'width': 500,
+    #     'height': 300
+    # })
     
-    ref_hyd_chart1.set_chartarea({
-        'border': {'none': True}
-    })
+    # ref_hyd_chart1.set_chartarea({
+    #     'border': {'none': True}
+    # })
     
-    ref_hyd_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    # ref_hyd_chart1.set_x_axis({
+    #     'name': 'Year',
+    #     'label_position': 'low',
+    #     'major_tick_mark': 'none',
+    #     'minor_tick_mark': 'none',
+    #     'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+    #     'position_axis': 'on_tick',
+    #     'interval_unit': 4,
+    #     'line': {'color': '#bebebe'}
+    # })
         
-    ref_hyd_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+    # ref_hyd_chart1.set_y_axis({
+    #     'major_tick_mark': 'none', 
+    #     'minor_tick_mark': 'none',
+    #     'name': 'PJ',
+    #     'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+    #     'num_format': '# ### ### ##0',
+    #     'major_gridlines': {
+    #         'visible': True,
+    #         'line': {'color': '#bebebe'}
+    #     },
+    #     'line': {'color': '#bebebe'}
+    # })
         
-    ref_hyd_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
+    # ref_hyd_chart1.set_legend({
+    #     'font': {'font': 'Segoe UI', 'size': 10}
+    #     #'none': True
+    # })
         
-    ref_hyd_chart1.set_title({
-        'none': True
-    })
+    # ref_hyd_chart1.set_title({
+    #     'none': True
+    # })
     
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ref_hyd_1_rows):
-        ref_hyd_chart1.add_series({
-            'name':       [economy + '_FED_hyd', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_hyd', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
-            'values':     [economy + '_FED_hyd', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
-            'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+    # # Configure the series of the chart from the dataframe data.
+    # for i in range(ref_hyd_1_rows):
+    #     ref_hyd_chart1.add_series({
+    #         'name':       [economy + '_FED_hyd', chart_height + i + 1, 1],
+    #         'categories': [economy + '_FED_hyd', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
+    #         'values':     [economy + '_FED_hyd', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
+    #         'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+    #         'border':     {'none': True}
+    #     })    
         
-    hyd_worksheet1.insert_chart('B3', ref_hyd_chart1)
+    # hyd_worksheet1.insert_chart('B3', ref_hyd_chart1)
 
-    # Create a HYDROGEN area chart
-    netz_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    netz_hyd_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
+    # # Create a HYDROGEN area chart
+    # netz_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    # netz_hyd_chart1.set_size({
+    #     'width': 500,
+    #     'height': 300
+    # })
     
-    netz_hyd_chart1.set_chartarea({
-        'border': {'none': True}
-    })
+    # netz_hyd_chart1.set_chartarea({
+    #     'border': {'none': True}
+    # })
     
-    netz_hyd_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    # netz_hyd_chart1.set_x_axis({
+    #     'name': 'Year',
+    #     'label_position': 'low',
+    #     'major_tick_mark': 'none',
+    #     'minor_tick_mark': 'none',
+    #     'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+    #     'position_axis': 'on_tick',
+    #     'interval_unit': 4,
+    #     'line': {'color': '#bebebe'}
+    # })
         
-    netz_hyd_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+    # netz_hyd_chart1.set_y_axis({
+    #     'major_tick_mark': 'none', 
+    #     'minor_tick_mark': 'none',
+    #     'name': 'PJ',
+    #     'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+    #     'num_format': '# ### ### ##0',
+    #     'major_gridlines': {
+    #         'visible': True,
+    #         'line': {'color': '#bebebe'}
+    #     },
+    #     'line': {'color': '#bebebe'}
+    # })
         
-    netz_hyd_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
+    # netz_hyd_chart1.set_legend({
+    #     'font': {'font': 'Segoe UI', 'size': 10}
+    #     #'none': True
+    # })
         
-    netz_hyd_chart1.set_title({
-        'none': True
-    })
+    # netz_hyd_chart1.set_title({
+    #     'none': True
+    # })
     
-    # Configure the series of the chart from the dataframe data.
-    for i in range(netz_hyd_1_rows):
-        netz_hyd_chart1.add_series({
-            'name':       [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + i + 4, 1],
-            'categories': [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + 3, 2, chart_height + ref_hyd_1_rows + 3, netz_hyd_1_cols - 1],
-            'values':     [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + i + 4, 2, chart_height + ref_hyd_1_rows + i + 4, netz_hyd_1_cols - 1],
-            'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+    # # Configure the series of the chart from the dataframe data.
+    # for i in range(netz_hyd_1_rows):
+    #     netz_hyd_chart1.add_series({
+    #         'name':       [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + i + 4, 1],
+    #         'categories': [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + 3, 2, chart_height + ref_hyd_1_rows + 3, netz_hyd_1_cols - 1],
+    #         'values':     [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + i + 4, 2, chart_height + ref_hyd_1_rows + i + 4, netz_hyd_1_cols - 1],
+    #         'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+    #         'border':     {'none': True}
+    #     })    
         
-    hyd_worksheet1.insert_chart('J3', netz_hyd_chart1)
+    # hyd_worksheet1.insert_chart('J3', netz_hyd_chart1)
 
     ##############################################################################################################################
 
@@ -10379,7 +10802,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet27.insert_chart('B43', heatgen_bytech_chart1)
+        ref_worksheet27.insert_chart('B45', heatgen_bytech_chart1)
 
     else: 
         pass
@@ -10439,7 +10862,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet27.insert_chart('J43', heatgen_bytech_chart2)
+        ref_worksheet27.insert_chart('J45', heatgen_bytech_chart2)
     
     else:
         pass
@@ -10503,7 +10926,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet28.insert_chart('B35', netz_heatuse_chart1)
+        ref_worksheet28.insert_chart('B39', netz_heatuse_chart1)
 
     else:
         pass
@@ -10563,7 +10986,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })
 
-        ref_worksheet28.insert_chart('J35', netz_heatuse_chart2)
+        ref_worksheet28.insert_chart('J39', netz_heatuse_chart2)
 
     else:
         pass
@@ -13562,6 +13985,500 @@ for economy in Economy_codes:
         })
     
     ref_worksheet44.insert_chart('J41', netz_tpes_petprod_chart1)
+
+    ##############
+    # Hydrogen
+    
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet45 = writer.sheets[economy + '_hydrogen']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet45.set_column(1, ref_hyd_1_cols + 1, None, space_format)
+    ref_worksheet45.set_row(chart_height, None, header_format)
+    ref_worksheet45.set_row(chart_height + ref_hyd_1_rows + 3, None, header_format)
+    ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, None, header_format)
+    ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, None, header_format)
+    ref_worksheet45.write(0, 0, economy + ' hydrogen reference', cell_format1)
+    ref_worksheet45.write(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 0, economy + ' hydrogen net-zero', cell_format1)
+
+    # Create a FED sector area chart
+
+    ref_hydrogen_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_hydrogen_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_hydrogen_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_hydrogen_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_hydrogen_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_hydrogen_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_hydrogen_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_hyd_1_rows):
+        ref_hydrogen_chart1.add_series({
+            'name':       [economy + '_hydrogen', chart_height + i + 1, 1],
+            'categories': [economy + '_hydrogen', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
+            'values':     [economy + '_hydrogen', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
+            'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet45.insert_chart('B3', ref_hydrogen_chart1)
+
+    # Create a TPES hydrogen chart
+    ref_tpes_hydrogen_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_tpes_hydrogen_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_tpes_hydrogen_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_tpes_hydrogen_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_hydrogen_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Hydrogen (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_hydrogen_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_tpes_hydrogen_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Steam methane reforming', 'Steam methane reforming CCS', 'Electrolysis', 'Imports', 'Exports']:
+        i = ref_hydrogen_3[ref_hydrogen_3['Technology'] == component].index[0]
+        ref_tpes_hydrogen_chart1.add_series({
+            'name':       [economy + '_hydrogen', chart_height + ref_hyd_1_rows + i + 4, 1],
+            'categories': [economy + '_hydrogen', chart_height + ref_hyd_1_rows + 3, 2,\
+                chart_height + ref_hyd_1_rows + 3, ref_hydrogen_3_cols - 1],
+            'values':     [economy + '_hydrogen', chart_height + ref_hyd_1_rows + i + 4, 2,\
+                chart_height + ref_hyd_1_rows + i + 4, ref_hydrogen_3_cols - 1],
+            'fill':       {'color': ref_hydrogen_3['Technology'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet45.insert_chart('J3', ref_tpes_hydrogen_chart1)
+
+    # Net-zero
+    
+    # Create a FED sector area chart
+
+    netz_hydrogen_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_hydrogen_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_hydrogen_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_hydrogen_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_hydrogen_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_hydrogen_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_hydrogen_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_hyd_1_rows):
+        netz_hydrogen_chart1.add_series({
+            'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 1],
+            'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 2,\
+                (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, netz_hyd_1_cols - 1],
+            'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 2,\
+                (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, netz_hyd_1_cols - 1],
+            'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet45.insert_chart('B36', netz_hydrogen_chart1)
+
+    # Create a TPES hydrogen chart
+    netz_tpes_hydrogen_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_tpes_hydrogen_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_hydrogen_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_hydrogen_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_hydrogen_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Hydrogen (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_hydrogen_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_hydrogen_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Steam methane reforming', 'Steam methane reforming CCS', 'Electrolysis', 'Imports', 'Exports']:
+        i = netz_hydrogen_3[netz_hydrogen_3['Technology'] == component].index[0]
+        netz_tpes_hydrogen_chart1.add_series({
+            'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 1],
+            'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, 2,\
+                (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, netz_hydrogen_3_cols - 1],
+            'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, netz_hydrogen_3_cols - 1],
+            'fill':       {'color': netz_hydrogen_3['Technology'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet45.insert_chart('J36', netz_tpes_hydrogen_chart1)
+
+    ##############
+    # Liquid and solid renewabless
+    
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet46 = writer.sheets[economy + '_renew']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet46.set_column(1, ref_renewcons_1_cols + 1, None, space_format)
+    ref_worksheet46.set_row(chart_height, None, header_format)
+    ref_worksheet46.set_row(chart_height + ref_renewcons_1_rows + 3, None, header_format)
+    ref_worksheet46.set_row((2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, None, header_format)
+    ref_worksheet46.set_row((2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9, None, header_format)
+    ref_worksheet46.write(0, 0, economy + ' liquid and solid renewables reference', cell_format1)
+    ref_worksheet46.write(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 6, 0, economy + ' liquid and solid renewables net-zero', cell_format1)
+
+    # Create a FED sector area chart
+
+    ref_renewcons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    ref_renewcons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_renewcons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_renewcons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_renewcons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_renewcons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_renewcons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(ref_renewcons_1_rows):
+        ref_renewcons_chart1.add_series({
+            'name':       [economy + '_renew', chart_height + i + 1, 1],
+            'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
+            'values':     [economy + '_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_renewcons_1_cols - 1],
+            'fill':       {'color': ref_renewcons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet46.insert_chart('B3', ref_renewcons_chart1)
+
+    # Create a TPES petroleum products chart
+    ref_tpes_renew_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_tpes_renew_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_tpes_renew_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_tpes_renew_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_renew_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Petroleum products (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_tpes_renew_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    ref_tpes_renew_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+        i = ref_renew_2[ref_renew_2['item_code_new'] == component].index[0]
+        ref_tpes_renew_chart1.add_series({
+            'name':       [economy + '_renew', chart_height + ref_renewcons_1_rows + i + 4, 1],
+            'categories': [economy + '_renew', chart_height + ref_renewcons_1_rows + 3, 2,\
+                chart_height + ref_renewcons_1_rows + 3, ref_renew_2_cols - 1],
+            'values':     [economy + '_renew', chart_height + ref_renewcons_1_rows + i + 4, 2,\
+                chart_height + ref_renewcons_1_rows + i + 4, ref_renew_2_cols - 1],
+            'fill':       {'color': ref_renew_2['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet46.insert_chart('J3', ref_tpes_renew_chart1)
+
+    # Net-zero
+    
+    # Create a FED sector area chart
+
+    netz_renewcons_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    netz_renewcons_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_renewcons_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_renewcons_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'position_axis': 'on_tick',
+        'interval_unit': 4,
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_renewcons_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_renewcons_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_renewcons_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in range(netz_renewcons_1_rows):
+        netz_renewcons_chart1.add_series({
+            'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 1],
+            'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, 2,\
+                (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, netz_renewcons_1_cols - 1],
+            'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 2,\
+                (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, netz_renewcons_1_cols - 1],
+            'fill':       {'color': netz_renewcons_1['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })    
+        
+    ref_worksheet46.insert_chart('B41', netz_renewcons_chart1)
+
+    # Create a TPES petroleum products chart
+    netz_tpes_renew_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    netz_tpes_renew_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    netz_tpes_renew_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    netz_tpes_renew_chart1.set_x_axis({
+        'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_renew_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'name': 'Petroleum products (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    netz_tpes_renew_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    netz_tpes_renew_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+        i = netz_renew_2[netz_renew_2['item_code_new'] == component].index[0]
+        netz_tpes_renew_chart1.add_series({
+            'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + i + 10, 1],
+            'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9, 2,\
+                (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9, netz_renew_2_cols - 1],
+            'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + i + 10, 2,\
+                (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + i + 10, netz_renew_2_cols - 1],
+            'fill':       {'color': netz_renew_2['item_code_new'].map(colours_dict).loc[i]},
+            'border':     {'none': True}
+        })
+    
+    ref_worksheet46.insert_chart('J41', netz_tpes_renew_chart1)
 
     writer.save()
 

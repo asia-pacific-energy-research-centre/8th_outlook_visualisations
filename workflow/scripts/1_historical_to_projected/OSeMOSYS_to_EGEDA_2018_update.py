@@ -49,7 +49,7 @@ Map_trans = Mapping_file[Mapping_file['Balance'] == 'TRANS'].reset_index(drop = 
 # A mapping just for i) power, ii) ref, own, sup and iii) hydrogen
 
 Map_power = Map_trans[Map_trans['Sector'] == 'POW'].reset_index(drop = True)
-Map_refownsup = Map_trans[Map_trans['Sector'].isin(['REF', 'SUP', 'OWN'])].reset_index(drop = True)
+Map_refownsup = Map_trans[Map_trans['Sector'].isin(['REF', 'SUP', 'OWN', 'HYD'])].reset_index(drop = True)
 Map_hydrogen = Map_trans[Map_trans['Sector'] == 'HYD'].reset_index(drop = True)
 
 # Define unique workbook and sheet combinations for TFC and TPES
@@ -1248,6 +1248,5 @@ else:
     Joined_emissdf_netz = EGEDA_emissions.iloc[:, :-2].merge(netz_aggemiss_df2, on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_emissdf_netz.to_csv(path_final + '/OSeMOSYS_to_EGEDA_emissions_2018_netzero.csv', index = False)
-
 
 print('Requisite dataframes created and saved ready for Bossanova script')
