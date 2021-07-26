@@ -3661,7 +3661,7 @@ for economy in Economy_codes:
                                                                              .groupby(['fuel_code']).sum().assign(fuel_code = 'Liquid and solid renewables',
                                                                                                                   item_code_new = 'Bunkers')
 
-    ref_renew_2 = netz_renew_1.append([renew_bunkers]).reset_index(drop = True)
+    ref_renew_2 = ref_renew_1.append([renew_bunkers]).reset_index(drop = True)
 
     ref_renew_2.loc[ref_renew_2['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
     ref_renew_2.loc[ref_renew_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
