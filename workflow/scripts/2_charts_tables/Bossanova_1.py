@@ -1,4 +1,4 @@
-# An attempt to move all portion of FED, Supply and Transformation into one script
+# All portions of FED, Supply and Transformation charts in one script
 
 # import dependencies
 
@@ -836,7 +836,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA']
+# Economy_codes = ['03_CDA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -14002,236 +14002,250 @@ for economy in Economy_codes:
     ref_worksheet45.write(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 0, economy + ' hydrogen net-zero', cell_format1)
 
     # Create a FED sector area chart
-
-    ref_hydrogen_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    ref_hydrogen_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_hydrogen_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_hydrogen_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if ref_hyd_1_rows > 0:
+        ref_hydrogen_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        ref_hydrogen_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    ref_hydrogen_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
+        ref_hydrogen_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_hydrogen_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        ref_hydrogen_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_hydrogen_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_hydrogen_chart1.set_title({
+            'none': True
+        })
         
-    ref_hydrogen_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_hydrogen_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ref_hyd_1_rows):
-        ref_hydrogen_chart1.add_series({
-            'name':       [economy + '_hydrogen', chart_height + i + 1, 1],
-            'categories': [economy + '_hydrogen', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
-            'values':     [economy + '_hydrogen', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
-            'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
-        
-    ref_worksheet45.insert_chart('B3', ref_hydrogen_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_hyd_1_rows):
+            ref_hydrogen_chart1.add_series({
+                'name':       [economy + '_hydrogen', chart_height + i + 1, 1],
+                'categories': [economy + '_hydrogen', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
+                'values':     [economy + '_hydrogen', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
+                'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        ref_worksheet45.insert_chart('B3', ref_hydrogen_chart1)
+
+    else:
+        pass
 
     # Create a TPES hydrogen chart
-    ref_tpes_hydrogen_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    ref_tpes_hydrogen_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_tpes_hydrogen_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_tpes_hydrogen_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_hydrogen_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Hydrogen (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_tpes_hydrogen_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_tpes_hydrogen_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Steam methane reforming', 'Steam methane reforming CCS', 'Electrolysis', 'Imports', 'Exports']:
-        i = ref_hydrogen_3[ref_hydrogen_3['Technology'] == component].index[0]
-        ref_tpes_hydrogen_chart1.add_series({
-            'name':       [economy + '_hydrogen', chart_height + ref_hyd_1_rows + i + 4, 1],
-            'categories': [economy + '_hydrogen', chart_height + ref_hyd_1_rows + 3, 2,\
-                chart_height + ref_hyd_1_rows + 3, ref_hydrogen_3_cols - 1],
-            'values':     [economy + '_hydrogen', chart_height + ref_hyd_1_rows + i + 4, 2,\
-                chart_height + ref_hyd_1_rows + i + 4, ref_hydrogen_3_cols - 1],
-            'fill':       {'color': ref_hydrogen_3['Technology'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+    if ref_hydrogen_3_rows > 0:
+        ref_tpes_hydrogen_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        ref_tpes_hydrogen_chart1.set_size({
+            'width': 500,
+            'height': 300
         })
-    
-    ref_worksheet45.insert_chart('J3', ref_tpes_hydrogen_chart1)
+        
+        ref_tpes_hydrogen_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_tpes_hydrogen_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_tpes_hydrogen_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Hydrogen (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_tpes_hydrogen_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_tpes_hydrogen_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for component in ref_hydrogen_3['Technology'].unique():
+            i = ref_hydrogen_3[ref_hydrogen_3['Technology'] == component].index[0]
+            ref_tpes_hydrogen_chart1.add_series({
+                'name':       [economy + '_hydrogen', chart_height + ref_hyd_1_rows + i + 4, 1],
+                'categories': [economy + '_hydrogen', chart_height + ref_hyd_1_rows + 3, 2,\
+                    chart_height + ref_hyd_1_rows + 3, ref_hydrogen_3_cols - 1],
+                'values':     [economy + '_hydrogen', chart_height + ref_hyd_1_rows + i + 4, 2,\
+                    chart_height + ref_hyd_1_rows + i + 4, ref_hydrogen_3_cols - 1],
+                'fill':       {'color': ref_hydrogen_3['Technology'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+        
+        ref_worksheet45.insert_chart('J3', ref_tpes_hydrogen_chart1)
+
+    else:
+        pass
 
     # Net-zero
     
     # Create a FED sector area chart
-
-    netz_hydrogen_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    netz_hydrogen_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_hydrogen_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_hydrogen_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'position_axis': 'on_tick',
-        'interval_unit': 4,
-        'line': {'color': '#bebebe'}
-    })
+    if netz_hyd_1_rows > 0:
+        netz_hydrogen_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_hydrogen_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    netz_hydrogen_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
+        netz_hydrogen_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_hydrogen_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'position_axis': 'on_tick',
+            'interval_unit': 4,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        netz_hydrogen_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_hydrogen_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_hydrogen_chart1.set_title({
+            'none': True
+        })
         
-    netz_hydrogen_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_hydrogen_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(netz_hyd_1_rows):
-        netz_hydrogen_chart1.add_series({
-            'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 1],
-            'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 2,\
-                (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, netz_hyd_1_cols - 1],
-            'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 2,\
-                (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, netz_hyd_1_cols - 1],
-            'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
-        
-    ref_worksheet45.insert_chart('B36', netz_hydrogen_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_hyd_1_rows):
+            netz_hydrogen_chart1.add_series({
+                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 1],
+                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, netz_hyd_1_cols - 1],
+                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, netz_hyd_1_cols - 1],
+                'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        ref_worksheet45.insert_chart('B36', netz_hydrogen_chart1)
+
+    else:
+        pass
 
     # Create a TPES hydrogen chart
-    netz_tpes_hydrogen_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    netz_tpes_hydrogen_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_tpes_hydrogen_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_tpes_hydrogen_chart1.set_x_axis({
-        'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_hydrogen_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        'name': 'Hydrogen (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_tpes_hydrogen_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_tpes_hydrogen_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for component in ['Steam methane reforming', 'Steam methane reforming CCS', 'Electrolysis', 'Imports', 'Exports']:
-        i = netz_hydrogen_3[netz_hydrogen_3['Technology'] == component].index[0]
-        netz_tpes_hydrogen_chart1.add_series({
-            'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 1],
-            'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, 2,\
-                (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, netz_hydrogen_3_cols - 1],
-            'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 2,\
-                (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, netz_hydrogen_3_cols - 1],
-            'fill':       {'color': netz_hydrogen_3['Technology'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+    if  netz_hydrogen_3_rows > 0:
+        netz_tpes_hydrogen_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        netz_tpes_hydrogen_chart1.set_size({
+            'width': 500,
+            'height': 300
         })
-    
-    ref_worksheet45.insert_chart('J36', netz_tpes_hydrogen_chart1)
+        
+        netz_tpes_hydrogen_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_tpes_hydrogen_chart1.set_x_axis({
+            'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232', 'rotation': -45},
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_tpes_hydrogen_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Hydrogen (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_tpes_hydrogen_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_tpes_hydrogen_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for component in netz_hydrogen_3['Technology'].unique():
+            i = netz_hydrogen_3[netz_hydrogen_3['Technology'] == component].index[0]
+            netz_tpes_hydrogen_chart1.add_series({
+                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 1],
+                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, netz_hydrogen_3_cols - 1],
+                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, netz_hydrogen_3_cols - 1],
+                'fill':       {'color': netz_hydrogen_3['Technology'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+        
+        ref_worksheet45.insert_chart('J36', netz_tpes_hydrogen_chart1)
+
+    else:
+        pass    
 
     ##############
     # Liquid and solid renewabless
