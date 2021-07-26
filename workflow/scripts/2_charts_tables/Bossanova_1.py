@@ -358,8 +358,8 @@ lignite_cap = ['POW_Sub_Brown_PP']
 thermal_coal_cap = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
 
 
-pow_capacity_agg = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
-pow_capacity_agg2 = ['Coal', 'Coal CCS', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Biomass', 'Wind', 
+pow_capacity_agg = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
+pow_capacity_agg2 = ['Coal', 'Coal CCS', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 
                      'Solar', 'Geothermal', 'Storage', 'Other']
 
 # Heat power plants
@@ -836,7 +836,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['06_HKC']
+# Economy_codes = ['03_CDA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -4881,6 +4881,7 @@ for economy in Economy_codes:
     percentage_format = workbook.add_format({'num_format': '0.0%'})
     header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
     cell_format1 = workbook.add_format({'bold': True})
+    cell_format2 = workbook.add_format({'font_size': 9})
 
         
     # Apply comma format and header format to relevant data rows
@@ -4891,6 +4892,7 @@ for economy in Economy_codes:
     ref_worksheet1.set_row((2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9, None, header_format)
     ref_worksheet1.write(0, 0, economy + ' FED fuel reference', cell_format1)
     ref_worksheet1.write(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 0, economy + ' FED fuel net-zero', cell_format1)
+    ref_worksheet1.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # FED Fuel REFERENCE charts
 
@@ -5077,6 +5079,7 @@ for economy in Economy_codes:
     ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + netz_fedsector_3_rows + 15, None, header_format)
     ref_worksheet2.write(0, 0, economy + ' FED sector reference', cell_format1)
     ref_worksheet2.write(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 0, economy + ' FED sector net-zero', cell_format1)
+    ref_worksheet2.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
 
@@ -5261,7 +5264,8 @@ for economy in Economy_codes:
     ref_worksheet3.set_row((2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 9, None, header_format)
     ref_worksheet3.write(0, 0, economy + ' buildings reference', cell_format1)
     ref_worksheet3.write(chart_height + ref_bld_2_rows + ref_bld_3_rows + 6, 0, economy + ' buildings net-zero', cell_format1)
-    
+    ref_worksheet3.write(1, 0, 'Units: Petajoules', cell_format2)
+
     # Create a FED chart
     ref_fed_bld_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     ref_fed_bld_chart1.set_size({
@@ -5391,7 +5395,8 @@ for economy in Economy_codes:
     ref_worksheet4.set_row((2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, None, header_format)
     ref_worksheet4.write(0, 0, economy + ' industry reference', cell_format1)
     ref_worksheet4.write(chart_height + ref_ind_1_rows + ref_ind_2_rows + 6, 0, economy + ' industry net-zero', cell_format1)
-    
+    ref_worksheet4.write(1, 0, 'Units: Petajoules', cell_format2)
+
     # Create a industry subsector FED chart
     ref_fed_ind_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
     ref_fed_ind_chart1.set_size({
@@ -5520,7 +5525,8 @@ for economy in Economy_codes:
     ref_worksheet5.set_row((2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, None, header_format)
     ref_worksheet5.write(0, 0, economy + ' FED transport reference', cell_format1)
     ref_worksheet5.write(chart_height + ref_trn_1_rows + ref_trn_2_rows + 6, 0, economy + ' FED transport net-zero', cell_format1)
-    
+    ref_worksheet5.write(1, 0, 'Units: Petajoules', cell_format2)
+
     # Create a transport FED area chart
     ref_transport_chart1 = workbook.add_chart({'type': 'area', 
                                            'subtype': 'stacked'})
@@ -5649,6 +5655,7 @@ for economy in Economy_codes:
     ref_worksheet6.set_row((2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, None, header_format)
     ref_worksheet6.write(0, 0, economy + ' FED agriculture reference', cell_format1)
     ref_worksheet6.write(chart_height + ref_ag_1_rows + ref_ag_2_rows + 6, 0, economy + ' FED agriculture net-zero', cell_format1)
+    ref_worksheet6.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a Agriculture line chart 
     ref_ag_chart1 = workbook.add_chart({'type': 'line'})
@@ -6920,6 +6927,7 @@ for economy in Economy_codes:
     ref_worksheet11.set_row((2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + ref_tpes_1_rows + 9, None, header_format)
     ref_worksheet11.write(0, 0, economy + ' TPES fuel reference', cell_format1)
     ref_worksheet11.write(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 6, 0, economy + ' TPES fuel net-zero', cell_format1)
+    ref_worksheet11.write(1, 0, 'Units: Petajoules', cell_format2)
 
     ######################################################
     # Create a TPES chart
@@ -7106,8 +7114,7 @@ for economy in Economy_codes:
     ref_worksheet12.set_row((2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, None, header_format)
     ref_worksheet12.write(0, 0, economy + ' prod fuel reference', cell_format1)
     ref_worksheet12.write(chart_height + ref_prod_1_rows + ref_prod_2_rows + 6, 0, economy + ' prod fuel net-zero', cell_format1)
-
-    (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows
+    ref_worksheet12.write(1, 0, 'Units: Petajoules', cell_format2)    
 
     ###################### Create another PRODUCTION chart with only 6 categories #################################
 
@@ -7296,7 +7303,8 @@ for economy in Economy_codes:
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, None, header_format)
     ref_worksheet13.write(0, 0, economy + ' TPES components reference', cell_format1)
-    
+    ref_worksheet13.write(1, 0, 'Units: Petajoules', cell_format2)
+
     # Create a TPES components chart
     ref_tpes_comp_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
     ref_tpes_comp_chart1.set_size({
@@ -7589,7 +7597,8 @@ for economy in Economy_codes:
     ref_worksheet14.set_row((2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9, None, header_format)
     ref_worksheet14.write(0, 0, economy + ' TPES bunkers reference', cell_format1)
     ref_worksheet14.write(chart_height + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, 0, economy + ' TPES bunkers net-zero', cell_format1)
-    
+    ref_worksheet14.write(1, 0, 'Units: Petajoules', cell_format2)
+
     # MARINE BUNKER: Create a line chart subset by fuel
     
     ref_marine_line = workbook.add_chart({'type': 'line'})
@@ -8097,7 +8106,8 @@ for economy in Economy_codes:
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, None, header_format)
     netz_worksheet13.write(0, 0, economy + ' TPES components net-zero', cell_format1)
-    
+    netz_worksheet13.write(1, 0, 'Units: Petajoules', cell_format2)
+
     # Create a TPES components chart
     netz_tpes_comp_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
     netz_tpes_comp_chart1.set_size({
@@ -8527,6 +8537,7 @@ for economy in Economy_codes:
     ref_worksheet21.write(0, 0, economy + ' power input fuel reference (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
     ref_worksheet21.write(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 0,\
         economy + ' power input fuel net-zero (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
+    ref_worksheet21.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a use by fuel area chart
     if ref_pow_use_2_rows > 0:
@@ -8659,7 +8670,8 @@ for economy in Economy_codes:
     ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, None, header_format)
     ref_worksheet22.write(0, 0, economy + ' electricity generation reference (TERAWATT HOURS)', cell_format1)
     ref_worksheet22.write(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 0, economy + ' electricity generation net-zero (TERAWATT HOURS)', cell_format1)
-    
+    ref_worksheet22.write(1, 0, 'Units: Terrawatt hours', cell_format2)
+
     # Create a electricity production area chart
     if ref_elecgen_2_rows > 0:
         prodelec_bytech_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -8795,6 +8807,7 @@ for economy in Economy_codes:
     ref_worksheet23.set_row((2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, None, header_format)
     ref_worksheet23.write(0, 0, economy + ' refining reference', cell_format1)
     ref_worksheet23.write(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, 0, economy + ' refining net-zero', cell_format1)
+    ref_worksheet23.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create ainput refining line chart
     if ref_refinery_1_rows > 0:
@@ -8987,7 +9000,8 @@ for economy in Economy_codes:
     ref_worksheet24.set_row((2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, None, header_format)
     ref_worksheet24.write(0, 0, economy + ' power capacity reference', cell_format1)
     ref_worksheet24.write(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 6, 0, economy + ' power capacity net-zero', cell_format1)
-    
+    ref_worksheet24.write(1, 0, 'Units: Gigawatts', cell_format2)
+
     # Create a electricity production area chart
     if ref_powcap_1_rows > 0:
         pow_cap_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -9014,7 +9028,7 @@ for economy in Economy_codes:
         pow_cap_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            'name': 'GW',
+            # 'name': 'GW',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -9072,7 +9086,7 @@ for economy in Economy_codes:
         pow_cap_chart2.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            'name': 'GW',
+            # 'name': 'GW',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -9119,6 +9133,7 @@ for economy in Economy_codes:
     ref_worksheet25.set_row((2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + ref_trans_3_rows + 9, None, header_format)
     ref_worksheet25.write(0, 0, economy + ' transformation reference', cell_format1)
     ref_worksheet25.write(chart_height + ref_trans_3_rows + ref_trans_4_rows + 6, 0, economy + ' transformation net-zero', cell_format1)
+    ref_worksheet26.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a transformation area chart
     if ref_trans_3_rows > 0:
@@ -9313,6 +9328,7 @@ for economy in Economy_codes:
     ref_worksheet26.set_row((2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, None, header_format)
     ref_worksheet26.write(0, 0, economy + ' own use and losses reference', cell_format1)
     ref_worksheet26.write(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, 0, economy + ' own use and losses net-zero', cell_format1)
+    ref_worksheet26.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Createn own-use transformation area chart by fuel
     if ref_ownuse_1_rows > 0:
@@ -9506,7 +9522,8 @@ for economy in Economy_codes:
     ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, None, header_format)
     ref_worksheet27.write(0, 0, economy + ' heat generation reference', cell_format1)
     ref_worksheet27.write(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 0, economy + ' heat generation net-zero', cell_format1)
-    
+    ref_worksheet27.write(1, 0, 'Units: Petajoules', cell_format2)
+
     # Create a electricity production area chart
     if ref_heatgen_2_rows > 0:
         heatgen_bytech_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -9644,6 +9661,7 @@ for economy in Economy_codes:
     ref_worksheet28.write(0, 0, economy + ' heat input fuel reference', cell_format1)
     ref_worksheet28.write(chart_height + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, 0,\
         economy + ' heat input fuel net-zero', cell_format1)
+    ref_worksheet28.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a use by fuel area chart
     if ref_heat_use_2_rows > 0:
@@ -10271,7 +10289,7 @@ for economy in Economy_codes:
         netz_pow_cap_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            'name': 'GW',
+            # 'name': 'GW',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -10331,7 +10349,7 @@ for economy in Economy_codes:
         netz_pow_cap_chart2.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            'name': 'GW',
+            # 'name': 'GW',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -11545,7 +11563,7 @@ for economy in Economy_codes:
         pass
 
     ################################################
-    # Macro charts
+    # Heavy industry
 
     # Access the workbook and second sheet
     both_worksheet33 = writer.sheets[economy + '_heavyind']
@@ -11561,6 +11579,7 @@ for economy in Economy_codes:
     both_worksheet33.write(0, 0, economy + ' heavy industry fuel use reference', cell_format1)
     both_worksheet33.write(chart_height + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 9, 0,\
         economy + ' heavy industry fuel use net-zero', cell_format1)
+    both_worksheet33.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Steel stacked chart
     if ref_steel_3_rows > 0:
@@ -11936,7 +11955,6 @@ for economy in Economy_codes:
 
     # Access the workbook and first sheet with data from df1
     both_worksheet34 = writer.sheets[economy + '_Emiss_fuel']
-    
         
     # Apply comma format and header format to relevant data rows
     both_worksheet34.set_column(1, ref_emiss_fuel_1_cols + 1, None, space_format)
@@ -11946,6 +11964,7 @@ for economy in Economy_codes:
     both_worksheet34.set_row((2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + 9, None, header_format)
     both_worksheet34.write(0, 0, economy + ' emissions by fuel reference scenario', cell_format1)
     both_worksheet34.write(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 6, 0, economy + ' emissions by fuel net-zero scenario', cell_format1)
+    both_worksheet34.write(1, 0, 'Units: Million tonnes of CO2', cell_format2)
 
     ################################################################### CHARTS ###################################################################
 
@@ -12130,6 +12149,7 @@ for economy in Economy_codes:
     both_worksheet35.set_row((2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9, None, header_format)
     both_worksheet35.write(0, 0, economy + ' emissions by demand sector reference scenario', cell_format1)
     both_worksheet35.write(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, 0, economy + ' emissions by demand sector net-zero scenario', cell_format1)
+    both_worksheet35.write(1, 0, 'Units: Million tonnes of CO2', cell_format2)
     
     # Create an EMISSIONS sector line chart
 
@@ -12668,6 +12688,7 @@ for economy in Economy_codes:
     ref_worksheet15.set_row(chart_height + ref_nuke_1_rows + 3, None, header_format)
     ref_worksheet15.set_row(chart_height + ref_nuke_1_rows + ref_biomass_1_rows + 6, None, header_format)
     ref_worksheet15.write(0, 0, economy + ' TPES nuclear, biomass and biofuels reference', cell_format1)
+    ref_worksheet15.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a TPES nuclear  chart
     ref_tpes_nuke_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -12851,6 +12872,7 @@ for economy in Economy_codes:
     netz_worksheet16.set_row(chart_height + netz_nuke_1_rows + 3, None, header_format)
     netz_worksheet16.set_row(chart_height + netz_nuke_1_rows + netz_biomass_1_rows + 6, None, header_format)
     netz_worksheet16.write(0, 0, economy + ' TPES nuclear, biomass and biofuels net-zero', cell_format1)
+    netz_worksheet16.write(1, 0, 'Units: Petajoules', cell_format2)
     
     # Create a TPES nuclear  chart
     netz_tpes_nuke_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -13036,6 +13058,7 @@ for economy in Economy_codes:
     ref_worksheet41.set_row((2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + 9, None, header_format)
     ref_worksheet41.write(0, 0, economy + ' coal reference', cell_format1)
     ref_worksheet41.write(chart_height + ref_coalcons_1_rows + ref_coal_1_rows + 6, 0, economy + ' coal net-zero', cell_format1)
+    ref_worksheet41.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
 
@@ -13283,6 +13306,7 @@ for economy in Economy_codes:
     ref_worksheet42.set_row((2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9, None, header_format)
     ref_worksheet42.write(0, 0, economy + ' gas reference', cell_format1)
     ref_worksheet42.write(chart_height + ref_gascons_1_rows + ref_gas_1_rows + 6, 0, economy + ' gas net-zero', cell_format1)
+    ref_worksheet42.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
 
@@ -13530,6 +13554,7 @@ for economy in Economy_codes:
     ref_worksheet43.set_row((2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9, None, header_format)
     ref_worksheet43.write(0, 0, economy + ' crude & NGL reference', cell_format1)
     ref_worksheet43.write(chart_height + ref_crudecons_1_rows + ref_crude_1_rows + 6, 0, economy + ' crude & NGL net-zero', cell_format1)
+    ref_worksheet43.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
 
@@ -13777,6 +13802,7 @@ for economy in Economy_codes:
     ref_worksheet44.set_row((2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, None, header_format)
     ref_worksheet44.write(0, 0, economy + ' petroleum products reference', cell_format1)
     ref_worksheet44.write(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 0, economy + ' petroleum products net-zero', cell_format1)
+    ref_worksheet44.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
 
@@ -14024,6 +14050,7 @@ for economy in Economy_codes:
     ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, None, header_format)
     ref_worksheet45.write(0, 0, economy + ' hydrogen reference', cell_format1)
     ref_worksheet45.write(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 0, economy + ' hydrogen net-zero', cell_format1)
+    ref_worksheet45.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
     if ref_hyd_1_rows > 0:
@@ -14285,6 +14312,7 @@ for economy in Economy_codes:
     ref_worksheet46.set_row((2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9, None, header_format)
     ref_worksheet46.write(0, 0, economy + ' liquid and solid renewables reference', cell_format1)
     ref_worksheet46.write(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 6, 0, economy + ' liquid and solid renewables net-zero', cell_format1)
+    ref_worksheet46.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
 
