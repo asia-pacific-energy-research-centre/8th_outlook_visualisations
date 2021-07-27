@@ -836,7 +836,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['15_RP']
+# Economy_codes = ['03_CDA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2206,15 +2206,21 @@ for economy in Economy_codes:
 
     ref_hydrogen_1 = ref_refownsup_df1[(ref_refownsup_df1['economy'] == economy) &
                                          (ref_refownsup_df1['Sector'] == 'HYD') & 
-                                         (ref_refownsup_df1['FUEL'].isin(['16_x_hydrogen']))].copy()
+                                         (ref_refownsup_df1['FUEL'].isin(['16_x_hydrogen', '16_x_hydrogen_exports']))].copy()
 
     ref_hydrogen_1 = ref_hydrogen_1[['FUEL', 'TECHNOLOGY'] + list(ref_hydrogen_1.loc[:, '2017':'2050'])]\
         .rename(columns = {'FUEL': 'Fuel', 'TECHNOLOGY': 'Technology'}).reset_index(drop = True)
 
     ref_hydrogen_1.loc[ref_hydrogen_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
+    ref_hydrogen_1.loc[ref_hydrogen_1['Fuel'] == '16_x_hydrogen_exports', 'Fuel'] = 'Hydrogen'
     ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr', 'Technology'] = 'Steam methane reforming'
     ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs', 'Technology'] = 'Steam methane reforming CCS'
     ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_pem_elyzer', 'Technology'] = 'Electrolysis'
+    ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr_export', 'Technology'] = 'Steam methane reforming'
+    ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs_export', 'Technology'] = 'Steam methane reforming CCS'
+    ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_pem_elyzer_export', 'Technology'] = 'Electrolysis'
+
+    ref_hydrogen_1 = ref_hydrogen_1.groupby(['Fuel', 'Technology']).sum().reset_index()
 
     # Hydrogen trade
     ref_hydrogen_trade_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
@@ -2241,7 +2247,7 @@ for economy in Economy_codes:
     ref_hydrogen_2_rows = ref_hydrogen_2.shape[0]
     ref_hydrogen_2_cols = ref_hydrogen_2.shape[1]
 
-    ref_hydrogen_3 = ref_hydrogen_2[['Fuel', 'Technology'] + trans_col_chart]
+    ref_hydrogen_3 = ref_hydrogen_2[['Fuel', 'Technology'] + trans_col_chart].reset_index(drop = True)
 
     ref_hydrogen_3_rows = ref_hydrogen_3.shape[0]
     ref_hydrogen_3_cols = ref_hydrogen_3.shape[1]
@@ -2708,15 +2714,21 @@ for economy in Economy_codes:
 
     netz_hydrogen_1 = netz_refownsup_df1[(netz_refownsup_df1['economy'] == economy) &
                                          (netz_refownsup_df1['Sector'] == 'HYD') & 
-                                         (netz_refownsup_df1['FUEL'].isin(['16_x_hydrogen']))].copy()
+                                         (netz_refownsup_df1['FUEL'].isin(['16_x_hydrogen', '16_x_hydrogen_exports']))].copy()
 
     netz_hydrogen_1 = netz_hydrogen_1[['FUEL', 'TECHNOLOGY'] + list(netz_hydrogen_1.loc[:, '2017':'2050'])]\
         .rename(columns = {'FUEL': 'Fuel', 'TECHNOLOGY': 'Technology'}).reset_index(drop = True)
 
     netz_hydrogen_1.loc[netz_hydrogen_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
+    netz_hydrogen_1.loc[netz_hydrogen_1['Fuel'] == '16_x_hydrogen_exports', 'Fuel'] = 'Hydrogen'
     netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr', 'Technology'] = 'Steam methane reforming'
     netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs', 'Technology'] = 'Steam methane reforming CCS'
     netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_pem_elyzer', 'Technology'] = 'Electrolysis'
+    netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr_export', 'Technology'] = 'Steam methane reforming'
+    netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs_export', 'Technology'] = 'Steam methane reforming CCS'
+    netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_pem_elyzer_export', 'Technology'] = 'Electrolysis'
+
+    netz_hydrogen_1 = netz_hydrogen_1.groupby(['Fuel', 'Technology']).sum().reset_index()
 
     # Hydrogen trade
     netz_hydrogen_trade_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
@@ -2743,7 +2755,7 @@ for economy in Economy_codes:
     netz_hydrogen_2_rows = netz_hydrogen_2.shape[0]
     netz_hydrogen_2_cols = netz_hydrogen_2.shape[1]
 
-    netz_hydrogen_3 = netz_hydrogen_2[['Fuel', 'Technology'] + trans_col_chart]
+    netz_hydrogen_3 = netz_hydrogen_2[['Fuel', 'Technology'] + trans_col_chart].reset_index(drop = True)
 
     netz_hydrogen_3_rows = netz_hydrogen_3.shape[0]
     netz_hydrogen_3_cols = netz_hydrogen_3.shape[1]
@@ -8657,6 +8669,65 @@ for economy in Economy_codes:
     else:
         pass
 
+    # Create a use by fuel area chart
+    if ref_pow_use_2_rows > 0:
+        usefuel_chart3 = workbook.add_chart({'type': 'line'})
+        usefuel_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        usefuel_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        usefuel_chart3.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        usefuel_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        usefuel_chart3.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        usefuel_chart3.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_pow_use_2_rows):
+            usefuel_chart3.add_series({
+                'name':       [economy + '_pow_input', chart_height + i + 1, 0],
+                'categories': [economy + '_pow_input', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
+                'values':     [economy + '_pow_input', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
+                'line':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet21.insert_chart('R3', usefuel_chart3)
+
+    else:
+        pass
+
     ############################# Next sheet: Production of electricity by technology ##################################
     
     # Access the workbook and second sheet
@@ -8668,8 +8739,8 @@ for economy in Economy_codes:
     ref_worksheet22.set_row(chart_height + ref_elecgen_2_rows + 3, None, header_format)
     ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, None, header_format)
     ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, None, header_format)
-    ref_worksheet22.write(0, 0, economy + ' electricity generation reference (TERAWATT HOURS)', cell_format1)
-    ref_worksheet22.write(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 0, economy + ' electricity generation net-zero (TERAWATT HOURS)', cell_format1)
+    ref_worksheet22.write(0, 0, economy + ' electricity generation reference', cell_format1)
+    ref_worksheet22.write(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 0, economy + ' electricity generation net-zero', cell_format1)
     ref_worksheet22.write(1, 0, 'Units: Terrawatt hours', cell_format2)
 
     # Create a electricity production area chart
@@ -9917,6 +9988,67 @@ for economy in Economy_codes:
             })
 
         ref_worksheet21.insert_chart('J51', netz_usefuel_chart2)
+
+    else:
+        pass
+    
+    # Line chart
+    if netz_pow_use_2_rows > 0:
+        netz_usefuel_chart3 = workbook.add_chart({'type': 'line'})
+        netz_usefuel_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_usefuel_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_usefuel_chart3.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_usefuel_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_usefuel_chart3.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_usefuel_chart3.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_pow_use_2_rows):
+            netz_usefuel_chart3.add_series({
+                'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
+                'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
+                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
+                'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
+                'line':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet21.insert_chart('R51', netz_usefuel_chart3)
 
     else:
         pass
@@ -13140,7 +13272,7 @@ for economy in Economy_codes:
     ref_tpes_coal_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Coal (PJ)',
+        # 'name': 'Coal (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -13258,7 +13390,7 @@ for economy in Economy_codes:
     netz_tpes_coal_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Coal (PJ)',
+        # 'name': 'Coal (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -13388,7 +13520,7 @@ for economy in Economy_codes:
     ref_tpes_gas_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Gas (PJ)',
+        # 'name': 'Gas (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -13506,7 +13638,7 @@ for economy in Economy_codes:
     netz_tpes_gas_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Gas (PJ)',
+        # 'name': 'Gas (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -13636,7 +13768,7 @@ for economy in Economy_codes:
     ref_tpes_crude_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Crude oil & NGL (PJ)',
+        # 'name': 'Crude oil & NGL (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -13754,7 +13886,7 @@ for economy in Economy_codes:
     netz_tpes_crude_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Crude oil & NGL (PJ)',
+        #'name': 'Crude oil & NGL (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -13884,7 +14016,7 @@ for economy in Economy_codes:
     ref_tpes_petprod_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Petroleum products (PJ)',
+        # 'name': 'Petroleum products (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -14002,7 +14134,7 @@ for economy in Economy_codes:
     netz_tpes_petprod_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Petroleum products (PJ)',
+        # 'name': 'Petroleum products (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -14136,7 +14268,7 @@ for economy in Economy_codes:
         ref_tpes_hydrogen_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            'name': 'Hydrogen (PJ)',
+            # 'name': 'Hydrogen (PJ)',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -14261,7 +14393,7 @@ for economy in Economy_codes:
         netz_tpes_hydrogen_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            'name': 'Hydrogen (PJ)',
+            # 'name': 'Hydrogen (PJ)',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -14394,7 +14526,7 @@ for economy in Economy_codes:
     ref_tpes_renew_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Petroleum products (PJ)',
+        # 'name': 'Petroleum products (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -14512,7 +14644,7 @@ for economy in Economy_codes:
     netz_tpes_renew_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Petroleum products (PJ)',
+        # 'name': 'Petroleum products (PJ)',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
