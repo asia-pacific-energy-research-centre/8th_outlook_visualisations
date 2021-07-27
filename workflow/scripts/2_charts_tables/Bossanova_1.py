@@ -921,6 +921,10 @@ for economy in Economy_codes:
         .reset_index()[['fuel_code', 'item_code_new'] + list(ref_fedfuel_1.loc[:,'2000':'2050'])]\
             .set_index('fuel_code').loc[FED_agg_fuels].reset_index()
 
+    # Get rid of zero rows
+    non_zero = (ref_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_fedfuel_1 = ref_fedfuel_1.loc[non_zero].reset_index(drop = True)
+
     ref_fedfuel_1_rows = ref_fedfuel_1.shape[0]
     ref_fedfuel_1_cols = ref_fedfuel_1.shape[1]
 
@@ -958,6 +962,10 @@ for economy in Economy_codes:
 
     ref_fedsector_2 = ref_fedsector_2[ref_fedsector_2['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
     ref_fedsector_2 = ref_fedsector_2[['fuel_code', 'item_code_new'] + list(ref_fedsector_2.loc[:, '2000':])]
+
+    # Get rid of zero rows
+    non_zero = (ref_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
+    ref_fedsector_2 = ref_fedsector_2.loc[non_zero].reset_index(drop = True)
 
     ref_fedsector_2_rows = ref_fedsector_2.shape[0]
     ref_fedsector_2_cols = ref_fedsector_2.shape[1]
@@ -1019,6 +1027,10 @@ for economy in Economy_codes:
     ref_bld_2 = ref_bld_2[ref_bld_2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code')\
         .loc[FED_agg_fuels].reset_index()
 
+    # Get rid of zero rows
+    non_zero = (ref_bld_2.loc[:,'2000':] != 0).any(axis = 1)
+    ref_bld_2 = ref_bld_2.loc[non_zero].reset_index(drop = True)
+
     ref_bld_2_rows = ref_bld_2.shape[0]
     ref_bld_2_cols = ref_bld_2.shape[1]
 
@@ -1053,6 +1065,10 @@ for economy in Economy_codes:
 
     ref_ind_1 = ref_ind_1[['fuel_code', 'item_code_new'] + list(ref_ind_1.loc[:, '2000':])]
 
+    # Get rid of zero rows
+    non_zero = (ref_ind_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_ind_1 = ref_ind_1.loc[non_zero].reset_index(drop = True)
+
     ref_ind_1_rows = ref_ind_1.shape[0]
     ref_ind_1_cols = ref_ind_1.shape[1]
     
@@ -1082,6 +1098,10 @@ for economy in Economy_codes:
     ref_ind_2.loc[ref_ind_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     ref_ind_2 = ref_ind_2[ref_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index()
+
+    # Get rid of zero rows
+    non_zero = (ref_ind_2.loc[:,'2000':] != 0).any(axis = 1)
+    ref_ind_2 = ref_ind_2.loc[non_zero].reset_index(drop = True)
     
     ref_ind_2_rows = ref_ind_2.shape[0]
     ref_ind_2_cols = ref_ind_2.shape[1]
@@ -1117,6 +1137,10 @@ for economy in Economy_codes:
 
     ref_trn_1 = ref_trn_1[ref_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
 
+    # Get rid of zero rows
+    non_zero = (ref_trn_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_trn_1 = ref_trn_1.loc[non_zero].reset_index(drop = True)
+
     ref_trn_1_rows = ref_trn_1.shape[0]
     ref_trn_1_cols = ref_trn_1.shape[1]
     
@@ -1135,6 +1159,10 @@ for economy in Economy_codes:
     ref_trn_2 = ref_trn_2[ref_trn_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
     ref_trn_2 = ref_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (ref_trn_2.loc[:,'2018':] != 0).any(axis = 1)
+    ref_trn_2 = ref_trn_2.loc[non_zero].reset_index(drop = True)
 
     ref_trn_2_rows = ref_trn_2.shape[0]
     ref_trn_2_cols = ref_trn_2.shape[1]
@@ -1167,6 +1195,10 @@ for economy in Economy_codes:
     ref_ag_1.loc[ref_ag_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     ref_ag_1 = ref_ag_1[ref_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+
+    # Get rid of zero rows
+    non_zero = (ref_ag_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_ag_1 = ref_ag_1.loc[non_zero].reset_index(drop = True)
     
     ref_ag_1_rows = ref_ag_1.shape[0]
     ref_ag_1_cols = ref_ag_1.shape[1]
@@ -1196,6 +1228,10 @@ for economy in Economy_codes:
 
     ref_hyd_1 = ref_hyd_1[ref_hyd_1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
         .copy().reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (ref_hyd_1.loc[:,'2017':] != 0).any(axis = 1)
+    ref_hyd_1 = ref_hyd_1.loc[non_zero].reset_index(drop = True)
 
     ref_hyd_1_rows = ref_hyd_1.shape[0]
     ref_hyd_1_cols = ref_hyd_1.shape[1]
@@ -1283,6 +1319,10 @@ for economy in Economy_codes:
         .reset_index()[['fuel_code', 'item_code_new'] + list(netz_fedfuel_1.loc[:,'2000':'2050'])]\
             .set_index('fuel_code').loc[FED_agg_fuels].reset_index()
 
+    # Get rid of zero rows
+    non_zero = (netz_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_fedfuel_1 = netz_fedfuel_1.loc[non_zero].reset_index(drop = True)
+
     netz_fedfuel_1_rows = netz_fedfuel_1.shape[0]
     netz_fedfuel_1_cols = netz_fedfuel_1.shape[1]
 
@@ -1320,6 +1360,10 @@ for economy in Economy_codes:
 
     netz_fedsector_2 = netz_fedsector_2[netz_fedsector_2['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
     netz_fedsector_2 = netz_fedsector_2[['fuel_code', 'item_code_new'] + list(netz_fedsector_2.loc[:, '2000':])]
+
+    # Get rid of zero rows
+    non_zero = (netz_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
+    netz_fedsector_2 = netz_fedsector_2.loc[non_zero].reset_index(drop = True)
 
     netz_fedsector_2_rows = netz_fedsector_2.shape[0]
     netz_fedsector_2_cols = netz_fedsector_2.shape[1]
@@ -1378,6 +1422,11 @@ for economy in Economy_codes:
 
     netz_bld_2 = netz_bld_2[netz_bld_2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code')\
         .loc[FED_agg_fuels].reset_index()
+
+    # Get rid of zero rows
+    non_zero = (netz_bld_2.loc[:,'2000':] != 0).any(axis = 1)
+    netz_bld_2 = netz_bld_2.loc[non_zero].reset_index(drop = True)
+
     netz_bld_2_rows = netz_bld_2.shape[0]
     netz_bld_2_cols = netz_bld_2.shape[1]
 
@@ -1412,6 +1461,10 @@ for economy in Economy_codes:
 
     netz_ind_1 = netz_ind_1[['fuel_code', 'item_code_new'] + list(netz_ind_1.loc[:, '2000':])]
 
+    # Get rid of zero rows
+    non_zero = (netz_ind_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_ind_1 = netz_ind_1.loc[non_zero].reset_index(drop = True)
+
     netz_ind_1_rows = netz_ind_1.shape[0]
     netz_ind_1_cols = netz_ind_1.shape[1]
     
@@ -1442,6 +1495,10 @@ for economy in Economy_codes:
 
     netz_ind_2 = netz_ind_2[netz_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index()
     
+    # Get rid of zero rows
+    non_zero = (netz_ind_2.loc[:,'2000':] != 0).any(axis = 1)
+    netz_ind_2 = netz_ind_2.loc[non_zero].reset_index(drop = True)
+
     netz_ind_2_rows = netz_ind_2.shape[0]
     netz_ind_2_cols = netz_ind_2.shape[1]
 
@@ -1476,6 +1533,10 @@ for economy in Economy_codes:
 
     netz_trn_1 = netz_trn_1[netz_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
 
+    # Get rid of zero rows
+    non_zero = (netz_trn_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_trn_1 = netz_trn_1.loc[non_zero].reset_index(drop = True)
+
     netz_trn_1_rows = netz_trn_1.shape[0]
     netz_trn_1_cols = netz_trn_1.shape[1]
     
@@ -1494,6 +1555,10 @@ for economy in Economy_codes:
     netz_trn_2 = netz_trn_2[netz_trn_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
     netz_trn_2 = netz_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (netz_trn_2.loc[:,'2018':] != 0).any(axis = 1)
+    netz_trn_2 = netz_trn_2.loc[non_zero].reset_index(drop = True)
 
     netz_trn_2_rows = netz_trn_2.shape[0]
     netz_trn_2_cols = netz_trn_2.shape[1]
@@ -1527,6 +1592,10 @@ for economy in Economy_codes:
 
     netz_ag_1 = netz_ag_1[netz_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
     
+    # Get rid of zero rows
+    non_zero = (netz_ag_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_ag_1 = netz_ag_1.loc[non_zero].reset_index(drop = True)
+
     netz_ag_1_rows = netz_ag_1.shape[0]
     netz_ag_1_cols = netz_ag_1.shape[1]
 
@@ -1555,6 +1624,10 @@ for economy in Economy_codes:
 
     netz_hyd_1 = netz_hyd_1[netz_hyd_1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
         .copy().reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (netz_hyd_1.loc[:,'2017':] != 0).any(axis = 1)
+    netz_hyd_1 = netz_hyd_1.loc[non_zero].reset_index(drop = True)
 
     netz_hyd_1_rows = netz_hyd_1.shape[0]
     netz_hyd_1_cols = netz_hyd_1.shape[1]
@@ -1586,6 +1659,10 @@ for economy in Economy_codes:
     ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
     ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+
+    # Get rid of zero rows
+    non_zero = (ref_tpes_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_tpes_1 = ref_tpes_1.loc[non_zero].reset_index(drop = True)
 
     ref_tpes_1_rows = ref_tpes_1.shape[0]
     ref_tpes_1_cols = ref_tpes_1.shape[1]
@@ -1620,6 +1697,10 @@ for economy in Economy_codes:
 
     ref_prod_1 = ref_prod_1[ref_prod_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
 
+    # Get rid of zero rows
+    non_zero = (ref_prod_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_prod_1 = ref_prod_1.loc[non_zero].reset_index(drop = True)
+
     ref_prod_1_rows = ref_prod_1.shape[0]
     ref_prod_1_cols = ref_prod_1.shape[1]
 
@@ -1649,6 +1730,10 @@ for economy in Economy_codes:
                                                                            'Net trade',
                                                                            'Bunkers',
                                                                            'Stock changes'])].reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (ref_tpes_comp_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_tpes_comp_1 = ref_tpes_comp_1.loc[non_zero].reset_index(drop = True)
     
     ref_tpes_comp_1_rows = ref_tpes_comp_1.shape[0]
     ref_tpes_comp_1_cols = ref_tpes_comp_1.shape[1]
@@ -1679,6 +1764,10 @@ for economy in Economy_codes:
     ref_imports_1 = ref_imports_1[ref_imports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(ref_imports_1.loc[:, '2000':])]
+
+    # Get rid of zero rows
+    non_zero = (ref_imports_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_imports_1 = ref_imports_1.loc[non_zero].reset_index(drop = True)
 
     ref_imports_1_rows = ref_imports_1.shape[0]
     ref_imports_1_cols = ref_imports_1.shape[1] 
@@ -1717,6 +1806,10 @@ for economy in Economy_codes:
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(ref_exports_1.loc[:, '2000':])]
 
+    # Get rid of zero rows
+    non_zero = (ref_exports_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_exports_1 = ref_exports_1.loc[non_zero].reset_index(drop = True)
+
     ref_exports_1_rows = ref_exports_1.shape[0]
     ref_exports_1_cols = ref_exports_1.shape[1]
 
@@ -1731,13 +1824,18 @@ for economy in Economy_codes:
                               (EGEDA_years_reference['item_code_new'] == '4_international_marine_bunkers') & 
                               (EGEDA_years_reference['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
 
-    ref_bunkers_1 = ref_bunkers_1[['fuel_code', 'item_code_new'] + list(ref_bunkers_1.loc[:, '2000':])].reset_index(drop = True)
+    ref_bunkers_1 = ref_bunkers_1[['fuel_code', 'item_code_new'] + list(ref_bunkers_1.loc[:, '2000':])].reset_index(drop = True)\
+        .replace(np.nan, 0)
 
     ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
     ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
 
     # Make bunkers data non-negative
     ref_bunkers_1.update(ref_bunkers_1.select_dtypes(include = [np.number]).abs())
+
+    # Get rid of zero rows
+    non_zero = (ref_bunkers_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_bunkers_1 = ref_bunkers_1.loc[non_zero].reset_index(drop = True)
 
     ref_bunkers_1_rows = ref_bunkers_1.shape[0]
     ref_bunkers_1_cols = ref_bunkers_1.shape[1]
@@ -1758,10 +1856,14 @@ for economy in Economy_codes:
 
     ref_bunkers_2 = ref_bunkers_2[ref_bunkers_2['fuel_code'].isin(avi_bunker)]\
         .set_index('fuel_code').loc[avi_bunker].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(ref_bunkers_2.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(ref_bunkers_2.loc[:, '2000':])].replace(np.nan, 0)
 
     # Make bunkers data non-negative
     ref_bunkers_2.update(ref_bunkers_2.select_dtypes(include = [np.number]).abs())
+
+    # Get rid of zero rows
+    non_zero = (ref_bunkers_2.loc[:,'2000':] != 0).any(axis = 1)
+    ref_bunkers_2 = ref_bunkers_2.loc[non_zero].reset_index(drop = True)
 
     ref_bunkers_2_rows = ref_bunkers_2.shape[0]
     ref_bunkers_2_cols = ref_bunkers_2.shape[1]
@@ -1793,6 +1895,10 @@ for economy in Economy_codes:
     netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
     netz_tpes_1 = netz_tpes_1[netz_tpes_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+
+    # Get rid of zero rows
+    non_zero = (netz_tpes_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_tpes_1 = netz_tpes_1.loc[non_zero].reset_index(drop = True)
 
     netz_tpes_1_rows = netz_tpes_1.shape[0]
     netz_tpes_1_cols = netz_tpes_1.shape[1]
@@ -1827,6 +1933,10 @@ for economy in Economy_codes:
 
     netz_prod_1 = netz_prod_1[netz_prod_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
 
+    # Get rid of zero rows
+    non_zero = (netz_prod_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_prod_1 = netz_prod_1.loc[non_zero].reset_index(drop = True)
+
     netz_prod_1_rows = netz_prod_1.shape[0]
     netz_prod_1_cols = netz_prod_1.shape[1]
 
@@ -1857,6 +1967,10 @@ for economy in Economy_codes:
                                                                            'Bunkers',
                                                                            'Stock changes'])].reset_index(drop = True)
     
+    # Get rid of zero rows
+    non_zero = (netz_tpes_comp_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_tpes_comp_1 = netz_tpes_comp_1.loc[non_zero].reset_index(drop = True)
+
     netz_tpes_comp_1_rows = netz_tpes_comp_1.shape[0]
     netz_tpes_comp_1_cols = netz_tpes_comp_1.shape[1]
 
@@ -1886,6 +2000,10 @@ for economy in Economy_codes:
     netz_imports_1 = netz_imports_1[netz_imports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(netz_imports_1.loc[:, '2000':])]
+
+    # Get rid of zero rows
+    non_zero = (netz_imports_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_imports_1 = netz_imports_1.loc[non_zero].reset_index(drop = True)
 
     netz_imports_1_rows = netz_imports_1.shape[0]
     netz_imports_1_cols = netz_imports_1.shape[1] 
@@ -1924,6 +2042,10 @@ for economy in Economy_codes:
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(netz_exports_1.loc[:, '2000':])]
 
+    # Get rid of zero rows
+    non_zero = (netz_exports_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_exports_1 = netz_exports_1.loc[non_zero].reset_index(drop = True)
+
     netz_exports_1_rows = netz_exports_1.shape[0]
     netz_exports_1_cols = netz_exports_1.shape[1]
 
@@ -1938,13 +2060,18 @@ for economy in Economy_codes:
                               (EGEDA_years_netzero['item_code_new'] == '4_international_marine_bunkers') & 
                               (EGEDA_years_netzero['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
 
-    netz_bunkers_1 = netz_bunkers_1[['fuel_code', 'item_code_new'] + list(netz_bunkers_1.loc[:, '2000':])].reset_index(drop = True)
+    netz_bunkers_1 = netz_bunkers_1[['fuel_code', 'item_code_new'] + list(netz_bunkers_1.loc[:, '2000':])].reset_index(drop = True)\
+        .replace(np.nan, 0)
 
     netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
     netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
 
     # Make bunkers data non-negative
     netz_bunkers_1.update(netz_bunkers_1.select_dtypes(include = [np.number]).abs())
+
+    # Get rid of zero rows
+    non_zero = (netz_bunkers_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_bunkers_1 = netz_bunkers_1.loc[non_zero].reset_index(drop = True)
 
     netz_bunkers_1_rows = netz_bunkers_1.shape[0]
     netz_bunkers_1_cols = netz_bunkers_1.shape[1]
@@ -1965,10 +2092,14 @@ for economy in Economy_codes:
 
     netz_bunkers_2 = netz_bunkers_2[netz_bunkers_2['fuel_code'].isin(avi_bunker)]\
         .set_index('fuel_code').loc[avi_bunker].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(netz_bunkers_2.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(netz_bunkers_2.loc[:, '2000':])].replace(np.nan, 0)
 
     # Make bunkers data non-negative
     netz_bunkers_2.update(netz_bunkers_2.select_dtypes(include = [np.number]).abs())
+
+    # Get rid of zero rows
+    non_zero = (netz_bunkers_2.loc[:,'2000':] != 0).any(axis = 1)
+    netz_bunkers_2 = netz_bunkers_2.loc[non_zero].reset_index(drop = True)
 
     netz_bunkers_2_rows = netz_bunkers_2.shape[0]
     netz_bunkers_2_cols = netz_bunkers_2.shape[1]
@@ -2056,6 +2187,10 @@ for economy in Economy_codes:
 
     ref_pow_use_2 = ref_pow_use_2[['FUEL', 'Transformation'] + list(ref_pow_use_2.loc[:, '2000':'2050'])]
 
+    # Get rid of zero rows
+    non_zero = (ref_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
+    ref_pow_use_2 = ref_pow_use_2.loc[non_zero].reset_index(drop = True)
+
     ref_pow_use_2_rows = ref_pow_use_2.shape[0]
     ref_pow_use_2_cols = ref_pow_use_2.shape[1]
 
@@ -2141,6 +2276,10 @@ for economy in Economy_codes:
     s = ref_elecgen_2.select_dtypes(include=[np.number]) / 3.6 
     ref_elecgen_2[s.columns] = s
 
+    # Get rid of zero rows
+    non_zero = (ref_elecgen_2.loc[:,'2000':] != 0).any(axis = 1)
+    ref_elecgen_2 = ref_elecgen_2.loc[non_zero].reset_index(drop = True)
+
     ref_elecgen_2_rows = ref_elecgen_2.shape[0]
     ref_elecgen_2_cols = ref_elecgen_2.shape[1]
 
@@ -2162,6 +2301,10 @@ for economy in Economy_codes:
 
     ref_refinery_1.loc[ref_refinery_1['FUEL'] == 'd_ref_6_1_crude_oil', 'FUEL'] = 'Crude oil'
     ref_refinery_1.loc[ref_refinery_1['FUEL'] == 'd_ref_6_x_ngls', 'FUEL'] = 'NGLs'
+
+    # Get rid of zero rows
+    non_zero = (ref_refinery_1.loc[:,'2017':] != 0).any(axis = 1)
+    ref_refinery_1 = ref_refinery_1.loc[non_zero].reset_index(drop = True)
 
     ref_refinery_1_rows = ref_refinery_1.shape[0]
     ref_refinery_1_cols = ref_refinery_1.shape[1]
@@ -2192,6 +2335,10 @@ for economy in Economy_codes:
         ordered = True)
 
     ref_refinery_2 = ref_refinery_2.sort_values('FUEL')
+
+    # Get rid of zero rows
+    non_zero = (ref_refinery_2.loc[:,'2017':] != 0).any(axis = 1)
+    ref_refinery_2 = ref_refinery_2.loc[non_zero].reset_index(drop = True)
 
     ref_refinery_2_rows = ref_refinery_2.shape[0]
     ref_refinery_2_cols = ref_refinery_2.shape[1]
@@ -2244,6 +2391,10 @@ for economy in Economy_codes:
 
     ref_hydrogen_2 = ref_hydrogen_2.sort_values('Technology')
 
+    # Get rid of zero rows
+    non_zero = (ref_hydrogen_2.loc[:,'2017':] != 0).any(axis = 1)
+    ref_hydrogen_2 = ref_hydrogen_2.loc[non_zero].reset_index(drop = True)
+
     ref_hydrogen_2_rows = ref_hydrogen_2.shape[0]
     ref_hydrogen_2_cols = ref_hydrogen_2.shape[1]
 
@@ -2290,6 +2441,10 @@ for economy in Economy_codes:
 
     ref_powcap_1 = ref_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
+    # Get rid of zero rows
+    non_zero = (ref_powcap_1.loc[:,'2017':] != 0).any(axis = 1)
+    ref_powcap_1 = ref_powcap_1.loc[non_zero].reset_index(drop = True)
+
     ref_powcap_1_rows = ref_powcap_1.shape[0]
     ref_powcap_1_cols = ref_powcap_1.shape[1]
 
@@ -2323,6 +2478,10 @@ for economy in Economy_codes:
     # Gets rid of own-use and Transmission so that the chart is only power and refining
     ref_trans_3 = ref_trans_2[ref_trans_2['Sector'].isin(['Power', 'Refining'])]\
         .reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (ref_trans_3.loc[:,'2017':] != 0).any(axis = 1)
+    ref_trans_3 = ref_trans_3.loc[non_zero].reset_index(drop = True)
 
     ref_trans_3_rows = ref_trans_3.shape[0]
     ref_trans_3_cols = ref_trans_3.shape[1]
@@ -2367,6 +2526,10 @@ for economy in Economy_codes:
     ref_ownuse_1 = ref_ownuse_1.sort_values('FUEL').reset_index(drop = True)
 
     ref_ownuse_1 = ref_ownuse_1[['FUEL', 'Sector'] + list(ref_ownuse_1.loc[:, '2000':'2050'])]
+
+    # Get rid of zero rows
+    non_zero = (ref_ownuse_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_ownuse_1 = ref_ownuse_1.loc[non_zero].reset_index(drop = True)
 
     ref_ownuse_1_rows = ref_ownuse_1.shape[0]
     ref_ownuse_1_cols = ref_ownuse_1.shape[1]
@@ -2426,6 +2589,10 @@ for economy in Economy_codes:
 
     ref_heatgen_2 = ref_heatgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
 
+    # Get rid of zero rows
+    non_zero = (ref_heatgen_2.loc[:,'2000':] != 0).any(axis = 1)
+    ref_heatgen_2 = ref_heatgen_2.loc[non_zero].reset_index(drop = True)
+
     ref_heatgen_2_rows = ref_heatgen_2.shape[0]
     ref_heatgen_2_cols = ref_heatgen_2.shape[1]
 
@@ -2474,6 +2641,10 @@ for economy in Economy_codes:
     ref_heat_use_2 = ref_heat_use_2.sort_values('FUEL').reset_index(drop = True)
 
     ref_heat_use_2 = ref_heat_use_2[['FUEL', 'Transformation'] + list(ref_heat_use_2.loc[:,'2017':'2050'])]
+
+    # Get rid of zero rows
+    non_zero = (ref_heat_use_2.loc[:,'2017':] != 0).any(axis = 1)
+    ref_heat_use_2 = ref_heat_use_2.loc[non_zero].reset_index(drop = True)
 
     ref_heat_use_2_rows = ref_heat_use_2.shape[0]
     ref_heat_use_2_cols = ref_heat_use_2.shape[1]
@@ -2563,6 +2734,10 @@ for economy in Economy_codes:
 
     netz_pow_use_2 = netz_pow_use_2[['FUEL', 'Transformation'] + list(netz_pow_use_2.loc[:, '2000':'2050'])]
 
+    # Get rid of zero rows
+    non_zero = (netz_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
+    netz_pow_use_2 = netz_pow_use_2.loc[non_zero].reset_index(drop = True)
+
     netz_pow_use_2_rows = netz_pow_use_2.shape[0]
     netz_pow_use_2_cols = netz_pow_use_2.shape[1]
 
@@ -2648,6 +2823,10 @@ for economy in Economy_codes:
     s = netz_elecgen_2.select_dtypes(include=[np.number]) / 3.6 
     netz_elecgen_2[s.columns] = s
 
+    # Get rid of zero rows
+    non_zero = (netz_elecgen_2.loc[:,'2000':] != 0).any(axis = 1)
+    netz_elecgen_2 = netz_elecgen_2.loc[non_zero].reset_index(drop = True)
+
     netz_elecgen_2_rows = netz_elecgen_2.shape[0]
     netz_elecgen_2_cols = netz_elecgen_2.shape[1]
 
@@ -2669,6 +2848,10 @@ for economy in Economy_codes:
 
     netz_refinery_1.loc[netz_refinery_1['FUEL'] == 'd_ref_6_1_crude_oil', 'FUEL'] = 'Crude oil'
     netz_refinery_1.loc[netz_refinery_1['FUEL'] == 'd_ref_6_x_ngls', 'FUEL'] = 'NGLs'
+
+    # Get rid of zero rows
+    non_zero = (netz_refinery_1.loc[:,'2017':] != 0).any(axis = 1)
+    netz_refinery_1 = netz_refinery_1.loc[non_zero].reset_index(drop = True)
 
     netz_refinery_1_rows = netz_refinery_1.shape[0]
     netz_refinery_1_cols = netz_refinery_1.shape[1]
@@ -2699,6 +2882,10 @@ for economy in Economy_codes:
         ordered = True)
 
     netz_refinery_2 = netz_refinery_2.sort_values('FUEL')
+
+    # Get rid of zero rows
+    non_zero = (netz_refinery_2.loc[:,'2017':] != 0).any(axis = 1)
+    netz_refinery_2 = netz_refinery_2.loc[non_zero].reset_index(drop = True)
 
     netz_refinery_2_rows = netz_refinery_2.shape[0]
     netz_refinery_2_cols = netz_refinery_2.shape[1]
@@ -2752,6 +2939,10 @@ for economy in Economy_codes:
 
     netz_hydrogen_2 = netz_hydrogen_2.sort_values('Technology')
 
+    # Get rid of zero rows
+    non_zero = (netz_hydrogen_2.loc[:,'2017':] != 0).any(axis = 1)
+    netz_hydrogen_2 = netz_hydrogen_2.loc[non_zero].reset_index(drop = True)
+
     netz_hydrogen_2_rows = netz_hydrogen_2.shape[0]
     netz_hydrogen_2_cols = netz_hydrogen_2.shape[1]
 
@@ -2798,6 +2989,10 @@ for economy in Economy_codes:
 
     netz_powcap_1 = netz_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
+    # Get rid of zero rows
+    non_zero = (netz_powcap_1.loc[:,'2017':] != 0).any(axis = 1)
+    netz_powcap_1 = netz_powcap_1.loc[non_zero].reset_index(drop = True)
+
     netz_powcap_1_rows = netz_powcap_1.shape[0]
     netz_powcap_1_cols = netz_powcap_1.shape[1]
 
@@ -2831,6 +3026,10 @@ for economy in Economy_codes:
     # Gets rid of own-use and Transmission so that the chart is only power and refining
     netz_trans_3 = netz_trans_2[netz_trans_2['Sector'].isin(['Power', 'Refining'])]\
         .reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (netz_trans_3.loc[:,'2017':] != 0).any(axis = 1)
+    netz_trans_3 = netz_trans_3.loc[non_zero].reset_index(drop = True)
 
     netz_trans_3_rows = netz_trans_3.shape[0]
     netz_trans_3_cols = netz_trans_3.shape[1]
@@ -2875,6 +3074,10 @@ for economy in Economy_codes:
     netz_ownuse_1 = netz_ownuse_1.sort_values('FUEL').reset_index(drop = True)
 
     netz_ownuse_1 = netz_ownuse_1[['FUEL', 'Sector'] + list(netz_ownuse_1.loc[:, '2000':'2050'])]
+
+    # Get rid of zero rows
+    non_zero = (netz_ownuse_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_ownuse_1 = netz_ownuse_1.loc[non_zero].reset_index(drop = True)
 
     netz_ownuse_1_rows = netz_ownuse_1.shape[0]
     netz_ownuse_1_cols = netz_ownuse_1.shape[1]
@@ -2934,6 +3137,10 @@ for economy in Economy_codes:
 
     netz_heatgen_2 = netz_heatgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
 
+    # Get rid of zero rows
+    non_zero = (netz_heatgen_2.loc[:,'2000':] != 0).any(axis = 1)
+    netz_heatgen_2 = netz_heatgen_2.loc[non_zero].reset_index(drop = True)
+
     netz_heatgen_2_rows = netz_heatgen_2.shape[0]
     netz_heatgen_2_cols = netz_heatgen_2.shape[1]
 
@@ -2982,6 +3189,10 @@ for economy in Economy_codes:
     netz_heat_use_2 = netz_heat_use_2.sort_values('FUEL').reset_index(drop = True)
 
     netz_heat_use_2 = netz_heat_use_2[['FUEL', 'Transformation'] + list(netz_heat_use_2.loc[:,'2017':'2050'])]
+
+    # Get rid of zero rows
+    non_zero = (netz_heat_use_2.loc[:,'2017':] != 0).any(axis = 1)
+    netz_heat_use_2 = netz_heat_use_2.loc[non_zero].reset_index(drop = True)
 
     netz_heat_use_2_rows = netz_heat_use_2.shape[0]
     netz_heat_use_2_cols = netz_heat_use_2.shape[1]
@@ -3527,6 +3738,13 @@ for economy in Economy_codes:
 
     ref_coal_1 = ref_coal_1[ref_coal_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
 
+    ref_coal_1['item_code_new'] = pd.Categorical(
+        ref_coal_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    ref_coal_1 = ref_coal_1.sort_values('item_code_new').reset_index(drop = True)
+
     ref_coal_1_rows = ref_coal_1.shape[0]
     ref_coal_1_cols = ref_coal_1.shape[1]
 
@@ -3545,6 +3763,13 @@ for economy in Economy_codes:
     ref_crude_1.loc[ref_crude_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
     ref_crude_1 = ref_crude_1[ref_crude_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
+
+    ref_crude_1['item_code_new'] = pd.Categorical(
+        ref_crude_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    ref_crude_1 = ref_crude_1.sort_values('item_code_new').reset_index(drop = True)
 
     ref_crude_1_rows = ref_crude_1.shape[0]
     ref_crude_1_cols = ref_crude_1.shape[1]
@@ -3572,6 +3797,13 @@ for economy in Economy_codes:
 
     ref_petprod_2 = ref_petprod_2[ref_petprod_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
 
+    ref_petprod_2['item_code_new'] = pd.Categorical(
+        ref_petprod_2['item_code_new'], 
+        categories = fuel_final_bunk, 
+        ordered = True)
+
+    ref_petprod_2 = ref_petprod_2.sort_values('item_code_new').reset_index(drop = True)
+
     ref_petprod_2_rows = ref_petprod_2.shape[0]
     ref_petprod_2_cols = ref_petprod_2.shape[1]
 
@@ -3590,6 +3822,13 @@ for economy in Economy_codes:
     ref_gas_1.loc[ref_gas_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
     ref_gas_1 = ref_gas_1[ref_gas_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
+
+    ref_gas_1['item_code_new'] = pd.Categorical(
+        ref_gas_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    ref_gas_1 = ref_gas_1.sort_values('item_code_new').reset_index(drop = True)
 
     ref_gas_1_rows = ref_gas_1.shape[0]
     ref_gas_1_cols = ref_gas_1.shape[1]
@@ -3629,6 +3868,13 @@ for economy in Economy_codes:
 
     ref_biomass_1 = ref_biomass_1[ref_biomass_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
 
+    ref_biomass_1['item_code_new'] = pd.Categorical(
+        ref_biomass_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    ref_biomass_1 = ref_biomass_1.sort_values('item_code_new').reset_index(drop = True)
+
     ref_biomass_1_rows = ref_biomass_1.shape[0]
     ref_biomass_1_cols = ref_biomass_1.shape[1]
 
@@ -3654,6 +3900,13 @@ for economy in Economy_codes:
     ref_biofuel_2.loc[ref_biofuel_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
     ref_biofuel_2 = ref_biofuel_2[ref_biofuel_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
+
+    ref_biofuel_2['item_code_new'] = pd.Categorical(
+        ref_biofuel_2['item_code_new'], 
+        categories = fuel_final_bunk, 
+        ordered = True)
+
+    ref_biofuel_2 = ref_biofuel_2.sort_values('item_code_new').reset_index(drop = True)
 
     ref_biofuel_2_rows = ref_biofuel_2.shape[0]
     ref_biofuel_2_cols = ref_biofuel_2.shape[1]
@@ -3683,6 +3936,13 @@ for economy in Economy_codes:
 
     ref_renew_2 = ref_renew_2[ref_renew_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
 
+    ref_renew_2['item_code_new'] = pd.Categorical(
+        ref_renew_2['item_code_new'], 
+        categories = fuel_final_bunk, 
+        ordered = True)
+
+    ref_renew_2 = ref_renew_2.sort_values('item_code_new').reset_index(drop = True)
+
     ref_renew_2_rows = ref_renew_2.shape[0]
     ref_renew_2_cols = ref_renew_2.shape[1]
 
@@ -3702,6 +3962,13 @@ for economy in Economy_codes:
 
     netz_coal_1 = netz_coal_1[netz_coal_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
 
+    netz_coal_1['item_code_new'] = pd.Categorical(
+        netz_coal_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    netz_coal_1 = netz_coal_1.sort_values('item_code_new').reset_index(drop = True)
+
     netz_coal_1_rows = netz_coal_1.shape[0]
     netz_coal_1_cols = netz_coal_1.shape[1]
 
@@ -3720,6 +3987,13 @@ for economy in Economy_codes:
     netz_crude_1.loc[netz_crude_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
     netz_crude_1 = netz_crude_1[netz_crude_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
+
+    netz_crude_1['item_code_new'] = pd.Categorical(
+        netz_crude_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    netz_crude_1 = netz_crude_1.sort_values('item_code_new').reset_index(drop = True)
 
     netz_crude_1_rows = netz_crude_1.shape[0]
     netz_crude_1_cols = netz_crude_1.shape[1]
@@ -3747,6 +4021,13 @@ for economy in Economy_codes:
 
     netz_petprod_2 = netz_petprod_2[netz_petprod_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
 
+    netz_petprod_2['item_code_new'] = pd.Categorical(
+        netz_petprod_2['item_code_new'], 
+        categories = fuel_final_bunk, 
+        ordered = True)
+
+    netz_petprod_2 = netz_petprod_2.sort_values('item_code_new').reset_index(drop = True)
+
     netz_petprod_2_rows = netz_petprod_2.shape[0]
     netz_petprod_2_cols = netz_petprod_2.shape[1]
 
@@ -3765,6 +4046,13 @@ for economy in Economy_codes:
     netz_gas_1.loc[netz_gas_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
     netz_gas_1 = netz_gas_1[netz_gas_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
+
+    netz_gas_1['item_code_new'] = pd.Categorical(
+        netz_gas_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    netz_gas_1 = netz_gas_1.sort_values('item_code_new').reset_index(drop = True)
 
     netz_gas_1_rows = netz_gas_1.shape[0]
     netz_gas_1_cols = netz_gas_1.shape[1]
@@ -3804,6 +4092,13 @@ for economy in Economy_codes:
 
     netz_biomass_1 = netz_biomass_1[netz_biomass_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
 
+    netz_biomass_1['item_code_new'] = pd.Categorical(
+        netz_biomass_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    netz_biomass_1 = netz_biomass_1.sort_values('item_code_new').reset_index(drop = True)
+
     netz_biomass_1_rows = netz_biomass_1.shape[0]
     netz_biomass_1_cols = netz_biomass_1.shape[1]
 
@@ -3829,6 +4124,13 @@ for economy in Economy_codes:
     netz_biofuel_2.loc[netz_biofuel_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
     netz_biofuel_2 = netz_biofuel_2[netz_biofuel_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
+
+    netz_biofuel_2['item_code_new'] = pd.Categorical(
+        netz_biofuel_2['item_code_new'], 
+        categories = fuel_final_bunk, 
+        ordered = True)
+
+    netz_biofuel_2 = netz_biofuel_2.sort_values('item_code_new').reset_index(drop = True)
 
     netz_biofuel_2_rows = netz_biofuel_2.shape[0]
     netz_biofuel_2_cols = netz_biofuel_2.shape[1]
@@ -3857,6 +4159,13 @@ for economy in Economy_codes:
     netz_renew_2.loc[netz_renew_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
     netz_renew_2 = netz_renew_2[netz_renew_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
+
+    netz_renew_2['item_code_new'] = pd.Categorical(
+        netz_renew_2['item_code_new'], 
+        categories = fuel_final_bunk, 
+        ordered = True)
+
+    netz_renew_2 = netz_renew_2.sort_values('item_code_new').reset_index(drop = True)
 
     netz_renew_2_rows = netz_renew_2.shape[0]
     netz_renew_2_cols = netz_renew_2.shape[1]
@@ -5009,7 +5318,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in FED_agg_fuels:
+    for component in ref_fedfuel_2['fuel_code'].unique():
         i = ref_fedfuel_2[ref_fedfuel_2['fuel_code'] == component].index[0]
         ref_fedfuel_chart2.add_series({
             'name':       [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + i + 4, 0],
@@ -5195,7 +5504,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in FED_agg_sectors:
+    for component in ref_fedsector_3['item_code_new'].unique():
         i = ref_fedsector_3[ref_fedsector_3['item_code_new'] == component].index[0]
         ref_fedsector_chart4.add_series({
             'name':       [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + i + 4, 1],
@@ -5323,7 +5632,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in FED_agg_fuels:
+    for component in ref_bld_2['fuel_code'].unique():
         i = ref_bld_2[ref_bld_2['fuel_code'] == component].index[0]
         ref_fed_bld_chart1.add_series({
             'name':       [economy + '_FED_bld', chart_height + i + 1, 0],
@@ -5512,7 +5821,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for fuel_agg in FED_agg_fuels_ind:
+    for fuel_agg in ref_ind_2['fuel_code'].unique():
         j = ref_ind_2[ref_ind_2['fuel_code'] == fuel_agg].index[0]
         ref_fed_ind_chart2.add_series({
             'name':       [economy + '_FED_ind', chart_height + ref_ind_1_rows + j + 4, 0],
@@ -5584,7 +5893,7 @@ for economy in Economy_codes:
         'none': True
     })
         
-    for fuel_agg in Transport_fuels_agg:
+    for fuel_agg in ref_trn_1['fuel_code'].unique():
         j = ref_trn_1[ref_trn_1['fuel_code'] == fuel_agg].index[0]
         ref_transport_chart1.add_series({
             'name':       [economy + '_FED_trn', chart_height + j + 1, 0],
@@ -5642,7 +5951,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for modality in Transport_modal_agg:
+    for modality in ref_trn_2['item_code_new'].unique():
         j = ref_trn_2[ref_trn_2['item_code_new'] == modality].index[0]
         ref_transport_chart2.add_series({
             'name':       [economy + '_FED_trn', chart_height + ref_trn_1_rows + j + 4, 1],
@@ -5836,137 +6145,7 @@ for economy in Economy_codes:
 
     # HYDROGEN CHARTS (REDUNDANT)
 
-    # Access the workbook and first sheet with data from df1
-    # hyd_worksheet1 = writer.sheets[economy + '_FED_hyd']
     
-    # # Comma format and header format        
-    # # space_format = workbook.add_format({'num_format': '#,##0'})
-    # # header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
-    # # cell_format1 = workbook.add_format({'bold': True})
-        
-    # # Apply comma format and header format to relevant data rows
-    # hyd_worksheet1.set_column(1, ref_hyd_1_cols + 1, None, space_format)
-    # hyd_worksheet1.set_row(chart_height, None, header_format)
-    # hyd_worksheet1.set_row(chart_height, None, header_format)
-    # hyd_worksheet1.set_row(chart_height + ref_hyd_1_rows + 3, None, header_format)
-    # hyd_worksheet1.write(0, 0, economy + ' FED hydrogen', cell_format1)
-
-    # # Create a HYDROGEN area chart
-    # ref_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    # ref_hyd_chart1.set_size({
-    #     'width': 500,
-    #     'height': 300
-    # })
-    
-    # ref_hyd_chart1.set_chartarea({
-    #     'border': {'none': True}
-    # })
-    
-    # ref_hyd_chart1.set_x_axis({
-    #     # 'name': 'Year',
-    #     'label_position': 'low',
-    #     'major_tick_mark': 'none',
-    #     'minor_tick_mark': 'none',
-    #     'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-    #     'position_axis': 'on_tick',
-    #     'interval_unit': 10,
-    #     'line': {'color': '#bebebe'}
-    # })
-        
-    # ref_hyd_chart1.set_y_axis({
-    #     'major_tick_mark': 'none', 
-    #     'minor_tick_mark': 'none',
-    #     # 'name': 'PJ',
-    #     'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-    #     'num_format': '# ### ### ##0',
-    #     'major_gridlines': {
-    #         'visible': True,
-    #         'line': {'color': '#bebebe'}
-    #     },
-    #     'line': {'color': '#bebebe'}
-    # })
-        
-    # ref_hyd_chart1.set_legend({
-    #     'font': {'font': 'Segoe UI', 'size': 10}
-    #     #'none': True
-    # })
-        
-    # ref_hyd_chart1.set_title({
-    #     'none': True
-    # })
-    
-    # # Configure the series of the chart from the dataframe data.
-    # for i in range(ref_hyd_1_rows):
-    #     ref_hyd_chart1.add_series({
-    #         'name':       [economy + '_FED_hyd', chart_height + i + 1, 1],
-    #         'categories': [economy + '_FED_hyd', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
-    #         'values':     [economy + '_FED_hyd', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
-    #         'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
-    #         'border':     {'none': True}
-    #     })    
-        
-    # hyd_worksheet1.insert_chart('B3', ref_hyd_chart1)
-
-    # # Create a HYDROGEN area chart
-    # netz_hyd_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    # netz_hyd_chart1.set_size({
-    #     'width': 500,
-    #     'height': 300
-    # })
-    
-    # netz_hyd_chart1.set_chartarea({
-    #     'border': {'none': True}
-    # })
-    
-    # netz_hyd_chart1.set_x_axis({
-    #     # 'name': 'Year',
-    #     'label_position': 'low',
-    #     'major_tick_mark': 'none',
-    #     'minor_tick_mark': 'none',
-    #     'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-    #     'position_axis': 'on_tick',
-    #     'interval_unit': 10,
-    #     'line': {'color': '#bebebe'}
-    # })
-        
-    # netz_hyd_chart1.set_y_axis({
-    #     'major_tick_mark': 'none', 
-    #     'minor_tick_mark': 'none',
-    #     # 'name': 'PJ',
-    #     'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-    #     'num_format': '# ### ### ##0',
-    #     'major_gridlines': {
-    #         'visible': True,
-    #         'line': {'color': '#bebebe'}
-    #     },
-    #     'line': {'color': '#bebebe'}
-    # })
-        
-    # netz_hyd_chart1.set_legend({
-    #     'font': {'font': 'Segoe UI', 'size': 10}
-    #     #'none': True
-    # })
-        
-    # netz_hyd_chart1.set_title({
-    #     'none': True
-    # })
-    
-    # # Configure the series of the chart from the dataframe data.
-    # for i in range(netz_hyd_1_rows):
-    #     netz_hyd_chart1.add_series({
-    #         'name':       [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + i + 4, 1],
-    #         'categories': [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + 3, 2, chart_height + ref_hyd_1_rows + 3, netz_hyd_1_cols - 1],
-    #         'values':     [economy + '_FED_hyd', chart_height + ref_hyd_1_rows + i + 4, 2, chart_height + ref_hyd_1_rows + i + 4, netz_hyd_1_cols - 1],
-    #         'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
-    #         'border':     {'none': True}
-    #     })    
-        
-    # hyd_worksheet1.insert_chart('J3', netz_hyd_chart1)
-
-    ##############################################################################################################################
-
-    ##############################################################################################################################
-
     ##############################################################################################################################
 
     # CHARTS
@@ -6045,7 +6224,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet1.insert_chart('B45', netz_fedfuel_chart1)
+    ref_worksheet1.insert_chart('B' + str(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 9), netz_fedfuel_chart1)
 
     ###################### Create another FED chart showing proportional share #################################
 
@@ -6092,7 +6271,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in FED_agg_fuels:
+    for component in netz_fedfuel_2['fuel_code'].unique():
         i = netz_fedfuel_2[netz_fedfuel_2['fuel_code'] == component].index[0]
         netz_fedfuel_chart2.add_series({
             'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10, 0],
@@ -6104,7 +6283,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet1.insert_chart('J45', netz_fedfuel_chart2)
+    ref_worksheet1.insert_chart('J' + str(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 9), netz_fedfuel_chart2)
 
     # Create a FED line chart with higher level aggregation
     netz_fedfuel_chart3 = workbook.add_chart({'type': 'line'})
@@ -6161,7 +6340,7 @@ for economy in Economy_codes:
             'line':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
-    ref_worksheet1.insert_chart('R45', netz_fedfuel_chart3)
+    ref_worksheet1.insert_chart('R' + str(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 9), netz_fedfuel_chart3)
 
     ############################## Next sheet: FED (TFC) by sector ##############################
     
@@ -6230,7 +6409,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet2.insert_chart('B43', netz_fedsector_chart3)
+    ref_worksheet2.insert_chart('B' + str(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 12), netz_fedsector_chart3)
 
     ###################### Create another FED chart showing proportional share #################################
 
@@ -6277,7 +6456,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in FED_agg_sectors:
+    for component in netz_fedsector_3['item_code_new'].unique():
         i = netz_fedsector_3[netz_fedsector_3['item_code_new'] == component].index[0]
         netz_fedsector_chart4.add_series({
             'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, 1],
@@ -6289,7 +6468,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet2.insert_chart('J43', netz_fedsector_chart4)
+    ref_worksheet2.insert_chart('J' + str(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 12), netz_fedsector_chart4)
 
     # Create a FED sector line chart
 
@@ -6347,7 +6526,7 @@ for economy in Economy_codes:
             'line':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
-    ref_worksheet2.insert_chart('R43', netz_fedsector_chart5)
+    ref_worksheet2.insert_chart('R' + str(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 12), netz_fedsector_chart5)
     
     ############################# Next sheet: FED (TFC) for building sector ##################################
     
@@ -6405,7 +6584,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in FED_agg_fuels:
+    for component in netz_bld_2['fuel_code'].unique():
         i = netz_bld_2[netz_bld_2['fuel_code'] == component].index[0]
         netz_fed_bld_chart1.add_series({
             'name':       [economy + '_FED_bld', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, 0],
@@ -6417,7 +6596,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
 
-    ref_worksheet3.insert_chart('B38', netz_fed_bld_chart1)
+    ref_worksheet3.insert_chart('B' + str(chart_height + ref_bld_2_rows + ref_bld_3_rows + 9), netz_fed_bld_chart1)
     
     ################## FED building chart 2 (residential versus services) ###########################################
     
@@ -6478,7 +6657,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet3.insert_chart('J38', netz_fed_bld_chart2)
+    ref_worksheet3.insert_chart('J' + str(chart_height + ref_bld_2_rows + ref_bld_3_rows + 9), netz_fed_bld_chart2)
     
     ############################# Next sheet: FED (TFC) for industry ##################################
     
@@ -6547,7 +6726,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet4.insert_chart('B43', netz_fed_ind_chart1)
+    ref_worksheet4.insert_chart('B' + str(chart_height + ref_ind_1_rows + ref_ind_2_rows + 9), netz_fed_ind_chart1)
     
     ############# FED industry chart 2 (industry by fuel)
     
@@ -6596,7 +6775,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for fuel_agg in FED_agg_fuels_ind:
+    for fuel_agg in netz_ind_2['fuel_code'].unique():
         j = netz_ind_2[netz_ind_2['fuel_code'] == fuel_agg].index[0]
         netz_fed_ind_chart2.add_series({
             'name':       [economy + '_FED_ind', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, 0],
@@ -6608,7 +6787,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet4.insert_chart('J43', netz_fed_ind_chart2)
+    ref_worksheet4.insert_chart('J' + str(chart_height + ref_ind_1_rows + ref_ind_2_rows + 9), netz_fed_ind_chart2)
 
     ################################# NEXT SHEET: TRANSPORT FED ################################################################
 
@@ -6666,7 +6845,7 @@ for economy in Economy_codes:
         'none': True
     })
         
-    for fuel_agg in Transport_fuels_agg:
+    for fuel_agg in netz_trn_1['fuel_code'].unique():
         j = netz_trn_1[netz_trn_1['fuel_code'] == fuel_agg].index[0]
         netz_transport_chart1.add_series({
             'name':       [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, 0],
@@ -6678,7 +6857,7 @@ for economy in Economy_codes:
             'border':     {'none': True} 
         })
     
-    ref_worksheet5.insert_chart('B42', netz_transport_chart1)
+    ref_worksheet5.insert_chart('B' + str(chart_height + ref_trn_1_rows + ref_trn_2_rows + 9), netz_transport_chart1)
             
     ############# FED transport chart 2 (transport by modality)
     
@@ -6726,7 +6905,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for modality in Transport_modal_agg:
+    for modality in netz_trn_2['item_code_new'].unique():
         j = netz_trn_2[netz_trn_2['item_code_new'] == modality].index[0]
         netz_transport_chart2.add_series({
             'name':       [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 1],
@@ -6738,7 +6917,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet5.insert_chart('J42', netz_transport_chart2)
+    ref_worksheet5.insert_chart('J' + str(chart_height + ref_trn_1_rows + ref_trn_2_rows + 9), netz_transport_chart2)
 
     ################################# NEXT SHEET: AGRICULTURE FED ################################################################
 
@@ -6806,7 +6985,7 @@ for economy in Economy_codes:
             'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
         })    
         
-    ref_worksheet6.insert_chart('B45', netz_ag_chart1)
+    ref_worksheet6.insert_chart('B' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart1)
 
     # Create a Agriculture area chart
     netz_ag_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
@@ -6864,7 +7043,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet6.insert_chart('J45', netz_ag_chart2)
+    ref_worksheet6.insert_chart('J' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart2)
 
     # Create a Agriculture stacked column
     netz_ag_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
@@ -6920,7 +7099,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet6.insert_chart('R45', netz_ag_chart3)
+    ref_worksheet6.insert_chart('R' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart3)
 
     ############################################################################################################################
 
@@ -7101,7 +7280,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in TPES_agg_fuels:
+    for component in ref_tpes_2['fuel_code'].unique():
         i = ref_tpes_2[ref_tpes_2['fuel_code'] == component].index[0]
         ref_tpes_chart3.add_series({
             'name':       [economy + '_TPES', chart_height + ref_tpes_1_rows + i + 4, 0],
@@ -7290,7 +7469,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in TPES_agg_fuels:
+    for component in ref_prod_2['fuel_code'].unique():
         i = ref_prod_2[ref_prod_2['fuel_code'] == component].index[0]
         ref_prod_chart3.add_series({
             'name':       [economy + '_prod', chart_height + ref_prod_1_rows + i + 4, 0],
@@ -7360,7 +7539,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Net trade', 'Bunkers', 'Stock changes']:
+    for component in ref_tpes_comp_1['item_code_new'].unique():
         i = ref_tpes_comp_1[ref_tpes_comp_1['item_code_new'] == component].index[0]
         ref_tpes_comp_chart1.add_series({
             'name':       [economy + '_TPES_comp_ref', chart_height + i + 1, 1],
@@ -7418,7 +7597,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for fuel in TPES_agg_trade:
+    for fuel in ref_imports_1['fuel_code'].unique():
         i = ref_imports_1[ref_imports_1['fuel_code'] == fuel].index[0]
         ref_imports_line.add_series({
             'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 0],
@@ -7530,7 +7709,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for fuel in TPES_agg_trade:
+    for fuel in ref_exports_1['fuel_code'].unique():
         i = ref_exports_1[ref_exports_1['fuel_code'] == fuel].index[0]
         ref_exports_line.add_series({
             'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 0],
@@ -7793,7 +7972,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet11.insert_chart('B39', netz_tpes_chart2)
+    ref_worksheet11.insert_chart('B' + str(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 9), netz_tpes_chart2)
 
     ######## same chart as above but line
 
@@ -7853,7 +8032,7 @@ for economy in Economy_codes:
                            'width': 1}
         })    
         
-    ref_worksheet11.insert_chart('R39', netz_tpes_chart4)
+    ref_worksheet11.insert_chart('R' + str(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 9), netz_tpes_chart4)
 
     ###################### Create another TPES chart showing proportional share #################################
 
@@ -7900,7 +8079,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in TPES_agg_fuels:
+    for component in netz_tpes_2['fuel_code'].unique():
         i = netz_tpes_2[netz_tpes_2['fuel_code'] == component].index[0]
         netz_tpes_chart3.add_series({
             'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 0],
@@ -7912,7 +8091,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet11.insert_chart('J39', netz_tpes_chart3)
+    ref_worksheet11.insert_chart('J' + str(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 9), netz_tpes_chart3)
 
     ########################################### PRODUCTION CHARTS #############################################
     
@@ -7983,7 +8162,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet12.insert_chart('B39', netz_prod_chart2)
+    ref_worksheet12.insert_chart('B' + str(chart_height + ref_prod_1_rows + ref_prod_2_rows + 9), netz_prod_chart2)
 
     ############ Same as above but with a line ###########
 
@@ -8043,7 +8222,7 @@ for economy in Economy_codes:
                            'width': 1} 
         })    
         
-    ref_worksheet12.insert_chart('R39', netz_prod_chart2)
+    ref_worksheet12.insert_chart('R' + str(chart_height + ref_prod_1_rows + ref_prod_2_rows + 9), netz_prod_chart2)
 
     ###################### Create another PRODUCTION chart showing proportional share #################################
 
@@ -8091,7 +8270,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in TPES_agg_fuels:
+    for component in netz_prod_2['fuel_code'].unique():
         i = netz_prod_2[netz_prod_2['fuel_code'] == component].index[0]
         netz_prod_chart3.add_series({
             'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, 0],
@@ -8103,7 +8282,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet12.insert_chart('J39', netz_prod_chart3)
+    ref_worksheet12.insert_chart('J' + str(chart_height + ref_prod_1_rows + ref_prod_2_rows + 9), netz_prod_chart3)
     
     ###################################### TPES components I ###########################################
     
@@ -8163,7 +8342,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Net trade', 'Bunkers', 'Stock changes']:
+    for component in netz_tpes_comp_1['item_code_new'].unique():
         i = netz_tpes_comp_1[netz_tpes_comp_1['item_code_new'] == component].index[0]
         netz_tpes_comp_chart1.add_series({
             'name':       [economy + '_TPES_comp_netz', chart_height + i + 1, 1],
@@ -8221,7 +8400,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for fuel in TPES_agg_trade:
+    for fuel in netz_imports_1['fuel_code'].unique():
         i = netz_imports_1[netz_imports_1['fuel_code'] == fuel].index[0]
         netz_imports_line.add_series({
             'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 0],
@@ -8333,7 +8512,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.
-    for fuel in TPES_agg_trade:
+    for fuel in netz_exports_1['fuel_code'].unique():
         i = netz_exports_1[netz_exports_1['fuel_code'] == fuel].index[0]
         netz_exports_line.add_series({
             'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 0],
@@ -8467,7 +8646,7 @@ for economy in Economy_codes:
                            'width': 1.25},
         })    
         
-    ref_worksheet14.insert_chart('B31', netz_marine_line)
+    ref_worksheet14.insert_chart('B' + str(chart_height + ref_bunkers_1_rows + ref_bunkers_2_rows + 9), netz_marine_line)
 
     # AVIATION BUNKER: Create a line chart subset by fuel
     
@@ -8526,7 +8705,7 @@ for economy in Economy_codes:
                            'width': 1.25},
         })    
         
-    ref_worksheet14.insert_chart('J31', netz_aviation_line)
+    ref_worksheet14.insert_chart('J' + str(chart_height + ref_bunkers_1_rows + ref_bunkers_2_rows + 9), netz_aviation_line)
 
     #########################################################################################################################
 
@@ -9927,7 +10106,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet21.insert_chart('B51', netz_usefuel_chart1)
+        ref_worksheet21.insert_chart('B' + str(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 9), netz_usefuel_chart1)
 
     else:
         pass
@@ -9987,7 +10166,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })
 
-        ref_worksheet21.insert_chart('J51', netz_usefuel_chart2)
+        ref_worksheet21.insert_chart('J' + str(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 9), netz_usefuel_chart2)
 
     else:
         pass
@@ -10048,7 +10227,7 @@ for economy in Economy_codes:
                 'line':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
             })    
             
-        ref_worksheet21.insert_chart('R51', netz_usefuel_chart3)
+        ref_worksheet21.insert_chart('R' + str(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 9), netz_usefuel_chart3)
 
     else:
         pass
@@ -10121,7 +10300,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet22.insert_chart('B57', netz_prodelec_bytech_chart1)
+        ref_worksheet22.insert_chart('B' + str(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 9), netz_prodelec_bytech_chart1)
 
     else: 
         pass
@@ -10181,7 +10360,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet22.insert_chart('J57', netz_prodelec_bytech_chart2)
+        ref_worksheet22.insert_chart('J' + str(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 9), netz_prodelec_bytech_chart2)
     
     else:
         pass
@@ -10257,7 +10436,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        ref_worksheet23.insert_chart('B54', netz_refinery_chart1)
+        ref_worksheet23.insert_chart('B' + str(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 12), netz_refinery_chart1)
 
     else:
         pass
@@ -10319,7 +10498,7 @@ for economy in Economy_codes:
                                'width': 1}
             })    
             
-        ref_worksheet23.insert_chart('J54', netz_refinery_chart2)
+        ref_worksheet23.insert_chart('J' + str(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 12), netz_refinery_chart2)
 
     else: 
         pass
@@ -10379,7 +10558,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet23.insert_chart('R54', netz_refinery_chart3)
+        ref_worksheet23.insert_chart('R' + str(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 12), netz_refinery_chart3)
 
     else:
         pass
@@ -10452,7 +10631,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet24.insert_chart('B45', netz_pow_cap_chart1)
+        ref_worksheet24.insert_chart('B' + str(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 9), netz_pow_cap_chart1)
 
     else:
         pass
@@ -10512,7 +10691,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet24.insert_chart('J45', netz_pow_cap_chart2)
+        ref_worksheet24.insert_chart('J' + str(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 9), netz_pow_cap_chart2)
 
     else:
         pass
@@ -10585,7 +10764,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet25.insert_chart('B31', netz_trnsfrm_chart1)
+        ref_worksheet25.insert_chart('B' + str(chart_height + ref_trans_3_rows + ref_trans_4_rows + 9), netz_trnsfrm_chart1)
 
     else:
         pass
@@ -10647,7 +10826,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        ref_worksheet25.insert_chart('J31', netz_trnsfrm_chart2)
+        ref_worksheet25.insert_chart('J' + str(chart_height + ref_trans_3_rows + ref_trans_4_rows + 9), netz_trnsfrm_chart2)
 
     else:
         pass
@@ -10708,7 +10887,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet25.insert_chart('R31', netz_trnsfrm_chart3)
+        ref_worksheet25.insert_chart('R' + str(chart_height + ref_trans_3_rows + ref_trans_4_rows + 9), netz_trnsfrm_chart3)
 
     else:
         pass
@@ -10782,7 +10961,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet26.insert_chart('B41', netz_own_chart1)
+        ref_worksheet26.insert_chart('B' + str(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 9), netz_own_chart1)
 
     else:
         pass
@@ -10842,7 +11021,7 @@ for economy in Economy_codes:
                                'width': 1.25}
             })    
             
-        ref_worksheet26.insert_chart('J41', netz_own_chart2)
+        ref_worksheet26.insert_chart('J' + str(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 9), netz_own_chart2)
 
     else:
         pass
@@ -10903,7 +11082,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet26.insert_chart('R41', netz_own_chart3)
+        ref_worksheet26.insert_chart('R' + str(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 9), netz_own_chart3)
 
     else:
         pass
@@ -10976,7 +11155,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet27.insert_chart('B45', heatgen_bytech_chart1)
+        ref_worksheet27.insert_chart('B' + str(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 9), heatgen_bytech_chart1)
 
     else: 
         pass
@@ -11036,7 +11215,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet27.insert_chart('J45', heatgen_bytech_chart2)
+        ref_worksheet27.insert_chart('J' + str(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 9), heatgen_bytech_chart2)
     
     else:
         pass
@@ -11100,7 +11279,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet28.insert_chart('B39', netz_heatuse_chart1)
+        ref_worksheet28.insert_chart('B' + str(chart_height + ref_heat_use_2_rows + ref_heat_use_3_rows + 9), netz_heatuse_chart1)
 
     else:
         pass
@@ -11160,7 +11339,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })
 
-        ref_worksheet28.insert_chart('J39', netz_heatuse_chart2)
+        ref_worksheet28.insert_chart('J' + str(chart_height + ref_heat_use_2_rows + ref_heat_use_3_rows + 9), netz_heatuse_chart2)
 
     else:
         pass
@@ -11952,7 +12131,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        both_worksheet33.insert_chart('B47', netz_steel_chart1)
+        both_worksheet33.insert_chart('B' + str(chart_height + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 12), netz_steel_chart1)
 
     else: 
         pass
@@ -12014,7 +12193,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        both_worksheet33.insert_chart('J47', netz_chem_chart1)
+        both_worksheet33.insert_chart('J' + str(chart_height + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 12), netz_chem_chart1)
 
     else: 
         pass
@@ -12076,7 +12255,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        both_worksheet33.insert_chart('R47', netz_cement_chart1)
+        both_worksheet33.insert_chart('R' + str(chart_height + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 12), netz_cement_chart1)
 
     else: 
         pass
@@ -12200,7 +12379,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in Emissions_agg_fuels:
+    for component in ref_emiss_fuel_2['fuel_code'].unique():
         i = ref_emiss_fuel_2[ref_emiss_fuel_2['fuel_code'] == component].index[0]
         ref_em_fuel_chart2.add_series({
             'name':       [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + i + 4, 0],
@@ -12440,7 +12619,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in Emissions_agg_sectors:
+    for component in ref_emiss_sector_2['item_code_new'].unique():
         i = ref_emiss_sector_2[ref_emiss_sector_2['item_code_new'] == component].index[0]
         ref_em_sector_chart3.add_series({
             'name':       [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + i + 4, 1],
@@ -12511,7 +12690,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    both_worksheet34.insert_chart('B37', netz_em_fuel_chart1)
+    both_worksheet34.insert_chart('B' + str(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 9), netz_em_fuel_chart1)
 
     ###################### Create another EMISSIONS chart showing proportional share #################################
 
@@ -12558,7 +12737,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in Emissions_agg_fuels:
+    for component in netz_emiss_fuel_2['fuel_code'].unique():
         i = netz_emiss_fuel_2[netz_emiss_fuel_2['fuel_code'] == component].index[0]
         netz_em_fuel_chart2.add_series({
             'name':       [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, 0],
@@ -12570,7 +12749,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    both_worksheet34.insert_chart('J37', netz_em_fuel_chart2)
+    both_worksheet34.insert_chart('J' + str(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 9), netz_em_fuel_chart2)
 
     # Create a Emissions line chart with higher level aggregation
     netz_em_fuel_chart3 = workbook.add_chart({'type': 'line'})
@@ -12627,7 +12806,7 @@ for economy in Economy_codes:
                            'width': 1.25}
         })    
         
-    both_worksheet34.insert_chart('R37', netz_em_fuel_chart3)
+    both_worksheet34.insert_chart('R' + str(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 9), netz_em_fuel_chart3)
 
 
     ############################## Next sheet: FED (TFC) by sector ##############################
@@ -12688,7 +12867,7 @@ for economy in Economy_codes:
                            'width': 1.25}
         })    
         
-    both_worksheet35.insert_chart('R41', netz_em_sector_chart1)
+    both_worksheet35.insert_chart('R' + str(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 9), netz_em_sector_chart1)
 
     # Create a EMISSIONS sector area chart
 
@@ -12746,7 +12925,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    both_worksheet35.insert_chart('B41', netz_em_sector_chart2)
+    both_worksheet35.insert_chart('B' + str(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 9), netz_em_sector_chart2)
 
     ###################### Create another FED chart showing proportional share #################################
 
@@ -12793,7 +12972,7 @@ for economy in Economy_codes:
     })
 
     # Configure the series of the chart from the dataframe data.    
-    for component in Emissions_agg_sectors:
+    for component in netz_emiss_sector_2['item_code_new'].unique():
         i = netz_emiss_sector_2[netz_emiss_sector_2['item_code_new'] == component].index[0]
         netz_em_sector_chart3.add_series({
             'name':       [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, 1],
@@ -12805,7 +12984,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    both_worksheet35.insert_chart('J41', netz_em_sector_chart3)
+    both_worksheet35.insert_chart('J' + str(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 9), netz_em_sector_chart3)
 
     ##############################################################
 
@@ -12865,7 +13044,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production']:
+    for component in ref_nuke_1['item_code_new'].unique():
         i = ref_nuke_1[ref_nuke_1['item_code_new'] == component].index[0]
         ref_tpes_nuke_chart1.add_series({
             'name':       [economy + '_TPES_fuel_ref', chart_height + i + 1, 1],
@@ -12920,7 +13099,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+    for component in fuel_final_nobunk[:-1]:
         i = ref_biomass_1[ref_biomass_1['item_code_new'] == component].index[0]
         ref_tpes_biomass_chart1.add_series({
             'name':       [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + i + 4, 1],
@@ -12977,7 +13156,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+    for component in fuel_final_bunk[:-1]:
         i = ref_biofuel_2[ref_biofuel_2['item_code_new'] == component].index[0]
         ref_tpes_biofuel_chart1.add_series({
             'name':       [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + ref_biomass_1_rows + i + 7, 1],
@@ -13049,7 +13228,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production']:
+    for component in netz_nuke_1['item_code_new'].unique():
         i = netz_nuke_1[netz_nuke_1['item_code_new'] == component].index[0]
         netz_tpes_nuke_chart1.add_series({
             'name':       [economy + '_TPES_fuel_netz', chart_height + i + 1, 1],
@@ -13104,7 +13283,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+    for component in fuel_final_nobunk[:-1]:
         i = netz_biomass_1[netz_biomass_1['item_code_new'] == component].index[0]
         netz_tpes_biomass_chart1.add_series({
             'name':       [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + i + 4, 1],
@@ -13161,7 +13340,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+    for component in fuel_final_bunk[:-1]:
         i = netz_biofuel_2[netz_biofuel_2['item_code_new'] == component].index[0]
         netz_tpes_biofuel_chart1.add_series({
             'name':       [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + netz_biomass_1_rows + i + 7, 1],
@@ -13292,7 +13471,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+    for component in fuel_final_nobunk[:-1]:
         i = ref_coal_1[ref_coal_1['item_code_new'] == component].index[0]
         ref_tpes_coal_chart1.add_series({
             'name':       [economy + '_coal', chart_height + ref_coalcons_1_rows + i + 4, 1],
@@ -13365,7 +13544,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet41.insert_chart('B40', netz_coalcons_chart1)
+    ref_worksheet41.insert_chart('B' + str(chart_height + ref_coalcons_1_rows + ref_coal_1_rows + 9), netz_coalcons_chart1)
 
     # Create a TPES coal chart
     netz_tpes_coal_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -13410,7 +13589,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+    for component in fuel_final_nobunk[:-1]:
         i = netz_coal_1[netz_coal_1['item_code_new'] == component].index[0]
         netz_tpes_coal_chart1.add_series({
             'name':       [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + i + 10, 1],
@@ -13422,7 +13601,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet41.insert_chart('J40', netz_tpes_coal_chart1)
+    ref_worksheet41.insert_chart('J' + str(chart_height + ref_coalcons_1_rows + ref_coal_1_rows + 9), netz_tpes_coal_chart1)
 
     ##############
     # Natural gas
@@ -13540,7 +13719,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+    for component in fuel_final_nobunk[:-1]:
         i = ref_gas_1[ref_gas_1['item_code_new'] == component].index[0]
         ref_tpes_gas_chart1.add_series({
             'name':       [economy + '_gas', chart_height + ref_gascons_1_rows + i + 4, 1],
@@ -13613,7 +13792,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet42.insert_chart('B40', netz_gascons_chart1)
+    ref_worksheet42.insert_chart('B' + str(chart_height + ref_gascons_1_rows + ref_gas_1_rows + 9), netz_gascons_chart1)
 
     # Create a TPES gas chart
     netz_tpes_gas_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -13658,7 +13837,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+    for component in fuel_final_nobunk[:-1]:
         i = netz_gas_1[netz_gas_1['item_code_new'] == component].index[0]
         netz_tpes_gas_chart1.add_series({
             'name':       [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + i + 10, 1],
@@ -13670,7 +13849,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet42.insert_chart('J40', netz_tpes_gas_chart1)
+    ref_worksheet42.insert_chart('J' + str(chart_height + ref_gascons_1_rows + ref_gas_1_rows + 9), netz_tpes_gas_chart1)
 
     ##############
     # Crude
@@ -13788,7 +13967,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+    for component in fuel_final_nobunk[:-1]:
         i = ref_crude_1[ref_crude_1['item_code_new'] == component].index[0]
         ref_tpes_crude_chart1.add_series({
             'name':       [economy + '_crude_NGL', chart_height + ref_crudecons_1_rows + i + 4, 1],
@@ -13861,7 +14040,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet43.insert_chart('B41', netz_crudecons_chart1)
+    ref_worksheet43.insert_chart('B' + str(chart_height + ref_crudecons_1_rows + ref_crude_1_rows + 9), netz_crudecons_chart1)
 
     # Create a TPES gas chart
     netz_tpes_crude_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -13906,7 +14085,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Stock change']:
+    for component in fuel_final_nobunk[:-1]:
         i = netz_crude_1[netz_crude_1['item_code_new'] == component].index[0]
         netz_tpes_crude_chart1.add_series({
             'name':       [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + i + 10, 1],
@@ -13918,7 +14097,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet43.insert_chart('J41', netz_tpes_crude_chart1)
+    ref_worksheet43.insert_chart('J' + str(chart_height + ref_crudecons_1_rows + ref_crude_1_rows + 9), netz_tpes_crude_chart1)
 
     ##############
     # Petroleum products
@@ -14036,7 +14215,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+    for component in fuel_final_bunk[:-1]:
         i = ref_petprod_2[ref_petprod_2['item_code_new'] == component].index[0]
         ref_tpes_petprod_chart1.add_series({
             'name':       [economy + '_petprod', chart_height + ref_petprodcons_1_rows + i + 4, 1],
@@ -14109,7 +14288,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet44.insert_chart('B41', netz_petprodcons_chart1)
+    ref_worksheet44.insert_chart('B' + str(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 9), netz_petprodcons_chart1)
 
     # Create a TPES petroleum products chart
     netz_tpes_petprod_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -14154,7 +14333,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+    for component in fuel_final_bunk[:-1]:
         i = netz_petprod_2[netz_petprod_2['item_code_new'] == component].index[0]
         netz_tpes_petprod_chart1.add_series({
             'name':       [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, 1],
@@ -14166,7 +14345,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet44.insert_chart('J41', netz_tpes_petprod_chart1)
+    ref_worksheet44.insert_chart('J' + str(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 9), netz_tpes_petprod_chart1)
 
     ##############
     # Hydrogen
@@ -14364,7 +14543,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })    
             
-        ref_worksheet45.insert_chart('B36', netz_hydrogen_chart1)
+        ref_worksheet45.insert_chart('B' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 9), netz_hydrogen_chart1)
 
     else:
         pass
@@ -14425,13 +14604,13 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })
         
-        ref_worksheet45.insert_chart('J36', netz_tpes_hydrogen_chart1)
+        ref_worksheet45.insert_chart('J' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 9), netz_tpes_hydrogen_chart1)
 
     else:
         pass    
 
     ##############
-    # Liquid and solid renewabless
+    # Liquid and solid renewables
     
     # Access the workbook and second sheet with data from df2
     ref_worksheet46 = writer.sheets[economy + '_renew']
@@ -14546,7 +14725,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+    for component in fuel_final_bunk[:-1]:
         i = ref_renew_2[ref_renew_2['item_code_new'] == component].index[0]
         ref_tpes_renew_chart1.add_series({
             'name':       [economy + '_renew', chart_height + ref_renewcons_1_rows + i + 4, 1],
@@ -14619,7 +14798,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })    
         
-    ref_worksheet46.insert_chart('B41', netz_renewcons_chart1)
+    ref_worksheet46.insert_chart('B' + str(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 9), netz_renewcons_chart1)
 
     # Create a TPES petroleum products chart
     netz_tpes_renew_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
@@ -14664,7 +14843,7 @@ for economy in Economy_codes:
     })
     
     # Configure the series of the chart from the dataframe data.    
-    for component in ['Production', 'Imports', 'Exports', 'Bunkers', 'Stock change']:
+    for component in fuel_final_bunk[:-1]:
         i = netz_renew_2[netz_renew_2['item_code_new'] == component].index[0]
         netz_tpes_renew_chart1.add_series({
             'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + i + 10, 1],
@@ -14676,7 +14855,7 @@ for economy in Economy_codes:
             'border':     {'none': True}
         })
     
-    ref_worksheet46.insert_chart('J41', netz_tpes_renew_chart1)
+    ref_worksheet46.insert_chart('J' + str(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 9), netz_tpes_renew_chart1)
 
     writer.save()
 
