@@ -9133,7 +9133,7 @@ for economy in Economy_codes:
     ref_worksheet25.set_row((2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + ref_trans_3_rows + 9, None, header_format)
     ref_worksheet25.write(0, 0, economy + ' transformation reference', cell_format1)
     ref_worksheet25.write(chart_height + ref_trans_3_rows + ref_trans_4_rows + 6, 0, economy + ' transformation net-zero', cell_format1)
-    ref_worksheet26.write(1, 0, 'Units: Petajoules', cell_format2)
+    ref_worksheet25.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a transformation area chart
     if ref_trans_3_rows > 0:
