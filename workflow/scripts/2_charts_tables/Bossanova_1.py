@@ -649,6 +649,7 @@ EGEDA_histpower_renew = EGEDA_data[(EGEDA_data['item_code_new'].isin(['9_1_main_
 
 EGEDA_histpower_renew['FUEL'] = EGEDA_histpower_renew['fuel_code'].map({'15_solid_biomass': 'Liquid and solid renewables', 
                                                                         '16_1_biogas': 'Liquid and solid renewables', 
+                                                                        '16_3_municipal_solid_waste_renewable': 'Liquid and solid renewables',
                                                                         '16_5_biogasoline': 'Liquid and solid renewables', 
                                                                         '16_6_biodiesel': 'Liquid and solid renewables', 
                                                                         '16_7_bio_jet_kerosene': 'Liquid and solid renewables', 
@@ -754,6 +755,7 @@ EGEDA_hist_own_renew = EGEDA_data[(EGEDA_data['item_code_new'].isin(['10_losses_
 
 EGEDA_hist_own_renew['FUEL'] = EGEDA_hist_own_renew['fuel_code'].map({'15_solid_biomass': 'Liquid and solid renewables', 
                                                                       '16_1_biogas': 'Liquid and solid renewables', 
+                                                                      '16_3_municipal_solid_waste_renewable': 'Liquid and solid renewables',
                                                                       '16_5_biogasoline': 'Liquid and solid renewables', 
                                                                       '16_6_biodiesel': 'Liquid and solid renewables', 
                                                                       '16_7_bio_jet_kerosene': 'Liquid and solid renewables', 
@@ -3915,9 +3917,9 @@ for economy in Economy_codes:
 
     ref_renew_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                         (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))]\
+                                        (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable',
+                                                                                  '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                  '16_8_other_liquid_biofuels']))]\
                                            .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Liquid and solid renewables').reset_index()\
                                            [['fuel_code', 'item_code_new'] + col_chart_years] 
 
@@ -4139,9 +4141,9 @@ for economy in Economy_codes:
 
     netz_renew_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                         (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))]\
+                                        (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
+                                                                                '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                '16_8_other_liquid_biofuels']))]\
                                            .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Liquid and solid renewables').reset_index()\
                                            [['fuel_code', 'item_code_new'] + col_chart_years] 
 
@@ -4497,9 +4499,9 @@ for economy in Economy_codes:
 
     ref_renew_ind = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                             (EGEDA_years_reference['item_code_new'].isin(['14_industry_sector'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))]\
+                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
+                                                                                      '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                      '16_8_other_liquid_biofuels']))]\
                                                 .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index(drop = True)\
                                                     .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Industry')
 
@@ -4507,45 +4509,45 @@ for economy in Economy_codes:
 
     ref_renew_bld = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                             (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
+                                                                                      '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                      '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
 
     ref_renew_bld = ref_renew_bld[['fuel_code', 'item_code_new'] + list(ref_renew_bld.loc[:, '2000':'2050'])]
 
     ref_renew_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas','16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
+                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Agriculture')
 
     ref_renew_ag = ref_renew_ag[['fuel_code', 'item_code_new'] + list(ref_renew_ag.loc[:, '2000':'2050'])]
 
     ref_renew_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                             (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
+                                                                                      '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                      '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Transport')
 
     ref_renew_trn = ref_renew_trn[['fuel_code', 'item_code_new'] + list(ref_renew_trn.loc[:, '2000':'2050'])]
 
     ref_renew_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
+                                                                                     '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-energy')
 
     ref_renew_ne = ref_renew_ne[['fuel_code', 'item_code_new'] + list(ref_renew_ne.loc[:, '2000':'2050'])]
     
     ref_renew_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
+                                                                                     '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-specified')
 
     ref_renew_ns = ref_renew_ns[['fuel_code', 'item_code_new'] + list(ref_renew_ns.loc[:, '2000':'2050'])]
@@ -4554,7 +4556,7 @@ for economy in Economy_codes:
     ref_renew_own = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
                                     (ref_trans_df1['Sector'] == 'OWN') &
                                     (ref_trans_df1['FUEL'].isin(['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_5_other_biomass', 
-                                                                 '16_1_biogas', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                 '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                  '16_8_other_liquid_biofuels']))]\
                                                                      .copy().reset_index(drop = True)
                                                                      
@@ -4574,7 +4576,7 @@ for economy in Economy_codes:
 
     # Power
     ref_renew_power = ref_power_df1[(ref_power_df1['economy'] == economy) &
-                                    (ref_power_df1['FUEL'].isin(['15_4_black_liquor', '15_5_other_biomass']))]\
+                                    (ref_power_df1['FUEL'].isin(['15_4_black_liquor', '15_5_other_biomass', '16_3_municipal_solid_waste_renewable']))]\
                                                                      .copy().reset_index(drop = True)
 
     ref_renew_power = ref_renew_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
@@ -4925,7 +4927,7 @@ for economy in Economy_codes:
 
     netz_renew_ind = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                             (EGEDA_years_netzero['item_code_new'].isin(['14_industry_sector'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))]\
                                                 .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index(drop = True)\
@@ -4935,7 +4937,7 @@ for economy in Economy_codes:
 
     netz_renew_bld = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                             (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
@@ -4944,7 +4946,7 @@ for economy in Economy_codes:
 
     netz_renew_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                            (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Agriculture')
@@ -4953,7 +4955,7 @@ for economy in Economy_codes:
 
     netz_renew_trn = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                             (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Transport')
@@ -4962,7 +4964,7 @@ for economy in Economy_codes:
 
     netz_renew_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                            (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-energy')
@@ -4971,7 +4973,7 @@ for economy in Economy_codes:
     
     netz_renew_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                            (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-specified')
@@ -4982,7 +4984,7 @@ for economy in Economy_codes:
     netz_renew_own = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
                                     (netz_trans_df1['Sector'] == 'OWN') &
                                     (netz_trans_df1['FUEL'].isin(['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_5_other_biomass', 
-                                                                 '16_1_biogas', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                 '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                  '16_8_other_liquid_biofuels']))]\
                                                                      .copy().reset_index(drop = True)
                                                                      
@@ -5002,7 +5004,7 @@ for economy in Economy_codes:
 
     # Power
     netz_renew_power = netz_power_df1[(netz_power_df1['economy'] == economy) &
-                                    (netz_power_df1['FUEL'].isin(['15_4_black_liquor', '15_5_other_biomass']))]\
+                                    (netz_power_df1['FUEL'].isin(['15_4_black_liquor', '15_5_other_biomass', '16_3_municipal_solid_waste_renewable']))]\
                                                                      .copy().reset_index(drop = True)
 
     netz_renew_power = netz_renew_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
