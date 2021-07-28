@@ -838,7 +838,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['18_CT']
+# Economy_codes = ['20_USA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -5908,60 +5908,64 @@ for economy in Economy_codes:
     ############# FED transport chart 2 (transport by modality)
     
     # Create a FED transport modality column chart
-    ref_transport_chart2 = workbook.add_chart({'type': 'column', 
-                                         'subtype': 'stacked'})
-    ref_transport_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-
-    ref_transport_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_transport_chart2.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_transport_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_transport_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_transport_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for modality in ref_trn_2['item_code_new'].unique():
-        j = ref_trn_2[ref_trn_2['item_code_new'] == modality].index[0]
-        ref_transport_chart2.add_series({
-            'name':       [economy + '_FED_trn', chart_height + ref_trn_1_rows + j + 4, 1],
-            'categories': [economy + '_FED_trn', chart_height + ref_trn_1_rows + 3, 2, chart_height + ref_trn_1_rows + 3, ref_trn_2_cols - 1],
-            'values':     [economy + '_FED_trn', chart_height + ref_trn_1_rows + j + 4, 2, chart_height + ref_trn_1_rows + j + 4, ref_trn_2_cols - 1],
-            'fill':       {'color': ref_trn_2['item_code_new'].map(colours_dict).loc[j]},
-            'border':     {'none': True}
+    if ref_trn_2_rows > 0:
+        ref_transport_chart2 = workbook.add_chart({'type': 'column', 
+                                            'subtype': 'stacked'})
+        ref_transport_chart2.set_size({
+            'width': 500,
+            'height': 300
         })
-    
-    ref_worksheet5.insert_chart('J3', ref_transport_chart2)
+
+        ref_transport_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_transport_chart2.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_transport_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_transport_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_transport_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for modality in ref_trn_2['item_code_new'].unique():
+            j = ref_trn_2[ref_trn_2['item_code_new'] == modality].index[0]
+            ref_transport_chart2.add_series({
+                'name':       [economy + '_FED_trn', chart_height + ref_trn_1_rows + j + 4, 1],
+                'categories': [economy + '_FED_trn', chart_height + ref_trn_1_rows + 3, 2, chart_height + ref_trn_1_rows + 3, ref_trn_2_cols - 1],
+                'values':     [economy + '_FED_trn', chart_height + ref_trn_1_rows + j + 4, 2, chart_height + ref_trn_1_rows + j + 4, ref_trn_2_cols - 1],
+                'fill':       {'color': ref_trn_2['item_code_new'].map(colours_dict).loc[j]},
+                'border':     {'none': True}
+            })
+        
+        ref_worksheet5.insert_chart('J3', ref_transport_chart2)
+
+    else:
+        pass
 
     ################################# NEXT SHEET: AGRICULTURE FED ################################################################
 
@@ -6874,62 +6878,66 @@ for economy in Economy_codes:
     ############# FED transport chart 2 (transport by modality)
     
     # Create a FED transport modality column chart
-    netz_transport_chart2 = workbook.add_chart({'type': 'column', 
-                                         'subtype': 'stacked'})
-    netz_transport_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-
-    netz_transport_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_transport_chart2.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_transport_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_transport_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_transport_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for modality in netz_trn_2['item_code_new'].unique():
-        j = netz_trn_2[netz_trn_2['item_code_new'] == modality].index[0]
-        netz_transport_chart2.add_series({
-            'name':       [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 1],
-            'categories': [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, 2,\
-                (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, netz_trn_2_cols - 1],
-            'values':     [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 2,\
-                (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, netz_trn_2_cols - 1],
-            'fill':       {'color': netz_trn_2['item_code_new'].map(colours_dict).loc[j]},
-            'border':     {'none': True}
+    if netz_trn_2_rows > 0:
+        netz_transport_chart2 = workbook.add_chart({'type': 'column', 
+                                            'subtype': 'stacked'})
+        netz_transport_chart2.set_size({
+            'width': 500,
+            'height': 300
         })
-    
-    ref_worksheet5.insert_chart('J' + str(chart_height + ref_trn_1_rows + ref_trn_2_rows + 9), netz_transport_chart2)
+
+        netz_transport_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_transport_chart2.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_transport_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_transport_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_transport_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for modality in netz_trn_2['item_code_new'].unique():
+            j = netz_trn_2[netz_trn_2['item_code_new'] == modality].index[0]
+            netz_transport_chart2.add_series({
+                'name':       [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 1],
+                'categories': [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, netz_trn_2_cols - 1],
+                'values':     [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 2,\
+                    (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, netz_trn_2_cols - 1],
+                'fill':       {'color': netz_trn_2['item_code_new'].map(colours_dict).loc[j]},
+                'border':     {'none': True}
+            })
+        
+        ref_worksheet5.insert_chart('J' + str(chart_height + ref_trn_1_rows + ref_trn_2_rows + 9), netz_transport_chart2)
+
+    else:
+        pass
 
     ################################# NEXT SHEET: AGRICULTURE FED ################################################################
 
