@@ -5977,169 +5977,181 @@ for economy in Economy_codes:
     ref_worksheet6.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a Agriculture line chart 
-    ref_ag_chart1 = workbook.add_chart({'type': 'line'})
-    ref_ag_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_ag_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_ag_chart1.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'position_axis': 'on_tick',
-        'interval_unit': 10,
-        'line': {'color': '#bebebe'}
-    })
+    if ref_ag_1_rows > 0:
+        ref_ag_chart1 = workbook.add_chart({'type': 'line'})
+        ref_ag_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    ref_ag_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
+        ref_ag_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_ag_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        ref_ag_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_ag_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_ag_chart1.set_title({
+            'none': True
+        })
         
-    ref_ag_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_ag_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ref_ag_1_rows):
-        ref_ag_chart1.add_series({
-            'name':       [economy + '_FED_agr', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_agr', chart_height, 2, chart_height, ref_ag_1_cols - 1],
-            'values':     [economy + '_FED_agr', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
-            'line':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
-        })    
-        
-    ref_worksheet6.insert_chart('B3', ref_ag_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_ag_1_rows):
+            ref_ag_chart1.add_series({
+                'name':       [economy + '_FED_agr', chart_height + i + 1, 0],
+                'categories': [economy + '_FED_agr', chart_height, 2, chart_height, ref_ag_1_cols - 1],
+                'values':     [economy + '_FED_agr', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
+                'line':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet6.insert_chart('B3', ref_ag_chart1)
+
+    else:
+        pass
 
     # Create a Agriculture area chart
-    ref_ag_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    ref_ag_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_ag_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_ag_chart2.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'position_axis': 'on_tick',
-        'interval_unit': 10,
-        'line': {'color': '#bebebe'}
-    })
+    if ref_ag_1_rows > 0:
+        ref_ag_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        ref_ag_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    ref_ag_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
+        ref_ag_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_ag_chart2.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        ref_ag_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_ag_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_ag_chart2.set_title({
+            'none': True
+        })
         
-    ref_ag_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_ag_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ref_ag_1_rows):
-        ref_ag_chart2.add_series({
-            'name':       [economy + '_FED_agr', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_agr', chart_height, 2, chart_height, ref_ag_1_cols - 1],
-            'values':     [economy + '_FED_agr', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
-            'fill':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
-        
-    ref_worksheet6.insert_chart('J3', ref_ag_chart2)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_ag_1_rows):
+            ref_ag_chart2.add_series({
+                'name':       [economy + '_FED_agr', chart_height + i + 1, 0],
+                'categories': [economy + '_FED_agr', chart_height, 2, chart_height, ref_ag_1_cols - 1],
+                'values':     [economy + '_FED_agr', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
+                'fill':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        ref_worksheet6.insert_chart('J3', ref_ag_chart2)
+
+    else:
+        pass
 
     # Create a Agriculture stacked column
-    ref_ag_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
-    ref_ag_chart3.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_ag_chart3.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_ag_chart3.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'interval_unit': 1,
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_ag_chart3.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_ag_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_ag_chart3.set_title({
-        'none': True
-    })
-
-    # Configure the series of the chart from the dataframe data.    
-    for i in range(ref_ag_2_rows):
-        ref_ag_chart3.add_series({
-            'name':       [economy + '_FED_agr', chart_height + ref_ag_1_rows + i + 4, 0],
-            'categories': [economy + '_FED_agr', chart_height + ref_ag_1_rows + 3, 2, chart_height + ref_ag_1_rows + 3, ref_ag_2_cols - 1],
-            'values':     [economy + '_FED_agr', chart_height + ref_ag_1_rows + i + 4, 2, chart_height + ref_ag_1_rows + i + 4, ref_ag_2_cols - 1],
-            'fill':       {'color': ref_ag_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+    if ref_ag_2_rows > 0:
+        ref_ag_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+        ref_ag_chart3.set_size({
+            'width': 500,
+            'height': 300
         })
-    
-    ref_worksheet6.insert_chart('R3', ref_ag_chart3)
+        
+        ref_ag_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_ag_chart3.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'interval_unit': 1,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_ag_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_ag_chart3.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_ag_chart3.set_title({
+            'none': True
+        })
+
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(ref_ag_2_rows):
+            ref_ag_chart3.add_series({
+                'name':       [economy + '_FED_agr', chart_height + ref_ag_1_rows + i + 4, 0],
+                'categories': [economy + '_FED_agr', chart_height + ref_ag_1_rows + 3, 2, chart_height + ref_ag_1_rows + 3, ref_ag_2_cols - 1],
+                'values':     [economy + '_FED_agr', chart_height + ref_ag_1_rows + i + 4, 2, chart_height + ref_ag_1_rows + i + 4, ref_ag_2_cols - 1],
+                'fill':       {'color': ref_ag_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+        
+        ref_worksheet6.insert_chart('R3', ref_ag_chart3)
+
+    else:
+        pass
 
     # HYDROGEN CHARTS (REDUNDANT)
 
@@ -6929,175 +6941,187 @@ for economy in Economy_codes:
     # netz_worksheet6.write(0, 0, economy + ' FED agriculture', cell_format1)
 
     # Create a Agriculture line chart 
-    netz_ag_chart1 = workbook.add_chart({'type': 'line'})
-    netz_ag_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_ag_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_ag_chart1.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'position_axis': 'on_tick',
-        'interval_unit': 10,
-        'line': {'color': '#bebebe'}
-    })
+    if netz_ag_1_rows > 0:
+        netz_ag_chart1 = workbook.add_chart({'type': 'line'})
+        netz_ag_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    netz_ag_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
+        netz_ag_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_ag_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        netz_ag_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_ag_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_ag_chart1.set_title({
+            'none': True
+        })
         
-    netz_ag_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_ag_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(netz_ag_1_rows):
-        netz_ag_chart1.add_series({
-            'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
-            'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
-                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
-            'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
-            'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
-        })    
-        
-    ref_worksheet6.insert_chart('B' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart1)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_ag_1_rows):
+            netz_ag_chart1.add_series({
+                'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
+                'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
+                'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
+                'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet6.insert_chart('B' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart1)
+
+    else:
+        pass
 
     # Create a Agriculture area chart
-    netz_ag_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
-    netz_ag_chart2.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_ag_chart2.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_ag_chart2.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'position_axis': 'on_tick',
-        'interval_unit': 10,
-        'line': {'color': '#bebebe'}
-    })
+    if netz_ag_1_rows > 0:
+        netz_ag_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_ag_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    netz_ag_chart2.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
+        netz_ag_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_ag_chart2.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        netz_ag_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_ag_chart2.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_ag_chart2.set_title({
+            'none': True
+        })
         
-    netz_ag_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_ag_chart2.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(netz_ag_1_rows):
-        netz_ag_chart2.add_series({
-            'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
-            'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
-                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
-            'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
-            'fill':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
-        
-    ref_worksheet6.insert_chart('J' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart2)
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_ag_1_rows):
+            netz_ag_chart2.add_series({
+                'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
+                'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
+                'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
+                'fill':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
+            
+        ref_worksheet6.insert_chart('J' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart2)
+
+    else:
+        pass
 
     # Create a Agriculture stacked column
-    netz_ag_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
-    netz_ag_chart3.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_ag_chart3.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_ag_chart3.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'interval_unit': 1,
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_ag_chart3.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_ag_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_ag_chart3.set_title({
-        'none': True
-    })
-
-    # Configure the series of the chart from the dataframe data.    
-    for i in range(netz_ag_2_rows):
-        netz_ag_chart3.add_series({
-            'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, 0],
-            'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, 2,\
-                (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, netz_ag_2_cols - 1],
-            'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10,\
-                2, (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, netz_ag_2_cols - 1],
-            'fill':       {'color': netz_ag_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+    if netz_ag_2_rows > 0:
+        netz_ag_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+        netz_ag_chart3.set_size({
+            'width': 500,
+            'height': 300
         })
-    
-    ref_worksheet6.insert_chart('R' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart3)
+        
+        netz_ag_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_ag_chart3.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'interval_unit': 1,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_ag_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_ag_chart3.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_ag_chart3.set_title({
+            'none': True
+        })
+
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(netz_ag_2_rows):
+            netz_ag_chart3.add_series({
+                'name':       [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, 0],
+                'categories': [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, netz_ag_2_cols - 1],
+                'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10,\
+                    2, (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, netz_ag_2_cols - 1],
+                'fill':       {'color': netz_ag_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+        
+        ref_worksheet6.insert_chart('R' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart3)
+
+    else:
+        pass
 
     ############################################################################################################################
 
