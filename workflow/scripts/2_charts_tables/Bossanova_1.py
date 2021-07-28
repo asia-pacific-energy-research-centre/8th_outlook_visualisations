@@ -642,7 +642,7 @@ EGEDA_histpower_oil = pd.read_csv('./data/4_Joined/EGEDA_histpower_oil.csv')
 ### liquid and solid renewables
 
 EGEDA_histpower_renew = EGEDA_data[(EGEDA_data['item_code_new'].isin(['9_1_main_activity_producer', '9_2_autoproducers'])) &
-                                 (EGEDA_data['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                 (EGEDA_data['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))]\
                                     .copy().reset_index(drop = True)
@@ -748,7 +748,7 @@ EGEDA_hist_refining = pd.read_csv('./data/4_Joined/EGEDA_hist_refining.csv')
 # liquid and solid renewables historical
 
 EGEDA_hist_own_renew = EGEDA_data[(EGEDA_data['item_code_new'].isin(['10_losses_and_own_use'])) &
-                                (EGEDA_data['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_5_biogasoline', 
+                                (EGEDA_data['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))]\
                                   .copy().reset_index(drop = True)
@@ -838,7 +838,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['03_CDA']
+# Economy_codes = ['18_CT']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -921,7 +921,7 @@ for economy in Economy_codes:
     # Combine the two dataframes that account for Modern renewables
     ref_fedfuel_1 = ref_fedfuel_1.copy().groupby(['fuel_code']).sum().assign(item_code_new = '12_total_final_consumption')\
         .reset_index()[['fuel_code', 'item_code_new'] + list(ref_fedfuel_1.loc[:,'2000':'2050'])]\
-            .set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+            .set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -938,7 +938,7 @@ for economy in Economy_codes:
     # Second data frame construction: FED by sectors
     ref_fedsector_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
                         (EGEDA_years_reference['item_code_new'].isin(Sectors_tfc)) &
-                        (EGEDA_years_reference['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True)
+                        (EGEDA_years_reference['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True).replace(np.nan, 0)
 
     ref_fedsector_1 = ref_fedsector_1[['fuel_code', 'item_code_new'] + list(ref_fedsector_1.loc[:,'2000':])]
     
@@ -963,7 +963,7 @@ for economy in Economy_codes:
     ref_fedsector_2.loc[ref_fedsector_2['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
     ref_fedsector_2 = ref_fedsector_2[ref_fedsector_2['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
-    ref_fedsector_2 = ref_fedsector_2[['fuel_code', 'item_code_new'] + list(ref_fedsector_2.loc[:, '2000':])]
+    ref_fedsector_2 = ref_fedsector_2[['fuel_code', 'item_code_new'] + list(ref_fedsector_2.loc[:, '2000':])].replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1027,7 +1027,7 @@ for economy in Economy_codes:
     ref_bld_2.loc[ref_bld_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     ref_bld_2 = ref_bld_2[ref_bld_2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code')\
-        .loc[FED_agg_fuels].reset_index()
+        .loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_bld_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1037,7 +1037,7 @@ for economy in Economy_codes:
     ref_bld_2_cols = ref_bld_2.shape[1]
 
     ref_bld_3 = ref_bld_1[(ref_bld_1['fuel_code'] == '19_total') &
-                      (ref_bld_1['item_code_new'].isin(Buildings_items))].copy().reset_index(drop = True)
+                      (ref_bld_1['item_code_new'].isin(Buildings_items))].copy().reset_index(drop = True).replace(np.nan, 0)
 
     ref_bld_3.loc[ref_bld_3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
     ref_bld_3.loc[ref_bld_3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
@@ -1065,7 +1065,7 @@ for economy in Economy_codes:
     
     ref_ind_1 = ref_ind_1[ref_ind_1['item_code_new'].isin(Industry_eight)].set_index('item_code_new').loc[Industry_eight].reset_index()
 
-    ref_ind_1 = ref_ind_1[['fuel_code', 'item_code_new'] + list(ref_ind_1.loc[:, '2000':])]
+    ref_ind_1 = ref_ind_1[['fuel_code', 'item_code_new'] + list(ref_ind_1.loc[:, '2000':])].replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_ind_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1099,7 +1099,7 @@ for economy in Economy_codes:
     ref_ind_2.loc[ref_ind_2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_ind_2.loc[ref_ind_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
-    ref_ind_2 = ref_ind_2[ref_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index()
+    ref_ind_2 = ref_ind_2[ref_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_ind_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1137,7 +1137,7 @@ for economy in Economy_codes:
     ref_trn_1.loc[ref_trn_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     ref_trn_1.loc[ref_trn_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
-    ref_trn_1 = ref_trn_1[ref_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
+    ref_trn_1 = ref_trn_1[ref_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_trn_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1160,7 +1160,7 @@ for economy in Economy_codes:
 
     ref_trn_2 = ref_trn_2[ref_trn_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
-    ref_trn_2 = ref_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True)
+    ref_trn_2 = ref_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True).replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_trn_2.loc[:,'2018':] != 0).any(axis = 1)
@@ -1196,7 +1196,7 @@ for economy in Economy_codes:
     ref_ag_1.loc[ref_ag_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_ag_1.loc[ref_ag_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
-    ref_ag_1 = ref_ag_1[ref_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+    ref_ag_1 = ref_ag_1[ref_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_ag_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1229,7 +1229,7 @@ for economy in Economy_codes:
     ref_hyd_1.loc[ref_hyd_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
 
     ref_hyd_1 = ref_hyd_1[ref_hyd_1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
-        .copy().reset_index(drop = True)
+        .copy().reset_index(drop = True).replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_hyd_1.loc[:,'2017':] != 0).any(axis = 1)
@@ -1319,7 +1319,7 @@ for economy in Economy_codes:
     # Combine the two dataframes that account for Modern renewables
     netz_fedfuel_1 = netz_fedfuel_1.copy().groupby(['fuel_code']).sum().assign(item_code_new = '12_total_final_consumption')\
         .reset_index()[['fuel_code', 'item_code_new'] + list(netz_fedfuel_1.loc[:,'2000':'2050'])]\
-            .set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+            .set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1338,7 +1338,7 @@ for economy in Economy_codes:
                         (EGEDA_years_netzero['item_code_new'].isin(Sectors_tfc)) &
                         (EGEDA_years_netzero['fuel_code'].isin(['19_total']))].loc[:,'fuel_code':].reset_index(drop = True)
 
-    netz_fedsector_1 = netz_fedsector_1[['fuel_code', 'item_code_new'] + list(netz_fedsector_1.loc[:,'2000':])]
+    netz_fedsector_1 = netz_fedsector_1[['fuel_code', 'item_code_new'] + list(netz_fedsector_1.loc[:,'2000':])].replace(np.nan, 0)
     
     netz_fedsector_1_rows = netz_fedsector_1.shape[0]
     netz_fedsector_1_cols = netz_fedsector_1.shape[1]
@@ -1361,7 +1361,7 @@ for economy in Economy_codes:
     netz_fedsector_2.loc[netz_fedsector_2['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
     netz_fedsector_2 = netz_fedsector_2[netz_fedsector_2['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
-    netz_fedsector_2 = netz_fedsector_2[['fuel_code', 'item_code_new'] + list(netz_fedsector_2.loc[:, '2000':])]
+    netz_fedsector_2 = netz_fedsector_2[['fuel_code', 'item_code_new'] + list(netz_fedsector_2.loc[:, '2000':])].replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1423,7 +1423,7 @@ for economy in Economy_codes:
     netz_bld_2.loc[netz_bld_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     netz_bld_2 = netz_bld_2[netz_bld_2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code')\
-        .loc[FED_agg_fuels].reset_index()
+        .loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_bld_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1433,7 +1433,7 @@ for economy in Economy_codes:
     netz_bld_2_cols = netz_bld_2.shape[1]
 
     netz_bld_3 = netz_bld_1[(netz_bld_1['fuel_code'] == '19_total') &
-                      (netz_bld_1['item_code_new'].isin(Buildings_items))].copy().reset_index(drop = True)
+                      (netz_bld_1['item_code_new'].isin(Buildings_items))].copy().reset_index(drop = True).replace(np.nan, 0)
 
     netz_bld_3.loc[netz_bld_3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
     netz_bld_3.loc[netz_bld_3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
@@ -1461,7 +1461,7 @@ for economy in Economy_codes:
     
     netz_ind_1 = netz_ind_1[netz_ind_1['item_code_new'].isin(Industry_eight)].set_index('item_code_new').loc[Industry_eight].reset_index()
 
-    netz_ind_1 = netz_ind_1[['fuel_code', 'item_code_new'] + list(netz_ind_1.loc[:, '2000':])]
+    netz_ind_1 = netz_ind_1[['fuel_code', 'item_code_new'] + list(netz_ind_1.loc[:, '2000':])].replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_ind_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1495,7 +1495,7 @@ for economy in Economy_codes:
     netz_ind_2.loc[netz_ind_2['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_ind_2.loc[netz_ind_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
-    netz_ind_2 = netz_ind_2[netz_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index()
+    netz_ind_2 = netz_ind_2[netz_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index().replace(np.nan, 0)
     
     # Get rid of zero rows
     non_zero = (netz_ind_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1533,7 +1533,7 @@ for economy in Economy_codes:
     netz_trn_1.loc[netz_trn_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
     netz_trn_1.loc[netz_trn_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
-    netz_trn_1 = netz_trn_1[netz_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index()
+    netz_trn_1 = netz_trn_1[netz_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_trn_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1556,7 +1556,7 @@ for economy in Economy_codes:
 
     netz_trn_2 = netz_trn_2[netz_trn_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
-    netz_trn_2 = netz_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True)
+    netz_trn_2 = netz_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True).replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_trn_2.loc[:,'2018':] != 0).any(axis = 1)
@@ -1592,7 +1592,7 @@ for economy in Economy_codes:
     netz_ag_1.loc[netz_ag_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_ag_1.loc[netz_ag_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
-    netz_ag_1 = netz_ag_1[netz_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index()
+    netz_ag_1 = netz_ag_1[netz_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
     
     # Get rid of zero rows
     non_zero = (netz_ag_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1625,7 +1625,7 @@ for economy in Economy_codes:
     netz_hyd_1.loc[netz_hyd_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
 
     netz_hyd_1 = netz_hyd_1[netz_hyd_1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
-        .copy().reset_index(drop = True)
+        .copy().reset_index(drop = True).replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_hyd_1.loc[:,'2017':] != 0).any(axis = 1)
@@ -1660,7 +1660,7 @@ for economy in Economy_codes:
     ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+    ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_tpes_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1697,7 +1697,7 @@ for economy in Economy_codes:
     ref_prod_1.loc[ref_prod_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_prod_1.loc[ref_prod_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    ref_prod_1 = ref_prod_1[ref_prod_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+    ref_prod_1 = ref_prod_1[ref_prod_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_prod_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1731,7 +1731,7 @@ for economy in Economy_codes:
     ref_tpes_comp_1 = ref_tpes_comp_1.loc[ref_tpes_comp_1['item_code_new'].isin(['Production',
                                                                            'Net trade',
                                                                            'Bunkers',
-                                                                           'Stock changes'])].reset_index(drop = True)
+                                                                           'Stock changes'])].reset_index(drop = True).replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_tpes_comp_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1765,7 +1765,7 @@ for economy in Economy_codes:
 
     ref_imports_1 = ref_imports_1[ref_imports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(ref_imports_1.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(ref_imports_1.loc[:, '2000':])].replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_imports_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1806,7 +1806,7 @@ for economy in Economy_codes:
 
     ref_exports_1 = ref_exports_1[ref_exports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(ref_exports_1.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(ref_exports_1.loc[:, '2000':])].replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_exports_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1896,7 +1896,7 @@ for economy in Economy_codes:
     netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    netz_tpes_1 = netz_tpes_1[netz_tpes_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+    netz_tpes_1 = netz_tpes_1[netz_tpes_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_tpes_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1933,7 +1933,7 @@ for economy in Economy_codes:
     netz_prod_1.loc[netz_prod_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_prod_1.loc[netz_prod_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    netz_prod_1 = netz_prod_1[netz_prod_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index()
+    netz_prod_1 = netz_prod_1[netz_prod_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_prod_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1967,7 +1967,7 @@ for economy in Economy_codes:
     netz_tpes_comp_1 = netz_tpes_comp_1.loc[netz_tpes_comp_1['item_code_new'].isin(['Production',
                                                                            'Net trade',
                                                                            'Bunkers',
-                                                                           'Stock changes'])].reset_index(drop = True)
+                                                                           'Stock changes'])].reset_index(drop = True).replace(np.nan, 0)
     
     # Get rid of zero rows
     non_zero = (netz_tpes_comp_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -2001,7 +2001,7 @@ for economy in Economy_codes:
 
     netz_imports_1 = netz_imports_1[netz_imports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(netz_imports_1.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(netz_imports_1.loc[:, '2000':])].replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_imports_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -2042,7 +2042,7 @@ for economy in Economy_codes:
 
     netz_exports_1 = netz_exports_1[netz_exports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
-            [['fuel_code', 'item_code_new'] + list(netz_exports_1.loc[:, '2000':])]
+            [['fuel_code', 'item_code_new'] + list(netz_exports_1.loc[:, '2000':])].replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_exports_1.loc[:,'2000':] != 0).any(axis = 1)
