@@ -113,7 +113,7 @@ Oil_fuels = ['6_crude_oil_and_ngl', '7_petroleum_products', '5_oil_shale_and_oil
 
 Other_fuels_FED = ['9_nuclear', '16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable']
 
-Other_fuels_TPES = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_x_hydrogen', '16_9_other_sources']
+Other_fuels_TPES = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable', '16_9_other_sources']
 
 Other_fuels_industry = ['9_nuclear', '10_hydro', '11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '16_1_biogas',
                          '16_2_industrial_waste', '16_3_municipal_solid_waste_renewable', '16_4_municipal_solid_waste_nonrenewable', 
@@ -131,6 +131,9 @@ Petroleum_fuels = ['7_petroleum_products', '7_1_motor_gasoline', '7_2_aviation_g
                    '7_5_kerosene_type_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil', '7_9_lpg',
                    '7_10_refinery_gas_not_liquefied', '7_11_ethane', '7_x_other_petroleum_products', '7_12_white_spirit_sbp',
                    '7_13_lubricants', '7_14_bitumen', '7_15_paraffin_waxes', '7_16_petroleum_coke', '7_17_other_products']
+
+marine_bunker_fuels = ['7_7_gas_diesel_oil', '7_8_fuel_oil', '8_1_natural_gas', '16_x_hydrogen', '16_6_biodiesel']
+aviation_bunker_fuels = ['7_x_jet_fuel', '16_x_hydrogen', '16_7_bio_jet_kerosene', '7_2_aviation_gasoline']
 
 ### Transport fuel vectors
 
@@ -259,9 +262,9 @@ renew_ou = ['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_
             '16_8_other_liquid_biofuels']
 elec_ou = ['17_electricity']
 heat_ou = ['18_heat']
-other_ou = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable']
+waste_ou = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable']
 
-own_use_fuels = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat', 'Other']
+own_use_fuels = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat', 'Waste']
 
 # Note, 12_1_of_which_photovoltaics is a subset of 12_solar so including will lead to double counting
 
@@ -285,7 +288,8 @@ wind_tech = ['POW_WindOff_PP', 'POW_Wind_PP']
 bio_tech = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP']
 geo_tech = ['POW_Geothermal_PP']
 storage_tech = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
-other_tech = ['POW_IPP_PP', 'POW_TIDAL_PP', 'POW_WasteToEnergy_PP', 'POW_CHP_PP']
+waste_tech = ['POW_WasteToEnergy_PP']
+other_tech = ['POW_IPP_PP', 'POW_TIDAL_PP', 'POW_CHP_PP']
 # chp_tech = ['POW_CHP_PP']
 im_tech = ['POW_IMPORTS_PP', 'POW_IMPORT_ELEC_PP']
 
@@ -313,9 +317,9 @@ all_elec_heat = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP'
 
 # POW_EXPORT_ELEC_PP need to work this in
 
-prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 'Geothermal', 'Storage', 'Other', 'Imports']
+prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports']
 prod_agg_tech2 = ['Coal', 'Coal CCS', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
-                 'Bio', 'Geothermal', 'Storage', 'Other', 'Imports']
+                 'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports']
 
 heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Nuclear', 'Biomass', 'Waste', 'Heat only', 'Non-specified', 'Other']
 
@@ -349,7 +353,8 @@ wind_cap = ['POW_Wind_PP', 'POW_WindOff_PP']
 solar_cap = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP', 'POW_SolarRoofPV_PP']
 geo_cap = ['POW_Geothermal_PP']
 storage_cap = ['POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage']
-other_cap = ['POW_WasteToEnergy_PP', 'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_CHP_PP']
+waste_cap = ['POW_WasteToEnergy_PP']
+other_cap = ['POW_IPP_PP', 'POW_TIDAL_PP', 'POW_CHP_PP']
 # chp_cap = ['POW_CHP_PP']
 # 'POW_HEAT_HP' not in electricity capacity
 transmission_cap = ['POW_Transmission']
@@ -358,9 +363,9 @@ lignite_cap = ['POW_Sub_Brown_PP']
 thermal_coal_cap = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
 
 
-pow_capacity_agg = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 'Solar', 'Geothermal', 'Storage', 'Other']
+pow_capacity_agg = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 'Solar', 'Geothermal', 'Waste', 'Storage', 'Other']
 pow_capacity_agg2 = ['Coal', 'Coal CCS', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 
-                     'Solar', 'Geothermal', 'Storage', 'Other']
+                     'Solar', 'Geothermal', 'Waste', 'Storage', 'Other']
 
 # Heat power plants
 
@@ -405,9 +410,10 @@ Transport_modal_agg = ['Aviation', 'Road', 'Rail' ,'Marine', 'Pipeline', 'Non-sp
 
 # TPES
 
-TPES_agg_fuels = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
+TPES_agg_fuels1 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Hydrogen', 'Other fuels']
+TPES_agg_fuels2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
 TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 
-                  'Renewables', 'Electricity', 'Other fuels']
+                  'Renewables', 'Electricity', 'Hydrogen', 'Other fuels']
 avi_bunker = ['Aviation gasoline', 'Jet fuel']
 
 ########################### Create historical electricity generation dataframe for use later ###########################
@@ -838,7 +844,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['07_INA']
+# Economy_codes = ['20_USA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1659,8 +1665,9 @@ for economy in Economy_codes:
 
     ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
-    ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index().replace(np.nan, 0)
+    ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(TPES_agg_fuels1)].set_index('fuel_code').loc[TPES_agg_fuels1].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_tpes_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1697,7 +1704,7 @@ for economy in Economy_codes:
     ref_prod_1.loc[ref_prod_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_prod_1.loc[ref_prod_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    ref_prod_1 = ref_prod_1[ref_prod_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index().replace(np.nan, 0)
+    ref_prod_1 = ref_prod_1[ref_prod_1['fuel_code'].isin(TPES_agg_fuels2)].set_index('fuel_code').loc[TPES_agg_fuels2].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (ref_prod_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1762,6 +1769,7 @@ for economy in Economy_codes:
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    ref_imports_1.loc[ref_imports_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     ref_imports_1 = ref_imports_1[ref_imports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
@@ -1803,6 +1811,7 @@ for economy in Economy_codes:
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    ref_exports_1.loc[ref_exports_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     ref_exports_1 = ref_exports_1[ref_exports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
@@ -1824,13 +1833,17 @@ for economy in Economy_codes:
 
     ref_bunkers_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                               (EGEDA_years_reference['item_code_new'] == '4_international_marine_bunkers') & 
-                              (EGEDA_years_reference['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
+                              (EGEDA_years_reference['fuel_code'].isin(marine_bunker_fuels))]
 
     ref_bunkers_1 = ref_bunkers_1[['fuel_code', 'item_code_new'] + list(ref_bunkers_1.loc[:, '2000':])].reset_index(drop = True)\
         .replace(np.nan, 0)
 
     ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
     ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
+    ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
+    ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '16_6_biodiesel', 'fuel_code'] = 'Biodiesel'
+    ref_bunkers_1.loc[ref_bunkers_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
+
 
     # Make bunkers data non-negative
     ref_bunkers_1.update(ref_bunkers_1.select_dtypes(include = [np.number]).abs())
@@ -1844,7 +1857,7 @@ for economy in Economy_codes:
 
     ref_bunkers_2 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                               (EGEDA_years_reference['item_code_new'] == '5_international_aviation_bunkers') & 
-                              (EGEDA_years_reference['fuel_code'].isin(['7_x_jet_fuel', '7_2_aviation_gasoline']))]
+                              (EGEDA_years_reference['fuel_code'].isin(aviation_bunker_fuels))]
 
     jetfuel = ref_bunkers_2[ref_bunkers_2['fuel_code'].isin(['7_x_jet_fuel'])]\
         .groupby(['item_code_new']).sum().assign(fuel_code = 'Jet fuel',
@@ -1855,6 +1868,8 @@ for economy in Economy_codes:
     ref_bunkers_2 = ref_bunkers_2[['fuel_code', 'item_code_new'] + list(ref_bunkers_2.loc[:, '2000':])]
 
     ref_bunkers_2.loc[ref_bunkers_2['fuel_code'] == '7_2_aviation_gasoline', 'fuel_code'] = 'Aviation gasoline'
+    ref_bunkers_2.loc[ref_bunkers_2['fuel_code'] == '16_7_bio_jet_kerosene', 'fuel_code'] = 'Biojet kerosene'
+    ref_bunkers_2.loc[ref_bunkers_2['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     ref_bunkers_2 = ref_bunkers_2[ref_bunkers_2['fuel_code'].isin(avi_bunker)]\
         .set_index('fuel_code').loc[avi_bunker].reset_index()\
@@ -1895,8 +1910,9 @@ for economy in Economy_codes:
 
     netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
-    netz_tpes_1 = netz_tpes_1[netz_tpes_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index().replace(np.nan, 0)
+    netz_tpes_1 = netz_tpes_1[netz_tpes_1['fuel_code'].isin(TPES_agg_fuels1)].set_index('fuel_code').loc[TPES_agg_fuels1].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_tpes_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1933,7 +1949,7 @@ for economy in Economy_codes:
     netz_prod_1.loc[netz_prod_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_prod_1.loc[netz_prod_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
-    netz_prod_1 = netz_prod_1[netz_prod_1['fuel_code'].isin(TPES_agg_fuels)].set_index('fuel_code').loc[TPES_agg_fuels].reset_index().replace(np.nan, 0)
+    netz_prod_1 = netz_prod_1[netz_prod_1['fuel_code'].isin(TPES_agg_fuels2)].set_index('fuel_code').loc[TPES_agg_fuels2].reset_index().replace(np.nan, 0)
 
     # Get rid of zero rows
     non_zero = (netz_prod_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1998,6 +2014,7 @@ for economy in Economy_codes:
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    netz_imports_1.loc[netz_imports_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     netz_imports_1 = netz_imports_1[netz_imports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
@@ -2039,6 +2056,7 @@ for economy in Economy_codes:
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    netz_exports_1.loc[netz_exports_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     netz_exports_1 = netz_exports_1[netz_exports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
@@ -2060,13 +2078,16 @@ for economy in Economy_codes:
 
     netz_bunkers_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                               (EGEDA_years_netzero['item_code_new'] == '4_international_marine_bunkers') & 
-                              (EGEDA_years_netzero['fuel_code'].isin(['7_7_gas_diesel_oil', '7_8_fuel_oil']))]
+                              (EGEDA_years_netzero['fuel_code'].isin(marine_bunker_fuels))]
 
     netz_bunkers_1 = netz_bunkers_1[['fuel_code', 'item_code_new'] + list(netz_bunkers_1.loc[:, '2000':])].reset_index(drop = True)\
         .replace(np.nan, 0)
 
     netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '7_7_gas_diesel_oil', 'fuel_code'] = 'Gas diesel oil'
     netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '7_8_fuel_oil', 'fuel_code'] = 'Fuel oil'
+    netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '8_1_natural_gas', 'fuel_code'] = 'Gas'
+    netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '16_6_biodiesel', 'fuel_code'] = 'Biodiesel'
+    netz_bunkers_1.loc[netz_bunkers_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     # Make bunkers data non-negative
     netz_bunkers_1.update(netz_bunkers_1.select_dtypes(include = [np.number]).abs())
@@ -2080,7 +2101,7 @@ for economy in Economy_codes:
 
     netz_bunkers_2 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                               (EGEDA_years_netzero['item_code_new'] == '5_international_aviation_bunkers') & 
-                              (EGEDA_years_netzero['fuel_code'].isin(['7_x_jet_fuel', '7_2_aviation_gasoline']))]
+                              (EGEDA_years_netzero['fuel_code'].isin(aviation_bunker_fuels))]
 
     jetfuel = netz_bunkers_2[netz_bunkers_2['fuel_code'].isin(['7_x_jet_fuel'])]\
         .groupby(['item_code_new']).sum().assign(fuel_code = 'Jet fuel',
@@ -2091,6 +2112,8 @@ for economy in Economy_codes:
     netz_bunkers_2 = netz_bunkers_2[['fuel_code', 'item_code_new'] + list(netz_bunkers_2.loc[:, '2000':])]
 
     netz_bunkers_2.loc[netz_bunkers_2['fuel_code'] == '7_2_aviation_gasoline', 'fuel_code'] = 'Aviation gasoline'
+    netz_bunkers_2.loc[netz_bunkers_2['fuel_code'] == '16_7_bio_jet_kerosene', 'fuel_code'] = 'Biojet kerosene'
+    netz_bunkers_2.loc[netz_bunkers_2['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     netz_bunkers_2 = netz_bunkers_2[netz_bunkers_2['fuel_code'].isin(avi_bunker)]\
         .set_index('fuel_code').loc[avi_bunker].reset_index()\
@@ -2242,6 +2265,7 @@ for economy in Economy_codes:
     misc = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(im_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Imports')
     solar_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(solar_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar')
     wind_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(wind_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Wind')
+    waste_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(waste_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
 
     coal_pp2 = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(thermal_coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
     lignite_pp2 = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(lignite_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
@@ -2251,7 +2275,7 @@ for economy in Economy_codes:
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
     ref_elecgen_2 = ref_elecgen_1.append([coal_pp2, coal_ccs_pp, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
-        bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
+        bio_pp, geo_pp, waste_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
         [['TECHNOLOGY'] + list(ref_elecgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                                                                    
 
     ref_elecgen_2['Generation'] = 'Electricity'
@@ -2426,6 +2450,7 @@ for economy in Economy_codes:
     #chp_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(chp_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Cogeneration')
     other_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(other_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Other')
     transmission = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(transmission_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Transmission')
+    waste_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(waste_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Waste')
 
     lignite_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(lignite_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Lignite')
     thermal_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(thermal_coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
@@ -2434,7 +2459,7 @@ for economy in Economy_codes:
 
     ref_powcap_1 = ref_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
-                                            storage_capacity, geo_capacity, other_capacity])\
+                                            storage_capacity, geo_capacity, waste_capacity, other_capacity])\
         [['TECHNOLOGY'] + list(ref_powcap_1.loc[:, '2017':'2050'])].reset_index(drop = True) 
 
     ref_powcap_1 = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
@@ -2509,10 +2534,10 @@ for economy in Economy_codes:
         sum().assign(FUEL = 'Electricity', Sector = 'Own-use and losses')
     heat_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(heat_ou)].groupby(['economy']).\
         sum().assign(FUEL = 'Heat', Sector = 'Own-use and losses')
-    other_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(other_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Other', Sector = 'Own-use and losses')
+    waste_own = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(waste_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Waste', Sector = 'Own-use and losses')
 
-    ref_ownuse_1 = ref_ownuse_1.append([coal_own, oil_own, gas_own, renewables_own, elec_own, heat_own, other_own])\
+    ref_ownuse_1 = ref_ownuse_1.append([coal_own, oil_own, gas_own, renewables_own, elec_own, heat_own, waste_own])\
         [['FUEL', 'Sector'] + list(ref_ownuse_1.loc[:, '2017':'2050'])].reset_index(drop = True)
 
     ref_ownuse_1 = ref_ownuse_1[ref_ownuse_1['FUEL'].isin(own_use_fuels)].reset_index(drop = True)
@@ -2789,6 +2814,7 @@ for economy in Economy_codes:
     misc = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(im_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Imports')
     solar_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(solar_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar')
     wind_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(wind_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Wind')
+    waste_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(waste_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
 
     coal_pp2 = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(thermal_coal_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Coal')
     lignite_pp2 = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(lignite_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
@@ -2798,7 +2824,7 @@ for economy in Economy_codes:
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
     netz_elecgen_2 = netz_elecgen_1.append([coal_pp2, coal_ccs_pp, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
-        bio_pp, geo_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
+        bio_pp, geo_pp, waste_pp, other_pp, hydro_pp, misc, solar_pp, wind_pp])\
         [['TECHNOLOGY'] + list(netz_elecgen_1.loc[:,'2017':'2050'])].reset_index(drop = True)                                                                                                    
 
     netz_elecgen_2['Generation'] = 'Electricity'
@@ -2974,6 +3000,7 @@ for economy in Economy_codes:
     #chp_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(chp_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Cogeneration')
     other_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(other_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Other')
     transmission = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(transmission_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Transmission')
+    waste_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(waste_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Waste')
 
     lignite_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(lignite_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Lignite')
     thermal_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(thermal_coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
@@ -2982,7 +3009,7 @@ for economy in Economy_codes:
 
     netz_powcap_1 = netz_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
-                                            storage_capacity, geo_capacity, other_capacity])\
+                                            storage_capacity, geo_capacity, waste_capacity, other_capacity])\
         [['TECHNOLOGY'] + list(netz_powcap_1.loc[:,'2017':'2050'])].reset_index(drop = True) 
 
     netz_powcap_1 = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
@@ -3057,10 +3084,10 @@ for economy in Economy_codes:
         sum().assign(FUEL = 'Electricity', Sector = 'Own-use and losses')
     heat_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(heat_ou)].groupby(['economy']).\
         sum().assign(FUEL = 'Heat', Sector = 'Own-use and losses')
-    other_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(other_ou)].groupby(['economy']).\
-        sum().assign(FUEL = 'Other', Sector = 'Own-use and losses')
+    waste_own = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(waste_ou)].groupby(['economy']).\
+        sum().assign(FUEL = 'Waste', Sector = 'Own-use and losses')
 
-    netz_ownuse_1 = netz_ownuse_1.append([coal_own, oil_own, gas_own, renewables_own, elec_own, heat_own, other_own])\
+    netz_ownuse_1 = netz_ownuse_1.append([coal_own, oil_own, gas_own, renewables_own, elec_own, heat_own, waste_own])\
         [['FUEL', 'Sector'] + list(netz_ownuse_1.loc[:,'2017':'2050'])].reset_index(drop = True)
 
     netz_ownuse_1 = netz_ownuse_1[netz_ownuse_1['FUEL'].isin(own_use_fuels)].reset_index(drop = True)
