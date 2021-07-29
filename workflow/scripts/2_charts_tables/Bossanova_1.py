@@ -838,7 +838,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA']
+# Economy_codes = ['07_INA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -9013,13 +9013,24 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_elecgen_2_rows):
-            prodelec_bytech_chart1.add_series({
-                'name':       [economy + '_elec_gen', chart_height + i + 1, 0],
-                'categories': [economy + '_elec_gen', chart_height, 2, chart_height, ref_elecgen_2_cols - 1],
-                'values':     [economy + '_elec_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_2_cols - 1],
-                'fill':       {'color': ref_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_elecgen_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+                prodelec_bytech_chart1.add_series({
+                    'name':       [economy + '_elec_gen', chart_height + i + 1, 0],
+                    'categories': [economy + '_elec_gen', chart_height, 2, chart_height, ref_elecgen_2_cols - 1],
+                    'values':     [economy + '_elec_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_2_cols - 1],
+                    'fill':       {'color': ref_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                prodelec_bytech_chart1.add_series({
+                    'name':       [economy + '_elec_gen', chart_height + i + 1, 0],
+                    'categories': [economy + '_elec_gen', chart_height, 2, chart_height, ref_elecgen_2_cols - 1],
+                    'values':     [economy + '_elec_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_2_cols - 1],
+                    'pattern':    {'fg_color': ref_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })
             
         ref_worksheet22.insert_chart('B3', prodelec_bytech_chart1)
 
@@ -9071,13 +9082,24 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_elecgen_3_rows):
-            prodelec_bytech_chart2.add_series({
-                'name':       [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 0],
-                'categories': [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
-                'values':     [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
-                'fill':       {'color': ref_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_elecgen_3['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+                prodelec_bytech_chart2.add_series({
+                    'name':       [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 0],
+                    'categories': [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
+                    'values':     [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
+                    'fill':       {'color': ref_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                prodelec_bytech_chart2.add_series({
+                    'name':       [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 0],
+                    'categories': [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
+                    'values':     [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
+                    'pattern':    {'fg_color': ref_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })
             
         ref_worksheet22.insert_chart('J3', prodelec_bytech_chart2)
     
@@ -9343,13 +9365,24 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_powcap_1_rows):
-            pow_cap_chart1.add_series({
-                'name':       [economy + '_pow_cap', chart_height + i + 1, 0],
-                'categories': [economy + '_pow_cap', chart_height, 1, chart_height, ref_powcap_1_cols - 1],
-                'values':     [economy + '_pow_cap', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_1_cols - 1],
-                'fill':       {'color': ref_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_powcap_1['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+                pow_cap_chart1.add_series({
+                    'name':       [economy + '_pow_cap', chart_height + i + 1, 0],
+                    'categories': [economy + '_pow_cap', chart_height, 1, chart_height, ref_powcap_1_cols - 1],
+                    'values':     [economy + '_pow_cap', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_1_cols - 1],
+                    'fill':       {'color': ref_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pow_cap_chart1.add_series({
+                    'name':       [economy + '_pow_cap', chart_height + i + 1, 0],
+                    'categories': [economy + '_pow_cap', chart_height, 1, chart_height, ref_powcap_1_cols - 1],
+                    'values':     [economy + '_pow_cap', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_1_cols - 1],
+                    'pattern':    {'fg_color': ref_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })    
             
         ref_worksheet24.insert_chart('B3', pow_cap_chart1)
 
@@ -9401,13 +9434,24 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_powcap_2_rows):
-            pow_cap_chart2.add_series({
-                'name':       [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 0],
-                'categories': [economy + '_pow_cap', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
-                'values':     [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
-                'fill':       {'color': ref_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_powcap_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+                pow_cap_chart2.add_series({
+                    'name':       [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 0],
+                    'categories': [economy + '_pow_cap', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
+                    'values':     [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
+                    'fill':       {'color': ref_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pow_cap_chart2.add_series({
+                    'name':       [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 0],
+                    'categories': [economy + '_pow_cap', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
+                    'values':     [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
+                    'pattern':    {'fg_color': ref_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })    
             
         ref_worksheet24.insert_chart('J3', pow_cap_chart2)
 
@@ -10334,16 +10378,29 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_elecgen_2_rows):
-            netz_prodelec_bytech_chart1.add_series({
-                'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 0],
-                'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 2,\
-                    (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, netz_elecgen_2_cols - 1],
-                'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, netz_elecgen_2_cols - 1],
-                'fill':       {'color': netz_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
-            
+            if not netz_elecgen_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:    
+                netz_prodelec_bytech_chart1.add_series({
+                    'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 0],
+                    'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 2,\
+                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, netz_elecgen_2_cols - 1],
+                    'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, netz_elecgen_2_cols - 1],
+                    'fill':       {'color': netz_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                netz_prodelec_bytech_chart1.add_series({
+                    'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 0],
+                    'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 2,\
+                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, netz_elecgen_2_cols - 1],
+                    'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, netz_elecgen_2_cols - 1],
+                    'pattern':    {'fg_color': netz_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })
+           
         ref_worksheet22.insert_chart('B' + str(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 9), netz_prodelec_bytech_chart1)
 
     else: 
@@ -10394,15 +10451,28 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_elecgen_3_rows):
-            netz_prodelec_bytech_chart2.add_series({
-                'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 0],
-                'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, 2,\
-                    (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, netz_elecgen_3_cols - 1],
-                'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 2,\
-                    (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, netz_elecgen_3_cols - 1],
-                'fill':       {'color': netz_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_elecgen_3['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+                netz_prodelec_bytech_chart2.add_series({
+                    'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 0],
+                    'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, 2,\
+                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, netz_elecgen_3_cols - 1],
+                    'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, netz_elecgen_3_cols - 1],
+                    'fill':       {'color': netz_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else: 
+                netz_prodelec_bytech_chart2.add_series({
+                    'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 0],
+                    'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, 2,\
+                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, netz_elecgen_3_cols - 1],
+                    'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, netz_elecgen_3_cols - 1],
+                    'pattern':    {'fg_color': netz_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })   
             
         ref_worksheet22.insert_chart('J' + str(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 9), netz_prodelec_bytech_chart2)
     
@@ -10665,16 +10735,29 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_powcap_1_rows):
-            netz_pow_cap_chart1.add_series({
-                'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 0],
-                'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, 1,\
-                    (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, netz_powcap_1_cols - 1],
-                'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 1,\
-                    (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, netz_powcap_1_cols - 1],
-                'fill':       {'color': netz_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
-            
+            if not netz_powcap_1['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+                netz_pow_cap_chart1.add_series({
+                    'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 0],
+                    'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, 1,\
+                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, netz_powcap_1_cols - 1],
+                    'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 1,\
+                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, netz_powcap_1_cols - 1],
+                    'fill':       {'color': netz_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                netz_pow_cap_chart1.add_series({
+                    'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 0],
+                    'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, 1,\
+                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, netz_powcap_1_cols - 1],
+                    'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 1,\
+                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, netz_powcap_1_cols - 1],
+                    'pattern':    {'fg_color': netz_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })    
+
         ref_worksheet24.insert_chart('B' + str(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 9), netz_pow_cap_chart1)
 
     else:
@@ -10725,15 +10808,28 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_powcap_2_rows):
-            netz_pow_cap_chart2.add_series({
-                'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 0],
-                'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, 1,\
-                    (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, netz_powcap_2_cols - 1],
-                'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 1,\
-                    (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, netz_powcap_2_cols - 1],
-                'fill':       {'color': netz_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_powcap_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+                netz_pow_cap_chart2.add_series({
+                    'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 0],
+                    'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, 1,\
+                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, netz_powcap_2_cols - 1],
+                    'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 1,\
+                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, netz_powcap_2_cols - 1],
+                    'fill':       {'color': netz_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                netz_pow_cap_chart2.add_series({
+                    'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 0],
+                    'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, 1,\
+                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, netz_powcap_2_cols - 1],
+                    'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 1,\
+                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, netz_powcap_2_cols - 1],
+                    'pattern':    {'fg_color': netz_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })    
             
         ref_worksheet24.insert_chart('J' + str(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 9), netz_pow_cap_chart2)
 
