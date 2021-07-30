@@ -1670,6 +1670,11 @@ for economy in Economy_codes:
 
     ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(TPES_agg_fuels1)].set_index('fuel_code').loc[TPES_agg_fuels1].reset_index().replace(np.nan, 0)
 
+    ref_tpes_1.loc['Total'] = ref_tpes_1.sum()
+
+    ref_tpes_1.loc['Total', 'fuel_code'] = 'Total'
+    ref_tpes_1.loc['Total', 'item_code_new'] = '7_total_primary_energy_supply'
+
     # Get rid of zero rows
     non_zero = (ref_tpes_1.loc[:,'2000':] != 0).any(axis = 1)
     ref_tpes_1 = ref_tpes_1.loc[non_zero].reset_index(drop = True)
@@ -1678,6 +1683,7 @@ for economy in Economy_codes:
     ref_tpes_1_cols = ref_tpes_1.shape[1]
 
     ref_tpes_2 = ref_tpes_1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_tpes_2 = ref_tpes_2[ref_tpes_2['fuel_code'] != 'Total']
 
     ref_tpes_2_rows = ref_tpes_2.shape[0]
     ref_tpes_2_cols = ref_tpes_2.shape[1]
@@ -1916,6 +1922,11 @@ for economy in Economy_codes:
 
     netz_tpes_1 = netz_tpes_1[netz_tpes_1['fuel_code'].isin(TPES_agg_fuels1)].set_index('fuel_code').loc[TPES_agg_fuels1].reset_index().replace(np.nan, 0)
 
+    netz_tpes_1.loc['Total'] = netz_tpes_1.sum()
+
+    netz_tpes_1.loc['Total', 'fuel_code'] = 'Total'
+    netz_tpes_1.loc['Total', 'item_code_new'] = '7_total_primary_energy_supply'
+
     # Get rid of zero rows
     non_zero = (netz_tpes_1.loc[:,'2000':] != 0).any(axis = 1)
     netz_tpes_1 = netz_tpes_1.loc[non_zero].reset_index(drop = True)
@@ -1924,6 +1935,7 @@ for economy in Economy_codes:
     netz_tpes_1_cols = netz_tpes_1.shape[1]
 
     netz_tpes_2 = netz_tpes_1[['fuel_code', 'item_code_new'] + col_chart_years]
+    netz_tpes_2 = netz_tpes_2[netz_tpes_2['fuel_code'] != 'Total']
 
     netz_tpes_2_rows = netz_tpes_2.shape[0]
     netz_tpes_2_cols = netz_tpes_2.shape[1]
@@ -7228,14 +7240,18 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_tpes_1_rows):
-        ref_tpes_chart2.add_series({
-            'name':       [economy + '_TPES', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
-            'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
-            'fill':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not ref_tpes_1['fuel_code'].iloc[i] in ['Total']:
+            ref_tpes_chart2.add_series({
+                'name':       [economy + '_TPES', chart_height + i + 1, 0],
+                'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
+                'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
+                'fill':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })    
         
+        else:
+            pass
+
     ref_worksheet11.insert_chart('B3', ref_tpes_chart2)
 
     ######## same chart as above but line
@@ -7299,7 +7315,7 @@ for economy in Economy_codes:
     ###################### Create another TPES chart showing proportional share #################################
 
     # Create a TPES chart
-    ref_tpes_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    ref_tpes_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
     ref_tpes_chart3.set_size({
         'width': 500,
         'height': 300
@@ -8029,15 +8045,19 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_tpes_1_rows):
-        netz_tpes_chart2.add_series({
-            'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
-            'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
-                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
-            'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
-            'fill':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not netz_tpes_1['fuel_code'].iloc[i] in ['Total']:
+            netz_tpes_chart2.add_series({
+                'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
+                'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
+                'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
+                'fill':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet11.insert_chart('B' + str(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 9), netz_tpes_chart2)
 
@@ -8104,7 +8124,7 @@ for economy in Economy_codes:
     ###################### Create another TPES chart showing proportional share #################################
 
     # Create a TPES chart
-    netz_tpes_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'percent_stacked'})
+    netz_tpes_chart3 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
     netz_tpes_chart3.set_size({
         'width': 500,
         'height': 300
