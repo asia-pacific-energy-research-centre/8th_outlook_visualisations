@@ -410,7 +410,7 @@ Transport_modal_agg = ['Aviation', 'Road', 'Rail' ,'Marine', 'Pipeline', 'Non-sp
 
 # TPES
 
-TPES_agg_fuels1 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Hydrogen', 'Other fuels']
+TPES_agg_fuels1 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Electricity', 'Hydrogen', 'Other fuels']
 TPES_agg_fuels2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
 TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 
                   'Renewables', 'Electricity', 'Hydrogen', 'Other fuels']
@@ -1665,6 +1665,7 @@ for economy in Economy_codes:
 
     ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(TPES_agg_fuels1)].set_index('fuel_code').loc[TPES_agg_fuels1].reset_index().replace(np.nan, 0)
@@ -1910,6 +1911,7 @@ for economy in Economy_codes:
 
     netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
     netz_tpes_1.loc[netz_tpes_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
 
     netz_tpes_1 = netz_tpes_1[netz_tpes_1['fuel_code'].isin(TPES_agg_fuels1)].set_index('fuel_code').loc[TPES_agg_fuels1].reset_index().replace(np.nan, 0)
