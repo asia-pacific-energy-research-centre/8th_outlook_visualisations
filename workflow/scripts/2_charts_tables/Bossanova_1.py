@@ -844,7 +844,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['19_THA']
+# Economy_codes = ['04_CHL', '08_JPN']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -7302,13 +7302,23 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_tpes_1_rows):
-        ref_tpes_chart4.add_series({
-            'name':       [economy + '_TPES', chart_height + i + 1, 0],
-            'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
-            'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
-            'line':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1.25}
-        })    
+        if not ref_tpes_1['fuel_code'].iloc[i] in ['Total']:
+            ref_tpes_chart4.add_series({
+                'name':       [economy + '_TPES', chart_height + i + 1, 0],
+                'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
+                'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
+                'line':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1.25}
+            })
+
+        else:
+            ref_tpes_chart4.add_series({
+                'name':       [economy + '_TPES', chart_height + i + 1, 0],
+                'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
+                'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
+                'line':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1.5}
+            })    
         
     ref_worksheet11.insert_chart('R3', ref_tpes_chart4)
 
@@ -8109,15 +8119,27 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_tpes_1_rows):
-        netz_tpes_chart4.add_series({
-            'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
-            'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
-                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
-            'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
-            'line':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1}
-        })    
+        if not netz_tpes_1['fuel_code'].iloc[i] in ['Total']:
+            netz_tpes_chart4.add_series({
+                'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
+                'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
+                'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
+                'line':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1.25}
+            })
+
+        else:
+            netz_tpes_chart4.add_series({
+                'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
+                'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
+                'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
+                'line':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1.5}
+            })    
         
     ref_worksheet11.insert_chart('R' + str(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 9), netz_tpes_chart4)
 
