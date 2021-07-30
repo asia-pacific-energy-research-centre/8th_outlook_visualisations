@@ -5421,7 +5421,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_fuel', chart_height + i + 1, 0],
             'categories': [economy + '_FED_fuel', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
             'values':     [economy + '_FED_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
-            'line':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            'line':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
         })    
         
     ref_worksheet1.insert_chart('R3', ref_fedfuel_chart3)
@@ -5608,7 +5608,7 @@ for economy in Economy_codes:
             'name':       [economy + '_FED_sector', chart_height + i + 1, 1],
             'categories': [economy + '_FED_sector', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
             'values':     [economy + '_FED_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
-            'line':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
+            'line':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1}
         })    
         
     ref_worksheet2.insert_chart('R3', ref_fedsector_chart5)
@@ -6074,7 +6074,7 @@ for economy in Economy_codes:
                 'name':       [economy + '_FED_agr', chart_height + i + 1, 0],
                 'categories': [economy + '_FED_agr', chart_height, 2, chart_height, ref_ag_1_cols - 1],
                 'values':     [economy + '_FED_agr', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
-                'line':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+                'line':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
             })    
             
         ref_worksheet6.insert_chart('B3', ref_ag_chart1)
@@ -6394,7 +6394,7 @@ for economy in Economy_codes:
                  (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, netz_fedfuel_1_cols - 1],
             'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 2,\
                  (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, netz_fedfuel_1_cols - 1],
-            'line':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            'line':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
         })    
         
     ref_worksheet1.insert_chart('R' + str(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 9), netz_fedfuel_chart3)
@@ -6580,7 +6580,7 @@ for economy in Economy_codes:
                 (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, netz_fedsector_2_cols - 1],
             'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 2,\
                 (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, netz_fedsector_2_cols - 1],
-            'line':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1.25}
+            'line':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1}
         })    
         
     ref_worksheet2.insert_chart('R' + str(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 12), netz_fedsector_chart5)
@@ -7044,7 +7044,7 @@ for economy in Economy_codes:
                     (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
                 'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
                     (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
-                'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+                'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
             })    
             
         ref_worksheet6.insert_chart('B' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart1)
@@ -7308,7 +7308,7 @@ for economy in Economy_codes:
                 'categories': [economy + '_TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
                 'values':     [economy + '_TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
                 'line':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i], 
-                            'width': 1.25}
+                            'width': 1}
             })
 
         else:
@@ -7505,7 +7505,7 @@ for economy in Economy_codes:
             'categories': [economy + '_prod', chart_height, 2, chart_height, ref_prod_1_cols - 1],
             'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
             'line':       {'color': ref_prod_1['fuel_code'].map(colours_dict).loc[i],
-                           'width': 1.25} 
+                           'width': 1} 
         })    
         
     ref_worksheet12.insert_chart('R3', ref_prod_chart2)
@@ -7691,7 +7691,7 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + 3, 2, chart_height + ref_tpes_comp_1_rows + 3, ref_imports_1_cols - 1],
             'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 2, chart_height + ref_tpes_comp_1_rows + i + 4, ref_imports_1_cols - 1],
             'line':       {'color': ref_imports_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1.25},
+                           'width': 1},
         })    
         
     ref_worksheet13.insert_chart('J3', ref_imports_line)
@@ -7803,7 +7803,7 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, ref_imports_1_cols - 1],
             'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, ref_imports_1_cols - 1],
             'line':       {'color': ref_exports_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1.25},
+                           'width': 1},
         })    
     # 40    
     ref_worksheet13.insert_chart('Z3', ref_exports_line)
@@ -7929,7 +7929,7 @@ for economy in Economy_codes:
                 'categories': [economy + '_TPES_bunkers', chart_height, 2, chart_height, ref_bunkers_1_cols - 1],
                 'values':     [economy + '_TPES_bunkers', chart_height + i + 1, 2, chart_height + i + 1, ref_bunkers_1_cols - 1],
                 'line':       {'color': ref_bunkers_1['fuel_code'].map(colours_dict).loc[i], 
-                            'width': 1.25},
+                            'width': 1},
             })    
             
         ref_worksheet14.insert_chart('B3', ref_marine_line)
@@ -7989,7 +7989,7 @@ for economy in Economy_codes:
                 'categories': [economy + '_TPES_bunkers', chart_height + ref_bunkers_1_rows + 3, 2, chart_height + ref_bunkers_1_rows + 3, ref_bunkers_2_cols - 1],
                 'values':     [economy + '_TPES_bunkers', chart_height + ref_bunkers_1_rows + i + 4, 2, chart_height + ref_bunkers_1_rows + i + 4, ref_bunkers_2_cols - 1],
                 'line':       {'color': ref_bunkers_2['fuel_code'].map(colours_dict).loc[i], 
-                            'width': 1.25},
+                            'width': 1},
             })    
             
         ref_worksheet14.insert_chart('J3', ref_aviation_line)
@@ -8127,7 +8127,7 @@ for economy in Economy_codes:
                 'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
                     (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
                 'line':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i], 
-                            'width': 1.25}
+                            'width': 1}
             })
 
         else:
@@ -8516,7 +8516,7 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + 3, 2, chart_height + netz_tpes_comp_1_rows + 3, netz_imports_1_cols - 1],
             'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 2, chart_height + netz_tpes_comp_1_rows + i + 4, netz_imports_1_cols - 1],
             'line':       {'color': netz_imports_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1.25},
+                           'width': 1},
         })    
         
     netz_worksheet13.insert_chart('J3', netz_imports_line)
@@ -8628,7 +8628,7 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, netz_imports_1_cols - 1],
             'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, netz_imports_1_cols - 1],
             'line':       {'color': netz_exports_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1.25},
+                           'width': 1},
         })    
         
     netz_worksheet13.insert_chart('Z3', netz_exports_line)
@@ -8752,7 +8752,7 @@ for economy in Economy_codes:
                 'values':     [economy + '_TPES_bunkers', (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + i + 7, 2,\
                     (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + i + 7, netz_bunkers_1_cols - 1],
                 'line':       {'color': netz_bunkers_1['fuel_code'].map(colours_dict).loc[i], 
-                            'width': 1.25},
+                            'width': 1},
             })    
             
         ref_worksheet14.insert_chart('B' + str(chart_height + ref_bunkers_1_rows + ref_bunkers_2_rows + 9), netz_marine_line)
@@ -8814,7 +8814,7 @@ for economy in Economy_codes:
                 'values':     [economy + '_TPES_bunkers', (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + i + 10, netz_bunkers_2_cols - 1],
                 'line':       {'color': netz_bunkers_2['fuel_code'].map(colours_dict).loc[i], 
-                            'width': 1.25},
+                            'width': 1},
             })    
             
         ref_worksheet14.insert_chart('J' + str(chart_height + ref_bunkers_1_rows + ref_bunkers_2_rows + 9), netz_aviation_line)
@@ -9014,7 +9014,7 @@ for economy in Economy_codes:
                 'name':       [economy + '_pow_input', chart_height + i + 1, 0],
                 'categories': [economy + '_pow_input', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
                 'values':     [economy + '_pow_input', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
-                'line':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
+                'line':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1}
             })    
             
         ref_worksheet21.insert_chart('R3', usefuel_chart3)
@@ -9248,7 +9248,7 @@ for economy in Economy_codes:
                 'categories': [economy + '_refining', chart_height, 2, chart_height, ref_refinery_1_cols - 1],
                 'values':     [economy + '_refining', chart_height + i + 1, 2, chart_height + i + 1, ref_refinery_1_cols - 1],
                 'line':       {'color': ref_refinery_1['FUEL'].map(colours_dict).loc[i],
-                               'width': 1.25}
+                               'width': 1}
             })    
             
         ref_worksheet23.insert_chart('B3', refinery_chart1)
@@ -9656,7 +9656,7 @@ for economy in Economy_codes:
                 'categories': [economy + '_trnsfrm', chart_height, 1, chart_height, ref_trans_3_cols - 1],
                 'values':     [economy + '_trnsfrm', chart_height + i + 1, 1, chart_height + i + 1, ref_trans_3_cols - 1],
                 'line':       {'color': ref_trans_3['Sector'].map(colours_dict).loc[i],
-                               'width': 1.25}
+                               'width': 1}
             })    
             
         ref_worksheet25.insert_chart('J3', ref_trnsfrm_chart2)
@@ -9851,7 +9851,7 @@ for economy in Economy_codes:
                 'categories': [economy + '_ownuse', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
                 'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
                 'line':       {'color': ref_ownuse_1['FUEL'].map(colours_dict).loc[i],
-                               'width': 1.25}
+                               'width': 1}
             })    
             
         ref_worksheet26.insert_chart('J3', ref_own_chart2)
@@ -10383,7 +10383,7 @@ for economy in Economy_codes:
                     (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
                 'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
                     (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
-                'line':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
+                'line':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1}
             })    
             
         ref_worksheet21.insert_chart('R' + str(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 9), netz_usefuel_chart3)
@@ -10618,7 +10618,7 @@ for economy in Economy_codes:
                 'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, 2,\
                     (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, netz_refinery_1_cols - 1],
                 'line':       {'color': netz_refinery_1['FUEL'].map(colours_dict).loc[i],
-                               'width': 1.25}
+                               'width': 1}
             })    
             
         ref_worksheet23.insert_chart('B' + str(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 12), netz_refinery_chart1)
@@ -11034,7 +11034,7 @@ for economy in Economy_codes:
                 'values':     [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + i + 7, 1,\
                     (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + i + 7, netz_trans_3_cols - 1],
                 'line':       {'color': netz_trans_3['Sector'].map(colours_dict).loc[i],
-                               'width': 1.25}
+                               'width': 1}
             })    
             
         ref_worksheet25.insert_chart('J' + str(chart_height + ref_trans_3_rows + ref_trans_4_rows + 9), netz_trnsfrm_chart2)
@@ -11229,7 +11229,7 @@ for economy in Economy_codes:
                 'categories': [economy + '_ownuse', chart_height, 2, chart_height, netz_ownuse_1_cols - 1],
                 'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, netz_ownuse_1_cols - 1],
                 'line':       {'color': netz_ownuse_1['FUEL'].map(colours_dict).loc[i],
-                               'width': 1.25}
+                               'width': 1}
             })    
             
         ref_worksheet26.insert_chart('J' + str(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 9), netz_own_chart2)
@@ -12652,7 +12652,7 @@ for economy in Economy_codes:
             'categories': [economy + '_Emiss_fuel', chart_height, 2, chart_height, ref_emiss_fuel_1_cols - 1],
             'values':     [economy + '_Emiss_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_emiss_fuel_1_cols - 1],
             'line':       {'color': ref_emiss_fuel_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1.25}
+                           'width': 1}
         })    
         
     both_worksheet34.insert_chart('R3', ref_em_fuel_chart3)
@@ -12724,7 +12724,7 @@ for economy in Economy_codes:
             'categories': [economy + '_Emiss_sector', chart_height, 2, chart_height, ref_emiss_sector_1_cols - 1],
             'values':     [economy + '_Emiss_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_emiss_sector_1_cols - 1],
             'line':       {'color': ref_emiss_sector_1['item_code_new'].map(colours_dict).loc[i], 
-                           'width': 1.25}
+                           'width': 1}
         })    
         
     both_worksheet35.insert_chart('R3', ref_em_sector_chart1)
@@ -13014,7 +13014,7 @@ for economy in Economy_codes:
             'values':     [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + i + 7, 2,\
                 (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + i + 7, netz_emiss_fuel_1_cols - 1],
             'line':       {'color': netz_emiss_fuel_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1.25}
+                           'width': 1}
         })    
         
     both_worksheet34.insert_chart('R' + str(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 9), netz_em_fuel_chart3)
@@ -13075,7 +13075,7 @@ for economy in Economy_codes:
             'values':     [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 2,\
                 (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, netz_emiss_sector_1_cols - 1],
             'line':       {'color': netz_emiss_sector_1['item_code_new'].map(colours_dict).loc[i], 
-                           'width': 1.25}
+                           'width': 1}
         })    
         
     both_worksheet35.insert_chart('R' + str(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 9), netz_em_sector_chart1)
