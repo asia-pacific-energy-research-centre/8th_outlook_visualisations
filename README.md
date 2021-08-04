@@ -25,6 +25,8 @@ Clone this repository by typing `git clone https://github.com/asia-pacific-energ
 
 Navigate into the folder by typing `cd 8th_outlook_visualisations`
 
+Create the environment using `conda env create --prefix ./env --file ./environment.yml`
+
 ### 3. Add the necessary files
 
 Copy the following files from the Integration\Historical Energy Balances\2018 folder:
