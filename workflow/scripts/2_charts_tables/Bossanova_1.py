@@ -33,6 +33,10 @@ netz_trans_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_netzero.cs
 EGEDA_emissions_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_reference.csv')
 EGEDA_emissions_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_netzero.csv')
 
+# Define month and year to create folder for saving charts/tables
+
+day_month_year = pd.to_datetime('today').strftime('%d_%B_%Y')
+
 # Macro
 
 macro_GDP = pd.read_excel('./data/2_Mapping_and_other/macro_APEC.xlsx', sheet_name = 'GDP')
@@ -844,7 +848,7 @@ netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cem
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['19_THA']
+# Economy_codes = ['02_BD']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -5081,7 +5085,7 @@ for economy in Economy_codes:
         os.makedirs(results_dir)
         
     # Create a Pandas excel writer workbook using xlsxwriter as the engine and save it in the directory created above
-    writer = pd.ExcelWriter(results_dir + '/' + economy + '_charts.xlsx', engine = 'xlsxwriter')
+    writer = pd.ExcelWriter(results_dir + '/' + economy + '_charts_' + day_month_year + '.xlsx', engine = 'xlsxwriter')
     workbook = writer.book
     pandas.io.formats.excel.ExcelFormatter.header_style = None
 
@@ -11564,8 +11568,8 @@ for economy in Economy_codes:
     both_worksheet31.set_column(2, ref_modren_4_cols + 1, None, space_format)
     both_worksheet31.set_row(chart_height, None, header_format)
     both_worksheet31.set_row(chart_height + ref_modren_4_rows + 3, None, header_format)
-    both_worksheet31.set_row(chart_height + 11, None, percentage_format)
-    both_worksheet31.set_row(chart_height + ref_modren_4_rows + 14, None, percentage_format)
+    both_worksheet31.set_row(chart_height + ref_modren_4_rows, None, percentage_format)
+    both_worksheet31.set_row(chart_height + ref_modren_4_rows + netz_modren_4_rows + 3, None, percentage_format)
     both_worksheet31.write(0, 0, economy + ' modern renewables', cell_format1)
 
     # line chart
