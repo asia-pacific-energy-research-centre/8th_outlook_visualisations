@@ -571,7 +571,10 @@ for i in range(ref_file_trans.shape[0]):
     _df = pd.read_excel(ref_file_trans.iloc[i, 0], sheet_name = ref_file_trans.iloc[i, 2])
     _df['Workbook'] = ref_file_trans.iloc[i, 1]
     _df['Sheet_energy'] = ref_file_trans.iloc[i, 2]
-    ref_aggregate_df1 = ref_aggregate_df1.append(_df) 
+    ref_aggregate_df1 = ref_aggregate_df1.append(_df)
+
+ref_osemo_only_1 = ref_aggregate_df1[ref_aggregate_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
+    .groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index() 
 
 ref_aggregate_df1 = ref_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index()
 
@@ -585,7 +588,10 @@ for i in range(netz_file_trans.shape[0]):
     _df = pd.read_excel(netz_file_trans.iloc[i, 0], sheet_name = netz_file_trans.iloc[i, 2])
     _df['Workbook'] = netz_file_trans.iloc[i, 1]
     _df['Sheet_energy'] = netz_file_trans.iloc[i, 2]
-    netz_aggregate_df1 = netz_aggregate_df1.append(_df) 
+    netz_aggregate_df1 = netz_aggregate_df1.append(_df)
+
+netz_osemo_only_1 = netz_aggregate_df1[netz_aggregate_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
+    .groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index() 
 
 netz_aggregate_df1 = netz_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index()
 
@@ -758,8 +764,8 @@ netz_trans_df1.to_csv(path_final + '/OSeMOSYS_transformation_netzero.csv', index
 
 # Save OSeMOSYS results dataframes 
 
-ref_aggregate_df1.to_csv(path_final + '/OSeMOSYS_only_reference.csv', index = False)
-netz_aggregate_df1.to_csv(path_final + '/OSeMOSYS_only_netzero.csv', index = False)
+ref_osemo_only_1.to_csv(path_final + '/OSeMOSYS_only_reference.csv', index = False)
+netz_osemo_only_1.to_csv(path_final + '/OSeMOSYS_only_netzero.csv', index = False)
 
 # # Macro dataframes (opens in Bossanova)
 
