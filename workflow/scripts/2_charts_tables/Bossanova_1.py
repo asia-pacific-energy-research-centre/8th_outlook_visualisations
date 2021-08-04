@@ -3634,7 +3634,12 @@ for economy in Economy_codes:
     ref_emiss_fuel_1.loc[ref_emiss_fuel_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_emiss_fuel_1.loc[ref_emiss_fuel_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
-    ref_emiss_fuel_1 = ref_emiss_fuel_1[ref_emiss_fuel_1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()
+    ref_emiss_fuel_1 = ref_emiss_fuel_1[ref_emiss_fuel_1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()\
+        .replace(np.nan, 0)
+
+    # Get rid of zero rows
+    non_zero = (ref_emiss_fuel_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_emiss_fuel_1 = ref_emiss_fuel_1.loc[non_zero].reset_index(drop = True)
 
     ref_emiss_fuel_1_rows = ref_emiss_fuel_1.shape[0]
     ref_emiss_fuel_1_cols = ref_emiss_fuel_1.shape[1]
@@ -3673,8 +3678,13 @@ for economy in Economy_codes:
     #emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     ref_emiss_sector_1.loc[ref_emiss_sector_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    ref_emiss_sector_1 = ref_emiss_sector_1[ref_emiss_sector_1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()
+    ref_emiss_sector_1 = ref_emiss_sector_1[ref_emiss_sector_1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()\
+        .replace(np.nan, 0)
     ref_emiss_sector_1 = ref_emiss_sector_1[['fuel_code', 'item_code_new'] + list(ref_emiss_sector_1.loc[:, '2000':'2050'])]
+
+    # Get rid of zero rows
+    non_zero = (ref_emiss_sector_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_emiss_sector_1 = ref_emiss_sector_1.loc[non_zero].reset_index(drop = True)
 
     ref_emiss_sector_1_rows = ref_emiss_sector_1.shape[0]
     ref_emiss_sector_1_cols = ref_emiss_sector_1.shape[1]
@@ -3710,7 +3720,12 @@ for economy in Economy_codes:
     netz_emiss_fuel_1.loc[netz_emiss_fuel_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_emiss_fuel_1.loc[netz_emiss_fuel_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
 
-    netz_emiss_fuel_1 = netz_emiss_fuel_1[netz_emiss_fuel_1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()
+    netz_emiss_fuel_1 = netz_emiss_fuel_1[netz_emiss_fuel_1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()\
+        .replace(np.nan, 0)
+
+    # Get rid of zero rows
+    non_zero = (netz_emiss_fuel_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_emiss_fuel_1 = netz_emiss_fuel_1.loc[non_zero].reset_index(drop = True)
 
     netz_emiss_fuel_1_rows = netz_emiss_fuel_1.shape[0]
     netz_emiss_fuel_1_cols = netz_emiss_fuel_1.shape[1]
@@ -3749,8 +3764,13 @@ for economy in Economy_codes:
     #emissions_sector_df1.loc[emissions_sector_df1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     netz_emiss_sector_1.loc[netz_emiss_sector_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    netz_emiss_sector_1 = netz_emiss_sector_1[netz_emiss_sector_1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()
+    netz_emiss_sector_1 = netz_emiss_sector_1[netz_emiss_sector_1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()\
+        .replace(np.nan, 0)
     netz_emiss_sector_1 = netz_emiss_sector_1[['fuel_code', 'item_code_new'] + list(netz_emiss_sector_1.loc[:, '2000':'2050'])]
+
+    # Get rid of zero rows
+    non_zero = (netz_emiss_sector_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_emiss_sector_1 = netz_emiss_sector_1.loc[non_zero].reset_index(drop = True)
 
     netz_emiss_sector_1_rows = netz_emiss_sector_1.shape[0]
     netz_emiss_sector_1_cols = netz_emiss_sector_1.shape[1]
