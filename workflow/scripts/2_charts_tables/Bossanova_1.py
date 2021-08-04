@@ -5370,7 +5370,8 @@ for economy in Economy_codes:
             'categories': [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + 3, 2, chart_height + ref_fedfuel_1_rows + 3, ref_fedfuel_2_cols - 1],
             'values':     [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + i + 4, 2, chart_height + ref_fedfuel_1_rows + i + 4, ref_fedfuel_2_cols - 1],
             'fill':       {'color': ref_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet1.insert_chart('J3', ref_fedfuel_chart2)
@@ -5556,7 +5557,8 @@ for economy in Economy_codes:
             'categories': [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + 3, 2, chart_height + ref_fedsector_2_rows + 3, ref_fedsector_3_cols - 1],
             'values':     [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + i + 4, 2, chart_height + ref_fedsector_2_rows + i + 4, ref_fedsector_3_cols - 1],
             'fill':       {'color': ref_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet2.insert_chart('J3', ref_fedsector_chart4)
@@ -6004,7 +6006,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_FED_trn', chart_height + ref_trn_1_rows + 3, 2, chart_height + ref_trn_1_rows + 3, ref_trn_2_cols - 1],
                 'values':     [economy + '_FED_trn', chart_height + ref_trn_1_rows + j + 4, 2, chart_height + ref_trn_1_rows + j + 4, ref_trn_2_cols - 1],
                 'fill':       {'color': ref_trn_2['item_code_new'].map(colours_dict).loc[j]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet5.insert_chart('J3', ref_transport_chart2)
@@ -6196,7 +6199,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_FED_agr', chart_height + ref_ag_1_rows + 3, 2, chart_height + ref_ag_1_rows + 3, ref_ag_2_cols - 1],
                 'values':     [economy + '_FED_agr', chart_height + ref_ag_1_rows + i + 4, 2, chart_height + ref_ag_1_rows + i + 4, ref_ag_2_cols - 1],
                 'fill':       {'color': ref_ag_2['fuel_code'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet6.insert_chart('R3', ref_ag_chart3)
@@ -6341,7 +6345,8 @@ for economy in Economy_codes:
             'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10,\
                  2, (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10, netz_fedfuel_2_cols - 1],
             'fill':       {'color': netz_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet1.insert_chart('J' + str(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 9), netz_fedfuel_chart2)
@@ -6526,7 +6531,8 @@ for economy in Economy_codes:
             'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, 2,\
                 (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, netz_fedsector_3_cols - 1],
             'fill':       {'color': netz_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet2.insert_chart('J' + str(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 12), netz_fedsector_chart4)
@@ -6976,7 +6982,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_FED_trn', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 2,\
                     (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, netz_trn_2_cols - 1],
                 'fill':       {'color': netz_trn_2['item_code_new'].map(colours_dict).loc[j]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet5.insert_chart('J' + str(chart_height + ref_trn_1_rows + ref_trn_2_rows + 9), netz_transport_chart2)
@@ -7170,7 +7177,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_FED_agr', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10,\
                     2, (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, netz_ag_2_cols - 1],
                 'fill':       {'color': netz_ag_2['fuel_code'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet6.insert_chart('R' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart3)
@@ -7378,7 +7386,8 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES', chart_height + ref_tpes_1_rows + 3, 2, chart_height + ref_tpes_1_rows + 3, ref_tpes_2_cols - 1],
             'values':     [economy + '_TPES', chart_height + ref_tpes_1_rows + i + 4, 2, chart_height + ref_tpes_1_rows + i + 4, ref_tpes_2_cols - 1],
             'fill':       {'color': ref_tpes_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet11.insert_chart('J3', ref_tpes_chart3)
@@ -7567,7 +7576,8 @@ for economy in Economy_codes:
             'categories': [economy + '_prod', chart_height + ref_prod_1_rows + 3, 2, chart_height + ref_prod_1_rows + 3, ref_prod_2_cols - 1],
             'values':     [economy + '_prod', chart_height + ref_prod_1_rows + i + 4, 2, chart_height + ref_prod_1_rows + i + 4, ref_prod_2_cols - 1],
             'fill':       {'color': ref_prod_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet12.insert_chart('J3', ref_prod_chart3)
@@ -7637,7 +7647,8 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_ref', chart_height, 2, chart_height, ref_tpes_comp_1_cols - 1],
             'values':     [economy + '_TPES_comp_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_comp_1_cols - 1],
             'fill':       {'color': ref_tpes_comp_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet13.insert_chart('B3', ref_tpes_comp_chart1)
@@ -7749,7 +7760,8 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, ref_imports_2_cols - 1],
             'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, ref_imports_2_cols - 1],
             'fill':       {'color': ref_imports_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet13.insert_chart('R3', ref_imports_column)
@@ -7861,7 +7873,8 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, ref_exports_2_cols - 1],
             'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, ref_exports_2_cols - 1],
             'fill':       {'color': ref_exports_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet13.insert_chart('AH3', ref_exports_column)
@@ -8201,7 +8214,8 @@ for economy in Economy_codes:
             'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 2,\
                 (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, netz_tpes_2_cols - 1],
             'fill':       {'color': netz_tpes_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet11.insert_chart('J' + str(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 9), netz_tpes_chart3)
@@ -8392,7 +8406,8 @@ for economy in Economy_codes:
             'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, 2,\
                 (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, netz_prod_2_cols - 1],
             'fill':       {'color': netz_prod_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet12.insert_chart('J' + str(chart_height + ref_prod_1_rows + ref_prod_2_rows + 9), netz_prod_chart3)
@@ -8462,7 +8477,8 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_netz', chart_height, 2, chart_height, netz_tpes_comp_1_cols - 1],
             'values':     [economy + '_TPES_comp_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_tpes_comp_1_cols - 1],
             'fill':       {'color': netz_tpes_comp_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     netz_worksheet13.insert_chart('B3', netz_tpes_comp_chart1)
@@ -8574,7 +8590,8 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, netz_imports_2_cols - 1],
             'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, netz_imports_2_cols - 1],
             'fill':       {'color': netz_imports_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     netz_worksheet13.insert_chart('R3', netz_imports_column)
@@ -8686,7 +8703,8 @@ for economy in Economy_codes:
             'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, netz_exports_2_cols - 1],
             'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, netz_exports_2_cols - 1],
             'fill':       {'color': netz_exports_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     netz_worksheet13.insert_chart('AH3', netz_exports_column)
@@ -8959,7 +8977,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_pow_input', chart_height + ref_pow_use_2_rows + 3, 2, chart_height + ref_pow_use_2_rows + 3, ref_pow_use_3_cols - 1],
                 'values':     [economy + '_pow_input', chart_height + ref_pow_use_2_rows + i + 4, 2, chart_height + ref_pow_use_2_rows + i + 4, ref_pow_use_3_cols - 1],
                 'fill':       {'color': ref_pow_use_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
 
         ref_worksheet21.insert_chart('J3', usefuel_chart2)
@@ -9163,7 +9182,8 @@ for economy in Economy_codes:
                     'categories': [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
                     'values':     [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
                     'fill':       {'color': ref_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
-                    'border':     {'none': True}
+                    'border':     {'none': True},
+                    'gap':        100
                 })
 
             else:
@@ -9173,7 +9193,8 @@ for economy in Economy_codes:
                     'values':     [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
                     'pattern':    {'fg_color': ref_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
                                    'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
+                    'border':     {'none': True},
+                    'gap':        100
                 })
             
         ref_worksheet22.insert_chart('J3', prodelec_bytech_chart2)
@@ -9370,7 +9391,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, ref_refinery_3_cols - 1],
                 'values':     [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, ref_refinery_3_cols - 1],
                 'fill':       {'color': ref_refinery_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })    
             
         ref_worksheet23.insert_chart('R3', refinery_chart3)
@@ -9515,7 +9537,8 @@ for economy in Economy_codes:
                     'categories': [economy + '_pow_cap', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
                     'values':     [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
                     'fill':       {'color': ref_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i]},
-                    'border':     {'none': True}
+                    'border':     {'none': True},
+                    'gap':        100
                 })
 
             else:
@@ -9525,7 +9548,8 @@ for economy in Economy_codes:
                     'values':     [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
                     'pattern':    {'fg_color': ref_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i],
                                    'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
+                    'border':     {'none': True},
+                    'gap':        100
                 })    
             
         ref_worksheet24.insert_chart('J3', pow_cap_chart2)
@@ -9719,7 +9743,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_trnsfrm', chart_height + ref_trans_3_rows + 3, 1, chart_height + ref_trans_3_rows + 3, ref_trans_4_cols - 1],
                 'values':     [economy + '_trnsfrm', chart_height + ref_trans_3_rows + i + 4, 1, chart_height + ref_trans_3_rows + i + 4, ref_trans_4_cols - 1],
                 'fill':       {'color': ref_trans_4['Sector'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })    
             
         ref_worksheet25.insert_chart('R3', ref_trnsfrm_chart3)
@@ -9914,7 +9939,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_ownuse', chart_height + ref_ownuse_1_rows + 3, 2, chart_height + ref_ownuse_1_rows + 3, ref_ownuse_2_cols - 1],
                 'values':     [economy + '_ownuse', chart_height + ref_ownuse_1_rows + i + 4, 2, chart_height + ref_ownuse_1_rows + i + 4, ref_ownuse_2_cols - 1],
                 'fill':       {'color': ref_ownuse_2['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })    
             
         ref_worksheet26.insert_chart('R3', ref_own_chart3)
@@ -10047,7 +10073,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
                 'values':     [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
                 'fill':       {'color': ref_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })    
             
         ref_worksheet27.insert_chart('J3', heatgen_bytech_chart2)
@@ -10186,7 +10213,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_heat_input', chart_height + ref_heat_use_2_rows + 3, 2, chart_height + ref_heat_use_2_rows + 3, ref_heat_use_3_cols - 1],
                 'values':     [economy + '_heat_input', chart_height + ref_heat_use_2_rows + i + 4, 2, chart_height + ref_heat_use_2_rows + i + 4, ref_heat_use_3_cols - 1],
                 'fill':       {'color': ref_heat_use_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
 
         ref_worksheet28.insert_chart('J3', ref_heatuse_chart2)
@@ -10326,7 +10354,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 2,\
                     (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, netz_pow_use_3_cols - 1],
                 'fill':       {'color': netz_pow_use_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
 
         ref_worksheet21.insert_chart('J' + str(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 9), netz_usefuel_chart2)
@@ -10534,7 +10563,8 @@ for economy in Economy_codes:
                     'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 2,\
                         (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, netz_elecgen_3_cols - 1],
                     'fill':       {'color': netz_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
-                    'border':     {'none': True}
+                    'border':     {'none': True},
+                    'gap':        100
                 })
 
             else: 
@@ -10546,7 +10576,8 @@ for economy in Economy_codes:
                         (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, netz_elecgen_3_cols - 1],
                     'pattern':    {'fg_color': netz_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
                                    'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
+                    'border':     {'none': True},
+                    'gap':        100
                 })   
             
         ref_worksheet22.insert_chart('J' + str(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 9), netz_prodelec_bytech_chart2)
@@ -10744,7 +10775,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, 2,\
                     (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, netz_refinery_3_cols - 1],
                 'fill':       {'color': netz_refinery_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })    
             
         ref_worksheet23.insert_chart('R' + str(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 12), netz_refinery_chart3)
@@ -10891,7 +10923,8 @@ for economy in Economy_codes:
                     'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 1,\
                         (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, netz_powcap_2_cols - 1],
                     'fill':       {'color': netz_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i]},
-                    'border':     {'none': True}
+                    'border':     {'none': True},
+                    'gap':        100
                 })
 
             else:
@@ -10903,7 +10936,8 @@ for economy in Economy_codes:
                         (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, netz_powcap_2_cols - 1],
                     'pattern':    {'fg_color': netz_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i],
                                    'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
+                    'border':     {'none': True},
+                    'gap':        100
                 })    
             
         ref_worksheet24.insert_chart('J' + str(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 9), netz_pow_cap_chart2)
@@ -11099,7 +11133,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_trnsfrm', (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + netz_trans_3_rows + i + 10, 1,\
                     (2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + netz_trans_3_rows + i + 10, netz_trans_4_cols - 1],
                 'fill':       {'color': netz_trans_4['Sector'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })    
             
         ref_worksheet25.insert_chart('R' + str(chart_height + ref_trans_3_rows + ref_trans_4_rows + 9), netz_trnsfrm_chart3)
@@ -11294,7 +11329,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, netz_ownuse_2_cols - 1],
                 'fill':       {'color': netz_ownuse_2['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })    
             
         ref_worksheet26.insert_chart('R' + str(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 9), netz_own_chart3)
@@ -11427,7 +11463,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 2,\
                     (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, netz_heatgen_3_cols - 1],
                 'fill':       {'color': netz_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })    
             
         ref_worksheet27.insert_chart('J' + str(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 9), heatgen_bytech_chart2)
@@ -11551,7 +11588,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, 2,\
                     (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, netz_heat_use_3_cols - 1],
                 'fill':       {'color': netz_heat_use_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
 
         ref_worksheet28.insert_chart('J' + str(chart_height + ref_heat_use_2_rows + ref_heat_use_3_rows + 9), netz_heatuse_chart2)
@@ -11963,7 +12001,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_macro', chart_height, 2, chart_height, macro_1_cols - 1],
                 'values':     [economy + '_macro', chart_height + i + 1, 2, chart_height + i + 1, macro_1_cols - 1],
                 'fill':       {'color': macro_1['Series'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
                     
             both_worksheet32.insert_chart('J3', GDP_chart2)
@@ -12519,8 +12558,9 @@ for economy in Economy_codes:
     ref_em_fuel_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million tonnes CO2',
+        #'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -12575,7 +12615,7 @@ for economy in Economy_codes:
     ref_em_fuel_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'CO2 proportion',
+        #'name': 'CO2 proportion',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
@@ -12601,7 +12641,8 @@ for economy in Economy_codes:
             'categories': [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + 3, 2, chart_height + ref_emiss_fuel_1_rows + 3, ref_emiss_fuel_2_cols - 1],
             'values':     [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + i + 4, 2, chart_height + ref_emiss_fuel_1_rows + i + 4, ref_emiss_fuel_2_cols - 1],
             'fill':       {'color': ref_emiss_fuel_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     both_worksheet34.insert_chart('J3', ref_em_fuel_chart2)
@@ -12631,8 +12672,9 @@ for economy in Economy_codes:
     ref_em_fuel_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million tonnes CO2',
+        #'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -12703,8 +12745,9 @@ for economy in Economy_codes:
     ref_em_sector_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million tonnes CO2',
+        #'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -12759,8 +12802,9 @@ for economy in Economy_codes:
     ref_em_sector_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million tonnes CO2',
+        #'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -12815,7 +12859,7 @@ for economy in Economy_codes:
     ref_em_sector_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Proportion of CO2',
+        #'name': 'Proportion of CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
@@ -12841,7 +12885,8 @@ for economy in Economy_codes:
             'categories': [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + 3, 2, chart_height + ref_emiss_sector_1_rows + 3, ref_emiss_sector_2_cols - 1],
             'values':     [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + i + 4, 2, chart_height + ref_emiss_sector_1_rows + i + 4, ref_emiss_sector_2_cols - 1],
             'fill':       {'color': ref_emiss_sector_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     both_worksheet35.insert_chart('J3', ref_em_sector_chart3)
@@ -12875,8 +12920,9 @@ for economy in Economy_codes:
     netz_em_fuel_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million tonnes CO2',
+        #'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -12933,7 +12979,7 @@ for economy in Economy_codes:
     netz_em_fuel_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'CO2 proportion',
+        #'name': 'CO2 proportion',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
@@ -12961,7 +13007,8 @@ for economy in Economy_codes:
             'values':     [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, 2,\
                 (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, netz_emiss_fuel_2_cols - 1],
             'fill':       {'color': netz_emiss_fuel_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     both_worksheet34.insert_chart('J' + str(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 9), netz_em_fuel_chart2)
@@ -12991,8 +13038,9 @@ for economy in Economy_codes:
     netz_em_fuel_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million tonnes CO2',
+        #'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -13052,8 +13100,9 @@ for economy in Economy_codes:
     netz_em_sector_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million tonnes CO2',
+        #'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -13110,8 +13159,9 @@ for economy in Economy_codes:
     netz_em_sector_chart2.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Million tonnes CO2',
+        #'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -13168,7 +13218,7 @@ for economy in Economy_codes:
     netz_em_sector_chart3.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'Proportion of CO2',
+        #'name': 'Proportion of CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
@@ -13196,7 +13246,8 @@ for economy in Economy_codes:
             'values':     [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, 2,\
                 (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, netz_emiss_sector_2_cols - 1],
             'fill':       {'color': netz_emiss_sector_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     both_worksheet35.insert_chart('J' + str(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 9), netz_em_sector_chart3)
@@ -13267,7 +13318,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_TPES_fuel_ref', chart_height, 2, chart_height, ref_nuke_1_cols - 1],
                 'values':     [economy + '_TPES_fuel_ref', chart_height + i + 1, 2, chart_height + i + 1, ref_nuke_1_cols - 1],
                 'fill':       {'color': ref_nuke_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet15.insert_chart('B3', ref_tpes_nuke_chart1)
@@ -13327,7 +13379,8 @@ for economy in Economy_codes:
             'values':     [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + i + 4, 2,\
                 chart_height + ref_nuke_1_rows + i + 4, ref_biomass_1_cols - 1],
             'fill':       {'color': ref_biomass_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet15.insert_chart('J3', ref_tpes_biomass_chart1)
@@ -13384,7 +13437,8 @@ for economy in Economy_codes:
             'values':     [economy + '_TPES_fuel_ref', chart_height + ref_nuke_1_rows + ref_biomass_1_rows + i + 7, 2,\
                 chart_height + ref_nuke_1_rows + ref_biomass_1_rows + i + 7, ref_biofuel_2_cols - 1],
             'fill':       {'color': ref_biofuel_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     ref_worksheet15.insert_chart('R3', ref_tpes_biofuel_chart1)
@@ -13455,7 +13509,8 @@ for economy in Economy_codes:
                 'categories': [economy + '_TPES_fuel_netz', chart_height, 2, chart_height, netz_nuke_1_cols - 1],
                 'values':     [economy + '_TPES_fuel_netz', chart_height + i + 1, 2, chart_height + i + 1, netz_nuke_1_cols - 1],
                 'fill':       {'color': netz_nuke_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         netz_worksheet16.insert_chart('B3', netz_tpes_nuke_chart1)
@@ -13515,7 +13570,8 @@ for economy in Economy_codes:
             'values':     [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + i + 4, 2,\
                 chart_height + netz_nuke_1_rows + i + 4, netz_biomass_1_cols - 1],
             'fill':       {'color': netz_biomass_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     netz_worksheet16.insert_chart('J3', netz_tpes_biomass_chart1)
@@ -13572,7 +13628,8 @@ for economy in Economy_codes:
             'values':     [economy + '_TPES_fuel_netz', chart_height + netz_nuke_1_rows + netz_biomass_1_rows + i + 7, 2,\
                 chart_height + netz_nuke_1_rows + netz_biomass_1_rows + i + 7, netz_biofuel_2_cols - 1],
             'fill':       {'color': netz_biofuel_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
+            'border':     {'none': True},
+            'gap':        100
         })
     
     netz_worksheet16.insert_chart('R3', netz_tpes_biofuel_chart1)
@@ -13707,7 +13764,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_coal', chart_height + ref_coalcons_1_rows + i + 4, 2,\
                     chart_height + ref_coalcons_1_rows + i + 4, ref_coal_1_cols - 1],
                 'fill':       {'color': ref_coal_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet41.insert_chart('J3', ref_tpes_coal_chart1)
@@ -13832,7 +13890,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + i + 10, netz_coal_1_cols - 1],
                 'fill':       {'color': netz_coal_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet41.insert_chart('J' + str(chart_height + ref_coalcons_1_rows + ref_coal_1_rows + 9), netz_tpes_coal_chart1)
@@ -13969,7 +14028,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_gas', chart_height + ref_gascons_1_rows + i + 4, 2,\
                     chart_height + ref_gascons_1_rows + i + 4, ref_gas_1_cols - 1],
                 'fill':       {'color': ref_gas_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet42.insert_chart('J3', ref_tpes_gas_chart1)
@@ -14094,7 +14154,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + i + 10, netz_gas_1_cols - 1],
                 'fill':       {'color': netz_gas_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet42.insert_chart('J' + str(chart_height + ref_gascons_1_rows + ref_gas_1_rows + 9), netz_tpes_gas_chart1)
@@ -14231,7 +14292,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_crude_NGL', chart_height + ref_crudecons_1_rows + i + 4, 2,\
                     chart_height + ref_crudecons_1_rows + i + 4, ref_crude_1_cols - 1],
                 'fill':       {'color': ref_crude_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet43.insert_chart('J3', ref_tpes_crude_chart1)
@@ -14356,7 +14418,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + i + 10, netz_crude_1_cols - 1],
                 'fill':       {'color': netz_crude_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet43.insert_chart('J' + str(chart_height + ref_crudecons_1_rows + ref_crude_1_rows + 9), netz_tpes_crude_chart1)
@@ -14493,7 +14556,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_petprod', chart_height + ref_petprodcons_1_rows + i + 4, 2,\
                     chart_height + ref_petprodcons_1_rows + i + 4, ref_petprod_2_cols - 1],
                 'fill':       {'color': ref_petprod_2['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet44.insert_chart('J3', ref_tpes_petprod_chart1)
@@ -14618,7 +14682,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, netz_petprod_2_cols - 1],
                 'fill':       {'color': netz_petprod_2['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet44.insert_chart('J' + str(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 9), netz_tpes_petprod_chart1)
@@ -14755,7 +14820,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_hydrogen', chart_height + ref_hyd_1_rows + i + 4, 2,\
                     chart_height + ref_hyd_1_rows + i + 4, ref_hydrogen_3_cols - 1],
                 'fill':       {'color': ref_hydrogen_3['Technology'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet45.insert_chart('J3', ref_tpes_hydrogen_chart1)
@@ -14880,7 +14946,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, netz_hydrogen_3_cols - 1],
                 'fill':       {'color': netz_hydrogen_3['Technology'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet45.insert_chart('J' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 9), netz_tpes_hydrogen_chart1)
@@ -15017,7 +15084,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_renew', chart_height + ref_renewcons_1_rows + i + 4, 2,\
                     chart_height + ref_renewcons_1_rows + i + 4, ref_renew_2_cols - 1],
                 'fill':       {'color': ref_renew_2['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet46.insert_chart('J3', ref_tpes_renew_chart1)
@@ -15142,7 +15210,8 @@ for economy in Economy_codes:
                 'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + i + 10, netz_renew_2_cols - 1],
                 'fill':       {'color': netz_renew_2['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
+                'border':     {'none': True},
+                'gap':        100
             })
         
         ref_worksheet46.insert_chart('J' + str(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 9), netz_tpes_renew_chart1)
