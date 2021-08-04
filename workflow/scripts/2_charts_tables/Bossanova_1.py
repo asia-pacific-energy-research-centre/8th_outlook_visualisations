@@ -808,15 +808,15 @@ ref_cement_1['tech_mix'] = ref_osemo_1['TECHNOLOGY'].map(heavyind_mapping)
 
 ref_steel_2 = ref_steel_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
 ref_steel_2['Industry'] = 'Steel'
-ref_steel_2 = ref_steel_2[['REGION', 'Industry', 'tech_mix'] + list(ref_steel_2.loc[:,'2017':'2050'])]
+ref_steel_2 = ref_steel_2[['REGION', 'Industry', 'tech_mix'] + list(ref_steel_2.loc[:,'2018':'2050'])]
 
 ref_chem_2 = ref_chem_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
 ref_chem_2['Industry'] = 'Chemical'
-ref_chem_2 = ref_chem_2[['REGION', 'Industry', 'tech_mix'] + list(ref_chem_2.loc[:,'2017':'2050'])]
+ref_chem_2 = ref_chem_2[['REGION', 'Industry', 'tech_mix'] + list(ref_chem_2.loc[:,'2018':'2050'])]
 
 ref_cement_2 = ref_cement_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
 ref_cement_2['Industry'] = 'Cement'
-ref_cement_2 = ref_cement_2[['REGION', 'Industry', 'tech_mix'] + list(ref_cement_2.loc[:,'2017':'2050'])]
+ref_cement_2 = ref_cement_2[['REGION', 'Industry', 'tech_mix'] + list(ref_cement_2.loc[:,'2018':'2050'])]
 
 # NET-ZERO
 
@@ -835,20 +835,20 @@ netz_cement_1['tech_mix'] = netz_osemo_1['TECHNOLOGY'].map(heavyind_mapping)
 
 netz_steel_2 = netz_steel_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
 netz_steel_2['Industry'] = 'Steel'
-netz_steel_2 = netz_steel_2[['REGION', 'Industry', 'tech_mix'] + list(netz_steel_2.loc[:,'2017':'2050'])]
+netz_steel_2 = netz_steel_2[['REGION', 'Industry', 'tech_mix'] + list(netz_steel_2.loc[:,'2018':'2050'])]
 
 netz_chem_2 = netz_chem_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
 netz_chem_2['Industry'] = 'Chemical'
-netz_chem_2 = netz_chem_2[['REGION', 'Industry', 'tech_mix'] + list(netz_chem_2.loc[:,'2017':'2050'])]
+netz_chem_2 = netz_chem_2[['REGION', 'Industry', 'tech_mix'] + list(netz_chem_2.loc[:,'2018':'2050'])]
 
 netz_cement_2 = netz_cement_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
 netz_cement_2['Industry'] = 'Cement'
-netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cement_2.loc[:,'2017':'2050'])]
+netz_cement_2 = netz_cement_2[['REGION', 'Industry', 'tech_mix'] + list(netz_cement_2.loc[:,'2018':'2050'])]
 
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['02_BD']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1233,7 +1233,7 @@ for economy in Economy_codes:
         .sum().assign(item_code_new = 'Agriculture', fuel_code = 'Hydrogen')
 
     ref_hyd_1 = ref_hyd_1.append([buildings_hy, ag_hy])\
-        [['fuel_code', 'item_code_new'] + list(ref_hyd_1.loc[:, '2017':'2050'])].reset_index(drop = True)
+        [['fuel_code', 'item_code_new'] + list(ref_hyd_1.loc[:, '2018':'2050'])].reset_index(drop = True)
 
     ref_hyd_1.loc[ref_hyd_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     ref_hyd_1.loc[ref_hyd_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
@@ -1242,7 +1242,7 @@ for economy in Economy_codes:
         .copy().reset_index(drop = True).replace(np.nan, 0)
 
     # Get rid of zero rows
-    non_zero = (ref_hyd_1.loc[:,'2017':] != 0).any(axis = 1)
+    non_zero = (ref_hyd_1.loc[:,'2018':] != 0).any(axis = 1)
     ref_hyd_1 = ref_hyd_1.loc[non_zero].reset_index(drop = True)
 
     ref_hyd_1_rows = ref_hyd_1.shape[0]
@@ -1629,7 +1629,7 @@ for economy in Economy_codes:
         .sum().assign(item_code_new = 'Agriculture', fuel_code = 'Hydrogen')
 
     netz_hyd_1 = netz_hyd_1.append([buildings_hy, ag_hy])\
-        [['fuel_code', 'item_code_new'] + list(netz_hyd_1.loc[:, '2017':'2050'])].reset_index(drop = True)
+        [['fuel_code', 'item_code_new'] + list(netz_hyd_1.loc[:, '2018':'2050'])].reset_index(drop = True)
 
     netz_hyd_1.loc[netz_hyd_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     netz_hyd_1.loc[netz_hyd_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
@@ -1638,7 +1638,7 @@ for economy in Economy_codes:
         .copy().reset_index(drop = True).replace(np.nan, 0)
 
     # Get rid of zero rows
-    non_zero = (netz_hyd_1.loc[:,'2017':] != 0).any(axis = 1)
+    non_zero = (netz_hyd_1.loc[:,'2018':] != 0).any(axis = 1)
     netz_hyd_1 = netz_hyd_1.loc[non_zero].reset_index(drop = True)
 
     netz_hyd_1_rows = netz_hyd_1.shape[0]
@@ -2399,7 +2399,7 @@ for economy in Economy_codes:
                                          (ref_refownsup_df1['Sector'] == 'HYD') & 
                                          (ref_refownsup_df1['FUEL'].isin(['16_x_hydrogen', '16_x_hydrogen_exports']))].copy()
 
-    ref_hydrogen_1 = ref_hydrogen_1[['FUEL', 'TECHNOLOGY'] + list(ref_hydrogen_1.loc[:, '2017':'2050'])]\
+    ref_hydrogen_1 = ref_hydrogen_1[['FUEL', 'TECHNOLOGY'] + list(ref_hydrogen_1.loc[:, '2018':'2050'])]\
         .rename(columns = {'FUEL': 'Fuel', 'TECHNOLOGY': 'Technology'}).reset_index(drop = True)
 
     ref_hydrogen_1.loc[ref_hydrogen_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
@@ -2419,7 +2419,7 @@ for economy in Economy_codes:
                                                 (EGEDA_years_reference['item_code_new'].isin(['2_imports', '3_exports']))]\
                                                     .copy().replace(np.nan, 0).reset_index(drop = True)
 
-    ref_hydrogen_trade_1 = ref_hydrogen_trade_1[['fuel_code', 'item_code_new'] + list(ref_hydrogen_trade_1.loc[:, '2017': '2050'])]\
+    ref_hydrogen_trade_1 = ref_hydrogen_trade_1[['fuel_code', 'item_code_new'] + list(ref_hydrogen_trade_1.loc[:, '2018': '2050'])]\
         .rename(columns = {'fuel_code': 'Fuel', 'item_code_new': 'Technology'}).reset_index(drop = True)
 
     ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
@@ -2436,7 +2436,7 @@ for economy in Economy_codes:
     ref_hydrogen_2 = ref_hydrogen_2.sort_values('Technology')
 
     # Get rid of zero rows
-    non_zero = (ref_hydrogen_2.loc[:,'2017':] != 0).any(axis = 1)
+    non_zero = (ref_hydrogen_2.loc[:,'2018':] != 0).any(axis = 1)
     ref_hydrogen_2 = ref_hydrogen_2.loc[non_zero].reset_index(drop = True)
 
     ref_hydrogen_2_rows = ref_hydrogen_2.shape[0]
@@ -2478,7 +2478,7 @@ for economy in Economy_codes:
     ref_powcap_1 = ref_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
                                             storage_capacity, geo_capacity, waste_capacity, other_capacity])\
-        [['TECHNOLOGY'] + list(ref_powcap_1.loc[:, '2017':'2050'])].reset_index(drop = True) 
+        [['TECHNOLOGY'] + list(ref_powcap_1.loc[:, '2018':'2050'])].reset_index(drop = True) 
 
     ref_powcap_1 = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
 
@@ -2487,7 +2487,7 @@ for economy in Economy_codes:
     ref_powcap_1 = ref_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
     # Get rid of zero rows
-    non_zero = (ref_powcap_1.loc[:,'2017':] != 0).any(axis = 1)
+    non_zero = (ref_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
     ref_powcap_1 = ref_powcap_1.loc[non_zero].reset_index(drop = True)
 
     ref_powcap_1_rows = ref_powcap_1.shape[0]
@@ -2949,7 +2949,7 @@ for economy in Economy_codes:
                                          (netz_refownsup_df1['Sector'] == 'HYD') & 
                                          (netz_refownsup_df1['FUEL'].isin(['16_x_hydrogen', '16_x_hydrogen_exports']))].copy()
 
-    netz_hydrogen_1 = netz_hydrogen_1[['FUEL', 'TECHNOLOGY'] + list(netz_hydrogen_1.loc[:, '2017':'2050'])]\
+    netz_hydrogen_1 = netz_hydrogen_1[['FUEL', 'TECHNOLOGY'] + list(netz_hydrogen_1.loc[:, '2018':'2050'])]\
         .rename(columns = {'FUEL': 'Fuel', 'TECHNOLOGY': 'Technology'}).reset_index(drop = True)
 
     netz_hydrogen_1.loc[netz_hydrogen_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
@@ -2969,7 +2969,7 @@ for economy in Economy_codes:
                                                 (EGEDA_years_netzero['item_code_new'].isin(['2_imports', '3_exports']))]\
                                                     .copy().replace(np.nan, 0).reset_index(drop = True)
 
-    netz_hydrogen_trade_1 = netz_hydrogen_trade_1[['fuel_code', 'item_code_new'] + list(netz_hydrogen_trade_1.loc[:, '2017': '2050'])]\
+    netz_hydrogen_trade_1 = netz_hydrogen_trade_1[['fuel_code', 'item_code_new'] + list(netz_hydrogen_trade_1.loc[:, '2018': '2050'])]\
         .rename(columns = {'fuel_code': 'Fuel', 'item_code_new': 'Technology'}).reset_index(drop = True)
 
     netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
@@ -2986,7 +2986,7 @@ for economy in Economy_codes:
     netz_hydrogen_2 = netz_hydrogen_2.sort_values('Technology')
 
     # Get rid of zero rows
-    non_zero = (netz_hydrogen_2.loc[:,'2017':] != 0).any(axis = 1)
+    non_zero = (netz_hydrogen_2.loc[:,'2018':] != 0).any(axis = 1)
     netz_hydrogen_2 = netz_hydrogen_2.loc[non_zero].reset_index(drop = True)
 
     netz_hydrogen_2_rows = netz_hydrogen_2.shape[0]
@@ -3028,7 +3028,7 @@ for economy in Economy_codes:
     netz_powcap_1 = netz_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
                                             storage_capacity, geo_capacity, waste_capacity, other_capacity])\
-        [['TECHNOLOGY'] + list(netz_powcap_1.loc[:,'2017':'2050'])].reset_index(drop = True) 
+        [['TECHNOLOGY'] + list(netz_powcap_1.loc[:,'2018':'2050'])].reset_index(drop = True) 
 
     netz_powcap_1 = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
 
@@ -3037,7 +3037,7 @@ for economy in Economy_codes:
     netz_powcap_1 = netz_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
     # Get rid of zero rows
-    non_zero = (netz_powcap_1.loc[:,'2017':] != 0).any(axis = 1)
+    non_zero = (netz_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
     netz_powcap_1 = netz_powcap_1.loc[non_zero].reset_index(drop = True)
 
     netz_powcap_1_rows = netz_powcap_1.shape[0]
@@ -3525,7 +3525,7 @@ for economy in Economy_codes:
     if any(economy in s for s in list(ref_steel_2['REGION'])):
         
         ref_steel_3 = ref_steel_2[ref_steel_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(ref_steel_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+            [['Industry', 'tech_mix'] + list(ref_steel_2.loc[:, '2018':'2050'])].reset_index(drop = True)
 
         ref_steel_3_rows = ref_steel_3.shape[0]
         ref_steel_3_cols = ref_steel_3.shape[1]
@@ -3539,7 +3539,7 @@ for economy in Economy_codes:
     if any(economy in s for s in list(ref_chem_2['REGION'])):
         
         ref_chem_3 = ref_chem_2[ref_chem_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(ref_chem_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+            [['Industry', 'tech_mix'] + list(ref_chem_2.loc[:, '2018':'2050'])].reset_index(drop = True)
 
         ref_chem_3_rows = ref_chem_3.shape[0]
         ref_chem_3_cols = ref_chem_3.shape[1]
@@ -3553,7 +3553,7 @@ for economy in Economy_codes:
     if any(economy in s for s in list(ref_cement_2['REGION'])):
         
         ref_cement_3 = ref_cement_2[ref_cement_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(ref_cement_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+            [['Industry', 'tech_mix'] + list(ref_cement_2.loc[:, '2018':'2050'])].reset_index(drop = True)
 
         ref_cement_3_rows = ref_cement_3.shape[0]
         ref_cement_3_cols = ref_cement_3.shape[1]
@@ -3568,7 +3568,7 @@ for economy in Economy_codes:
     if any(economy in s for s in list(netz_steel_2['REGION'])):
         
         netz_steel_3 = netz_steel_2[netz_steel_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(netz_steel_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+            [['Industry', 'tech_mix'] + list(netz_steel_2.loc[:, '2018':'2050'])].reset_index(drop = True)
 
         netz_steel_3_rows = netz_steel_3.shape[0]
         netz_steel_3_cols = netz_steel_3.shape[1]
@@ -3582,7 +3582,7 @@ for economy in Economy_codes:
     if any(economy in s for s in list(netz_chem_2['REGION'])):
         
         netz_chem_3 = netz_chem_2[netz_chem_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(netz_chem_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+            [['Industry', 'tech_mix'] + list(netz_chem_2.loc[:, '2018':'2050'])].reset_index(drop = True)
 
         netz_chem_3_rows = netz_chem_3.shape[0]
         netz_chem_3_cols = netz_chem_3.shape[1]
@@ -3596,7 +3596,7 @@ for economy in Economy_codes:
     if any(economy in s for s in list(netz_cement_2['REGION'])):
         
         netz_cement_3 = netz_cement_2[netz_cement_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(netz_cement_2.loc[:, '2017':'2050'])].reset_index(drop = True)
+            [['Industry', 'tech_mix'] + list(netz_cement_2.loc[:, '2018':'2050'])].reset_index(drop = True)
 
         netz_cement_3_rows = netz_cement_3.shape[0]
         netz_cement_3_cols = netz_cement_3.shape[1]
