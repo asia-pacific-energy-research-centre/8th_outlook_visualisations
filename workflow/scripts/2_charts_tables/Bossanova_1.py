@@ -2406,6 +2406,7 @@ for economy in Economy_codes:
     ref_hydrogen_1.loc[ref_hydrogen_1['Fuel'] == '16_x_hydrogen_exports', 'Fuel'] = 'Hydrogen'
     ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr', 'Technology'] = 'Steam methane reforming'
     ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs', 'Technology'] = 'Steam methane reforming CCS'
+    ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_coal_gas_ccs', 'Technology'] = 'Coal gasification CCS'
     ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_pem_elyzer', 'Technology'] = 'Electrolysis'
     ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr_export', 'Technology'] = 'Steam methane reforming'
     ref_hydrogen_1.loc[ref_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs_export', 'Technology'] = 'Steam methane reforming CCS'
@@ -2430,7 +2431,7 @@ for economy in Economy_codes:
 
     ref_hydrogen_2['Technology'] = pd.Categorical(
         ref_hydrogen_2['Technology'], 
-        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Electrolysis', 'Imports', 'Exports'], 
+        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Coal gasification CCS', 'Electrolysis', 'Imports', 'Exports'], 
         ordered = True)
 
     ref_hydrogen_2 = ref_hydrogen_2.sort_values('Technology')
@@ -2956,6 +2957,7 @@ for economy in Economy_codes:
     netz_hydrogen_1.loc[netz_hydrogen_1['Fuel'] == '16_x_hydrogen_exports', 'Fuel'] = 'Hydrogen'
     netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr', 'Technology'] = 'Steam methane reforming'
     netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs', 'Technology'] = 'Steam methane reforming CCS'
+    netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_coal_gas_ccs', 'Technology'] = 'Coal gasification CCS'
     netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_pem_elyzer', 'Technology'] = 'Electrolysis'
     netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr_export', 'Technology'] = 'Steam methane reforming'
     netz_hydrogen_1.loc[netz_hydrogen_1['Technology'] == 'HYD_ng_smr_ccs_export', 'Technology'] = 'Steam methane reforming CCS'
@@ -2980,7 +2982,7 @@ for economy in Economy_codes:
 
     netz_hydrogen_2['Technology'] = pd.Categorical(
         netz_hydrogen_2['Technology'], 
-        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Electrolysis', 'Imports', 'Exports'], 
+        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Coal gasification CCS', 'Electrolysis', 'Imports', 'Exports'], 
         ordered = True)
 
     netz_hydrogen_2 = netz_hydrogen_2.sort_values('Technology')
