@@ -35,7 +35,7 @@ EGEDA_emissions_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissio
 
 # Define month and year to create folder for saving charts/tables
 
-day_month_year = pd.to_datetime('today').strftime('%d_%B_%Y')
+day_month_year = pd.to_datetime('today').strftime('%Y_%m_%d_%H_%M')
 
 # Macro
 
