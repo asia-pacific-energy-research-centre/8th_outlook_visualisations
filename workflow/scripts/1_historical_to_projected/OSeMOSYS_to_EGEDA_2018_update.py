@@ -609,6 +609,72 @@ for i in range(len(reference_filenames)):
 
 ref_pow_capacity_df1 = ref_capacity_df1[ref_capacity_df1['TECHNOLOGY'].str.startswith('POW')].reset_index(drop = True)
 
+# REFERENCE
+APEC_ref_cap = ref_pow_capacity_df1.groupby(['TECHNOLOGY']).sum().reset_index()
+APEC_ref_cap['REGION'] = 'APEC'
+
+ref_pow_capacity_df1 = ref_pow_capacity_df1.append(APEC_ref_cap).reset_index(drop = True)
+
+# SEA
+SEA_ref = ref_pow_capacity_df1[ref_pow_capacity_df1['REGION']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+SEA_ref['REGION'] = '22_SEA'
+
+ref_pow_capacity_df1 = ref_pow_capacity_df1.append(SEA_ref).reset_index(drop = True)
+
+# Aggregate results for 23_NEA
+# Northeast Asia: 06, 08, 09, 18
+
+# NEA
+NEA_ref = ref_pow_capacity_df1[ref_pow_capacity_df1['REGION']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+NEA_ref['REGION'] = '23_NEA'
+
+ref_pow_capacity_df1 = ref_pow_capacity_df1.append(NEA_ref).reset_index(drop = True)
+
+# Aggregate results for 23b_ONEA
+# ONEA: 06, 09, 18
+
+# ONEA
+ONEA_ref = ref_pow_capacity_df1[ref_pow_capacity_df1['REGION']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+ONEA_ref['REGION'] = '23b_ONEA'
+
+ref_pow_capacity_df1 = ref_pow_capacity_df1.append(ONEA_ref).reset_index(drop = True)
+
+# OAM
+OAM_ref = ref_pow_capacity_df1[ref_pow_capacity_df1['REGION']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+OAM_ref['REGION'] = '24_OAM'
+
+ref_pow_capacity_df1 = ref_pow_capacity_df1.append(OAM_ref).reset_index(drop = True)
+
+# Aggregate results for 24b_OOAM
+# OOAM: 04, 11, 14
+
+# OOAM
+OOAM_ref = ref_pow_capacity_df1[ref_pow_capacity_df1['REGION']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+OOAM_ref['REGION'] = '24b_OOAM'
+
+ref_pow_capacity_df1 = ref_pow_capacity_df1.append(OOAM_ref).reset_index(drop = True)
+
+# Aggregate results for 25_OCE
+# Oceania: 01, 12, 13
+
+# OCE
+OCE_ref = ref_pow_capacity_df1[ref_pow_capacity_df1['REGION']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+OCE_ref['REGION'] = '25_OCE'
+
+ref_pow_capacity_df1 = ref_pow_capacity_df1.append(OCE_ref).reset_index(drop = True)
+
 # NET ZERO
 netz_capacity_df1 = pd.DataFrame()
 
@@ -621,6 +687,72 @@ for i in range(len(netzero_filenames)):
 # Now just extract the power capacity
 
 netz_pow_capacity_df1 = netz_capacity_df1[netz_capacity_df1['TECHNOLOGY'].str.startswith('POW')].reset_index(drop = True)
+
+# REFERENCE
+APEC_netz_cap = netz_pow_capacity_df1.groupby(['TECHNOLOGY']).sum().reset_index()
+APEC_netz_cap['REGION'] = 'APEC'
+
+netz_pow_capacity_df1 = netz_pow_capacity_df1.append(APEC_netz_cap).reset_index(drop = True)
+
+# SEA
+SEA_ref = netz_pow_capacity_df1[netz_pow_capacity_df1['REGION']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+SEA_ref['REGION'] = '22_SEA'
+
+netz_pow_capacity_df1 = netz_pow_capacity_df1.append(SEA_ref).reset_index(drop = True)
+
+# Aggregate results for 23_NEA
+# Northeast Asia: 06, 08, 09, 18
+
+# NEA
+NEA_ref = netz_pow_capacity_df1[netz_pow_capacity_df1['REGION']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+NEA_ref['REGION'] = '23_NEA'
+
+netz_pow_capacity_df1 = netz_pow_capacity_df1.append(NEA_ref).reset_index(drop = True)
+
+# Aggregate results for 23b_ONEA
+# ONEA: 06, 09, 18
+
+# ONEA
+ONEA_ref = netz_pow_capacity_df1[netz_pow_capacity_df1['REGION']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+ONEA_ref['REGION'] = '23b_ONEA'
+
+netz_pow_capacity_df1 = netz_pow_capacity_df1.append(ONEA_ref).reset_index(drop = True)
+
+# OAM
+OAM_ref = netz_pow_capacity_df1[netz_pow_capacity_df1['REGION']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+OAM_ref['REGION'] = '24_OAM'
+
+netz_pow_capacity_df1 = netz_pow_capacity_df1.append(OAM_ref).reset_index(drop = True)
+
+# Aggregate results for 24b_OOAM
+# OOAM: 04, 11, 14
+
+# OOAM
+OOAM_ref = netz_pow_capacity_df1[netz_pow_capacity_df1['REGION']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+OOAM_ref['REGION'] = '24b_OOAM'
+
+netz_pow_capacity_df1 = netz_pow_capacity_df1.append(OOAM_ref).reset_index(drop = True)
+
+# Aggregate results for 25_OCE
+# Oceania: 01, 12, 13
+
+# OCE
+OCE_ref = netz_pow_capacity_df1[netz_pow_capacity_df1['REGION']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY']).sum().reset_index()
+OCE_ref['REGION'] = '25_OCE'
+
+netz_pow_capacity_df1 = netz_pow_capacity_df1.append(OCE_ref).reset_index(drop = True)
 
 # Get maximum year column to build data frame below
 # REFERENCE
@@ -678,6 +810,72 @@ for region in ref_aggregate_df1['REGION'].unique():
     
 ref_power_df1 = ref_power_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector'] + OSeMOSYS_years_ref]
 
+# REFERENCE
+APEC_ref = ref_power_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+APEC_ref['economy'] = 'APEC'
+
+ref_power_df1 = ref_power_df1.append(APEC_ref).reset_index(drop = True)
+
+# SEA
+SEA_ref = ref_power_df1[ref_power_df1['economy']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+SEA_ref['economy'] = '22_SEA'
+
+ref_power_df1 = ref_power_df1.append(SEA_ref).reset_index(drop = True)
+
+# Aggregate results for 23_NEA
+# Northeast Asia: 06, 08, 09, 18
+
+# NEA
+NEA_ref = ref_power_df1[ref_power_df1['economy']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+NEA_ref['economy'] = '23_NEA'
+
+ref_power_df1 = ref_power_df1.append(NEA_ref).reset_index(drop = True)
+
+# Aggregate results for 23b_ONEA
+# ONEA: 06, 09, 18
+
+# ONEA
+ONEA_ref = ref_power_df1[ref_power_df1['economy']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+ONEA_ref['economy'] = '23b_ONEA'
+
+ref_power_df1 = ref_power_df1.append(ONEA_ref).reset_index(drop = True)
+
+# OAM
+OAM_ref = ref_power_df1[ref_power_df1['economy']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OAM_ref['economy'] = '24_OAM'
+
+ref_power_df1 = ref_power_df1.append(OAM_ref).reset_index(drop = True)
+
+# Aggregate results for 24b_OOAM
+# OOAM: 04, 11, 14
+
+# OOAM
+OOAM_ref = ref_power_df1[ref_power_df1['economy']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OOAM_ref['economy'] = '24b_OOAM'
+
+ref_power_df1 = ref_power_df1.append(OOAM_ref).reset_index(drop = True)
+
+# Aggregate results for 25_OCE
+# Oceania: 01, 12, 13
+
+# OCE
+OCE_ref = ref_power_df1[ref_power_df1['economy']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OCE_ref['economy'] = '25_OCE'
+
+ref_power_df1 = ref_power_df1.append(OCE_ref).reset_index(drop = True)
+
 # NET ZERO
 netz_power_df1 = pd.DataFrame()
 
@@ -695,6 +893,60 @@ for region in netz_aggregate_df1['REGION'].unique():
     netz_power_df1 = netz_power_df1.append(interim_df1)
     
 netz_power_df1 = netz_power_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector'] + OSeMOSYS_years_netz]
+
+# NET ZERO
+APEC_netz = netz_power_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+APEC_netz['economy'] = 'APEC'
+
+netz_power_df1 = netz_power_df1.append(APEC_netz).reset_index(drop = True)
+
+# SEA
+SEA_netz = netz_power_df1[netz_power_df1['economy']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+SEA_netz['economy'] = '22_SEA'
+
+netz_power_df1 = netz_power_df1.append(SEA_netz).reset_index(drop = True)
+
+# NEA
+NEA_netz = netz_power_df1[netz_power_df1['economy']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+NEA_netz['economy'] = '23_NEA'
+
+netz_power_df1 = netz_power_df1.append(NEA_netz).reset_index(drop = True)
+
+# ONEA
+ONEA_netz = netz_power_df1[netz_power_df1['economy']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+ONEA_netz['economy'] = '23b_ONEA'
+
+netz_power_df1 = netz_power_df1.append(ONEA_netz).reset_index(drop = True)
+
+# OAM
+OAM_netz = netz_power_df1[netz_power_df1['economy']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OAM_netz['economy'] = '24_OAM'
+
+netz_power_df1 = netz_power_df1.append(OAM_netz).reset_index(drop = True)
+
+# OOAM
+OOAM_netz = netz_power_df1[netz_power_df1['economy']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OOAM_netz['economy'] = '24b_OOAM'
+
+netz_power_df1 = netz_power_df1.append(OOAM_netz).reset_index(drop = True)
+
+# OCE
+OCE_netz = netz_power_df1[netz_power_df1['economy']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OCE_netz['economy'] = '25_OCE'
+
+netz_power_df1 = netz_power_df1.append(OCE_netz).reset_index(drop = True)
 
 ################################ REFINERY, OWN USE and SUPPLY TRANSFORMATION SECTOR ############################### 
 
@@ -720,6 +972,72 @@ for region in ref_aggregate_df1['REGION'].unique():
 ref_refownsup_df1 = ref_refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector'] + OSeMOSYS_years_ref]
 
 # REFERENCE
+APEC_ref = ref_refownsup_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+APEC_ref['economy'] = 'APEC'
+
+ref_refownsup_df1 = ref_refownsup_df1.append(APEC_ref).reset_index(drop = True)
+
+# SEA
+SEA_ref = ref_refownsup_df1[ref_refownsup_df1['economy']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+SEA_ref['economy'] = '22_SEA'
+
+ref_refownsup_df1 = ref_refownsup_df1.append(SEA_ref).reset_index(drop = True)
+
+# Aggregate results for 23_NEA
+# Northeast Asia: 06, 08, 09, 18
+
+# NEA
+NEA_ref = ref_refownsup_df1[ref_refownsup_df1['economy']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+NEA_ref['economy'] = '23_NEA'
+
+ref_refownsup_df1 = ref_refownsup_df1.append(NEA_ref).reset_index(drop = True)
+
+# Aggregate results for 23b_ONEA
+# ONEA: 06, 09, 18
+
+# ONEA
+ONEA_ref = ref_refownsup_df1[ref_refownsup_df1['economy']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+ONEA_ref['economy'] = '23b_ONEA'
+
+ref_refownsup_df1 = ref_refownsup_df1.append(ONEA_ref).reset_index(drop = True)
+
+# OAM
+OAM_ref = ref_refownsup_df1[ref_refownsup_df1['economy']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OAM_ref['economy'] = '24_OAM'
+
+ref_refownsup_df1 = ref_refownsup_df1.append(OAM_ref).reset_index(drop = True)
+
+# Aggregate results for 24b_OOAM
+# OOAM: 04, 11, 14
+
+# OOAM
+OOAM_ref = ref_refownsup_df1[ref_refownsup_df1['economy']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OOAM_ref['economy'] = '24b_OOAM'
+
+ref_refownsup_df1 = ref_refownsup_df1.append(OOAM_ref).reset_index(drop = True)
+
+# Aggregate results for 25_OCE
+# Oceania: 01, 12, 13
+
+# OCE
+OCE_ref = ref_refownsup_df1[ref_refownsup_df1['economy']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OCE_ref['economy'] = '25_OCE'
+
+ref_refownsup_df1 = ref_refownsup_df1.append(OCE_ref).reset_index(drop = True)
+
+# NET-ZERO
 netz_refownsup_df1 = pd.DataFrame()
 
 # Then loop through based on different regions/economies and stitch back together
@@ -736,6 +1054,60 @@ for region in netz_aggregate_df1['REGION'].unique():
     netz_refownsup_df1 = netz_refownsup_df1.append(interim_df1)
     
 netz_refownsup_df1 = netz_refownsup_df1[['economy', 'TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector'] + OSeMOSYS_years_netz]
+
+# NET ZERO
+APEC_netz = netz_refownsup_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+APEC_netz['economy'] = 'APEC'
+
+netz_refownsup_df1 = netz_refownsup_df1.append(APEC_netz).reset_index(drop = True)
+
+# SEA
+SEA_netz = netz_refownsup_df1[netz_refownsup_df1['economy']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+SEA_netz['economy'] = '22_SEA'
+
+netz_refownsup_df1 = netz_refownsup_df1.append(SEA_netz).reset_index(drop = True)
+
+# NEA
+NEA_netz = netz_refownsup_df1[netz_refownsup_df1['economy']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+NEA_netz['economy'] = '23_NEA'
+
+netz_refownsup_df1 = netz_refownsup_df1.append(NEA_netz).reset_index(drop = True)
+
+# ONEA
+ONEA_netz = netz_refownsup_df1[netz_refownsup_df1['economy']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+ONEA_netz['economy'] = '23b_ONEA'
+
+netz_refownsup_df1 = netz_refownsup_df1.append(ONEA_netz).reset_index(drop = True)
+
+# OAM
+OAM_netz = netz_refownsup_df1[netz_refownsup_df1['economy']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OAM_netz['economy'] = '24_OAM'
+
+netz_refownsup_df1 = netz_refownsup_df1.append(OAM_netz).reset_index(drop = True)
+
+# OOAM
+OOAM_netz = netz_refownsup_df1[netz_refownsup_df1['economy']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OOAM_netz['economy'] = '24b_OOAM'
+
+netz_refownsup_df1 = netz_refownsup_df1.append(OOAM_netz).reset_index(drop = True)
+
+# OCE
+OCE_netz = netz_refownsup_df1[netz_refownsup_df1['economy']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
+OCE_netz['economy'] = '25_OCE'
+
+netz_refownsup_df1 = netz_refownsup_df1.append(OCE_netz).reset_index(drop = True)
 
 # Refinery, own-use, supply and power
 
