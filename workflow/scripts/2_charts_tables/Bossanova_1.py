@@ -5150,10 +5150,17 @@ for economy in Economy_codes:
                                                                          '5_international_aviation_bunkers'])]\
                                                                              .groupby(['fuel_code']).sum().assign(fuel_code = 'Petroleum products',
                                                                                                                   item_code_new = 'Bunkers')
+    
+    ref_petprod_2 = ref_petprod_1.append([petprod_bunkers]).reset_index(drop = True)
 
-    refining_grab = ref_crudecons_1[ref_crudecons_1['item_code_new'] == 'Refining'][['fuel_code', 'item_code_new'] + col_chart_years].copy()
+    if 'Refining' in list(ref_crudecons_1['item_code_new']):
+        refining_grab = ref_crudecons_1[ref_crudecons_1['item_code_new'] == 'Refining'][['fuel_code', 'item_code_new'] + col_chart_years].copy()
 
-    ref_petprod_2 = ref_petprod_1.append([petprod_bunkers, refining_grab]).reset_index(drop = True)
+    else:
+        refining_series = ['Crude oil & NGL', 'Refining'] + [0] * 7
+        refining_grab = pd.Series(refining_series, index = ref_petprod_1.columns)
+
+    ref_petprod_2 = ref_petprod_2.append(refining_grab, ignore_index = True).reset_index(drop = True)
 
     ref_petprod_2.loc[ref_petprod_2['fuel_code'] == 'Crude oil & NGL', 'fuel_code'] = 'Petroleum products'
     ref_petprod_2.loc[ref_petprod_2['item_code_new'] == 'Refining', 'item_code_new'] = 'Domestic refining'
@@ -5189,9 +5196,16 @@ for economy in Economy_codes:
                                                                              .groupby(['fuel_code']).sum().assign(fuel_code = 'Petroleum products',
                                                                                                                   item_code_new = 'Bunkers')
 
-    refining_grab = netz_crudecons_1[netz_crudecons_1['item_code_new'] == 'Refining'][['fuel_code', 'item_code_new'] + col_chart_years].copy()
+    netz_petprod_2 = netz_petprod_1.append([petprod_bunkers]).reset_index(drop = True)
 
-    netz_petprod_2 = netz_petprod_1.append([petprod_bunkers, refining_grab]).reset_index(drop = True)
+    if 'Refining' in list(netz_crudecons_1['item_code_new']):
+        refining_grab = netz_crudecons_1[netz_crudecons_1['item_code_new'] == 'Refining'][['fuel_code', 'item_code_new'] + col_chart_years].copy()
+
+    else:
+        refining_series = ['Crude oil & NGL', 'Refining'] + [0] * 7
+        refining_grab = pd.Series(refining_series, index = netz_petprod_1.columns)
+
+    netz_petprod_2 = netz_petprod_2.append(refining_grab, ignore_index = True).reset_index(drop = True)
 
     netz_petprod_2.loc[netz_petprod_2['fuel_code'] == 'Crude oil & NGL', 'fuel_code'] = 'Petroleum products'
     netz_petprod_2.loc[netz_petprod_2['item_code_new'] == 'Refining', 'item_code_new'] = 'Domestic refining'
