@@ -465,7 +465,7 @@ EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_coal': 'Coal'
                                                                 '12_solar': 'Solar', 
                                                                 '13_tide_wave_ocean': 'Hydro', 
                                                                 '14_wind': 'Wind', 
-                                                                '15_solid_biomass': 'Biomass', 
+                                                                '15_solid_biomass': 'Bio', 
                                                                 '16_others': 'Other', 
                                                                 '17_electricity': 'Imports',
                                                                 '18_heat': 'Other'})
