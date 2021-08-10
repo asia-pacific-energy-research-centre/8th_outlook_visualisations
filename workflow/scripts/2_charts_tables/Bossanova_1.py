@@ -2460,8 +2460,9 @@ for economy in Economy_codes:
     # Hydrogen trade
     ref_hydrogen_trade_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                                 (EGEDA_years_reference['fuel_code'] == '16_x_hydrogen') &
-                                                (EGEDA_years_reference['item_code_new'].isin(['2_imports', '3_exports']))]\
-                                                    .copy().replace(np.nan, 0).reset_index(drop = True)
+                                                (EGEDA_years_reference['item_code_new'].isin(['2_imports', '3_exports',\
+                                                    '4_international_marine_bunkers', '5_international_aviation_bunkers']))]\
+                                                        .copy().replace(np.nan, 0).reset_index(drop = True)
 
     ref_hydrogen_trade_1 = ref_hydrogen_trade_1[['fuel_code', 'item_code_new'] + list(ref_hydrogen_trade_1.loc[:, '2018': '2050'])]\
         .rename(columns = {'fuel_code': 'Fuel', 'item_code_new': 'Technology'}).reset_index(drop = True)
@@ -2469,12 +2470,16 @@ for economy in Economy_codes:
     ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
     ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Technology'] == '2_imports', 'Technology'] = 'Imports'
     ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Technology'] == '3_exports', 'Technology'] = 'Exports'
+    ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Technology'] == '4_international_marine_bunkers', 'Technology'] = 'Bunkers'
+    ref_hydrogen_trade_1.loc[ref_hydrogen_trade_1['Technology'] == '5_international_aviation_bunkers', 'Technology'] = 'Bunkers'
+
+    ref_hydrogen_trade_1 = ref_hydrogen_trade_1.copy().groupby(['Fuel', 'Technology']).sum().reset_index()
 
     ref_hydrogen_2 = ref_hydrogen_1.append(ref_hydrogen_trade_1).copy().reset_index(drop = True)
 
     ref_hydrogen_2['Technology'] = pd.Categorical(
         ref_hydrogen_2['Technology'], 
-        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Coal gasification CCS', 'Electrolysis', 'Imports', 'Exports'], 
+        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Coal gasification CCS', 'Electrolysis', 'Imports', 'Exports', 'Bunkers'], 
         ordered = True)
 
     ref_hydrogen_2 = ref_hydrogen_2.sort_values('Technology')
@@ -3011,8 +3016,9 @@ for economy in Economy_codes:
     # Hydrogen trade
     netz_hydrogen_trade_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                                 (EGEDA_years_netzero['fuel_code'] == '16_x_hydrogen') &
-                                                (EGEDA_years_netzero['item_code_new'].isin(['2_imports', '3_exports']))]\
-                                                    .copy().replace(np.nan, 0).reset_index(drop = True)
+                                                (EGEDA_years_netzero['item_code_new'].isin(['2_imports', '3_exports',\
+                                                    '4_international_marine_bunkers', '5_international_aviation_bunkers']))]\
+                                                        .copy().replace(np.nan, 0).reset_index(drop = True)
 
     netz_hydrogen_trade_1 = netz_hydrogen_trade_1[['fuel_code', 'item_code_new'] + list(netz_hydrogen_trade_1.loc[:, '2018': '2050'])]\
         .rename(columns = {'fuel_code': 'Fuel', 'item_code_new': 'Technology'}).reset_index(drop = True)
@@ -3020,12 +3026,16 @@ for economy in Economy_codes:
     netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Fuel'] == '16_x_hydrogen', 'Fuel'] = 'Hydrogen'
     netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Technology'] == '2_imports', 'Technology'] = 'Imports'
     netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Technology'] == '3_exports', 'Technology'] = 'Exports'
+    netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Technology'] == '4_international_marine_bunkers', 'Technology'] = 'Bunkers'
+    netz_hydrogen_trade_1.loc[netz_hydrogen_trade_1['Technology'] == '5_international_aviation_bunkers', 'Technology'] = 'Bunkers'
+
+    netz_hydrogen_trade_1 = netz_hydrogen_trade_1.copy().groupby(['Fuel', 'Technology']).sum().reset_index()
 
     netz_hydrogen_2 = netz_hydrogen_1.append(netz_hydrogen_trade_1).copy().reset_index(drop = True)
 
     netz_hydrogen_2['Technology'] = pd.Categorical(
         netz_hydrogen_2['Technology'], 
-        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Coal gasification CCS', 'Electrolysis', 'Imports', 'Exports'], 
+        categories = ['Steam methane reforming', 'Steam methane reforming CCS', 'Coal gasification CCS', 'Electrolysis', 'Imports', 'Exports', 'Bunkers'], 
         ordered = True)
 
     netz_hydrogen_2 = netz_hydrogen_2.sort_values('Technology')
