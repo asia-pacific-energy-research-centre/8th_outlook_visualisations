@@ -3905,6 +3905,7 @@ for economy in Economy_codes:
 
     # REFERENCE
 
+    # Coal
     ref_coal_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                        (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
                                        (EGEDA_years_reference['fuel_code'].isin(['1_coal', '2_coal_products']))]\
@@ -3928,6 +3929,71 @@ for economy in Economy_codes:
 
     ref_coal_1_rows = ref_coal_1.shape[0]
     ref_coal_1_cols = ref_coal_1.shape[1]
+
+    # split into thermal and metallurgical
+
+    ref_coal_2 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                       (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
+                                       (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                            '1_x_coal_thermal', '2_coal_products']))]\
+                                                .copy().reset_index(drop = True)
+
+    met_coal = ref_coal_2[ref_coal_2['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
+        .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Metallurgical coal').reset_index()
+
+    ref_coaltype_1 = ref_coal_2.append(met_coal).reset_index(drop = True)
+
+    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
+    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
+    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
+    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
+    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
+    ref_coaltype_1.loc[ref_coaltype_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
+    ref_coaltype_1.loc[ref_coaltype_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
+
+    ref_coaltype_1 = ref_coaltype_1[ref_coaltype_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
+    ref_coaltype_1 = ref_coaltype_1[ref_coaltype_1['fuel_code'].isin(['Thermal coal', 'Lignite', 'Metallurgical coal'])].reset_index(drop = True)
+
+    ref_coaltype_1['item_code_new'] = pd.Categorical(
+        ref_coaltype_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    ref_coaltype_1 = ref_coaltype_1.sort_values('item_code_new').reset_index(drop = True)
+
+    ref_coaltype_1['fuel_code'] = pd.Categorical(
+        ref_coaltype_1['fuel_code'], 
+        categories = ['Thermal coal', 'Lignite', 'Metallurgical coal'], 
+        ordered = True)
+
+    ref_coaltype_1 = ref_coaltype_1.sort_values('fuel_code').reset_index(drop = True)
+
+    ref_coaltype_1 = ref_coaltype_1[['fuel_code', 'item_code_new'] + list(ref_coaltype_1.loc[:,'2000':'2050'])]\
+        .replace(np.nan, 0)
+
+    # Get rid of zero rows
+    non_zero = (ref_coaltype_1.loc[:,'2000':] != 0).any(axis = 1)
+    ref_coaltype_1 = ref_coaltype_1.loc[non_zero].reset_index(drop = True)
+
+    ref_ct_prod1 = ref_coaltype_1[ref_coaltype_1['item_code_new'] == 'Production'].copy().reset_index(drop = True)
+
+    ref_ct_prod1_rows = ref_ct_prod1.shape[0]
+    ref_ct_prod1_cols = ref_ct_prod1.shape[1]
+
+    ref_ct_imports1 = ref_coaltype_1[ref_coaltype_1['item_code_new'] == 'Imports'].copy().reset_index(drop = True)
+
+    ref_ct_imports1_rows = ref_ct_imports1.shape[0]
+    ref_ct_imports1_cols = ref_ct_imports1.shape[1]
+
+    ref_ct_exports1 = ref_coaltype_1[ref_coaltype_1['item_code_new'] == 'Exports'].copy().reset_index(drop = True)
+
+    neg_to_pos = ref_ct_exports1.select_dtypes(include = [np.number]) * -1  
+    ref_ct_exports1[neg_to_pos.columns] = neg_to_pos
+
+    ref_ct_exports1_rows = ref_ct_exports1.shape[0]
+    ref_ct_exports1_cols = ref_ct_exports1.shape[1]
+
+    # Crude
 
     ref_crude_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                         (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
@@ -3963,7 +4029,7 @@ for economy in Economy_codes:
                                             [['fuel_code', 'item_code_new'] + col_chart_years]\
                                                 .reset_index(drop = True)
     
-    ref_gas_1['fuel_code'].replace({'8_gas': 'Gas'}, inplace=True)
+    ref_gas_1['fuel_code'].replace({'8_gas': 'Gas'}, inplace = True)
 
     ref_gas_1.loc[ref_gas_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
     ref_gas_1.loc[ref_gas_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
@@ -3982,6 +4048,10 @@ for economy in Economy_codes:
 
     ref_gas_1_rows = ref_gas_1.shape[0]
     ref_gas_1_cols = ref_gas_1.shape[1]
+
+    # LNG and pipe
+
+
 
     ref_nuke_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                         (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
@@ -4122,6 +4192,70 @@ for economy in Economy_codes:
     netz_coal_1_rows = netz_coal_1.shape[0]
     netz_coal_1_cols = netz_coal_1.shape[1]
 
+    # split into thermal and metallurgical
+
+    netz_coal_2 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                       (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
+                                       (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                            '1_x_coal_thermal', '2_coal_products']))]\
+                                                .copy().reset_index(drop = True)
+
+    met_coal = netz_coal_2[netz_coal_2['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
+        .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Metallurgical coal').reset_index()
+
+    netz_coaltype_1 = netz_coal_2.append(met_coal).reset_index(drop = True)
+
+    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
+    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
+    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
+    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
+    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
+    netz_coaltype_1.loc[netz_coaltype_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
+    netz_coaltype_1.loc[netz_coaltype_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
+
+    netz_coaltype_1 = netz_coaltype_1[netz_coaltype_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
+    netz_coaltype_1 = netz_coaltype_1[netz_coaltype_1['fuel_code'].isin(['Thermal coal', 'Lignite', 'Metallurgical coal'])].reset_index(drop = True)
+
+    netz_coaltype_1['item_code_new'] = pd.Categorical(
+        netz_coaltype_1['item_code_new'], 
+        categories = fuel_final_nobunk, 
+        ordered = True)
+
+    netz_coaltype_1 = netz_coaltype_1.sort_values('item_code_new').reset_index(drop = True)
+
+    netz_coaltype_1['fuel_code'] = pd.Categorical(
+        netz_coaltype_1['fuel_code'], 
+        categories = ['Thermal coal', 'Lignite', 'Metallurgical coal'], 
+        ordered = True)
+
+    netz_coaltype_1 = netz_coaltype_1.sort_values('fuel_code').reset_index(drop = True)
+
+    netz_coaltype_1 = netz_coaltype_1[['fuel_code', 'item_code_new'] + list(netz_coaltype_1.loc[:,'2000':'2050'])]\
+        .replace(np.nan, 0)
+
+    # Get rid of zero rows
+    non_zero = (netz_coaltype_1.loc[:,'2000':] != 0).any(axis = 1)
+    netz_coaltype_1 = netz_coaltype_1.loc[non_zero].reset_index(drop = True)
+
+    netz_ct_prod1 = netz_coaltype_1[netz_coaltype_1['item_code_new'] == 'Production'].copy().reset_index(drop = True)
+
+    netz_ct_prod1_rows = netz_ct_prod1.shape[0]
+    netz_ct_prod1_cols = netz_ct_prod1.shape[1]
+
+    netz_ct_imports1 = netz_coaltype_1[netz_coaltype_1['item_code_new'] == 'Imports'].copy().reset_index(drop = True)
+
+    netz_ct_imports1_rows = netz_ct_imports1.shape[0]
+    netz_ct_imports1_cols = netz_ct_imports1.shape[1]
+
+    netz_ct_exports1 = netz_coaltype_1[netz_coaltype_1['item_code_new'] == 'Exports'].copy().reset_index(drop = True)
+
+    neg_to_pos = netz_ct_exports1.select_dtypes(include = [np.number]) * -1  
+    netz_ct_exports1[neg_to_pos.columns] = neg_to_pos
+
+    netz_ct_exports1_rows = netz_ct_exports1.shape[0]
+    netz_ct_exports1_cols = netz_ct_exports1.shape[1]
+
+    # Crude
     netz_crude_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                         (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
                                         (EGEDA_years_netzero['fuel_code'] == '6_crude_oil_and_ngl')].copy()\
@@ -5354,6 +5488,9 @@ for economy in Economy_codes:
     # Fuels
     ref_coalcons_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = chart_height)
     ref_coal_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = chart_height + ref_coalcons_1_rows + 3)
+    ref_ct_prod1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = chart_height)
+    ref_ct_imports1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = chart_height + ref_ct_prod1_rows + 3)
+    ref_ct_exports1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + 6)
     ref_gascons_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = chart_height)
     ref_gas_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = chart_height + ref_gascons_1_rows + 3)
     ref_crudecons_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = chart_height)
@@ -5362,6 +5499,9 @@ for economy in Economy_codes:
     ref_petprod_2.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = chart_height + ref_petprodcons_1_rows + 3)
     netz_coalcons_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6)
     netz_coal_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + 9)
+    netz_ct_prod1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9)
+    netz_ct_imports1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + 12)
+    netz_ct_exports1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + 15)
     netz_gascons_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6)
     netz_gas_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9)
     netz_crudecons_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6)
@@ -15646,6 +15786,386 @@ for economy in Economy_codes:
             })
         
         ref_worksheet46.insert_chart('J' + str(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 9), netz_tpes_renew_chart1)
+
+    else:
+        pass
+
+    ###############
+    # Coal types
+
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet47 = writer.sheets[economy + '_coal_types']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet47.set_column(1, ref_ct_prod1_cols + 1, None, space_format)
+    ref_worksheet47.set_row(chart_height, None, header_format)
+    ref_worksheet47.set_row(chart_height + ref_ct_prod1_rows + 3, None, header_format)
+    ref_worksheet47.set_row(chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + 6, None, header_format)
+    ref_worksheet47.set_row((2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9, None, header_format)
+    ref_worksheet47.set_row((2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + 12, None, header_format)
+    ref_worksheet47.set_row((2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + 15, None, header_format)
+    ref_worksheet47.write(0, 0, economy + ' coal types reference', cell_format1)
+    ref_worksheet47.write(chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9, 0, economy + ' coal types net-zero', cell_format1)
+    ref_worksheet47.write(1, 0, 'Units: Petajoules', cell_format2)
+
+    # Coal production line chart 
+    if ref_ct_prod1_rows > 0:
+        ref_coalprod_chart1 = workbook.add_chart({'type': 'line'})
+        ref_coalprod_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_coalprod_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_coalprod_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_coalprod_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_coalprod_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_coalprod_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_ct_prod1_rows):
+            ref_coalprod_chart1.add_series({
+                'name':       [economy + '_coal_types', chart_height + i + 1, 0],
+                'categories': [economy + '_coal_types', chart_height, 2, chart_height, ref_ct_prod1_cols - 1],
+                'values':     [economy + '_coal_types', chart_height + i + 1, 2, chart_height + i + 1, ref_ct_prod1_cols - 1],
+                'line':       {'color': ref_ct_prod1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet47.insert_chart('B3', ref_coalprod_chart1)
+
+    else:
+        pass
+
+    # Coal imports line chart 
+    if ref_ct_imports1_rows > 0:
+        ref_coalim_chart1 = workbook.add_chart({'type': 'line'})
+        ref_coalim_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_coalim_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_coalim_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_coalim_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_coalim_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_coalim_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_ct_imports1_rows):
+            ref_coalim_chart1.add_series({
+                'name':       [economy + '_coal_types', chart_height + ref_ct_prod1_rows + i + 4, 0],
+                'categories': [economy + '_coal_types', chart_height + ref_ct_prod1_rows + 3, 2, chart_height + ref_ct_prod1_rows + 3, ref_ct_imports1_cols - 1],
+                'values':     [economy + '_coal_types', chart_height + ref_ct_prod1_rows + i + 4, 2, chart_height + ref_ct_prod1_rows + i + 4, ref_ct_imports1_cols - 1],
+                'line':       {'color': ref_ct_imports1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet47.insert_chart('J3', ref_coalim_chart1)
+
+    else:
+        pass
+
+    # Coal exports line chart 
+    if ref_ct_exports1_rows > 0:
+        ref_coalex_chart1 = workbook.add_chart({'type': 'line'})
+        ref_coalex_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_coalex_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_coalex_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_coalex_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_coalex_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_coalex_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_ct_exports1_rows):
+            ref_coalex_chart1.add_series({
+                'name':       [economy + '_coal_types', chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + i + 7, 0],
+                'categories': [economy + '_coal_types', chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + 6, 2,\
+                    chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + 6, ref_ct_exports1_cols - 1],
+                'values':     [economy + '_coal_types', chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + i + 7, 2,\
+                    chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + i + 7, ref_ct_exports1_cols - 1],
+                'line':       {'color': ref_ct_exports1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet47.insert_chart('R3', ref_coalex_chart1)
+
+    else:
+        pass
+
+    # Coal production line chart 
+    if netz_ct_prod1_rows > 0:
+        netz_coalprod_chart1 = workbook.add_chart({'type': 'line'})
+        netz_coalprod_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_coalprod_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_coalprod_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_coalprod_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_coalprod_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_coalprod_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_ct_prod1_rows):
+            netz_coalprod_chart1.add_series({
+                'name':       [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + i + 10, 0],
+                'categories': [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9, 2,\
+                    (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9, netz_ct_prod1_cols - 1],
+                'values':     [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + i + 10, netz_ct_prod1_cols - 1],
+                'line':       {'color': netz_ct_prod1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet47.insert_chart('B' + str(chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 12), netz_coalprod_chart1)
+
+    else:
+        pass
+
+    # Coal imports line chart 
+    if netz_ct_imports1_rows > 0:
+        netz_coalim_chart1 = workbook.add_chart({'type': 'line'})
+        netz_coalim_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_coalim_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_coalim_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_coalim_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_coalim_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_coalim_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_ct_imports1_rows):
+            netz_coalim_chart1.add_series({
+                'name':       [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + i + 13, 0],
+                'categories': [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + 12, 2,\
+                    (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + 12, netz_ct_imports1_cols - 1],
+                'values':     [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + i + 13, 2,\
+                    (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + i + 13, netz_ct_imports1_cols - 1],
+                'line':       {'color': netz_ct_imports1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet47.insert_chart('J' + str(chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 12), netz_coalim_chart1)
+
+    else:
+        pass
+
+    # Coal exports line chart 
+    if netz_ct_exports1_rows > 0:
+        netz_coalex_chart1 = workbook.add_chart({'type': 'line'})
+        netz_coalex_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_coalex_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_coalex_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_coalex_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_coalex_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_coalex_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_ct_exports1_rows):
+            netz_coalex_chart1.add_series({
+                'name':       [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + i + 16, 0],
+                'categories': [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + 15, 2,\
+                    (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + 15, netz_ct_exports1_cols - 1],
+                'values':     [economy + '_coal_types', (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + i + 16, 2,\
+                    (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + i + 16, netz_ct_exports1_cols - 1],
+                'line':       {'color': netz_ct_exports1['fuel_code'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet47.insert_chart('R' + str(chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 12), netz_coalex_chart1)
 
     else:
         pass
