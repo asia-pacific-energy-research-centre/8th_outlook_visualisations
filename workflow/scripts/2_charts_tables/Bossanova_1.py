@@ -247,7 +247,9 @@ wind_fuel_1 = ['14_wind']
 biomass_fuel_1 = ['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_4_black_liquor', '15_5_other_biomass']
 geothermal_fuel_1 = ['11_geothermal']
 other_renew_fuel_1 = ['13_tide_wave_ocean', '16_3_municipal_solid_waste_renewable', '16_1_biogas']
-other_fuel_1 = ['16_4_municipal_solid_waste_nonrenewable', '17_electricity', '18_heat', '16_x_hydrogen', '16_2_industrial_waste']
+other_fuel_1 = ['16_4_municipal_solid_waste_nonrenewable', '16_x_hydrogen', '16_2_industrial_waste']
+
+# '17_electricity', '18_heat'
 
 imports_fuel_1 = ['17_electricity_export']
 
@@ -891,7 +893,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################

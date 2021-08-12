@@ -244,7 +244,6 @@ OCE_netz['REGION'] = '25_OCE'
 
 netz_aggregate_df1 = netz_aggregate_df1.append(OCE_netz).reset_index(drop = True)
 
-
 # Get maximum REFERENCE year column to build data frame below
 ref_year_columns = []
 
@@ -270,6 +269,27 @@ for item in list(netz_aggregate_df1.columns):
 max_year_netz = max(netz_year_columns)
 
 OSeMOSYS_years_netz = list(range(2017, max_year_netz + 1))
+
+#################################################################################################
+
+### ADJUNCT; LAST MINUTE GRAB of LNG/PIPELINE imports and exports which are only from OSeMOSYS 
+# This script is a bit messy as there are two chunks that have ref_aggregate_df1
+# Building the grab here as it grabs from the first ref_aggregate_df1 which is more comprehensive
+# i.e. it has region aggregates such as OOAM, OCE and APEC in addition to economies
+
+ref_lngpipe_1 = ref_aggregate_df1[ref_aggregate_df1['TECHNOLOGY'].isin(['SUP_8_1_natural_gas_import',\
+    'SUP_8_2_lng_import', 'SUP_8_1_natural_gas_export', 'SUP_8_2_lng_export'])].copy()\
+        .loc[:, ['REGION', 'TECHNOLOGY'] + OSeMOSYS_years_ref].reset_index(drop = True)
+
+ref_lngpipe_1.to_csv(path_final + '/lngpipe_reference.csv', index = False)
+
+netz_lngpipe_1 = netz_aggregate_df1[netz_aggregate_df1['TECHNOLOGY'].isin(['SUP_8_1_natural_gas_import',\
+    'SUP_8_2_lng_import', 'SUP_8_1_natural_gas_export', 'SUP_8_2_lng_export'])].copy()\
+        .loc[:, ['REGION', 'TECHNOLOGY'] + OSeMOSYS_years_netz].reset_index(drop = True)
+
+netz_lngpipe_1.to_csv(path_final + '/lngpipe_netzero.csv', index = False)
+
+###################################################################################################
 
 ########################## fuel_code aggregations ##########################
 
