@@ -4852,12 +4852,19 @@ for economy in Economy_codes:
 
     ref_renew_bld = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                             (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
+                                            (EGEDA_years_reference['fuel_code'].isin(['16_1_biogas', '16_3_municipal_solid_waste_renewable', 
                                                                                       '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                       '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
 
     ref_renew_bld = ref_renew_bld[['fuel_code', 'item_code_new'] + list(ref_renew_bld.loc[:, '2000':'2050'])]
+
+    ref_renew_bldtrad = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                              (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                              (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings (trad biomass)')
+
+    ref_renew_bldtrad = ref_renew_bldtrad[['fuel_code', 'item_code_new'] + list(ref_renew_bldtrad.loc[:, '2000':'2050'])]
 
     ref_renew_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
@@ -4935,7 +4942,7 @@ for economy in Economy_codes:
 
     ref_renew_power = ref_renew_power[['fuel_code', 'item_code_new'] + list(ref_renew_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
 
-    ref_renewcons_1 = ref_renew_ind.append([ref_renew_bld, ref_renew_ag, ref_renew_trn, ref_renew_ne, 
+    ref_renewcons_1 = ref_renew_ind.append([ref_renew_bld, ref_renew_bldtrad, ref_renew_ag, ref_renew_trn, ref_renew_ne, 
                                                 ref_renew_ns, ref_renew_own, ref_renew_power])\
                                                     .copy().reset_index(drop = True)
 
@@ -5280,12 +5287,19 @@ for economy in Economy_codes:
 
     netz_renew_bld = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                             (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
+                                            (EGEDA_years_netzero['fuel_code'].isin(['16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
 
     netz_renew_bld = netz_renew_bld[['fuel_code', 'item_code_new'] + list(netz_renew_bld.loc[:, '2000':'2050'])]
+
+    netz_renew_bldtrad = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                              (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                              (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings (trad biomass)')
+
+    netz_renew_bldtrad = netz_renew_bldtrad[['fuel_code', 'item_code_new'] + list(netz_renew_bldtrad.loc[:, '2000':'2050'])]
 
     netz_renew_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                            (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
@@ -5363,7 +5377,7 @@ for economy in Economy_codes:
 
     netz_renew_power = netz_renew_power[['fuel_code', 'item_code_new'] + list(netz_renew_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
 
-    netz_renewcons_1 = netz_renew_ind.append([netz_renew_bld, netz_renew_ag, netz_renew_trn, netz_renew_ne, 
+    netz_renewcons_1 = netz_renew_ind.append([netz_renew_bld, netz_renew_bldtrad, netz_renew_ag, netz_renew_trn, netz_renew_ne, 
                                                 netz_renew_ns, netz_renew_own, netz_renew_power])\
                                                     .copy().reset_index(drop = True)
 
@@ -15811,13 +15825,25 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_renewcons_1_rows):
-            ref_renewcons_chart1.add_series({
-                'name':       [economy + '_renew', chart_height + i + 1, 1],
-                'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
-                'values':     [economy + '_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_renewcons_1_cols - 1],
-                'fill':       {'color': ref_renewcons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_renewcons_1['item_code_new'].iloc[i] in ['Buildings (trad biomass)']:
+                ref_renewcons_chart1.add_series({
+                    'name':       [economy + '_renew', chart_height + i + 1, 1],
+                    'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
+                    'values':     [economy + '_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_renewcons_1_cols - 1],
+                    'fill':       {'color': ref_renewcons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                ref_renewcons_chart1.add_series({
+                    'name':       [economy + '_renew', chart_height + i + 1, 1],
+                    'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
+                    'values':     [economy + '_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_renewcons_1_cols - 1],
+                    'pattern':    {'fg_color': ref_renewcons_1['item_code_new'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })
+
             
         ref_worksheet46.insert_chart('B3', ref_renewcons_chart1)
 
@@ -15935,15 +15961,29 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_renewcons_1_rows):
-            netz_renewcons_chart1.add_series({
-                'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 1],
-                'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, 2,\
-                    (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, netz_renewcons_1_cols - 1],
-                'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, netz_renewcons_1_cols - 1],
-                'fill':       {'color': netz_renewcons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_renewcons_1['item_code_new'].iloc[i] in ['Buildings (trad biomass)']:
+                netz_renewcons_chart1.add_series({
+                    'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 1],
+                    'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, 2,\
+                        (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, netz_renewcons_1_cols - 1],
+                    'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, netz_renewcons_1_cols - 1],
+                    'fill':       {'color': netz_renewcons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                netz_renewcons_chart1.add_series({
+                    'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 1],
+                    'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, 2,\
+                        (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, netz_renewcons_1_cols - 1],
+                    'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, netz_renewcons_1_cols - 1],
+                    'pattern':    {'fg_color': netz_renewcons_1['item_code_new'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })
+
             
         ref_worksheet46.insert_chart('B' + str(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 9), netz_renewcons_chart1)
 
