@@ -583,7 +583,7 @@ netz_file_trans = netz_file_trans.merge(Unique_trans, how = 'outer', on = 'Workb
 # Create empty dataframe to store aggregated results 
 # REFERENCE
 
-ref_aggregate_df1 = pd.DataFrame()
+ref_aggtrans_df1 = pd.DataFrame()
 
 # Now read in the OSeMOSYS output files so that that they're all in one data frame (aggregate_df1)
 
@@ -591,16 +591,16 @@ for i in range(ref_file_trans.shape[0]):
     _df = pd.read_excel(ref_file_trans.iloc[i, 0], sheet_name = ref_file_trans.iloc[i, 2])
     _df['Workbook'] = ref_file_trans.iloc[i, 1]
     _df['Sheet_energy'] = ref_file_trans.iloc[i, 2]
-    ref_aggregate_df1 = ref_aggregate_df1.append(_df)
+    ref_aggtrans_df1 = ref_aggtrans_df1.append(_df)
 
-ref_osemo_only_1 = ref_aggregate_df1[ref_aggregate_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
+ref_osemo_only_1 = ref_aggtrans_df1[ref_aggtrans_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
     .groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index() 
 
-ref_aggregate_df1 = ref_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index()
+ref_aggtrans_df1 = ref_aggtrans_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index()
 
 # NET ZERO
 
-netz_aggregate_df1 = pd.DataFrame()
+netz_aggtrans_df1 = pd.DataFrame()
 
 # Now read in the OSeMOSYS output files so that that they're all in one data frame (aggregate_df1)
 
@@ -608,12 +608,171 @@ for i in range(netz_file_trans.shape[0]):
     _df = pd.read_excel(netz_file_trans.iloc[i, 0], sheet_name = netz_file_trans.iloc[i, 2])
     _df['Workbook'] = netz_file_trans.iloc[i, 1]
     _df['Sheet_energy'] = netz_file_trans.iloc[i, 2]
-    netz_aggregate_df1 = netz_aggregate_df1.append(_df)
+    netz_aggtrans_df1 = netz_aggtrans_df1.append(_df)
 
-netz_osemo_only_1 = netz_aggregate_df1[netz_aggregate_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
+netz_osemo_only_1 = netz_aggtrans_df1[netz_aggtrans_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
     .groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index() 
 
-netz_aggregate_df1 = netz_aggregate_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index()
+netz_aggtrans_df1 = netz_aggtrans_df1.groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index()
+
+##################################################################
+# Now aggregate all the results for APEC
+
+# REFERENCE
+APEC_ref = ref_aggtrans_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+APEC_ref['REGION'] = 'APEC'
+
+ref_aggtrans_df1 = ref_aggtrans_df1.append(APEC_ref).reset_index(drop = True)
+
+# NET ZERO
+APEC_netz = netz_aggtrans_df1.groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+APEC_netz['REGION'] = 'APEC'
+
+netz_aggtrans_df1 = netz_aggtrans_df1.append(APEC_netz).reset_index(drop = True)
+
+# Now aggregate results for 22_SEA
+# Southeast Asia: 02, 07, 10, 15, 17, 19, 21
+
+# REFERENCE
+SEA_ref = ref_aggtrans_df1[ref_aggtrans_df1['REGION']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+SEA_ref['REGION'] = '22_SEA'
+
+ref_aggtrans_df1 = ref_aggtrans_df1.append(SEA_ref).reset_index(drop = True)
+
+# NET ZERO
+SEA_netz = netz_aggtrans_df1[netz_aggtrans_df1['REGION']\
+    .isin(['02_BD', '07_INA', '10_MAS', '15_RP', '17_SIN', '19_THA', '21_VN'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+SEA_netz['REGION'] = '22_SEA'
+
+netz_aggtrans_df1 = netz_aggtrans_df1.append(SEA_netz).reset_index(drop = True)
+
+# Aggregate results for 23_NEA
+# Northeast Asia: 06, 08, 09, 18
+
+# REFERENCE
+NEA_ref = ref_aggtrans_df1[ref_aggtrans_df1['REGION']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+NEA_ref['REGION'] = '23_NEA'
+
+ref_aggtrans_df1 = ref_aggtrans_df1.append(NEA_ref).reset_index(drop = True)
+
+# NET ZERO
+NEA_netz = netz_aggtrans_df1[netz_aggtrans_df1['REGION']\
+    .isin(['06_HKC', '08_JPN', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+NEA_netz['REGION'] = '23_NEA'
+
+netz_aggtrans_df1 = netz_aggtrans_df1.append(NEA_netz).reset_index(drop = True)
+
+
+# Aggregate results for 23b_ONEA
+# ONEA: 06, 09, 18
+
+# REFERENCE
+ONEA_ref = ref_aggtrans_df1[ref_aggtrans_df1['REGION']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+ONEA_ref['REGION'] = '23b_ONEA'
+
+ref_aggtrans_df1 = ref_aggtrans_df1.append(ONEA_ref).reset_index(drop = True)
+
+# NET ZERO
+ONEA_netz = netz_aggtrans_df1[netz_aggtrans_df1['REGION']\
+    .isin(['06_HKC', '09_ROK', '18_CT'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+ONEA_netz['REGION'] = '23b_ONEA'
+
+netz_aggtrans_df1 = netz_aggtrans_df1.append(ONEA_netz).reset_index(drop = True)
+
+# Aggregate results for 24_OAM
+# OAM: 03, 04, 11, 14
+
+# REFERENCE
+OAM_ref = ref_aggtrans_df1[ref_aggtrans_df1['REGION']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+OAM_ref['REGION'] = '24_OAM'
+
+ref_aggtrans_df1 = ref_aggtrans_df1.append(OAM_ref).reset_index(drop = True)
+
+# NET ZERO
+OAM_netz = netz_aggtrans_df1[netz_aggtrans_df1['REGION']\
+    .isin(['03_CDA', '04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+OAM_netz['REGION'] = '24_OAM'
+
+netz_aggtrans_df1 = netz_aggtrans_df1.append(OAM_netz).reset_index(drop = True)
+
+# Aggregate results for 24b_OOAM
+# OOAM: 04, 11, 14
+
+# REFERENCE
+OOAM_ref = ref_aggtrans_df1[ref_aggtrans_df1['REGION']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+OOAM_ref['REGION'] = '24b_OOAM'
+
+ref_aggtrans_df1 = ref_aggtrans_df1.append(OOAM_ref).reset_index(drop = True)
+
+# NET ZERO
+OOAM_netz = netz_aggtrans_df1[netz_aggtrans_df1['REGION']\
+    .isin(['04_CHL', '11_MEX', '14_PE'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+OOAM_netz['REGION'] = '24b_OOAM'
+
+netz_aggtrans_df1 = netz_aggtrans_df1.append(OOAM_netz).reset_index(drop = True)
+
+# Aggregate results for 25_OCE
+# Oceania: 01, 12, 13
+
+# REFERENCE
+OCE_ref = ref_aggtrans_df1[ref_aggtrans_df1['REGION']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+OCE_ref['REGION'] = '25_OCE'
+
+ref_aggtrans_df1 = ref_aggtrans_df1.append(OCE_ref).reset_index(drop = True)
+
+# NET ZERO
+OCE_netz = netz_aggtrans_df1[netz_aggtrans_df1['REGION']\
+    .isin(['01_AUS', '12_NZ', '13_PNG'])]\
+        .groupby(['TECHNOLOGY', 'FUEL']).sum().reset_index()
+OCE_netz['REGION'] = '25_OCE'
+
+netz_aggtrans_df1 = netz_aggtrans_df1.append(OCE_netz).reset_index(drop = True)
+
+# Get maximum year column to build data frame below
+# REFERENCE
+ref_year_columns = []
+
+for item in list(ref_aggtrans_df1.columns):
+    try:
+        ref_year_columns.append(int(item))
+    except ValueError:
+            pass
+
+max_year_ref = min(2050, max(ref_year_columns))
+
+OSeMOSYS_years_ref = list(range(2017, max_year_ref + 1))
+
+# NET ZERO
+netz_year_columns = []
+
+for item in list(netz_aggtrans_df1.columns):
+    try:
+        netz_year_columns.append(int(item))
+    except ValueError:
+            pass
+
+max_year_netz = min(2050, max(netz_year_columns))
+
+OSeMOSYS_years_netz = list(range(2017, max_year_netz + 1))
+
+############################################################################
 
 # Read in capacity data
 # REFERENCE
@@ -774,33 +933,6 @@ OCE_ref['REGION'] = '25_OCE'
 
 netz_pow_capacity_df1 = netz_pow_capacity_df1.append(OCE_ref).reset_index(drop = True)
 
-# Get maximum year column to build data frame below
-# REFERENCE
-ref_year_columns = []
-
-for item in list(ref_aggregate_df1.columns):
-    try:
-        ref_year_columns.append(int(item))
-    except ValueError:
-            pass
-
-max_year_ref = min(2050, max(ref_year_columns))
-
-OSeMOSYS_years_ref = list(range(2017, max_year_ref + 1))
-
-# NET ZERO
-netz_year_columns = []
-
-for item in list(netz_aggregate_df1.columns):
-    try:
-        netz_year_columns.append(int(item))
-    except ValueError:
-            pass
-
-max_year_netz = min(2050, max(netz_year_columns))
-
-OSeMOSYS_years_netz = list(range(2017, max_year_netz + 1))
-
 #################################################################################################
 
 # Now create the dataframes to save and use in the later bossanova script
@@ -817,8 +949,8 @@ ref_power_df1 = pd.DataFrame()
 
 # Then loop through based on different regions/economies and stitch back together
 
-for region in ref_aggregate_df1['REGION'].unique():
-    interim_df1 = ref_aggregate_df1[ref_aggregate_df1['REGION'] == region]
+for region in ref_aggtrans_df1['REGION'].unique():
+    interim_df1 = ref_aggtrans_df1[ref_aggtrans_df1['REGION'] == region]
     interim_df1 = interim_df1.merge(Map_power, how = 'right', on = ['TECHNOLOGY', 'FUEL'])
     interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
 
@@ -901,8 +1033,8 @@ netz_power_df1 = pd.DataFrame()
 
 # Then loop through based on different regions/economies and stitch back together
 
-for region in netz_aggregate_df1['REGION'].unique():
-    interim_df1 = netz_aggregate_df1[netz_aggregate_df1['REGION'] == region]
+for region in netz_aggtrans_df1['REGION'].unique():
+    interim_df1 = netz_aggtrans_df1[netz_aggtrans_df1['REGION'] == region]
     interim_df1 = interim_df1.merge(Map_power, how = 'right', on = ['TECHNOLOGY', 'FUEL'])
     interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
 
@@ -978,8 +1110,8 @@ ref_refownsup_df1 = pd.DataFrame()
 
 # Then loop through based on different regions/economies and stitch back together
 
-for region in ref_aggregate_df1['REGION'].unique():
-    interim_df1 = ref_aggregate_df1[ref_aggregate_df1['REGION'] == region]
+for region in ref_aggtrans_df1['REGION'].unique():
+    interim_df1 = ref_aggtrans_df1[ref_aggtrans_df1['REGION'] == region]
     interim_df1 = interim_df1.merge(Map_refownsup, how = 'right', on = ['TECHNOLOGY', 'FUEL'])
     interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
 
@@ -1062,8 +1194,8 @@ netz_refownsup_df1 = pd.DataFrame()
 
 # Then loop through based on different regions/economies and stitch back together
 
-for region in netz_aggregate_df1['REGION'].unique():
-    interim_df1 = netz_aggregate_df1[netz_aggregate_df1['REGION'] == region]
+for region in netz_aggtrans_df1['REGION'].unique():
+    interim_df1 = netz_aggtrans_df1[netz_aggtrans_df1['REGION'] == region]
     interim_df1 = interim_df1.merge(Map_refownsup, how = 'right', on = ['TECHNOLOGY', 'FUEL'])
     interim_df1 = interim_df1.groupby(['TECHNOLOGY', 'FUEL', 'Sheet_energy', 'Sector']).sum().reset_index()
 

@@ -28,6 +28,10 @@ netz_refownsup_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_refownsup_netzero.csv
 netz_pow_capacity_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_powcapacity_netzero.csv').loc[:,:'2050']
 netz_trans_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_netzero.csv').loc[:,:'2050']
 
+# Gas trade
+ref_gastrade_df1 = pd.read_csv('./data/4_Joined/lngpipe_reference.csv').loc[:,:'2050']
+netz_gastrade_df1 = pd.read_csv('./data/4_Joined/lngpipe_netzero.csv').loc[:,:'2050']
+
 # Emissions dataframe 
 
 EGEDA_emissions_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_reference.csv')
@@ -893,7 +897,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-Economy_codes = ['01_AUS']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -4052,6 +4056,28 @@ for economy in Economy_codes:
     ref_gas_1_cols = ref_gas_1.shape[1]
 
     # LNG and pipe
+    # Imports
+    ref_gasim_1 = ref_gastrade_df1[(ref_gastrade_df1['REGION'] == economy) &
+                                   (ref_gastrade_df1['TECHNOLOGY'].str.contains('import'))].copy()\
+                                       .rename(columns = {'TECHNOLOGY': 'Imports'})\
+                                           [['Imports'] + list(ref_gastrade_df1.loc[:, '2018': '2050'])]\
+                                               .reset_index(drop = True)
+
+    ref_gasim_1.loc[ref_gasim_1['Trade'] == 'SUP_8_1_natural_gas_import', 'Trade'] = 'Pipeline'
+    ref_gasim_1.loc[ref_gasim_1['Trade'] == 'SUP_8_2_lng_import', 'Trade'] = 'LNG'
+    
+    # Exports
+    ref_gasex_1 = ref_gastrade_df1[(ref_gastrade_df1['REGION'] == economy) &
+                                   (ref_gastrade_df1['TECHNOLOGY'].str.contains('export'))].copy()\
+                                       .rename(columns = {'TECHNOLOGY': 'Exports'})\
+                                           [['Exports'] + list(ref_gastrade_df1.loc[:, '2018': '2050'])]\
+                                               .reset_index(drop = True)
+
+    ref_gasex_1.loc[ref_gasex_1['Trade'] == 'SUP_8_1_natural_gas_export', 'Trade'] = 'Pipeline'
+    ref_gasex_1.loc[ref_gasex_1['Trade'] == 'SUP_8_2_lng_export', 'Trade'] = 'LNG'
+
+
+
 
 
 
