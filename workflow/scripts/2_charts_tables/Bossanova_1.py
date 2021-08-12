@@ -4341,6 +4341,35 @@ for economy in Economy_codes:
     netz_gas_1_rows = netz_gas_1.shape[0]
     netz_gas_1_cols = netz_gas_1.shape[1]
 
+    # LNG and pipe
+    # Imports
+    netz_gasim_1 = netz_gastrade_df1[(netz_gastrade_df1['REGION'] == economy) &
+                                   (netz_gastrade_df1['TECHNOLOGY'].str.contains('import'))].copy()\
+                                       .rename(columns = {'TECHNOLOGY': 'Imports'})\
+                                           [['Imports'] + list(netz_gastrade_df1.loc[:, '2018': '2050'])]\
+                                               .reset_index(drop = True)
+
+    netz_gasim_1.loc[netz_gasim_1['Imports'] == 'SUP_8_1_natural_gas_import', 'Imports'] = 'Pipeline'
+    netz_gasim_1.loc[netz_gasim_1['Imports'] == 'SUP_8_2_lng_import', 'Imports'] = 'LNG'
+
+    netz_gasim_1_rows = netz_gasim_1.shape[0]
+    netz_gasim_1_cols = netz_gasim_1.shape[1]
+    
+    # Exports
+    netz_gasex_1 = netz_gastrade_df1[(netz_gastrade_df1['REGION'] == economy) &
+                                   (netz_gastrade_df1['TECHNOLOGY'].str.contains('export'))].copy()\
+                                       .rename(columns = {'TECHNOLOGY': 'Exports'})\
+                                           [['Exports'] + list(netz_gastrade_df1.loc[:, '2018': '2050'])]\
+                                               .reset_index(drop = True)
+
+    netz_gasex_1.loc[netz_gasex_1['Exports'] == 'SUP_8_1_natural_gas_export', 'Exports'] = 'Pipeline'
+    netz_gasex_1.loc[netz_gasex_1['Exports'] == 'SUP_8_2_lng_export', 'Exports'] = 'LNG'
+
+    netz_gasex_1_rows = netz_gasex_1.shape[0]
+    netz_gasex_1_cols = netz_gasex_1.shape[1]
+
+    # Nuclear
+
     netz_nuke_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                         (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
                                         (EGEDA_years_netzero['fuel_code'] == '9_nuclear')].copy()\
@@ -5524,6 +5553,8 @@ for economy in Economy_codes:
     ref_ct_exports1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + 6)
     ref_gascons_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = chart_height)
     ref_gas_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = chart_height + ref_gascons_1_rows + 3)
+    ref_gasim_1.to_excel(writer, sheet_name = economy + '_gas_trade', index = False, startrow = chart_height)
+    ref_gasex_1.to_excel(writer, sheet_name = economy + '_gas_trade', index = False, startrow = chart_height + ref_gasim_1_rows + 3)
     ref_crudecons_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = chart_height)
     ref_crude_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = chart_height + ref_crudecons_1_rows + 3)
     ref_petprodcons_1.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = chart_height)
@@ -5535,6 +5566,8 @@ for economy in Economy_codes:
     netz_ct_exports1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + 15)
     netz_gascons_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6)
     netz_gas_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9)
+    netz_gasim_1.to_excel(writer, sheet_name = economy + '_gas_trade', index = False, startrow = (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + 6)
+    netz_gasex_1.to_excel(writer, sheet_name = economy + '_gas_trade', index = False, startrow = (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + 9)
     netz_crudecons_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6)
     netz_crude_1.to_excel(writer, sheet_name = economy + '_crude_NGL', index = False, startrow = (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9)
     netz_petprodcons_1.to_excel(writer, sheet_name = economy + '_petprod', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6)
@@ -16197,6 +16230,264 @@ for economy in Economy_codes:
             })    
             
         ref_worksheet47.insert_chart('R' + str(chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 12), netz_coalex_chart1)
+
+    else:
+        pass
+
+    ############################
+    # Gas trade
+
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet48 = writer.sheets[economy + '_gas_trade']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet48.set_column(1, ref_gasim_1_cols + 1, None, space_format)
+    ref_worksheet48.set_row(chart_height, None, header_format)
+    ref_worksheet48.set_row(chart_height + ref_gasim_1_rows + 3, None, header_format)
+    ref_worksheet48.set_row((2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + 6, None, header_format)
+    ref_worksheet48.set_row((2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + 9, None, header_format)
+    ref_worksheet48.write(0, 0, economy + ' gas trade reference', cell_format1)
+    ref_worksheet48.write(chart_height + ref_gasim_1_rows + ref_gasex_1_rows + 6, 0, economy + ' gas trade net-zero', cell_format1)
+    ref_worksheet48.write(1, 0, 'Units: Petajoules', cell_format2)
+
+    # Gas imports line chart 
+    if ref_gasim_1_rows > 0:
+        ref_gasim_chart1 = workbook.add_chart({'type': 'line'})
+        ref_gasim_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_gasim_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_gasim_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_gasim_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_gasim_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_gasim_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_gasim_1_rows):
+            ref_gasim_chart1.add_series({
+                'name':       [economy + '_gas_trade', chart_height + i + 1, 0],
+                'categories': [economy + '_gas_trade', chart_height, 1, chart_height, ref_gasim_1_cols - 1],
+                'values':     [economy + '_gas_trade', chart_height + i + 1, 1, chart_height + i + 1, ref_gasim_1_cols - 1],
+                'line':       {'color': ref_gasim_1['Imports'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet48.insert_chart('B3', ref_gasim_chart1)
+
+    else:
+        pass
+
+    # Gas exports line chart 
+    if ref_gasex_1_rows > 0:
+        ref_gasex_chart1 = workbook.add_chart({'type': 'line'})
+        ref_gasex_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_gasex_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_gasex_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_gasex_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_gasex_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_gasex_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_gasex_1_rows):
+            ref_gasex_chart1.add_series({
+                'name':       [economy + '_gas_trade', chart_height + ref_gasim_1_rows + i + 4, 0],
+                'categories': [economy + '_gas_trade', chart_height + ref_gasim_1_rows + 3, 1,\
+                    chart_height + ref_gasim_1_rows + 3, ref_gasex_1_cols - 1],
+                'values':     [economy + '_gas_trade', chart_height + ref_gasim_1_rows + i + 4, 1,\
+                    chart_height + ref_gasim_1_rows + i + 4, ref_gasex_1_cols - 1],
+                'line':       {'color': ref_gasex_1['Exports'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet48.insert_chart('J3', ref_gasex_chart1)
+
+    else:
+        pass
+
+    # Gas imports line chart 
+    if netz_gasim_1_rows > 0:
+        netz_gasim_chart1 = workbook.add_chart({'type': 'line'})
+        netz_gasim_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_gasim_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_gasim_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_gasim_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_gasim_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_gasim_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_gasim_1_rows):
+            netz_gasim_chart1.add_series({
+                'name':       [economy + '_gas_trade', (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + i + 7, 0],
+                'categories': [economy + '_gas_trade', (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + 6, 1,\
+                    (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + 6, netz_gasim_1_cols - 1],
+                'values':     [economy + '_gas_trade', (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + i + 7, 1,\
+                    (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + i + 7, netz_gasim_1_cols - 1],
+                'line':       {'color': netz_gasim_1['Imports'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet48.insert_chart('B' + str(chart_height + ref_gasim_1_rows + ref_gasex_1_rows + 9), netz_gasim_chart1)
+
+    else:
+        pass
+
+    # Gas exports line chart 
+    if netz_gasex_1_rows > 0:
+        netz_gasex_chart1 = workbook.add_chart({'type': 'line'})
+        netz_gasex_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_gasex_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_gasex_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_gasex_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_gasex_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_gasex_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_gasex_1_rows):
+            netz_gasex_chart1.add_series({
+                'name':       [economy + '_gas_trade', (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + i + 10, 0],
+                'categories': [economy + '_gas_trade', (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + 9, 1,\
+                    (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + 9, netz_gasex_1_cols - 1],
+                'values':     [economy + '_gas_trade', (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + i + 10, 1,\
+                    (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + i + 10, netz_gasex_1_cols - 1],
+                'line':       {'color': netz_gasex_1['Exports'].map(colours_dict).loc[i], 'width': 1.25}
+            })    
+            
+        ref_worksheet48.insert_chart('J' + str(chart_height + ref_gasim_1_rows + ref_gasex_1_rows + 9), netz_gasex_chart1)
 
     else:
         pass
