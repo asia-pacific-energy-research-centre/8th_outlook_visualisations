@@ -897,7 +897,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+# Economy_codes = ['25_OCE']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
