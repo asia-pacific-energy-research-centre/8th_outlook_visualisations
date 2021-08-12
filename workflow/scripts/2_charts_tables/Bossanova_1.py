@@ -4063,8 +4063,11 @@ for economy in Economy_codes:
                                            [['Imports'] + list(ref_gastrade_df1.loc[:, '2018': '2050'])]\
                                                .reset_index(drop = True)
 
-    ref_gasim_1.loc[ref_gasim_1['Trade'] == 'SUP_8_1_natural_gas_import', 'Trade'] = 'Pipeline'
-    ref_gasim_1.loc[ref_gasim_1['Trade'] == 'SUP_8_2_lng_import', 'Trade'] = 'LNG'
+    ref_gasim_1.loc[ref_gasim_1['Imports'] == 'SUP_8_1_natural_gas_import', 'Imports'] = 'Pipeline'
+    ref_gasim_1.loc[ref_gasim_1['Imports'] == 'SUP_8_2_lng_import', 'Imports'] = 'LNG'
+
+    ref_gasim_1_rows = ref_gasim_1.shape[0]
+    ref_gasim_1_cols = ref_gasim_1.shape[1]
     
     # Exports
     ref_gasex_1 = ref_gastrade_df1[(ref_gastrade_df1['REGION'] == economy) &
@@ -4073,13 +4076,13 @@ for economy in Economy_codes:
                                            [['Exports'] + list(ref_gastrade_df1.loc[:, '2018': '2050'])]\
                                                .reset_index(drop = True)
 
-    ref_gasex_1.loc[ref_gasex_1['Trade'] == 'SUP_8_1_natural_gas_export', 'Trade'] = 'Pipeline'
-    ref_gasex_1.loc[ref_gasex_1['Trade'] == 'SUP_8_2_lng_export', 'Trade'] = 'LNG'
+    ref_gasex_1.loc[ref_gasex_1['Exports'] == 'SUP_8_1_natural_gas_export', 'Exports'] = 'Pipeline'
+    ref_gasex_1.loc[ref_gasex_1['Exports'] == 'SUP_8_2_lng_export', 'Exports'] = 'LNG'
 
+    ref_gasex_1_rows = ref_gasex_1.shape[0]
+    ref_gasex_1_cols = ref_gasex_1.shape[1]
 
-
-
-
+    # Nuclear 
 
     ref_nuke_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                         (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
