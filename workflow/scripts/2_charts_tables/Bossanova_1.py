@@ -897,7 +897,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['25_OCE']
+# Economy_codes = ['20_USA']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1887,7 +1887,23 @@ for economy in Economy_codes:
     ref_exports_2 = ref_exports_1[['fuel_code', 'item_code_new'] + col_chart_years]
 
     ref_exports_2_rows = ref_exports_2.shape[0]
-    ref_exports_2_cols = ref_exports_2.shape[1] 
+    ref_exports_2_cols = ref_exports_2.shape[1]
+
+    # Electricity trade
+
+    ref_electrade_1 = ref_imports_2[ref_imports_2['fuel_code'] == 'Electricity'].copy()\
+        .append(ref_exports_2[ref_exports_2['fuel_code'] == 'Electricity'].copy()).reset_index(drop = True)
+
+    # Change exports back to negative
+    ref_electrade_1.loc[ref_electrade_1['item_code_new'] == '3_exports', list(ref_electrade_1.columns[2:])]\
+        = ref_electrade_1.loc[ref_electrade_1['item_code_new'] == '3_exports', list(ref_electrade_1.columns[2:])]\
+            .apply(lambda x: x * -1)
+
+    ref_electrade_1.loc[ref_electrade_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
+    ref_electrade_1.loc[ref_electrade_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
+
+    ref_electrade_1_rows = ref_electrade_1.shape[0]
+    ref_electrade_1_cols = ref_electrade_1.shape[1]
 
     # Bunkers dataframes
 
@@ -2140,6 +2156,22 @@ for economy in Economy_codes:
 
     netz_exports_2_rows = netz_exports_2.shape[0]
     netz_exports_2_cols = netz_exports_2.shape[1] 
+
+    # Electricity trade
+
+    netz_electrade_1 = netz_imports_2[netz_imports_2['fuel_code'] == 'Electricity'].copy()\
+        .append(netz_exports_2[netz_exports_2['fuel_code'] == 'Electricity'].copy()).reset_index(drop = True)
+
+    # Change exports back to negative
+    netz_electrade_1.loc[netz_electrade_1['item_code_new'] == '3_exports', list(netz_electrade_1.columns[2:])]\
+        = netz_electrade_1.loc[netz_electrade_1['item_code_new'] == '3_exports', list(netz_electrade_1.columns[2:])]\
+            .apply(lambda x: x * -1)
+
+    netz_electrade_1.loc[netz_electrade_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
+    netz_electrade_1.loc[netz_electrade_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
+
+    netz_electrade_1_rows = netz_electrade_1.shape[0]
+    netz_electrade_1_cols = netz_electrade_1.shape[1]
 
     # Bunkers dataframes
 
@@ -5503,7 +5535,9 @@ for economy in Economy_codes:
     ref_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9)
     netz_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9)
     ref_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12)
+    ref_electrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15)
     netz_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12)
+    netz_electrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15)
     ref_bunkers_1.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = chart_height)
     netz_bunkers_1.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6)
     ref_bunkers_2.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = chart_height + ref_bunkers_1_rows + 3)
@@ -7964,6 +7998,7 @@ for economy in Economy_codes:
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, None, header_format)
+    ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + 15, None, header_format)
     ref_worksheet13.write(0, 0, economy + ' TPES components reference', cell_format1)
     ref_worksheet13.write(1, 0, 'Units: Petajoules', cell_format2)
 
@@ -8248,6 +8283,67 @@ for economy in Economy_codes:
         })
     
     ref_worksheet13.insert_chart('AH3', ref_exports_column)
+
+    # Create an electricity trade column
+    if ref_electrade_1_rows > 0:
+        ref_electrade_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        ref_electrade_column.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_electrade_column.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_electrade_column.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_electrade_column.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Electricity trade (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_electrade_column.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_electrade_column.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(ref_electrade_1_rows):
+            ref_electrade_column.add_series({
+                'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + i + 16, 1],
+                'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15, 2,\
+                    chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15, ref_electrade_1_cols - 1],
+                'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + i + 16, 2,\
+                    chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + i + 16, ref_electrade_1_cols - 1],
+                'fill':       {'color': ref_electrade_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+        
+        ref_worksheet13.insert_chart('AP3', ref_electrade_column)
+
+    else:
+        pass
 
     ###################################### TPES components II ###########################################
     
@@ -8794,6 +8890,7 @@ for economy in Economy_codes:
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, None, header_format)
+    netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + 15, None, header_format)
     netz_worksheet13.write(0, 0, economy + ' TPES components net-zero', cell_format1)
     netz_worksheet13.write(1, 0, 'Units: Petajoules', cell_format2)
 
@@ -9078,6 +9175,67 @@ for economy in Economy_codes:
         })
     
     netz_worksheet13.insert_chart('AH3', netz_exports_column)
+
+    # Create an electricity trade column
+    if netz_electrade_1_rows > 0:
+        netz_electrade_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        netz_electrade_column.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_electrade_column.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_electrade_column.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_electrade_column.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Electricity trade (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_electrade_column.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_electrade_column.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(netz_electrade_1_rows):
+            netz_electrade_column.add_series({
+                'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + i + 16, 1],
+                'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15, 2,\
+                    chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15, netz_electrade_1_cols - 1],
+                'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + i + 16, 2,\
+                    chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + i + 16, netz_electrade_1_cols - 1],
+                'fill':       {'color': netz_electrade_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+        
+        netz_worksheet13.insert_chart('AP3', netz_electrade_column)
+
+    else:
+        pass
 
     ###################################### TPES components II ###########################################
     
