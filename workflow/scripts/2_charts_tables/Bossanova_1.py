@@ -4862,7 +4862,7 @@ for economy in Economy_codes:
     ref_renew_bldtrad = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                               (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
                                               (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings (trad biomass)')
+                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings (biomass)')
 
     ref_renew_bldtrad = ref_renew_bldtrad[['fuel_code', 'item_code_new'] + list(ref_renew_bldtrad.loc[:, '2000':'2050'])]
 
@@ -5297,7 +5297,7 @@ for economy in Economy_codes:
     netz_renew_bldtrad = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                               (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
                                               (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings (trad biomass)')
+                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings (biomass)')
 
     netz_renew_bldtrad = netz_renew_bldtrad[['fuel_code', 'item_code_new'] + list(netz_renew_bldtrad.loc[:, '2000':'2050'])]
 
@@ -15825,7 +15825,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_renewcons_1_rows):
-            if not ref_renewcons_1['item_code_new'].iloc[i] in ['Buildings (trad biomass)']:
+            if not ref_renewcons_1['item_code_new'].iloc[i] in ['Buildings (biomass)']:
                 ref_renewcons_chart1.add_series({
                     'name':       [economy + '_renew', chart_height + i + 1, 1],
                     'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
@@ -15839,7 +15839,8 @@ for economy in Economy_codes:
                     'name':       [economy + '_renew', chart_height + i + 1, 1],
                     'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
                     'values':     [economy + '_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_renewcons_1_cols - 1],
-                    'pattern':    {'fg_color': ref_renewcons_1['item_code_new'].map(colours_dict).loc[i],
+                    'pattern':    {'bg_color': ref_renewcons_1['item_code_new'].map(colours_dict).loc[i],
+                                   'fg_color': 'white',
                                    'pattern': 'wide_downward_diagonal'},
                     'border':     {'none': True}
                 })
@@ -15961,7 +15962,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_renewcons_1_rows):
-            if not netz_renewcons_1['item_code_new'].iloc[i] in ['Buildings (trad biomass)']:
+            if not netz_renewcons_1['item_code_new'].iloc[i] in ['Buildings (biomass)']:
                 netz_renewcons_chart1.add_series({
                     'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 1],
                     'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, 2,\
@@ -15979,7 +15980,8 @@ for economy in Economy_codes:
                         (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, netz_renewcons_1_cols - 1],
                     'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 2,\
                         (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, netz_renewcons_1_cols - 1],
-                    'pattern':    {'fg_color': netz_renewcons_1['item_code_new'].map(colours_dict).loc[i],
+                    'pattern':    {'bg_color': netz_renewcons_1['item_code_new'].map(colours_dict).loc[i],
+                                   'fg_color': 'white',
                                    'pattern': 'wide_downward_diagonal'},
                     'border':     {'none': True}
                 })
