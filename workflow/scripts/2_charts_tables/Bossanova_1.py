@@ -5536,10 +5536,6 @@ for economy in Economy_codes:
     netz_ag_2.to_excel(writer, sheet_name = economy + '_agriculture', index = False, startrow = (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9)
 
     # Transformation
-    ref_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = chart_height)
-    netz_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6)
-    ref_pow_use_3.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = chart_height + ref_pow_use_2_rows + 3)
-    netz_pow_use_3.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9)
     ref_elecgen_2.to_excel(writer, sheet_name = economy + '_elec_gen', index = False, startrow = chart_height)
     netz_elecgen_2.to_excel(writer, sheet_name = economy + '_elec_gen', index = False, startrow = (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6)
     ref_elecgen_3.to_excel(writer, sheet_name = economy + '_elec_gen', index = False, startrow = chart_height + ref_elecgen_2_rows + 3)
@@ -5548,6 +5544,10 @@ for economy in Economy_codes:
     netz_powcap_1.to_excel(writer, sheet_name = economy + '_pow_cap', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6)
     ref_powcap_2.to_excel(writer, sheet_name = economy + '_pow_cap', index = False, startrow = chart_height + ref_powcap_1_rows + 3)
     netz_powcap_2.to_excel(writer, sheet_name = economy + '_pow_cap', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9)
+    ref_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = chart_height)
+    netz_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6)
+    ref_pow_use_3.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = chart_height + ref_pow_use_2_rows + 3)
+    netz_pow_use_3.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9)
     ref_refinery_1.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = chart_height)
     netz_refinery_1.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9)
     ref_refinery_2.to_excel(writer, sheet_name = economy + '_refining', index = False, startrow = chart_height + ref_refinery_1_rows + 3)
