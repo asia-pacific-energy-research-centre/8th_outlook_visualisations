@@ -897,7 +897,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['20_USA']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -5493,6 +5493,10 @@ for economy in Economy_codes:
 
     # Insert the various dataframes into different sheets of the workbook
     # REFERENCE and NETZERO
+
+    # Macro
+    macro_1.to_excel(writer, sheet_name = economy + '_macro', index = False, startrow = chart_height)
+
     # FED
     ref_fedfuel_1.to_excel(writer, sheet_name = economy + '_FED_fuel', index = False, startrow = chart_height)
     netz_fedfuel_1.to_excel(writer, sheet_name = economy + '_FED_fuel', index = False, startrow = (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6)
@@ -5531,32 +5535,6 @@ for economy in Economy_codes:
     ref_ag_2.to_excel(writer, sheet_name = economy + '_agriculture', index = False, startrow = chart_height + ref_ag_1_rows + 3)
     netz_ag_2.to_excel(writer, sheet_name = economy + '_agriculture', index = False, startrow = (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9)
 
-    # TPES
-    ref_tpes_1.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height)
-    netz_tpes_1.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6)
-    ref_tpes_2.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height + ref_tpes_1_rows + 3)
-    netz_tpes_2.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9)
-    ref_prod_1.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = chart_height)
-    netz_prod_1.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6)
-    ref_prod_2.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = chart_height + ref_prod_1_rows + 3)
-    netz_prod_2.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9)
-    ref_tpes_comp_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height)
-    netz_tpes_comp_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height)
-    ref_imports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + 3)
-    netz_imports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + 3)
-    ref_imports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6)
-    netz_imports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6)
-    ref_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9)
-    netz_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9)
-    ref_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12)
-    ref_electrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15)
-    netz_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12)
-    netz_electrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15)
-    ref_bunkers_1.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = chart_height)
-    netz_bunkers_1.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6)
-    ref_bunkers_2.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = chart_height + ref_bunkers_1_rows + 3)
-    netz_bunkers_2.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9)
-
     # Transformation
     ref_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = chart_height)
     netz_pow_use_2.to_excel(writer, sheet_name = economy + '_pow_input', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6)
@@ -5592,6 +5570,32 @@ for economy in Economy_codes:
     netz_heatgen_2.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6)
     ref_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = chart_height + ref_heatgen_2_rows + 3)
     netz_heatgen_3.to_excel(writer, sheet_name = economy + '_heat_gen', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9)
+
+    # TPES
+    ref_tpes_1.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height)
+    netz_tpes_1.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6)
+    ref_tpes_2.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = chart_height + ref_tpes_1_rows + 3)
+    netz_tpes_2.to_excel(writer, sheet_name = economy + '_TPES', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9)
+    ref_prod_1.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = chart_height)
+    netz_prod_1.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6)
+    ref_prod_2.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = chart_height + ref_prod_1_rows + 3)
+    netz_prod_2.to_excel(writer, sheet_name = economy + '_prod', index = False, startrow = (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9)
+    ref_tpes_comp_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height)
+    netz_tpes_comp_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height)
+    ref_imports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + 3)
+    netz_imports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + 3)
+    ref_imports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6)
+    netz_imports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6)
+    ref_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9)
+    netz_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9)
+    ref_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12)
+    ref_electrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15)
+    netz_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12)
+    netz_electrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15)
+    ref_bunkers_1.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = chart_height)
+    netz_bunkers_1.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6)
+    ref_bunkers_2.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = chart_height + ref_bunkers_1_rows + 3)
+    netz_bunkers_2.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9)
 
     # Fuels
     ref_coalcons_1.to_excel(writer, sheet_name = economy + '_coal', index = False, startrow = chart_height)
@@ -5650,7 +5654,6 @@ for economy in Economy_codes:
     netz_emiss_sector_1.to_excel(writer, sheet_name = economy + '_Emiss_sector', index = False, startrow = (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6)
     ref_emiss_sector_2.to_excel(writer, sheet_name = economy + '_Emiss_sector', index = False, startrow = chart_height + ref_emiss_sector_1_rows + 3)
     netz_emiss_sector_2.to_excel(writer, sheet_name = economy + '_Emiss_sector', index = False, startrow = (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9)
-    macro_1.to_excel(writer, sheet_name = economy + '_macro', index = False, startrow = chart_height)
 
     ################################################################################################################################
 
