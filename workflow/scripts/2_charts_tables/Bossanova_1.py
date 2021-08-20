@@ -4066,6 +4066,12 @@ for economy in Economy_codes:
                                         (EGEDA_years_reference['fuel_code'] == '8_gas')].copy()\
                                             [['fuel_code', 'item_code_new'] + col_chart_years]\
                                                 .reset_index(drop = True)
+
+    gas_bunkers = ref_gas_1[ref_gas_1['item_code_new'].isin(['4_international_marine_bunkers',
+                                                             '5_international_aviation_bunkers'])]\
+                                                                 .groupby(['fuel_code']).sum().assign(fuel_code = '8_gas', item_code_new = 'Bunkers')
+
+    ref_gas_1 = ref_gas_1.append([gas_bunkers]).reset_index(drop = True)
     
     ref_gas_1['fuel_code'].replace({'8_gas': 'Gas'}, inplace = True)
 
@@ -4075,11 +4081,11 @@ for economy in Economy_codes:
     ref_gas_1.loc[ref_gas_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
     ref_gas_1.loc[ref_gas_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
-    ref_gas_1 = ref_gas_1[ref_gas_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
+    ref_gas_1 = ref_gas_1[ref_gas_1['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
 
     ref_gas_1['item_code_new'] = pd.Categorical(
         ref_gas_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
+        categories = fuel_final_bunk, 
         ordered = True)
 
     ref_gas_1 = ref_gas_1.sort_values('item_code_new').reset_index(drop = True)
@@ -4352,6 +4358,12 @@ for economy in Economy_codes:
                                         (EGEDA_years_netzero['fuel_code'] == '8_gas')].copy()\
                                             [['fuel_code', 'item_code_new'] + col_chart_years]\
                                                 .reset_index(drop = True)
+
+    gas_bunkers = netz_gas_1[netz_gas_1['item_code_new'].isin(['4_international_marine_bunkers',
+                                                             '5_international_aviation_bunkers'])]\
+                                                                 .groupby(['fuel_code']).sum().assign(fuel_code = '8_gas', item_code_new = 'Bunkers')
+
+    netz_gas_1 = netz_gas_1.append([gas_bunkers]).reset_index(drop = True)
     
     netz_gas_1['fuel_code'].replace({'8_gas': 'Gas'}, inplace=True)
 
@@ -4361,11 +4373,11 @@ for economy in Economy_codes:
     netz_gas_1.loc[netz_gas_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
     netz_gas_1.loc[netz_gas_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
 
-    netz_gas_1 = netz_gas_1[netz_gas_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
+    netz_gas_1 = netz_gas_1[netz_gas_1['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
 
     netz_gas_1['item_code_new'] = pd.Categorical(
         netz_gas_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
+        categories = fuel_final_bunk, 
         ordered = True)
 
     netz_gas_1 = netz_gas_1.sort_values('item_code_new').reset_index(drop = True)
@@ -14829,7 +14841,7 @@ for economy in Economy_codes:
         })
         
         # Configure the series of the chart from the dataframe data.    
-        for component in fuel_final_nobunk[:-1]:
+        for component in fuel_final_bunk[:-1]:
             i = ref_gas_1[ref_gas_1['item_code_new'] == component].index[0]
             ref_tpes_gas_chart1.add_series({
                 'name':       [economy + '_gas', chart_height + ref_gascons_1_rows + i + 4, 1],
@@ -14955,7 +14967,7 @@ for economy in Economy_codes:
         })
         
         # Configure the series of the chart from the dataframe data.    
-        for component in fuel_final_nobunk[:-1]:
+        for component in fuel_final_bunk[:-1]:
             i = netz_gas_1[netz_gas_1['item_code_new'] == component].index[0]
             netz_tpes_gas_chart1.add_series({
                 'name':       [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + i + 10, 1],
