@@ -37,6 +37,11 @@ netz_gastrade_df1 = pd.read_csv('./data/4_Joined/lngpipe_netzero.csv').loc[:,:'2
 EGEDA_emissions_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_reference.csv')
 EGEDA_emissions_netzero = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_netzero.csv')
 
+# OSeMOSYS only
+
+ref_osemo_1 = pd.read_csv('./data/4_Joined/OSeMOSYS_only_reference.csv').loc[:,:'2050']
+netz_osemo_1 = pd.read_csv('./data/4_Joined/OSeMOSYS_only_netzero.csv').loc[:,:'2050']
+
 # Define month and year to create folder for saving charts/tables
 
 day_month_year = pd.to_datetime('today').strftime('%Y-%m-%d-%H%M')
@@ -803,8 +808,6 @@ steel_ind = ['IND_steel', 'IND_hysteel']
 
 # REFERENCE
 
-ref_osemo_1 = pd.read_csv('./data/4_Joined/OSeMOSYS_only_reference.csv')
-
 # Heavy industry dataframes
 
 ref_steel_1 = ref_osemo_1[ref_osemo_1['TECHNOLOGY'].str.contains('|'.join(steel_ind))].copy()
@@ -829,8 +832,6 @@ ref_cement_2['Industry'] = 'Cement'
 ref_cement_2 = ref_cement_2[['REGION', 'Industry', 'tech_mix'] + list(ref_cement_2.loc[:,'2018':'2050'])]
 
 # NET-ZERO
-
-netz_osemo_1 = pd.read_csv('./data/4_Joined/OSeMOSYS_only_netzero.csv')
 
 # Heavy industry dataframes
 
@@ -2534,6 +2535,35 @@ for economy in Economy_codes:
     ref_hydrogen_3_rows = ref_hydrogen_3.shape[0]
     ref_hydrogen_3_cols = ref_hydrogen_3.shape[1]
 
+    #######################################
+
+    # Reference hydrogen use
+
+    ref_hyd_use_1 = ref_osemo_1[(ref_osemo_1['REGION'] == economy) &
+                                (ref_osemo_1['TECHNOLOGY'].str.startswith('HYD'))].copy().reset_index(drop = True)
+
+    hyd_coal = ref_hyd_use_1[ref_hyd_use_1['FUEL'].isin(['1_1_coking_coal'])].groupby(['REGION'])\
+        .sum().assign(TECHNOLOGY = 'Input fuel', FUEL = 'Coal')
+    
+    hyd_gas = ref_hyd_use_1[ref_hyd_use_1['FUEL'].isin(['8_1_natural_gas'])].groupby(['REGION'])\
+        .sum().assign(TECHNOLOGY = 'Input fuel', FUEL = 'Gas')
+    
+    hyd_elec = ref_hyd_use_1[ref_hyd_use_1['FUEL'].isin(['17_electricity_h2', '17_electricity_green'])]\
+        .groupby(['REGION']).sum().assign(TECHNOLOGY = 'Input fuel', FUEL = 'Electricity')
+
+    # Now append coal, gas and electricity to dataframe    
+    ref_hyd_use_1 = ref_hyd_use_1.append([hyd_coal, hyd_gas, hyd_elec])[['FUEL', 'TECHNOLOGY'] + list(ref_hyd_use_1.loc[:,'2018':'2050'])]\
+        .reset_index(drop = True)
+
+    ref_hyd_use_1 = ref_hyd_use_1[ref_hyd_use_1['FUEL'].isin(['Coal', 'Gas', 'Electricity'])].reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (ref_hyd_use_1.loc[:,'2018':] != 0).any(axis = 1)
+    ref_hyd_use_1 = ref_hyd_use_1.loc[non_zero].reset_index(drop = True)
+
+    ref_hyd_use_1_rows = ref_hyd_use_1.shape[0]
+    ref_hyd_use_1_cols = ref_hyd_use_1.shape[1]
+
     #####################################################################################################################################################################
 
     # Create some power capacity dataframes
@@ -3089,6 +3119,33 @@ for economy in Economy_codes:
 
     netz_hydrogen_3_rows = netz_hydrogen_3.shape[0]
     netz_hydrogen_3_cols = netz_hydrogen_3.shape[1]
+
+    # Net-zero hydrogen use
+
+    netz_hyd_use_1 = netz_osemo_1[(netz_osemo_1['REGION'] == economy) &
+                                (netz_osemo_1['TECHNOLOGY'].str.startswith('HYD'))].copy().reset_index(drop = True)
+
+    hyd_coal = netz_hyd_use_1[netz_hyd_use_1['FUEL'].isin(['1_1_coking_coal'])].groupby(['REGION'])\
+        .sum().assign(TECHNOLOGY = 'Input fuel', FUEL = 'Coal')
+    
+    hyd_gas = netz_hyd_use_1[netz_hyd_use_1['FUEL'].isin(['8_1_natural_gas'])].groupby(['REGION'])\
+        .sum().assign(TECHNOLOGY = 'Input fuel', FUEL = 'Gas')
+    
+    hyd_elec = netz_hyd_use_1[netz_hyd_use_1['FUEL'].isin(['17_electricity_h2', '17_electricity_green'])]\
+        .groupby(['REGION']).sum().assign(TECHNOLOGY = 'Input fuel', FUEL = 'Electricity')
+
+    # Now append coal, gas and electricity to dataframe    
+    netz_hyd_use_1 = netz_hyd_use_1.append([hyd_coal, hyd_gas, hyd_elec])[['FUEL', 'TECHNOLOGY'] + list(netz_hyd_use_1.loc[:,'2018':'2050'])]\
+        .reset_index(drop = True)
+
+    netz_hyd_use_1 = netz_hyd_use_1[netz_hyd_use_1['FUEL'].isin(['Coal', 'Gas', 'Electricity'])].reset_index(drop = True)
+
+    # Get rid of zero rows
+    non_zero = (netz_hyd_use_1.loc[:,'2018':] != 0).any(axis = 1)
+    netz_hyd_use_1 = netz_hyd_use_1.loc[non_zero].reset_index(drop = True)
+
+    netz_hyd_use_1_rows = netz_hyd_use_1.shape[0]
+    netz_hyd_use_1_cols = netz_hyd_use_1.shape[1]
 
     #####################################################################################################################################################################
 
@@ -4580,9 +4637,24 @@ for economy in Economy_codes:
 
     ref_coal_pow = ref_coal_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
 
+    # Hydrogen
+    ref_coal_hyd = ref_hyd_use_1[ref_hyd_use_1['FUEL'] == 'Coal'].copy()\
+        .rename(columns = {'FUEL': 'fuel_code', 'TECHNOLOGY': 'item_code_new'})\
+            .reset_index(drop = True)
+
+    ref_coal_hyd.loc[ref_coal_hyd['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Hydrogen'
+
+    if ref_coal_hyd.empty:
+        hyd_series = ['Coal', 'Hydrogen'] + [0] * 33
+        hyd_grab = pd.Series(hyd_series, index = ref_coal_hyd.columns)
+        ref_coal_hyd = ref_coal_hyd.append(hyd_grab, ignore_index = True)
+
+    else:
+        pass
 
     ref_coalcons_1 = ref_coal_ind.append([ref_coal_bld, ref_coal_ag, ref_coal_trn, ref_coal_ne, 
-                                          ref_coal_ns, ref_coal_own, ref_coal_pow]).copy().reset_index(drop = True)
+                                          ref_coal_ns, ref_coal_own, ref_coal_pow, ref_coal_hyd])\
+                                              .copy().replace(np.nan, 0).reset_index(drop = True)
 
     ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
@@ -4620,9 +4692,24 @@ for economy in Economy_codes:
     ref_gas_pow = ref_pow_use_2[ref_pow_use_2['FUEL'] == 'Gas']
     ref_gas_pow = ref_gas_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
 
+    # Hydrogen
+    ref_gas_hyd = ref_hyd_use_1[ref_hyd_use_1['FUEL'] == 'Gas'].copy()\
+        .rename(columns = {'FUEL': 'fuel_code', 'TECHNOLOGY': 'item_code_new'})\
+            .reset_index(drop = True)
+
+    ref_gas_hyd.loc[ref_gas_hyd['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Hydrogen'
+
+    if ref_gas_hyd.empty:
+        hyd_series = ['Gas', 'Hydrogen'] + [0] * 33
+        hyd_grab = pd.Series(hyd_series, index = ref_gas_hyd.columns)
+        ref_gas_hyd = ref_gas_hyd.append(hyd_grab, ignore_index = True)
+
+    else:
+        pass
 
     ref_gascons_1 = ref_gas_ind.append([ref_gas_bld, ref_gas_ag, ref_gas_trn, ref_gas_ne, 
-                                          ref_gas_ns, ref_gas_own, ref_gas_pow]).copy().reset_index(drop = True)
+                                          ref_gas_ns, ref_gas_own, ref_gas_pow, ref_gas_hyd])\
+                                              .copy().replace(np.nan, 0).reset_index(drop = True)
 
     ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
@@ -5015,9 +5102,24 @@ for economy in Economy_codes:
 
     netz_coal_pow = netz_coal_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
 
+    # Hydrogen
+    netz_coal_hyd = netz_hyd_use_1[netz_hyd_use_1['FUEL'] == 'Coal'].copy()\
+        .rename(columns = {'FUEL': 'fuel_code', 'TECHNOLOGY': 'item_code_new'})\
+            .reset_index(drop = True)
+
+    netz_coal_hyd.loc[netz_coal_hyd['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Hydrogen'
+
+    if netz_coal_hyd.empty:
+        hyd_series = ['Coal', 'Hydrogen'] + [0] * 33
+        hyd_grab = pd.Series(hyd_series, index = netz_coal_hyd.columns)
+        netz_coal_hyd = netz_coal_hyd.append(hyd_grab, ignore_index = True)
+
+    else:
+        pass
 
     netz_coalcons_1 = netz_coal_ind.append([netz_coal_bld, netz_coal_ag, netz_coal_trn, netz_coal_ne, 
-                                          netz_coal_ns, netz_coal_own, netz_coal_pow]).copy().reset_index(drop = True)
+                                          netz_coal_ns, netz_coal_own, netz_coal_pow, netz_coal_hyd])\
+                                              .copy().replace(np.nan, 0).reset_index(drop = True)
 
     netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
@@ -5055,9 +5157,24 @@ for economy in Economy_codes:
     netz_gas_pow = netz_pow_use_2[netz_pow_use_2['FUEL'] == 'Gas']
     netz_gas_pow = netz_gas_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
 
+    # Hydrogen
+    netz_gas_hyd = netz_hyd_use_1[netz_hyd_use_1['FUEL'] == 'Gas'].copy()\
+        .rename(columns = {'FUEL': 'fuel_code', 'TECHNOLOGY': 'item_code_new'})\
+            .reset_index(drop = True)
+
+    netz_gas_hyd.loc[netz_gas_hyd['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Hydrogen'
+
+    if netz_gas_hyd.empty:
+        hyd_series = ['Gas', 'Hydrogen'] + [0] * 33
+        hyd_grab = pd.Series(hyd_series, index = netz_gas_hyd.columns)
+        netz_gas_hyd = netz_gas_hyd.append(hyd_grab, ignore_index = True)
+
+    else:
+        pass
 
     netz_gascons_1 = netz_gas_ind.append([netz_gas_bld, netz_gas_ag, netz_gas_trn, netz_gas_ne, 
-                                          netz_gas_ns, netz_gas_own, netz_gas_pow]).copy().reset_index(drop = True)
+                                          netz_gas_ns, netz_gas_own, netz_gas_pow, netz_gas_hyd])\
+                                              .copy().replace(np.nan, 0).reset_index(drop = True)
 
     netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
@@ -5642,8 +5759,10 @@ for economy in Economy_codes:
     netz_renew_2.to_excel(writer, sheet_name = economy + '_renew', index = False, startrow = (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9)
     ref_hyd_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = chart_height)
     ref_hydrogen_3.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = chart_height + ref_hyd_1_rows + 3)
-    netz_hyd_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6)
-    netz_hydrogen_3.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9)
+    ref_hyd_use_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6)
+    netz_hyd_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9)
+    netz_hydrogen_3.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + netz_hyd_1_rows + 12)
+    netz_hyd_use_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + netz_hyd_1_rows + netz_hydrogen_3_rows + 15)
 
     # More fuels
     ref_nuke_1.to_excel(writer, sheet_name = economy + '_TPES_fuel_ref', index = False, startrow = chart_height)
@@ -15523,10 +15642,12 @@ for economy in Economy_codes:
     ref_worksheet45.set_column(1, ref_hyd_1_cols + 1, None, space_format)
     ref_worksheet45.set_row(chart_height, None, header_format)
     ref_worksheet45.set_row(chart_height + ref_hyd_1_rows + 3, None, header_format)
-    ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, None, header_format)
-    ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, None, header_format)
+    ref_worksheet45.set_row(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, None, header_format)
+    ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, None, header_format)
+    ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + netz_hyd_1_rows + 12, None, header_format)
+    ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + netz_hyd_1_rows + netz_hydrogen_3_rows + 15, None, header_format)
     ref_worksheet45.write(0, 0, economy + ' hydrogen reference', cell_format1)
-    ref_worksheet45.write(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 0, economy + ' hydrogen net-zero', cell_format1)
+    ref_worksheet45.write(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, 0, economy + ' hydrogen net-zero', cell_format1)
     ref_worksheet45.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -15651,6 +15772,68 @@ for economy in Economy_codes:
     else:
         pass
 
+    # Create a TPES hydrogen chart
+    if ref_hyd_use_1_rows > 0:
+        ref_hyduse_chart1 = workbook.add_chart({'type': 'line'})
+        ref_hyduse_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_hyduse_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_hyduse_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_hyduse_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'Hydrogen (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_hyduse_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_hyduse_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for component in ref_hyd_use_1['FUEL'].unique():
+            i = ref_hyd_use_1[ref_hyd_use_1['FUEL'] == component].index[0]
+            ref_hyduse_chart1.add_series({
+                'name':       [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 0],
+                'categories': [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 2,\
+                    chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, ref_hyd_use_1_cols - 1],
+                'values':     [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 2,\
+                    chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, ref_hyd_use_1_cols - 1],
+                'line':       {'color': ref_hyd_use_1['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
+            })
+        
+        ref_worksheet45.insert_chart('R3', ref_hyduse_chart1)
+
+    else:
+        pass
+
     # Net-zero
     
     # Create a FED sector area chart
@@ -15701,16 +15884,16 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_hyd_1_rows):
             netz_hydrogen_chart1.add_series({
-                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 1],
-                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 2,\
-                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, netz_hyd_1_cols - 1],
-                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, netz_hyd_1_cols - 1],
+                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, 1],
+                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, netz_hyd_1_cols - 1],
+                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, netz_hyd_1_cols - 1],
                 'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
                 'border':     {'none': True}
             })    
             
-        ref_worksheet45.insert_chart('B' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 9), netz_hydrogen_chart1)
+        ref_worksheet45.insert_chart('B' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 12), netz_hydrogen_chart1)
 
     else:
         pass
@@ -15762,20 +15945,82 @@ for economy in Economy_codes:
         for component in netz_hydrogen_3['Technology'].unique():
             i = netz_hydrogen_3[netz_hydrogen_3['Technology'] == component].index[0]
             netz_tpes_hydrogen_chart1.add_series({
-                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 1],
-                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, 2,\
-                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + 9, netz_hydrogen_3_cols - 1],
-                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, 2,\
-                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + i + 10, netz_hydrogen_3_cols - 1],
+                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + i + 13, 1],
+                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + 12, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + 12, netz_hydrogen_3_cols - 1],
+                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + i + 13, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + i + 13, netz_hydrogen_3_cols - 1],
                 'fill':       {'color': netz_hydrogen_3['Technology'].map(colours_dict).loc[i]},
                 'border':     {'none': True},
                 'gap':        100
             })
         
-        ref_worksheet45.insert_chart('J' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 9), netz_tpes_hydrogen_chart1)
+        ref_worksheet45.insert_chart('J' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 12), netz_tpes_hydrogen_chart1)
 
     else:
-        pass    
+        pass 
+
+    # Create a TPES hydrogen chart
+    if netz_hyd_use_1_rows > 0:
+        netz_hyduse_chart1 = workbook.add_chart({'type': 'line'})
+        netz_hyduse_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_hyduse_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_hyduse_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_hyduse_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'Hydrogen (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_hyduse_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_hyduse_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for component in netz_hyd_use_1['FUEL'].unique():
+            i = netz_hyd_use_1[netz_hyd_use_1['FUEL'] == component].index[0]
+            netz_hyduse_chart1.add_series({
+                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, 0],
+                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + 15, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + 15, netz_hyd_use_1_cols - 1],
+                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, 2,\
+                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, netz_hyd_use_1_cols - 1],
+                'line':       {'color': netz_hyd_use_1['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
+            })
+        
+        ref_worksheet45.insert_chart('R' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 12), netz_hyduse_chart1)
+
+    else:
+        pass   
 
     ##############
     # Liquid and solid renewables
