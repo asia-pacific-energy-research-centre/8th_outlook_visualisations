@@ -917,7 +917,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS', 'APEC']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -3726,12 +3726,12 @@ for economy in Economy_codes:
 
         ref_enint_sup1 = ref_enint_sup1[['Economy', 'Series'] + list(ref_enint_sup1.loc[:, '2000':'2050'])]
 
-        ref_calc1 = [economy, 'TPES EI REF'] + list(ref_enint_sup1.iloc[0, 2:] / ref_enint_sup1.iloc[1, 2:])
+        ref_calc1 = [economy, 'Reference'] + list(ref_enint_sup1.iloc[0, 2:] / ref_enint_sup1.iloc[1, 2:])
         ref_series1 = pd.Series(ref_calc1, index = ref_enint_sup1.columns)
 
         ref_enint_sup2 = ref_enint_sup1.append(ref_series1, ignore_index = True).reset_index(drop = True)
 
-        ref_calc2 = [economy, 'Reference'] + list(ref_enint_sup2.iloc[2, 2:] / ref_enint_sup2.iloc[2, 7] * 100)
+        ref_calc2 = [economy, 'Reference (indexed)'] + list(ref_enint_sup2.iloc[2, 2:] / ref_enint_sup2.iloc[2, 7] * 100)
         ref_series2 = pd.Series(ref_calc2, index = ref_enint_sup2.columns)
 
         ref_enint_sup3 = ref_enint_sup2.append(ref_series2, ignore_index = True).reset_index(drop = True)
@@ -3748,12 +3748,12 @@ for economy in Economy_codes:
 
         netz_enint_sup1 = netz_enint_sup1[['Economy', 'Series'] + list(netz_enint_sup1.loc[:, '2000':'2050'])]
 
-        netz_calc1 = [economy, 'TPES EI NZS'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
+        netz_calc1 = [economy, 'Net-zero'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
         netz_series1 = pd.Series(netz_calc1, index = netz_enint_sup1.columns)
 
         netz_enint_sup2 = netz_enint_sup1.append(netz_series1, ignore_index = True).reset_index(drop = True)
 
-        netz_calc2 = [economy, 'Net-zero'] + list(netz_enint_sup2.iloc[2, 2:] / netz_enint_sup2.iloc[2, 7] * 100)
+        netz_calc2 = [economy, 'Net-zero (indexed)'] + list(netz_enint_sup2.iloc[2, 2:] / netz_enint_sup2.iloc[2, 7] * 100)
         netz_series2 = pd.Series(netz_calc2, index = netz_enint_sup2.columns)
 
         netz_enint_sup3 = netz_enint_sup2.append(netz_series2, ignore_index = True).reset_index(drop = True)
@@ -4104,6 +4104,20 @@ for economy in Economy_codes:
 
     netz_emiss_sector_2_rows = netz_emiss_sector_2.shape[0]
     netz_emiss_sector_2_cols = netz_emiss_sector_2.shape[1]
+
+    # Total emissions dataframe
+
+    emiss_total_1 = ref_emiss_fuel_1[ref_emiss_fuel_1['fuel_code'] == 'Total'].copy()
+
+    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Total', 'fuel_code'] = 'Reference'
+        
+    emiss_total_1 = emiss_total_1.append(netz_emiss_fuel_1[netz_emiss_fuel_1['fuel_code'] == 'Total'].copy())\
+        .reset_index(drop = True) 
+
+    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Total', 'fuel_code'] = 'Net-zero'
+
+    emiss_total_1_rows = emiss_total_1.shape[0]
+    emiss_total_1_cols = emiss_total_1.shape[1]
 
     ##################################################################################################
 
@@ -5961,6 +5975,7 @@ for economy in Economy_codes:
     netz_emiss_sector_2.to_excel(writer, sheet_name = economy + '_Emiss_sector', index = False, startrow = (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9)
     ref_co2int_2.to_excel(writer, sheet_name = economy + '_co2intensity', index = False, startrow = chart_height)
     netz_co2int_2.to_excel(writer, sheet_name = economy + '_co2intensity', index = False, startrow = chart_height + ref_co2int_2_rows + 3)
+    emiss_total_1.to_excel(writer, sheet_name = economy + '_co2intensity', index = False, startrow = chart_height + ref_co2int_2_rows + netz_co2int_2_rows + 6)
 
     ################################################################################################################################
 
@@ -12736,7 +12751,7 @@ for economy in Economy_codes:
         pass
 
     # line chart
-    if ref_enint_sup3_rows > 0:
+    if (ref_enint_sup3_rows > 0) & (netz_enint_sup3_rows > 0):
         enint_chart2 = workbook.add_chart({'type': 'line'})
         enint_chart2.set_size({
             'width': 500,            
@@ -12763,7 +12778,7 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'name': 'TPES energy intensity',
             'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-            'num_format': '# ### ### ##0',
+            'num_format': '# ### ### ##0.0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -12781,7 +12796,7 @@ for economy in Economy_codes:
         })
             
         # Configure the series of the chart from the dataframe data.
-        i = ref_enint_sup3[ref_enint_sup3['Series'] == 'TPES EI REF'].index[0]
+        i = ref_enint_sup3[ref_enint_sup3['Series'] == 'Reference'].index[0]
         enint_chart2.add_series({
             'name':       [economy + '_eintensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + i + 7, 1],
             'categories': [economy + '_eintensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + 6, 2,\
@@ -12792,71 +12807,20 @@ for economy in Economy_codes:
                             'width': 1.5}
 
             })
-                        
-        both_worksheet37.insert_chart('J3', enint_chart2)
 
-    else:
-        pass
-
-    # line chart
-    if netz_enint_sup3_rows > 0:
-        enint_chart3 = workbook.add_chart({'type': 'line'})
-        enint_chart3.set_size({
-            'width': 500,            
-            'height': 300
-        })
-            
-        enint_chart3.set_chartarea({
-            'border': {'none': True}
-        })
-            
-        enint_chart3.set_x_axis({
-            # 'name': 'Year',
-            'label_position': 'low',
-            'major_tick_mark': 'none',
-            'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-            'position_axis': 'on_tick',
-            'interval_unit': 10,
-            'line': {'color': '#bebebe'}
-        })
-                
-        enint_chart3.set_y_axis({
-            'major_tick_mark': 'none', 
-            'minor_tick_mark': 'none',
-            'name': 'TPES energy intensity',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-            'num_format': '# ### ### ##0',
-            'major_gridlines': {
-                'visible': True,
-                'line': {'color': '#bebebe'}
-            },
-            'line': {'color': '#bebebe'}
-        })
-                
-        enint_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
-            #'none': True
-        })
-                
-        enint_chart3.set_title({
-            'none': True
-        })
-            
-        # Configure the series of the chart from the dataframe data.
-        i = netz_enint_sup3[netz_enint_sup3['Series'] == 'TPES EI NZS'].index[0]
-        enint_chart3.add_series({
-            'name':       [economy + '_eintensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + i + 10, 1],
+        j = netz_enint_sup3[netz_enint_sup3['Series'] == 'Net-zero'].index[0]
+        enint_chart2.add_series({
+            'name':       [economy + '_eintensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + j + 10, 1],
             'categories': [economy + '_eintensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + 9, 2,\
                 chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + 9, netz_enint_sup3_cols - 1],
-            'values':     [economy + '_eintensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + i + 10, 2,\
-                chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + i + 10, netz_enint_sup3_cols - 1],
-            'line':       {'color': netz_enint_sup3['Series'].map(colours_dict).loc[i],
+            'values':     [economy + '_eintensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + j + 10, 2,\
+                chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + j + 10, netz_enint_sup3_cols - 1],
+            'line':       {'color': netz_enint_sup3['Series'].map(colours_dict).loc[j],
                             'width': 1.5}
 
             })
                         
-        both_worksheet37.insert_chart('R3', enint_chart3)
+        both_worksheet37.insert_chart('J3', enint_chart2)
 
     else:
         pass
@@ -13699,67 +13663,6 @@ for economy in Economy_codes:
         
     both_worksheet34.insert_chart('R3', ref_em_fuel_chart3)
 
-    # Create a Emissions line chart with higher level aggregation
-    ref_em_fuel_chart4 = workbook.add_chart({'type': 'line'})
-    ref_em_fuel_chart4.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_em_fuel_chart4.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_em_fuel_chart4.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'position_axis': 'on_tick',
-        'interval_unit': 10,
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_em_fuel_chart4.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    ref_em_fuel_chart4.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    ref_em_fuel_chart4.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(ref_emiss_fuel_1_rows):
-        if not ref_emiss_fuel_1['fuel_code'].iloc[i] in ['Total']:
-            pass
-
-        else:
-            ref_em_fuel_chart4.add_series({
-                'name':       [economy + '_Emiss_fuel', chart_height + i + 1, 0],
-                'categories': [economy + '_Emiss_fuel', chart_height, 2, chart_height, ref_emiss_fuel_1_cols - 1],
-                'values':     [economy + '_Emiss_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_emiss_fuel_1_cols - 1],
-                'line':       {'color': ref_emiss_fuel_1['fuel_code'].map(colours_dict).loc[i], 
-                               'width': 1.5}
-            })    
-        
-    both_worksheet34.insert_chart('Z3', ref_em_fuel_chart4)
-
-
     ############################## Next sheet: FED (TFC) by sector ##############################
     
     # Access the workbook and second sheet with data from df2
@@ -14142,69 +14045,6 @@ for economy in Economy_codes:
             })
         
     both_worksheet34.insert_chart('R' + str(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 9), netz_em_fuel_chart3)
-
-    # Create a Emissions line chart with higher level aggregation
-    netz_em_fuel_chart4 = workbook.add_chart({'type': 'line'})
-    netz_em_fuel_chart4.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    netz_em_fuel_chart4.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    netz_em_fuel_chart4.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'position_axis': 'on_tick',
-        'interval_unit': 10,
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_em_fuel_chart4.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
-            'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
-        
-    netz_em_fuel_chart4.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
-        #'none': True
-    })
-        
-    netz_em_fuel_chart4.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.
-    for i in range(netz_emiss_fuel_1_rows):
-        if not netz_emiss_fuel_1['fuel_code'].iloc[i] in ['Total']:
-            pass
-
-        else:
-            netz_em_fuel_chart4.add_series({
-                'name':       [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + i + 7, 0],
-                'categories': [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 6, 2,\
-                    (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 6, netz_emiss_fuel_1_cols - 1],
-                'values':     [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + i + 7, netz_emiss_fuel_1_cols - 1],
-                'line':       {'color': netz_emiss_fuel_1['fuel_code'].map(colours_dict).loc[i], 
-                            'width': 1.5}
-            })
-        
-    both_worksheet34.insert_chart('Z' + str(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 9), netz_em_fuel_chart4)
-
 
     ############################## Next sheet: FED (TFC) by sector ##############################
     
@@ -17420,7 +17260,8 @@ for economy in Economy_codes:
     both_worksheet38.set_column(2, ref_co2int_2_cols + 1, None, space_format)
     both_worksheet38.set_row(chart_height, None, header_format)
     both_worksheet38.set_row(chart_height + ref_co2int_2_rows + 3, None, header_format)
-    both_worksheet38.write(0, 0, economy + ' carbon intensity', cell_format1)
+    both_worksheet38.set_row(chart_height + ref_co2int_2_rows + netz_co2int_2_rows + 6, None, header_format)
+    both_worksheet38.write(0, 0, economy + ' carbon intensity and emissions', cell_format1)
 
     # line chart
     co2int_chart1 = workbook.add_chart({'type': 'line'})
@@ -17449,7 +17290,7 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'name': 'CO2 intensity',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
+        'num_format': '# ### ### ##0.00',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -17476,23 +17317,33 @@ for economy in Economy_codes:
             chart_height + i + 1, ref_co2int_2_cols - 1],
         'line':       {'color': ref_co2int_2['fuel_code'].map(colours_dict).loc[i],
                        'width': 1.5}
+        })
 
+    j = netz_co2int_2[netz_co2int_2['fuel_code'] == 'Net-zero'].index[0]
+    co2int_chart1.add_series({
+        'name':       [economy + '_co2intensity', chart_height + ref_co2int_2_rows + j + 4, 0],
+        'categories': [economy + '_co2intensity', chart_height + ref_co2int_2_rows + 3, 2,\
+            chart_height + ref_co2int_2_rows + 3, netz_co2int_2_cols - 1],
+        'values':     [economy + '_co2intensity', chart_height + ref_co2int_2_rows + j + 4, 2,\
+            chart_height + ref_co2int_2_rows + j + 4, netz_co2int_2_cols - 1],
+        'line':       {'color': netz_co2int_2['fuel_code'].map(colours_dict).loc[j],
+                       'width': 1.5}
         })
                     
     both_worksheet38.insert_chart('B3', co2int_chart1)
 
-    # line chart
-    co2int_chart2 = workbook.add_chart({'type': 'line'})
-    co2int_chart2.set_size({
-        'width': 500,            
+    # Create a Emissions line chart with higher level aggregation
+    emiss_chart1 = workbook.add_chart({'type': 'line'})
+    emiss_chart1.set_size({
+        'width': 500,
         'height': 300
     })
-        
-    co2int_chart2.set_chartarea({
+    
+    emiss_chart1.set_chartarea({
         'border': {'none': True}
     })
-        
-    co2int_chart2.set_x_axis({
+    
+    emiss_chart1.set_x_axis({
         # 'name': 'Year',
         'label_position': 'low',
         'major_tick_mark': 'none',
@@ -17502,11 +17353,11 @@ for economy in Economy_codes:
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
     })
-            
-    co2int_chart2.set_y_axis({
+        
+    emiss_chart1.set_y_axis({
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
-        'name': 'CO2 intensity',
+        'name': 'Million tonnes CO2',
         'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
@@ -17515,30 +17366,29 @@ for economy in Economy_codes:
         },
         'line': {'color': '#bebebe'}
     })
-            
-    co2int_chart2.set_legend({
+        
+    emiss_chart1.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
     })
-            
-    co2int_chart2.set_title({
+        
+    emiss_chart1.set_title({
         'none': True
     })
-        
+    
     # Configure the series of the chart from the dataframe data.
-    i = netz_co2int_2[netz_co2int_2['fuel_code'] == 'Net-zero'].index[0]
-    co2int_chart2.add_series({
-        'name':       [economy + '_co2intensity', chart_height + ref_co2int_2_rows + i + 4, 0],
-        'categories': [economy + '_co2intensity', chart_height + ref_co2int_2_rows + 3, 2,\
-            chart_height + ref_co2int_2_rows + 3, netz_co2int_2_cols - 1],
-        'values':     [economy + '_co2intensity', chart_height + ref_co2int_2_rows + i + 4, 2,\
-            chart_height + ref_co2int_2_rows + i + 4, netz_co2int_2_cols - 1],
-        'line':       {'color': ref_co2int_2['fuel_code'].map(colours_dict).loc[i],
-                       'width': 1.5}
-
-        })
-                    
-    both_worksheet38.insert_chart('J3', co2int_chart2)
+    for i in range(emiss_total_1_rows):
+        emiss_chart1.add_series({
+            'name':       [economy + '_co2intensity', chart_height + ref_co2int_2_rows + netz_co2int_2_rows + i + 7, 0],
+            'categories': [economy + '_co2intensity', chart_height + ref_co2int_2_rows + netz_co2int_2_rows + 6, 2,\
+                chart_height + ref_co2int_2_rows + netz_co2int_2_rows + 6, netz_co2int_2_cols - 1],
+            'values':     [economy + '_co2intensity', chart_height + ref_co2int_2_rows + netz_co2int_2_rows + i + 7, 2,\
+                chart_height + ref_co2int_2_rows + netz_co2int_2_rows + i + 7, netz_co2int_2_cols - 1],
+            'line':       {'color': emiss_total_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1.5}
+        })    
+        
+    both_worksheet38.insert_chart('J3', emiss_chart1)
 
     writer.save()
 
