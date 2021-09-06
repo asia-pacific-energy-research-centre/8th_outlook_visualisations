@@ -4795,31 +4795,23 @@ for economy in Economy_codes:
     ref_coalcons_1_rows = ref_coalcons_1.shape[0]
     ref_coalcons_1_cols = ref_coalcons_1.shape[1]
 
-    # Coal consumption by type
+    # # Coal consumption by type
 
-    ref_coalcons_tfc = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                             (EGEDA_years_reference['item_code_new'].isin(['12_total_final_consumption'])) &
-                                             (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                                 '1_x_coal_thermal', '2_coal_products']))].copy().reset_index(drop = True)
+    # Grabbing TPES as a proxy for demand
 
-    met_coal = ref_coalcons_tfc[ref_coalcons_tfc['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
-        .groupby(['item_code_new']).sum().assign(fuel_code = 'Metallurgical coal').reset_index()
+    ref_coaltpes_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                           (EGEDA_years_reference['item_code_new'].isin(['7_total_primary_energy_supply'])) &
+                                           (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                               '1_x_coal_thermal', '2_coal_products']))].copy().reset_index(drop = True)
 
-    ref_coaltfc_1 = ref_coalcons_tfc.append(met_coal).reset_index(drop = True)
+    met_coal = ref_coaltpes_1ref_coaltpes_1['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
+         .groupby(['item_code_new']).sum().assign(fuel_code = 'Metallurgical coal').reset_index()
 
-    ref_coaltfc_1.loc[ref_coaltfc_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
-    ref_coaltfc_1.loc[ref_coaltfc_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
-    ref_coaltfc_1.loc[ref_coaltfc_1['item_code_new'] == '12_total_final_consumption', 'item_code_new'] = 'Demand sectors'
+    ref_coaltpes_1 = ref_coaltpes_1.append(met_coal).reset_index(drop = True)
 
-    ref_coal_own = ref_owncoal_1.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
-
-    # ref_coal_pow = ref_pow_use_2[ref_pow_use_2['FUEL'].isin(['Coal', 'Lignite'])].copy().groupby(['Transformation']).sum()\
-    #                     .reset_index(drop = True).assign(fuel_code = 'Coal', item_code_new = 'Power')
-
-    # ref_coal_pow = ref_coal_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
-
-
-
+    ref_coaltpes_1.loc[ref_coaltpes_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
+    ref_coaltpes_1.loc[ref_coaltpes_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
+    ref_coaltpes_1.loc[ref_coaltpes_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'TPES'
 
     # Natural gas
 
