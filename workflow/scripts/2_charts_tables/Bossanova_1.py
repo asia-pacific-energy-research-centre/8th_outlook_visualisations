@@ -4803,8 +4803,8 @@ for economy in Economy_codes:
                                            (EGEDA_years_reference['item_code_new'].isin(['7_total_primary_energy_supply'])) &
                                            (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
                                                '1_x_coal_thermal', '2_coal_products']))].copy().reset_index(drop = True)
-
-    met_coal = ref_coaltpes_1ref_coaltpes_1['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
+    
+    met_coal = ref_coaltpes_1[ref_coaltpes_1['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
          .groupby(['item_code_new']).sum().assign(fuel_code = 'Metallurgical coal').reset_index()
 
     ref_coaltpes_1 = ref_coaltpes_1.append(met_coal).reset_index(drop = True)
