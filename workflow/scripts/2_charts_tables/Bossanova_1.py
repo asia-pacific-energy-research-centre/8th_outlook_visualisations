@@ -4795,23 +4795,31 @@ for economy in Economy_codes:
     ref_coalcons_1_rows = ref_coalcons_1.shape[0]
     ref_coalcons_1_cols = ref_coalcons_1.shape[1]
 
-    # # Coal consumption by type
+    # Coal consumption by type
 
     # Grabbing TPES as a proxy for demand
 
     ref_coaltpes_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['7_total_primary_energy_supply'])) &
                                            (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                               '1_x_coal_thermal', '2_coal_products']))].copy().reset_index(drop = True)
+                                               '1_x_coal_thermal']))].copy().reset_index(drop = True)
     
     met_coal = ref_coaltpes_1[ref_coaltpes_1['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
-         .groupby(['item_code_new']).sum().assign(fuel_code = 'Metallurgical coal').reset_index()
+         .groupby(['item_code_new']).sum().assign(fuel_code = 'Metallurgical coal', economy = economy).reset_index()
 
     ref_coaltpes_1 = ref_coaltpes_1.append(met_coal).reset_index(drop = True)
 
     ref_coaltpes_1.loc[ref_coaltpes_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
     ref_coaltpes_1.loc[ref_coaltpes_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
-    ref_coaltpes_1.loc[ref_coaltpes_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'TPES'
+    ref_coaltpes_1.loc[ref_coaltpes_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'TPES'    
+
+    ref_coaltpes_2 = ref_coaltpes_1[['economy', 'fuel_code', 'item_code_new'] + list(ref_coaltpes_1.loc[:,'2000':'2050'])]
+
+    ref_coaltpes_2 = ref_coaltpes_2[ref_coaltpes_2['fuel_code'].isin(['Thermal coal', 'Lignite', 'Metallurgical coal'])]\
+        .copy().reset_index(drop = True)
+
+    ref_coaltpes_2_rows = ref_coaltpes_2.shape[0]
+    ref_coaltpes_2_cols = ref_coaltpes_2.shape[1]
 
     # Natural gas
 
@@ -5277,6 +5285,30 @@ for economy in Economy_codes:
 
     netz_coalcons_1_rows = netz_coalcons_1.shape[0]
     netz_coalcons_1_cols = netz_coalcons_1.shape[1]
+
+    # Grabbing TPES as a proxy for demand
+
+    netz_coaltpes_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                           (EGEDA_years_netzero['item_code_new'].isin(['7_total_primary_energy_supply'])) &
+                                           (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
+                                               '1_x_coal_thermal']))].copy().reset_index(drop = True)
+    
+    met_coal = netz_coaltpes_1[netz_coaltpes_1['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
+         .groupby(['item_code_new']).sum().assign(fuel_code = 'Metallurgical coal', economy = economy).reset_index()
+
+    netz_coaltpes_1 = netz_coaltpes_1.append(met_coal).reset_index(drop = True)
+
+    netz_coaltpes_1.loc[netz_coaltpes_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
+    netz_coaltpes_1.loc[netz_coaltpes_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
+    netz_coaltpes_1.loc[netz_coaltpes_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'TPES'
+
+    netz_coaltpes_2 = netz_coaltpes_1[['economy', 'fuel_code', 'item_code_new'] + list(netz_coaltpes_1.loc[:,'2000':'2050'])]
+
+    netz_coaltpes_2 = netz_coaltpes_2[netz_coaltpes_2['fuel_code'].isin(['Thermal coal', 'Lignite', 'Metallurgical coal'])]\
+        .copy().reset_index(drop = True)
+
+    netz_coaltpes_2_rows = netz_coaltpes_2.shape[0]
+    netz_coaltpes_2_cols = netz_coaltpes_2.shape[1]
 
     # Natural gas
 
@@ -5783,6 +5815,62 @@ for economy in Economy_codes:
     netz_co2int_2_rows = netz_co2int_2.shape[0]
     netz_co2int_2_cols = netz_co2int_2.shape[1]
 
+    # Electricity by sector
+
+    # REFERENCE
+    ref_elec_1 = ref_bld_2[ref_bld_2['fuel_code'] == 'Electricity'].copy()\
+        .append(ref_ind_2[ref_ind_2['fuel_code'] == 'Electricity'].copy())\
+            .append(ref_trn_1[ref_trn_1['fuel_code'] == 'Electricity'].copy())\
+                .append(ref_ag_1[ref_ag_1['fuel_code'] == 'Electricity'].copy()).reset_index(drop = True)
+
+    ref_elec_nons1 = EGEDA_years_reference[(EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                           (EGEDA_years_reference['fuel_code'] == '17_electricity') & 
+                                           (EGEDA_years_reference['economy'] == economy)].copy()\
+                                               [['fuel_code', 'item_code_new'] + list(EGEDA_years_reference.loc[:,'2000':'2050'])]
+
+    ref_elec_1 = ref_elec_1.append(ref_elec_nons1.copy()).reset_index(drop = True)
+
+    ref_elec_own1 = ref_ownuse_1[ref_ownuse_1['FUEL'] == 'Electricity'].copy()\
+        .rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'}).reset_index(drop = True)
+
+    ref_elec_1 = ref_elec_1.append(ref_elec_own1.copy()).replace(np.nan, 0).reset_index(drop = True)
+
+    ref_elec_1.loc[ref_elec_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    ref_elec_1.loc[ref_elec_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
+    ref_elec_1.loc[ref_elec_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    ref_elec_1.loc[ref_elec_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    ref_elec_1.loc[ref_elec_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+
+    ref_elec_1_rows = ref_elec_1.shape[0]
+    ref_elec_1_cols = ref_elec_1.shape[1]
+
+    # NET-ZERO
+    netz_elec_1 = netz_bld_2[netz_bld_2['fuel_code'] == 'Electricity'].copy()\
+        .append(netz_ind_2[netz_ind_2['fuel_code'] == 'Electricity'].copy())\
+            .append(netz_trn_1[netz_trn_1['fuel_code'] == 'Electricity'].copy())\
+                .append(netz_ag_1[netz_ag_1['fuel_code'] == 'Electricity'].copy()).reset_index(drop = True)
+
+    netz_elec_nons1 = EGEDA_years_netzero[(EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
+                                           (EGEDA_years_netzero['fuel_code'] == '17_electricity') & 
+                                           (EGEDA_years_netzero['economy'] == economy)].copy()\
+                                               [['fuel_code', 'item_code_new'] + list(EGEDA_years_netzero.loc[:,'2000':'2050'])]
+
+    netz_elec_1 = netz_elec_1.append(netz_elec_nons1.copy()).reset_index(drop = True)
+
+    netz_elec_own1 = netz_ownuse_1[netz_ownuse_1['FUEL'] == 'Electricity'].copy()\
+        .rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'}).reset_index(drop = True)
+
+    netz_elec_1 = netz_elec_1.append(netz_elec_own1.copy()).replace(np.nan, 0).reset_index(drop = True)
+
+    netz_elec_1.loc[netz_elec_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    netz_elec_1.loc[netz_elec_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
+    netz_elec_1.loc[netz_elec_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
+    netz_elec_1.loc[netz_elec_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
+    netz_elec_1.loc[netz_elec_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+
+    netz_elec_1_rows = netz_elec_1.shape[0]
+    netz_elec_1_cols = netz_elec_1.shape[1]
+
     # Df builds are complete
 
     ##############################################################################################################################
@@ -5923,6 +6011,8 @@ for economy in Economy_codes:
     netz_ct_prod1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9)
     netz_ct_imports1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + 12)
     netz_ct_exports1.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + 15)
+    ref_coaltpes_2.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + netz_ct_exports1_rows + 21)
+    netz_coaltpes_2.to_excel(writer, sheet_name = economy + '_coal_types', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + netz_ct_exports1_rows + ref_coaltpes_2_rows + 24)
     netz_gascons_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6)
     netz_gas_1.to_excel(writer, sheet_name = economy + '_gas', index = False, startrow = (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9)
     netz_gasim_1.to_excel(writer, sheet_name = economy + '_gas_trade', index = False, startrow = (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + 6)
@@ -5935,6 +6025,8 @@ for economy in Economy_codes:
     ref_renew_2.to_excel(writer, sheet_name = economy + '_renew', index = False, startrow = chart_height + ref_renewcons_1_rows + 3)
     netz_renewcons_1.to_excel(writer, sheet_name = economy + '_renew', index = False, startrow = (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6)
     netz_renew_2.to_excel(writer, sheet_name = economy + '_renew', index = False, startrow = (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9)
+    ref_elec_1.to_excel(writer, sheet_name = economy + '_elec', index = False, startrow = chart_height)
+    netz_elec_1.to_excel(writer, sheet_name = economy + '_elec', index = False, startrow = (2 * chart_height) + ref_elec_1_rows + 3)
     ref_hyd_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = chart_height)
     ref_hydrogen_3.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = chart_height + ref_hyd_1_rows + 3)
     ref_hyd_use_1.to_excel(writer, sheet_name = economy + '_hydrogen', index = False, startrow = chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6)
@@ -17238,6 +17330,143 @@ for economy in Economy_codes:
             })    
             
         ref_worksheet48.insert_chart('J' + str(chart_height + ref_gasim_1_rows + ref_gasex_1_rows + 9), netz_gasex_chart1)
+
+    else:
+        pass
+
+    # Electricity charts
+
+    # Access the workbook and second sheet with data from df2
+    ref_worksheet49 = writer.sheets[economy + '_elec']
+        
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet49.set_column(1, ref_elec_1_cols + 1, None, space_format)
+    ref_worksheet49.set_row(chart_height, None, header_format)
+    ref_worksheet49.set_row((2 * chart_height) + ref_elec_1_rows + 3, None, header_format)
+    ref_worksheet49.write(0, 0, economy + ' electricity consumption reference', cell_format1)
+    ref_worksheet49.write(chart_height + ref_elec_1_rows + 3, 0, economy + ' electricity consumption net-zero', cell_format1)
+    ref_worksheet49.write(1, 0, 'Units: Petajoules', cell_format2)
+
+    # Create a Electricity sector area chart
+    # REFERENCE
+    if ref_elec_1_rows > 0:
+        ref_elecsec_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        ref_elecsec_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_elecsec_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_elecsec_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_elecsec_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_elecsec_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_elecsec_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_elec_1_rows):            
+            ref_elecsec_chart1.add_series({
+                'name':       [economy + '_elec', chart_height + i + 1, 1],
+                'categories': [economy + '_elec', chart_height, 2, chart_height, ref_elec_1_cols - 1],
+                'values':     [economy + '_elec', chart_height + i + 1, 2, chart_height + i + 1, ref_elec_1_cols - 1],
+                'fill':       {'color': ref_elec_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+            
+        ref_worksheet49.insert_chart('B3', ref_elecsec_chart1)
+
+    else:
+        pass
+
+    # Create a Electricity sector area chart
+    # NET-ZERO
+    if netz_elec_1_rows > 0:
+        netz_elecsec_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_elecsec_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_elecsec_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_elecsec_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_elecsec_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'PJ',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_elecsec_chart1.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_elecsec_chart1.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_elec_1_rows):            
+            netz_elecsec_chart1.add_series({
+                'name':       [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + i + 4, 1],
+                'categories': [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + 3, 2,\
+                    (2 * chart_height) + ref_elec_1_rows + 3, netz_elec_1_cols - 1],
+                'values':     [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + i + 4, 2,\
+                    (2 * chart_height) + ref_elec_1_rows + i + 4, netz_elec_1_cols - 1],
+                'fill':       {'color': netz_elec_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+            
+        ref_worksheet49.insert_chart('B' + str(chart_height + ref_elec_1_rows + 6), netz_elecsec_chart1)
 
     else:
         pass
