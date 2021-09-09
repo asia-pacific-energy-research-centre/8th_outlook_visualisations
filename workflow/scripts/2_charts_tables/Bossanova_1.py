@@ -340,7 +340,7 @@ prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear'
 prod_agg_tech2 = ['Coal', 'Coal CCS', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
                  'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports']
 
-heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Nuclear', 'Biomass', 'Waste', 'Heat only', 'Non-specified', 'Other']
+heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Nuclear', 'Biomass', 'Waste', 'Non-specified', 'Other']
 
 # Power input fuel categories
 
@@ -390,7 +390,8 @@ pow_capacity_agg2 = ['Coal', 'Coal CCS', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nu
 
 coal_heat = ['POW_CHP_COAL_PP', 'POW_Ultra_BituCoal_PP', 'POW_Ultra_CHP_PP', 'POW_HEAT_COKE_HP', 'POW_Sub_BituCoal_PP', 'POW_Other_Coal_PP']
 lignite_heat = ['POW_Sub_Brown_PP']
-gas_heat = ['POW_CCGT_PP', 'POW_CHP_GAS_PP', 'POW_CCGT_CCS_PP']
+gas_heat = ['POW_CCGT_PP', 'POW_CHP_GAS_PP']
+gas_ccs_heat = ['POW_CCGT_CCS_PP']
 oil_heat = ['POW_FuelOil_HP', 'POW_Diesel_PP', 'POW_FuelOil_PP', 'POW_OilProducts_PP']
 bio_heat = ['POW_CHP_BIO_PP', 'POW_Solid_Biomass_PP', 'POW_Biogas_PP']
 nuke_heat = ['POW_Nuclear_PP']
@@ -2762,25 +2763,26 @@ for economy in Economy_codes:
     lignite_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(lignite_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
     oil_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(oil_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(gas_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    gas_ccs_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(gas_ccs_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas CCS')
     nuclear_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(nuke_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     waste_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
-    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only')
+    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
     nons_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(nons_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Non-specified')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    ref_heatgen_2 = ref_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, nuclear_hp, bio_hp, waste_hp, comb_hp, nons_hp])\
+    ref_heatgen_2 = ref_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, gas_ccs_hp, nuclear_hp, bio_hp, waste_hp, comb_hp, nons_hp])\
         [['TECHNOLOGY'] + list(ref_heatgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                                                                    
 
     ref_heatgen_2['Generation'] = 'Heat'
     ref_heatgen_2 = ref_heatgen_2[['TECHNOLOGY', 'Generation'] + list(ref_heatgen_2.loc[:, '2017':'2050'])] 
 
-    # Insert 0 other row
-    new_row_zero = ['Other', 'Heat'] + [0] * 34
-    new_series = pd.Series(new_row_zero, index = ref_heatgen_2.columns)
+    # # Insert 0 other row
+    # new_row_zero = ['Gas CCS', 'Heat'] + [0] * 34
+    # new_series = pd.Series(new_row_zero, index = ref_heatgen_2.columns)
 
-    ref_heatgen_2 = ref_heatgen_2.append(new_series, ignore_index = True).reset_index(drop = True)
+    # ref_heatgen_2 = ref_heatgen_2.append(new_series, ignore_index = True).reset_index(drop = True)
 
     ref_heatgen_2 = ref_heatgen_2[ref_heatgen_2['TECHNOLOGY'].isin(heat_prod_tech)].\
         set_index('TECHNOLOGY')
@@ -3345,25 +3347,26 @@ for economy in Economy_codes:
     lignite_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(lignite_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Lignite')
     oil_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(oil_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Oil')
     gas_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(gas_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas')
+    gas_ccs_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(gas_ccs_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Gas CCS')
     nuclear_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(nuke_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     waste_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
-    comb_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only')
+    comb_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
     nons_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(nons_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Non-specified')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
-    netz_heatgen_2 = netz_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, nuclear_hp, bio_hp, waste_hp, comb_hp, nons_hp])\
+    netz_heatgen_2 = netz_heatgen_1.append([coal_hp, lignite_hp, oil_hp, gas_hp, gas_ccs_hp, nuclear_hp, bio_hp, waste_hp, comb_hp, nons_hp])\
         [['TECHNOLOGY'] + list(netz_heatgen_1.loc[:, '2017':'2050'])].reset_index(drop = True)                                                              
 
     netz_heatgen_2['Generation'] = 'Heat'
     netz_heatgen_2 = netz_heatgen_2[['TECHNOLOGY', 'Generation'] + list(netz_heatgen_2.loc[:, '2017':'2050'])]
 
-    # Insert 0 other row
-    new_row_zero = ['Other', 'Heat'] + [0] * 34
-    new_series = pd.Series(new_row_zero, index = netz_heatgen_2.columns)
+    # # Insert 0 other row
+    # new_row_zero = ['Gas CCS', 'Heat'] + [0] * 34
+    # new_series = pd.Series(new_row_zero, index = netz_heatgen_2.columns)
 
-    netz_heatgen_2 = netz_heatgen_2.append(new_series, ignore_index = True).reset_index(drop = True)
+    # netz_heatgen_2 = netz_heatgen_2.append(new_series, ignore_index = True).reset_index(drop = True)
 
     netz_heatgen_2 = netz_heatgen_2[netz_heatgen_2['TECHNOLOGY'].isin(heat_prod_tech)].\
         set_index('TECHNOLOGY')
@@ -10963,13 +10966,24 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_heatgen_2_rows):
-            heatgen_bytech_chart1.add_series({
-                'name':       [economy + '_heat_gen', chart_height + i + 1, 0],
-                'categories': [economy + '_heat_gen', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
-                'values':     [economy + '_heat_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_heatgen_2_cols - 1],
-                'fill':       {'color': ref_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_heatgen_2['TECHNOLOGY'].iloc[i] in ['Gas CCS']:
+                heatgen_bytech_chart1.add_series({
+                    'name':       [economy + '_heat_gen', chart_height + i + 1, 0],
+                    'categories': [economy + '_heat_gen', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
+                    'values':     [economy + '_heat_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_heatgen_2_cols - 1],
+                    'fill':       {'color': ref_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                heatgen_bytech_chart1.add_series({
+                    'name':       [economy + '_heat_gen', chart_height + i + 1, 0],
+                    'categories': [economy + '_heat_gen', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
+                    'values':     [economy + '_heat_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_heatgen_2_cols - 1],
+                    'pattern':    {'fg_color': ref_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })    
             
         ref_worksheet27.insert_chart('B3', heatgen_bytech_chart1)
 
@@ -11021,14 +11035,26 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_heatgen_3_rows):
-            heatgen_bytech_chart2.add_series({
-                'name':       [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 0],
-                'categories': [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
-                'values':     [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
-                'fill':       {'color': ref_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })    
+            if not ref_heatgen_3['TECHNOLOGY'].iloc[i] in ['Gas CCS']:
+                heatgen_bytech_chart2.add_series({
+                    'name':       [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 0],
+                    'categories': [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
+                    'values':     [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
+                    'fill':       {'color': ref_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                heatgen_bytech_chart2.add_series({
+                    'name':       [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 0],
+                    'categories': [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
+                    'values':     [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
+                    'pattern':    {'fg_color': ref_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True},
+                    'gap':        100
+                })    
             
         ref_worksheet27.insert_chart('J3', heatgen_bytech_chart2)
     
@@ -12349,15 +12375,28 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_heatgen_2_rows):
-            heatgen_bytech_chart1.add_series({
-                'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 0],
-                'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 2,\
-                    (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, netz_heatgen_2_cols - 1],
-                'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, netz_heatgen_2_cols - 1],
-                'fill':       {'color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_heatgen_2['TECHNOLOGY'].iloc[i] in ['Gas CCS']: 
+                heatgen_bytech_chart1.add_series({
+                    'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 0],
+                    'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 2,\
+                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, netz_heatgen_2_cols - 1],
+                    'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, netz_heatgen_2_cols - 1],
+                    'fill':       {'color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                heatgen_bytech_chart1.add_series({
+                    'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 0],
+                    'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 2,\
+                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, netz_heatgen_2_cols - 1],
+                    'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, netz_heatgen_2_cols - 1],
+                    'pattern':    {'fg_color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True}
+                })    
             
         ref_worksheet27.insert_chart('B' + str(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 9), heatgen_bytech_chart1)
 
@@ -12409,17 +12448,31 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_heatgen_3_rows):
-            heatgen_bytech_chart2.add_series({
-                'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 0],
-                'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, 2,\
-                    (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, netz_heatgen_3_cols - 1],
-                'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 2,\
-                    (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, netz_heatgen_3_cols - 1],
-                'fill':       {'color': netz_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })    
-            
+            if not netz_heatgen_3['TECHNOLOGY'].iloc[i] in ['Gas CCS']: 
+                heatgen_bytech_chart2.add_series({
+                    'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 0],
+                    'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, 2,\
+                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, netz_heatgen_3_cols - 1],
+                    'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, netz_heatgen_3_cols - 1],
+                    'fill':       {'color': netz_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                heatgen_bytech_chart2.add_series({
+                    'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 0],
+                    'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, 2,\
+                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, netz_heatgen_3_cols - 1],
+                    'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, netz_heatgen_3_cols - 1],
+                    'pattern':    {'fg_color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                   'pattern': 'wide_downward_diagonal'},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
         ref_worksheet27.insert_chart('J' + str(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 9), heatgen_bytech_chart2)
     
     else:
