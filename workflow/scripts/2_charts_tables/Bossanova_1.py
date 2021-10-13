@@ -1003,6 +1003,11 @@ for economy in Economy_codes:
         .reset_index()[['fuel_code', 'item_code_new'] + list(ref_fedfuel_1.loc[:,'2000':'2050'])]\
             .set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
+    ref_fedfuel_1.loc['Total'] = ref_fedfuel_1.sum()
+
+    ref_fedfuel_1.loc['Total', 'fuel_code'] = 'Total'
+    ref_fedfuel_1.loc['Total', 'item_code_new'] = '12_total_final_consumption'
+
     # Get rid of zero rows
     non_zero = (ref_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
     ref_fedfuel_1 = ref_fedfuel_1.loc[non_zero].reset_index(drop = True)
@@ -1044,6 +1049,11 @@ for economy in Economy_codes:
 
     ref_fedsector_2 = ref_fedsector_2[ref_fedsector_2['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
     ref_fedsector_2 = ref_fedsector_2[['fuel_code', 'item_code_new'] + list(ref_fedsector_2.loc[:, '2000':])].replace(np.nan, 0)
+
+    ref_fedsector_2.loc['Total'] = ref_fedsector_2.sum()
+
+    ref_fedsector_2.loc['Total', 'fuel_code'] = '19_total'
+    ref_fedsector_2.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (ref_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1109,6 +1119,11 @@ for economy in Economy_codes:
     ref_bld_2 = ref_bld_2[ref_bld_2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code')\
         .loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
+    ref_bld_2.loc['Total'] = ref_bld_2.sum()
+
+    ref_bld_2.loc['Total', 'fuel_code'] = 'Total'
+    ref_bld_2.loc['Total', 'item_code_new'] = '16_x_buildings'
+
     # Get rid of zero rows
     non_zero = (ref_bld_2.loc[:,'2000':] != 0).any(axis = 1)
     ref_bld_2 = ref_bld_2.loc[non_zero].reset_index(drop = True)
@@ -1121,6 +1136,11 @@ for economy in Economy_codes:
 
     ref_bld_3.loc[ref_bld_3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
     ref_bld_3.loc[ref_bld_3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
+
+    ref_bld_3.loc['Total'] = ref_bld_3.sum()
+
+    ref_bld_3.loc['Total', 'fuel_code'] = '19_total'
+    ref_bld_3.loc['Total', 'item_code_new'] = 'Buildings'
 
     ref_bld_3_rows = ref_bld_3.shape[0]
     ref_bld_3_cols = ref_bld_3.shape[1]
@@ -1146,6 +1166,11 @@ for economy in Economy_codes:
     ref_ind_1 = ref_ind_1[ref_ind_1['item_code_new'].isin(Industry_eight)].set_index('item_code_new').loc[Industry_eight].reset_index()
 
     ref_ind_1 = ref_ind_1[['fuel_code', 'item_code_new'] + list(ref_ind_1.loc[:, '2000':])].replace(np.nan, 0)
+
+    ref_ind_1.loc['Total'] = ref_ind_1.sum()
+
+    ref_ind_1.loc['Total', 'fuel_code'] = '19_total'
+    ref_ind_1.loc['Total', 'item_code_new'] = 'Industry'
 
     # Get rid of zero rows
     non_zero = (ref_ind_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1180,6 +1205,11 @@ for economy in Economy_codes:
     ref_ind_2.loc[ref_ind_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     ref_ind_2 = ref_ind_2[ref_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index().replace(np.nan, 0)
+
+    ref_ind_2.loc['Total'] = ref_ind_2.sum()
+
+    ref_ind_2.loc['Total', 'fuel_code'] = 'Total'
+    ref_ind_2.loc['Total', 'item_code_new'] = '14_industry_sector'
 
     # Get rid of zero rows
     non_zero = (ref_ind_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1219,6 +1249,11 @@ for economy in Economy_codes:
 
     ref_trn_1 = ref_trn_1[ref_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index().replace(np.nan, 0)
 
+    ref_trn_1.loc['Total'] = ref_trn_1.sum()
+
+    ref_trn_1.loc['Total', 'fuel_code'] = 'Total'
+    ref_trn_1.loc['Total', 'item_code_new'] = '15_transport_sector'
+
     # Get rid of zero rows
     non_zero = (ref_trn_1.loc[:,'2000':] != 0).any(axis = 1)
     ref_trn_1 = ref_trn_1.loc[non_zero].reset_index(drop = True)
@@ -1241,6 +1276,11 @@ for economy in Economy_codes:
     ref_trn_2 = ref_trn_2[ref_trn_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
     ref_trn_2 = ref_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True).replace(np.nan, 0)
+
+    ref_trn_2.loc['Total'] = ref_trn_2.sum()
+
+    ref_trn_2.loc['Total', 'fuel_code'] = '19_total'
+    ref_trn_2.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (ref_trn_2.loc[:,'2018':] != 0).any(axis = 1)
@@ -1278,6 +1318,11 @@ for economy in Economy_codes:
 
     ref_ag_1 = ref_ag_1[ref_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
+    ref_ag_1.loc['Total'] = ref_ag_1.sum()
+
+    ref_ag_1.loc['Total', 'fuel_code'] = 'Total'
+    ref_ag_1.loc['Total', 'item_code_new'] = 'Agriculture'
+
     # Get rid of zero rows
     non_zero = (ref_ag_1.loc[:,'2000':] != 0).any(axis = 1)
     ref_ag_1 = ref_ag_1.loc[non_zero].reset_index(drop = True)
@@ -1310,6 +1355,11 @@ for economy in Economy_codes:
 
     ref_hyd_1 = ref_hyd_1[ref_hyd_1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
         .copy().reset_index(drop = True).replace(np.nan, 0)
+
+    ref_hyd_1.loc['Total'] = ref_hyd_1.sum()
+
+    ref_hyd_1.loc['Total', 'fuel_code'] = 'Hydrogen'
+    ref_hyd_1.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (ref_hyd_1.loc[:,'2018':] != 0).any(axis = 1)
@@ -1401,6 +1451,11 @@ for economy in Economy_codes:
         .reset_index()[['fuel_code', 'item_code_new'] + list(netz_fedfuel_1.loc[:,'2000':'2050'])]\
             .set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
+    netz_fedfuel_1.loc['Total'] = netz_fedfuel_1.sum()
+
+    netz_fedfuel_1.loc['Total', 'fuel_code'] = 'Total'
+    netz_fedfuel_1.loc['Total', 'item_code_new'] = '12_total_final_consumption'
+
     # Get rid of zero rows
     non_zero = (netz_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
     netz_fedfuel_1 = netz_fedfuel_1.loc[non_zero].reset_index(drop = True)
@@ -1442,6 +1497,11 @@ for economy in Economy_codes:
 
     netz_fedsector_2 = netz_fedsector_2[netz_fedsector_2['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
     netz_fedsector_2 = netz_fedsector_2[['fuel_code', 'item_code_new'] + list(netz_fedsector_2.loc[:, '2000':])].replace(np.nan, 0)
+
+    netz_fedsector_2.loc['Total'] = netz_fedsector_2.sum()
+
+    netz_fedsector_2.loc['Total', 'fuel_code'] = '19_total'
+    netz_fedsector_2.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (netz_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1505,6 +1565,11 @@ for economy in Economy_codes:
     netz_bld_2 = netz_bld_2[netz_bld_2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code')\
         .loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
+    netz_bld_2.loc['Total'] = netz_bld_2.sum()
+
+    netz_bld_2.loc['Total', 'fuel_code'] = 'Total'
+    netz_bld_2.loc['Total', 'item_code_new'] = '16_x_buildings'
+
     # Get rid of zero rows
     non_zero = (netz_bld_2.loc[:,'2000':] != 0).any(axis = 1)
     netz_bld_2 = netz_bld_2.loc[non_zero].reset_index(drop = True)
@@ -1517,6 +1582,13 @@ for economy in Economy_codes:
 
     netz_bld_3.loc[netz_bld_3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
     netz_bld_3.loc[netz_bld_3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
+
+    netz_bld_3.loc['Total'] = netz_bld_3.sum()
+
+    netz_bld_3.loc['Total', 'fuel_code'] = '19_total'
+    netz_bld_3.loc['Total', 'item_code_new'] = 'Buildings'
+
+    netz_bld_3 = netz_bld_3.copy().reset_index(drop = True)
 
     netz_bld_3_rows = netz_bld_3.shape[0]
     netz_bld_3_cols = netz_bld_3.shape[1]
@@ -1542,6 +1614,11 @@ for economy in Economy_codes:
     netz_ind_1 = netz_ind_1[netz_ind_1['item_code_new'].isin(Industry_eight)].set_index('item_code_new').loc[Industry_eight].reset_index()
 
     netz_ind_1 = netz_ind_1[['fuel_code', 'item_code_new'] + list(netz_ind_1.loc[:, '2000':])].replace(np.nan, 0)
+
+    netz_ind_1.loc['Total'] = netz_ind_1.sum()
+
+    netz_ind_1.loc['Total', 'fuel_code'] = '19_total'
+    netz_ind_1.loc['Total', 'item_code_new'] = 'Industry'
 
     # Get rid of zero rows
     non_zero = (netz_ind_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1576,6 +1653,11 @@ for economy in Economy_codes:
     netz_ind_2.loc[netz_ind_2['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     netz_ind_2 = netz_ind_2[netz_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index().replace(np.nan, 0)
+
+    netz_ind_2.loc['Total'] = netz_ind_2.sum()
+
+    netz_ind_2.loc['Total', 'fuel_code'] = 'Total'
+    netz_ind_2.loc['Total', 'item_code_new'] = '14_industry_sector'
     
     # Get rid of zero rows
     non_zero = (netz_ind_2.loc[:,'2000':] != 0).any(axis = 1)
@@ -1615,6 +1697,11 @@ for economy in Economy_codes:
 
     netz_trn_1 = netz_trn_1[netz_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index().replace(np.nan, 0)
 
+    netz_trn_1.loc['Total'] = netz_trn_1.sum()
+
+    netz_trn_1.loc['Total', 'fuel_code'] = 'Total'
+    netz_trn_1.loc['Total', 'item_code_new'] = '15_transport_sector'
+
     # Get rid of zero rows
     non_zero = (netz_trn_1.loc[:,'2000':] != 0).any(axis = 1)
     netz_trn_1 = netz_trn_1.loc[non_zero].reset_index(drop = True)
@@ -1637,6 +1724,11 @@ for economy in Economy_codes:
     netz_trn_2 = netz_trn_2[netz_trn_2['item_code_new'].isin(Transport_modal_agg)].set_index(['item_code_new']).loc[Transport_modal_agg].reset_index()
 
     netz_trn_2 = netz_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True).replace(np.nan, 0)
+
+    netz_trn_2.loc['Total'] = netz_trn_2.sum()
+
+    netz_trn_2.loc['Total', 'fuel_code'] = '19_total'
+    netz_trn_2.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (netz_trn_2.loc[:,'2018':] != 0).any(axis = 1)
@@ -1673,6 +1765,11 @@ for economy in Economy_codes:
     netz_ag_1.loc[netz_ag_1['fuel_code'] == '18_heat', 'fuel_code'] = 'Heat'
 
     netz_ag_1 = netz_ag_1[netz_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
+
+    netz_ag_1.loc['Total'] = netz_ag_1.sum()
+
+    netz_ag_1.loc['Total', 'fuel_code'] = 'Total'
+    netz_ag_1.loc['Total', 'item_code_new'] = 'Agriculture'
     
     # Get rid of zero rows
     non_zero = (netz_ag_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1706,6 +1803,11 @@ for economy in Economy_codes:
 
     netz_hyd_1 = netz_hyd_1[netz_hyd_1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
         .copy().reset_index(drop = True).replace(np.nan, 0)
+
+    netz_hyd_1.loc['Total'] = netz_hyd_1.sum()
+
+    netz_hyd_1.loc['Total', 'fuel_code'] = 'Hydrogen'
+    netz_hyd_1.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (netz_hyd_1.loc[:,'2018':] != 0).any(axis = 1)
@@ -1757,7 +1859,7 @@ for economy in Economy_codes:
     ref_tpes_1_cols = ref_tpes_1.shape[1]
 
     ref_tpes_2 = ref_tpes_1[['fuel_code', 'item_code_new'] + col_chart_years]
-    ref_tpes_2 = ref_tpes_2[ref_tpes_2['fuel_code'] != 'Total']
+    # ref_tpes_2 = ref_tpes_2[ref_tpes_2['fuel_code'] != 'Total']
 
     ref_tpes_2_rows = ref_tpes_2.shape[0]
     ref_tpes_2_cols = ref_tpes_2.shape[1]
@@ -1786,6 +1888,11 @@ for economy in Economy_codes:
     ref_prod_1.loc[ref_prod_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
     ref_prod_1 = ref_prod_1[ref_prod_1['fuel_code'].isin(TPES_agg_fuels2)].set_index('fuel_code').loc[TPES_agg_fuels2].reset_index().replace(np.nan, 0)
+
+    ref_prod_1.loc['Total'] = ref_prod_1.sum()
+
+    ref_prod_1.loc['Total', 'fuel_code'] = 'Total'
+    ref_prod_1.loc['Total', 'item_code_new'] = '1_indigenous_production'
 
     # Get rid of zero rows
     non_zero = (ref_prod_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -1856,6 +1963,11 @@ for economy in Economy_codes:
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(ref_imports_1.loc[:, '2000':])].replace(np.nan, 0)
 
+    ref_imports_1.loc['Total'] = ref_imports_1.sum()
+
+    ref_imports_1.loc['Total', 'fuel_code'] = 'Total'
+    ref_imports_1.loc['Total', 'item_code_new'] = '2_imports'
+
     # Get rid of zero rows
     non_zero = (ref_imports_1.loc[:,'2000':] != 0).any(axis = 1)
     ref_imports_1 = ref_imports_1.loc[non_zero].reset_index(drop = True)
@@ -1897,6 +2009,11 @@ for economy in Economy_codes:
     ref_exports_1 = ref_exports_1[ref_exports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(ref_exports_1.loc[:, '2000':])].replace(np.nan, 0)
+
+    ref_exports_1.loc['Total'] = ref_exports_1.sum()
+
+    ref_exports_1.loc['Total', 'fuel_code'] = 'Total'
+    ref_exports_1.loc['Total', 'item_code_new'] = '3_exports'
 
     # Get rid of zero rows
     non_zero = (ref_exports_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -2025,7 +2142,7 @@ for economy in Economy_codes:
     netz_tpes_1_cols = netz_tpes_1.shape[1]
 
     netz_tpes_2 = netz_tpes_1[['fuel_code', 'item_code_new'] + col_chart_years]
-    netz_tpes_2 = netz_tpes_2[netz_tpes_2['fuel_code'] != 'Total']
+    # netz_tpes_2 = netz_tpes_2[netz_tpes_2['fuel_code'] != 'Total']
 
     netz_tpes_2_rows = netz_tpes_2.shape[0]
     netz_tpes_2_cols = netz_tpes_2.shape[1]
@@ -2054,6 +2171,11 @@ for economy in Economy_codes:
     netz_prod_1.loc[netz_prod_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
 
     netz_prod_1 = netz_prod_1[netz_prod_1['fuel_code'].isin(TPES_agg_fuels2)].set_index('fuel_code').loc[TPES_agg_fuels2].reset_index().replace(np.nan, 0)
+
+    netz_prod_1.loc['Total'] = netz_prod_1.sum()
+
+    netz_prod_1.loc['Total', 'fuel_code'] = 'Total'
+    netz_prod_1.loc['Total', 'item_code_new'] = '1_indigenous_production'
 
     # Get rid of zero rows
     non_zero = (netz_prod_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -2124,6 +2246,11 @@ for economy in Economy_codes:
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(netz_imports_1.loc[:, '2000':])].replace(np.nan, 0)
 
+    netz_imports_1.loc['Total'] = netz_imports_1.sum()
+
+    netz_imports_1.loc['Total', 'fuel_code'] = 'Total'
+    netz_imports_1.loc['Total', 'item_code_new'] = '2_imports'
+
     # Get rid of zero rows
     non_zero = (netz_imports_1.loc[:,'2000':] != 0).any(axis = 1)
     netz_imports_1 = netz_imports_1.loc[non_zero].reset_index(drop = True)
@@ -2165,6 +2292,11 @@ for economy in Economy_codes:
     netz_exports_1 = netz_exports_1[netz_exports_1['fuel_code'].isin(TPES_agg_trade)]\
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(netz_exports_1.loc[:, '2000':])].replace(np.nan, 0)
+
+    netz_exports_1.loc['Total'] = netz_exports_1.sum()
+
+    netz_exports_1.loc['Total', 'fuel_code'] = 'Total'
+    netz_exports_1.loc['Total', 'item_code_new'] = '2_imports'
 
     # Get rid of zero rows
     non_zero = (netz_exports_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -2332,6 +2464,11 @@ for economy in Economy_codes:
 
     ref_pow_use_2 = ref_pow_use_2[['FUEL', 'Transformation'] + list(ref_pow_use_2.loc[:, '2000':'2050'])]
 
+    ref_pow_use_2.loc['Total'] = ref_pow_use_2.sum()
+
+    ref_pow_use_2.loc['Total', 'FUEL'] = 'Total'
+    ref_pow_use_2.loc['Total', 'Transformation'] = 'Input fuel'
+
     # Get rid of zero rows
     non_zero = (ref_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
     ref_pow_use_2 = ref_pow_use_2.loc[non_zero].reset_index(drop = True)
@@ -2422,6 +2559,11 @@ for economy in Economy_codes:
     s = ref_elecgen_2.select_dtypes(include=[np.number]) / 3.6 
     ref_elecgen_2[s.columns] = s
 
+    ref_elecgen_2.loc['Total'] = ref_elecgen_2.sum()
+
+    ref_elecgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
+    ref_elecgen_2.loc['Total', 'Generation'] = 'Electricity'
+
     # Get rid of zero rows
     non_zero = (ref_elecgen_2.loc[:,'2000':] != 0).any(axis = 1)
     ref_elecgen_2 = ref_elecgen_2.loc[non_zero].reset_index(drop = True)
@@ -2447,6 +2589,11 @@ for economy in Economy_codes:
 
     ref_refinery_1.loc[ref_refinery_1['FUEL'] == 'd_ref_6_1_crude_oil', 'FUEL'] = 'Crude oil'
     ref_refinery_1.loc[ref_refinery_1['FUEL'] == 'd_ref_6_x_ngls', 'FUEL'] = 'NGLs'
+
+    ref_refinery_1.loc['Total'] = ref_refinery_1.sum()
+
+    ref_refinery_1.loc['Total', 'FUEL'] = 'Total'
+    ref_refinery_1.loc['Total', 'Transformation'] = 'Input to refinery'
 
     # Get rid of zero rows
     non_zero = (ref_refinery_1.loc[:,'2017':] != 0).any(axis = 1)
@@ -2481,6 +2628,11 @@ for economy in Economy_codes:
         ordered = True)
 
     ref_refinery_2 = ref_refinery_2.sort_values('FUEL')
+
+    ref_refinery_2.loc['Total'] = ref_refinery_2.sum()
+
+    ref_refinery_2.loc['Total', 'FUEL'] = 'Total'
+    ref_refinery_2.loc['Total', 'Transformation'] = 'Output from refinery'
 
     # Get rid of zero rows
     non_zero = (ref_refinery_2.loc[:,'2017':] != 0).any(axis = 1)
@@ -2577,6 +2729,11 @@ for economy in Economy_codes:
 
     ref_hyd_use_1 = ref_hyd_use_1[ref_hyd_use_1['FUEL'].isin(['Coal', 'Gas', 'Electricity'])].reset_index(drop = True)
 
+    ref_hyd_use_1.loc['Total'] = ref_hyd_use_1.sum()
+
+    ref_hyd_use_1.loc['Total', 'FUEL'] = 'Total'
+    ref_hyd_use_1.loc['Total', 'TECHNOLOGY'] = 'Input fuel'
+
     # Get rid of zero rows
     non_zero = (ref_hyd_use_1.loc[:,'2018':] != 0).any(axis = 1)
     ref_hyd_use_1 = ref_hyd_use_1.loc[non_zero].reset_index(drop = True)
@@ -2622,6 +2779,10 @@ for economy in Economy_codes:
     ref_powcap_1['TECHNOLOGY'] = pd.Categorical(ref_powcap_1['TECHNOLOGY'], prod_agg_tech[:-1])
 
     ref_powcap_1 = ref_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    ref_powcap_1.loc['Total'] = ref_powcap_1.sum()
+
+    ref_powcap_1.loc['Total', 'TECHNOLOGY'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (ref_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
@@ -2737,6 +2898,11 @@ for economy in Economy_codes:
 
     ref_ownuse_1 = ref_ownuse_1[['FUEL', 'Sector'] + list(ref_ownuse_1.loc[:, '2000':'2050'])]
 
+    ref_ownuse_1.loc['Total'] = ref_ownuse_1.sum()
+
+    ref_ownuse_1.loc['Total', 'FUEL'] = 'Total'
+    ref_ownuse_1.loc['Total', 'Sector'] = 'Own-use and losses'
+
     # Get rid of zero rows
     non_zero = (ref_ownuse_1.loc[:,'2000':] != 0).any(axis = 1)
     ref_ownuse_1 = ref_ownuse_1.loc[non_zero].reset_index(drop = True)
@@ -2800,6 +2966,11 @@ for economy in Economy_codes:
 
     ref_heatgen_2 = ref_heatgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
 
+    ref_heatgen_2.loc['Total'] = ref_heatgen_2.sum()
+
+    ref_heatgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
+    ref_heatgen_2.loc['Total', 'Generation'] = 'Heat'
+
     # Get rid of zero rows
     non_zero = (ref_heatgen_2.loc[:,'2000':] != 0).any(axis = 1)
     ref_heatgen_2 = ref_heatgen_2.loc[non_zero].reset_index(drop = True)
@@ -2852,6 +3023,11 @@ for economy in Economy_codes:
     ref_heat_use_2 = ref_heat_use_2.sort_values('FUEL').reset_index(drop = True)
 
     ref_heat_use_2 = ref_heat_use_2[['FUEL', 'Transformation'] + list(ref_heat_use_2.loc[:,'2017':'2050'])]
+
+    ref_heat_use_2.loc['Total'] = ref_heat_use_2.sum()
+
+    ref_heat_use_2.loc['Total', 'FUEL'] = 'Total'
+    ref_heat_use_2.loc['Total', 'Transformation'] = 'Heat plant input fuel'
 
     # Get rid of zero rows
     non_zero = (ref_heat_use_2.loc[:,'2017':] != 0).any(axis = 1)
@@ -2945,6 +3121,11 @@ for economy in Economy_codes:
 
     netz_pow_use_2 = netz_pow_use_2[['FUEL', 'Transformation'] + list(netz_pow_use_2.loc[:, '2000':'2050'])]
 
+    netz_pow_use_2.loc['Total'] = netz_pow_use_2.sum()
+
+    netz_pow_use_2.loc['Total', 'FUEL'] = 'Total'
+    netz_pow_use_2.loc['Total', 'Transformation'] = 'Input fuel'
+
     # Get rid of zero rows
     non_zero = (netz_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
     netz_pow_use_2 = netz_pow_use_2.loc[non_zero].reset_index(drop = True)
@@ -3035,6 +3216,11 @@ for economy in Economy_codes:
     s = netz_elecgen_2.select_dtypes(include=[np.number]) / 3.6 
     netz_elecgen_2[s.columns] = s
 
+    netz_elecgen_2.loc['Total'] = netz_elecgen_2.sum()
+
+    netz_elecgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
+    netz_elecgen_2.loc['Total', 'Generation'] = 'Electricity'
+
     # Get rid of zero rows
     non_zero = (netz_elecgen_2.loc[:,'2000':] != 0).any(axis = 1)
     netz_elecgen_2 = netz_elecgen_2.loc[non_zero].reset_index(drop = True)
@@ -3060,6 +3246,11 @@ for economy in Economy_codes:
 
     netz_refinery_1.loc[netz_refinery_1['FUEL'] == 'd_ref_6_1_crude_oil', 'FUEL'] = 'Crude oil'
     netz_refinery_1.loc[netz_refinery_1['FUEL'] == 'd_ref_6_x_ngls', 'FUEL'] = 'NGLs'
+
+    netz_refinery_1.loc['Total'] = netz_refinery_1.sum()
+
+    netz_refinery_1.loc['Total', 'FUEL'] = 'Total'
+    netz_refinery_1.loc['Total', 'Transformation'] = 'Input to refinery'
 
     # Get rid of zero rows
     non_zero = (netz_refinery_1.loc[:,'2017':] != 0).any(axis = 1)
@@ -3094,6 +3285,11 @@ for economy in Economy_codes:
         ordered = True)
 
     netz_refinery_2 = netz_refinery_2.sort_values('FUEL')
+
+    netz_refinery_2.loc['Total'] = netz_refinery_2.sum()
+
+    netz_refinery_2.loc['Total', 'FUEL'] = 'Total'
+    netz_refinery_2.loc['Total', 'Transformation'] = 'Output from refinery'
 
     # Get rid of zero rows
     non_zero = (netz_refinery_2.loc[:,'2017':] != 0).any(axis = 1)
@@ -3235,6 +3431,10 @@ for economy in Economy_codes:
 
     netz_powcap_1 = netz_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
+    netz_powcap_1.loc['Total'] = netz_powcap_1.sum()
+
+    netz_powcap_1.loc['Total', 'TECHNOLOGY'] = 'Total'
+
     # Get rid of zero rows
     non_zero = (netz_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
     netz_powcap_1 = netz_powcap_1.loc[non_zero].reset_index(drop = True)
@@ -3321,6 +3521,11 @@ for economy in Economy_codes:
 
     netz_ownuse_1 = netz_ownuse_1[['FUEL', 'Sector'] + list(netz_ownuse_1.loc[:, '2000':'2050'])]
 
+    netz_ownuse_1.loc['Total'] = netz_ownuse_1.sum()
+
+    netz_ownuse_1.loc['Total', 'FUEL'] = 'Total'
+    netz_ownuse_1.loc['Total', 'Sector'] = 'Own-use and losses'
+
     # Get rid of zero rows
     non_zero = (netz_ownuse_1.loc[:,'2000':] != 0).any(axis = 1)
     netz_ownuse_1 = netz_ownuse_1.loc[non_zero].reset_index(drop = True)
@@ -3384,6 +3589,11 @@ for economy in Economy_codes:
 
     netz_heatgen_2 = netz_heatgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
 
+    netz_heatgen_2.loc['Total'] = netz_heatgen_2.sum()
+
+    netz_heatgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
+    netz_heatgen_2.loc['Total', 'Generation'] = 'Heat'
+
     # Get rid of zero rows
     non_zero = (netz_heatgen_2.loc[:,'2000':] != 0).any(axis = 1)
     netz_heatgen_2 = netz_heatgen_2.loc[non_zero].reset_index(drop = True)
@@ -3436,6 +3646,11 @@ for economy in Economy_codes:
     netz_heat_use_2 = netz_heat_use_2.sort_values('FUEL').reset_index(drop = True)
 
     netz_heat_use_2 = netz_heat_use_2[['FUEL', 'Transformation'] + list(netz_heat_use_2.loc[:,'2017':'2050'])]
+
+    netz_heat_use_2.loc['Total'] = netz_heat_use_2.sum()
+
+    netz_heat_use_2.loc['Total', 'FUEL'] = 'Total'
+    netz_heat_use_2.loc['Total', 'Transformation'] = 'Heat plant input fuel'
 
     # Get rid of zero rows
     non_zero = (netz_heat_use_2.loc[:,'2017':] != 0).any(axis = 1)
@@ -3966,7 +4181,7 @@ for economy in Economy_codes:
     ref_emiss_fuel_1_cols = ref_emiss_fuel_1.shape[1]
 
     ref_emiss_fuel_2 = ref_emiss_fuel_1[['fuel_code', 'item_code_new'] + col_chart_years]
-    ref_emiss_fuel_2 = ref_emiss_fuel_2[ref_emiss_fuel_2['fuel_code'] != 'Total']
+    # ref_emiss_fuel_2 = ref_emiss_fuel_2[ref_emiss_fuel_2['fuel_code'] != 'Total']
 
     ref_emiss_fuel_2_rows = ref_emiss_fuel_2.shape[0]
     ref_emiss_fuel_2_cols = ref_emiss_fuel_2.shape[1]
@@ -4003,6 +4218,11 @@ for economy in Economy_codes:
     ref_emiss_sector_1 = ref_emiss_sector_1[ref_emiss_sector_1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()\
         .replace(np.nan, 0)
     ref_emiss_sector_1 = ref_emiss_sector_1[['fuel_code', 'item_code_new'] + list(ref_emiss_sector_1.loc[:, '2000':'2050'])]
+
+    ref_emiss_sector_1.loc['Total'] = ref_emiss_sector_1.sum()
+
+    ref_emiss_sector_1.loc['Total', 'fuel_code'] = '19_total'
+    ref_emiss_sector_1.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (ref_emiss_sector_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -4095,6 +4315,11 @@ for economy in Economy_codes:
     netz_emiss_sector_1 = netz_emiss_sector_1[netz_emiss_sector_1['item_code_new'].isin(Emissions_agg_sectors)].set_index('item_code_new').loc[Emissions_agg_sectors].reset_index()\
         .replace(np.nan, 0)
     netz_emiss_sector_1 = netz_emiss_sector_1[['fuel_code', 'item_code_new'] + list(netz_emiss_sector_1.loc[:, '2000':'2050'])]
+
+    netz_emiss_sector_1.loc['Total'] = netz_emiss_sector_1.sum()
+
+    netz_emiss_sector_1.loc['Total', 'fuel_code'] = '19_total'
+    netz_emiss_sector_1.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (netz_emiss_sector_1.loc[:,'2000':] != 0).any(axis = 1)
@@ -4795,6 +5020,13 @@ for economy in Economy_codes:
     ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
+    ref_coalcons_1.loc['Total'] = ref_coalcons_1.sum()
+
+    ref_coalcons_1.loc['Total', 'fuel_code'] = 'Coal'
+    ref_coalcons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    ref_coalcons_1 = ref_coalcons_1.copy().reset_index(drop = True)
+
     ref_coalcons_1_rows = ref_coalcons_1.shape[0]
     ref_coalcons_1_cols = ref_coalcons_1.shape[1]
 
@@ -4876,6 +5108,13 @@ for economy in Economy_codes:
     ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
     ref_gascons_1.loc[ref_gascons_1['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Power'
+
+    ref_gascons_1.loc['Total'] = ref_gascons_1.sum()
+
+    ref_gascons_1.loc['Total', 'fuel_code'] = 'Gas'
+    ref_gascons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    ref_gascons_1 = ref_gascons_1.copy().reset_index(drop = True)
 
     ref_gascons_1_rows = ref_gascons_1.shape[0]
     ref_gascons_1_cols = ref_gascons_1.shape[1]
@@ -4990,6 +5229,13 @@ for economy in Economy_codes:
     ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
     ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '9_4_oil_refineries', 'item_code_new'] = 'Refining'
 
+    ref_crudecons_1.loc['Total'] = ref_crudecons_1.sum()
+
+    ref_crudecons_1.loc['Total', 'fuel_code'] = 'Crude oil & NGL'
+    ref_crudecons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    ref_crudecons_1 = ref_crudecons_1.copy().reset_index(drop = True)
+
     ref_crudecons_1_rows = ref_crudecons_1.shape[0]
     ref_crudecons_1_cols = ref_crudecons_1.shape[1]
 
@@ -5092,6 +5338,13 @@ for economy in Economy_codes:
     ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
     ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+
+    ref_petprodcons_1.loc['Total'] = ref_petprodcons_1.sum()
+
+    ref_petprodcons_1.loc['Total', 'fuel_code'] = 'Petroleum products'
+    ref_petprodcons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    ref_petprodcons_1 = ref_petprodcons_1.copy().reset_index(drop = True)
     
     ref_petprodcons_1_rows = ref_petprodcons_1.shape[0]
     ref_petprodcons_1_cols = ref_petprodcons_1.shape[1]
@@ -5205,6 +5458,13 @@ for economy in Economy_codes:
                                                     .copy().reset_index(drop = True)
 
     ref_renewcons_1.loc[ref_renewcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+
+    ref_renewcons_1.loc['Total'] = ref_renewcons_1.sum()
+
+    ref_renewcons_1.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
+    ref_renewcons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    ref_renewcons_1 = ref_renewcons_1.copy().reset_index(drop = True)
     
     ref_renewcons_1_rows = ref_renewcons_1.shape[0]
     ref_renewcons_1_cols = ref_renewcons_1.shape[1]
@@ -5286,6 +5546,13 @@ for economy in Economy_codes:
     netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
+    netz_coalcons_1.loc['Total'] = netz_coalcons_1.sum()
+
+    netz_coalcons_1.loc['Total', 'fuel_code'] = 'Coal'
+    netz_coalcons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    netz_coalcons_1 = netz_coalcons_1.copy().reset_index(drop = True)
+
     netz_coalcons_1_rows = netz_coalcons_1.shape[0]
     netz_coalcons_1_cols = netz_coalcons_1.shape[1]
 
@@ -5365,6 +5632,13 @@ for economy in Economy_codes:
     netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
     netz_gascons_1.loc[netz_gascons_1['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Power'
+
+    netz_gascons_1.loc['Total'] = netz_gascons_1.sum()
+
+    netz_gascons_1.loc['Total', 'fuel_code'] = 'Gas'
+    netz_gascons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    netz_gascons_1 = netz_gascons_1.copy().reset_index(drop = True)
 
     netz_gascons_1_rows = netz_gascons_1.shape[0]
     netz_gascons_1_cols = netz_gascons_1.shape[1]
@@ -5479,6 +5753,13 @@ for economy in Economy_codes:
     netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
     netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '9_4_oil_refineries', 'item_code_new'] = 'Refining'
 
+    netz_crudecons_1.loc['Total'] = netz_crudecons_1.sum()
+
+    netz_crudecons_1.loc['Total', 'fuel_code'] = 'Crude oil & NGL'
+    netz_crudecons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    netz_crudecons_1 = netz_crudecons_1.copy().reset_index(drop = True)
+
     netz_crudecons_1_rows = netz_crudecons_1.shape[0]
     netz_crudecons_1_cols = netz_crudecons_1.shape[1]
 
@@ -5581,6 +5862,13 @@ for economy in Economy_codes:
     netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
     netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+
+    netz_petprodcons_1.loc['Total'] = netz_petprodcons_1.sum()
+
+    netz_petprodcons_1.loc['Total', 'fuel_code'] = 'Petroleum products'
+    netz_petprodcons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    netz_petprodcons_1 = netz_petprodcons_1.copy().reset_index(drop = True)
     
     netz_petprodcons_1_rows = netz_petprodcons_1.shape[0]
     netz_petprodcons_1_cols = netz_petprodcons_1.shape[1]
@@ -5694,6 +5982,13 @@ for economy in Economy_codes:
                                                     .copy().reset_index(drop = True)
 
     netz_renewcons_1.loc[netz_renewcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+
+    netz_renewcons_1.loc['Total'] = netz_renewcons_1.sum()
+
+    netz_renewcons_1.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
+    netz_renewcons_1.loc['Total', 'item_code_new'] = 'Total'
+
+    netz_renewcons_1 = netz_renewcons_1.copy().reset_index(drop = True)
     
     netz_renewcons_1_rows = netz_renewcons_1.shape[0]
     netz_renewcons_1_cols = netz_renewcons_1.shape[1]
@@ -5844,6 +6139,13 @@ for economy in Economy_codes:
     ref_elec_1.loc[ref_elec_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
     ref_elec_1.loc[ref_elec_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
+    ref_elec_1.loc['Total'] = ref_elec_1.sum()
+
+    ref_elec_1.loc['Total', 'fuel_code'] = 'Electricity'
+    ref_elec_1.loc['Total', 'item_code_new'] = 'Total'
+
+    ref_elec_1 = ref_elec_1.copy().reset_index(drop = True)
+
     ref_elec_1_rows = ref_elec_1.shape[0]
     ref_elec_1_cols = ref_elec_1.shape[1]
 
@@ -5870,6 +6172,13 @@ for economy in Economy_codes:
     netz_elec_1.loc[netz_elec_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
     netz_elec_1.loc[netz_elec_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
     netz_elec_1.loc[netz_elec_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
+
+    netz_elec_1.loc['Total'] = netz_elec_1.sum()
+
+    netz_elec_1.loc['Total', 'fuel_code'] = 'Electricity'
+    netz_elec_1.loc['Total', 'item_code_new'] = 'Total'
+
+    netz_elec_1 = netz_elec_1.copy().reset_index(drop = True)
 
     netz_elec_1_rows = netz_elec_1.shape[0]
     netz_elec_1_cols = netz_elec_1.shape[1]
@@ -6138,13 +6447,17 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_fedfuel_1_rows):
-        ref_fedfuel_chart1.add_series({
-            'name':       [economy + '_FED_fuel', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_fuel', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
-            'values':     [economy + '_FED_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
-            'fill':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not ref_fedfuel_1['fuel_code'].iloc[i] in ['Total']:
+            ref_fedfuel_chart1.add_series({
+                'name':       [economy + '_FED_fuel', chart_height + i + 1, 0],
+                'categories': [economy + '_FED_fuel', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
+                'values':     [economy + '_FED_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
+                'fill':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet1.insert_chart('B3', ref_fedfuel_chart1)
 
@@ -6195,14 +6508,18 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in ref_fedfuel_2['fuel_code'].unique():
         i = ref_fedfuel_2[ref_fedfuel_2['fuel_code'] == component].index[0]
-        ref_fedfuel_chart2.add_series({
-            'name':       [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + i + 4, 0],
-            'categories': [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + 3, 2, chart_height + ref_fedfuel_1_rows + 3, ref_fedfuel_2_cols - 1],
-            'values':     [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + i + 4, 2, chart_height + ref_fedfuel_1_rows + i + 4, ref_fedfuel_2_cols - 1],
-            'fill':       {'color': ref_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not ref_fedfuel_2['fuel_code'].iloc[i] in ['Total']:
+            ref_fedfuel_chart2.add_series({
+                'name':       [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + i + 4, 0],
+                'categories': [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + 3, 2, chart_height + ref_fedfuel_1_rows + 3, ref_fedfuel_2_cols - 1],
+                'values':     [economy + '_FED_fuel', chart_height + ref_fedfuel_1_rows + i + 4, 2, chart_height + ref_fedfuel_1_rows + i + 4, ref_fedfuel_2_cols - 1],
+                'fill':       {'color': ref_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet1.insert_chart('J3', ref_fedfuel_chart2)
 
@@ -6252,12 +6569,16 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_fedfuel_1_rows):
-        ref_fedfuel_chart3.add_series({
-            'name':       [economy + '_FED_fuel', chart_height + i + 1, 0],
-            'categories': [economy + '_FED_fuel', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
-            'values':     [economy + '_FED_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
-            'line':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
-        })    
+        if not ref_fedfuel_1['fuel_code'].iloc[i] in ['Total']:
+            ref_fedfuel_chart3.add_series({
+                'name':       [economy + '_FED_fuel', chart_height + i + 1, 0],
+                'categories': [economy + '_FED_fuel', chart_height, 2, chart_height, ref_fedfuel_1_cols - 1],
+                'values':     [economy + '_FED_fuel', chart_height + i + 1, 2, chart_height + i + 1, ref_fedfuel_1_cols - 1],
+                'line':       {'color': ref_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
+            })
+
+        else:
+            pass    
         
     ref_worksheet1.insert_chart('R3', ref_fedfuel_chart3)
 
@@ -6325,13 +6646,17 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_fedsector_2_rows):
-        ref_fedsector_chart3.add_series({
-            'name':       [economy + '_FED_sector', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_sector', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
-            'values':     [economy + '_FED_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
-            'fill':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not ref_fedsector_2['item_code_new'].iloc[i] in ['Total']:
+            ref_fedsector_chart3.add_series({
+                'name':       [economy + '_FED_sector', chart_height + i + 1, 1],
+                'categories': [economy + '_FED_sector', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
+                'values':     [economy + '_FED_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
+                'fill':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet2.insert_chart('B3', ref_fedsector_chart3)
 
@@ -6382,14 +6707,18 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in ref_fedsector_3['item_code_new'].unique():
         i = ref_fedsector_3[ref_fedsector_3['item_code_new'] == component].index[0]
-        ref_fedsector_chart4.add_series({
-            'name':       [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + i + 4, 1],
-            'categories': [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + 3, 2, chart_height + ref_fedsector_2_rows + 3, ref_fedsector_3_cols - 1],
-            'values':     [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + i + 4, 2, chart_height + ref_fedsector_2_rows + i + 4, ref_fedsector_3_cols - 1],
-            'fill':       {'color': ref_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not ref_fedsector_3['item_code_new'].iloc[i] in ['Total']:
+            ref_fedsector_chart4.add_series({
+                'name':       [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + i + 4, 1],
+                'categories': [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + 3, 2, chart_height + ref_fedsector_2_rows + 3, ref_fedsector_3_cols - 1],
+                'values':     [economy + '_FED_sector', chart_height + ref_fedsector_2_rows + i + 4, 2, chart_height + ref_fedsector_2_rows + i + 4, ref_fedsector_3_cols - 1],
+                'fill':       {'color': ref_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet2.insert_chart('J3', ref_fedsector_chart4)
 
@@ -6440,12 +6769,16 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_fedsector_2_rows):
-        ref_fedsector_chart5.add_series({
-            'name':       [economy + '_FED_sector', chart_height + i + 1, 1],
-            'categories': [economy + '_FED_sector', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
-            'values':     [economy + '_FED_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
-            'line':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1}
-        })    
+        if not ref_fedsector_2['item_code_new'].iloc[i] in ['Total']:
+            ref_fedsector_chart5.add_series({
+                'name':       [economy + '_FED_sector', chart_height + i + 1, 1],
+                'categories': [economy + '_FED_sector', chart_height, 2, chart_height, ref_fedsector_2_cols - 1],
+                'values':     [economy + '_FED_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_fedsector_2_cols - 1],
+                'line':       {'color': ref_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1}
+            })
+
+        else:
+            pass    
         
     ref_worksheet2.insert_chart('R3', ref_fedsector_chart5)
     
@@ -6511,13 +6844,17 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in ref_bld_2['fuel_code'].unique():
         i = ref_bld_2[ref_bld_2['fuel_code'] == component].index[0]
-        ref_fed_bld_chart1.add_series({
-            'name':       [economy + '_buildings', chart_height + i + 1, 0],
-            'categories': [economy + '_buildings', chart_height, 2, chart_height, ref_bld_2_cols - 1],
-            'values':     [economy + '_buildings', chart_height + i + 1, 2, chart_height + i + 1, ref_bld_2_cols - 1],
-            'fill':       {'color': ref_bld_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
+        if not ref_bld_2['fuel_code'].iloc[i] in ['Total']:
+            ref_fed_bld_chart1.add_series({
+                'name':       [economy + '_buildings', chart_height + i + 1, 0],
+                'categories': [economy + '_buildings', chart_height, 2, chart_height, ref_bld_2_cols - 1],
+                'values':     [economy + '_buildings', chart_height + i + 1, 2, chart_height + i + 1, ref_bld_2_cols - 1],
+                'fill':       {'color': ref_bld_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass
 
     ref_worksheet3.insert_chart('B3', ref_fed_bld_chart1)
     
@@ -6641,13 +6978,17 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_ind_1_rows):
-        ref_fed_ind_chart1.add_series({
-            'name':       [economy + '_industry', chart_height + i + 1, 1],
-            'categories': [economy + '_industry', chart_height, 2, chart_height, ref_ind_1_cols - 1],
-            'values':     [economy + '_industry', chart_height + i + 1, 2, chart_height + i + 1, ref_ind_1_cols - 1],
-            'fill':       {'color': ref_ind_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not ref_ind_1['item_code_new'].iloc[i] in ['Industry']:
+            ref_fed_ind_chart1.add_series({
+                'name':       [economy + '_industry', chart_height + i + 1, 1],
+                'categories': [economy + '_industry', chart_height, 2, chart_height, ref_ind_1_cols - 1],
+                'values':     [economy + '_industry', chart_height + i + 1, 2, chart_height + i + 1, ref_ind_1_cols - 1],
+                'fill':       {'color': ref_ind_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet4.insert_chart('B3', ref_fed_ind_chart1)
     
@@ -6700,13 +7041,17 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for fuel_agg in ref_ind_2['fuel_code'].unique():
         j = ref_ind_2[ref_ind_2['fuel_code'] == fuel_agg].index[0]
-        ref_fed_ind_chart2.add_series({
-            'name':       [economy + '_industry', chart_height + ref_ind_1_rows + j + 4, 0],
-            'categories': [economy + '_industry', chart_height + ref_ind_1_rows + 3, 2, chart_height + ref_ind_1_rows + 3, ref_ind_2_cols - 1],
-            'values':     [economy + '_industry', chart_height + ref_ind_1_rows + j + 4, 2, chart_height + ref_ind_1_rows + j + 4, ref_ind_2_cols - 1],
-            'fill':       {'color': ref_ind_2['fuel_code'].map(colours_dict).loc[j]},
-            'border':     {'none': True}
-        })
+        if not ref_ind_2['fuel_code'].iloc[j] in ['Total']:
+            ref_fed_ind_chart2.add_series({
+                'name':       [economy + '_industry', chart_height + ref_ind_1_rows + j + 4, 0],
+                'categories': [economy + '_industry', chart_height + ref_ind_1_rows + 3, 2, chart_height + ref_ind_1_rows + 3, ref_ind_2_cols - 1],
+                'values':     [economy + '_industry', chart_height + ref_ind_1_rows + j + 4, 2, chart_height + ref_ind_1_rows + j + 4, ref_ind_2_cols - 1],
+                'fill':       {'color': ref_ind_2['fuel_code'].map(colours_dict).loc[j]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass
     
     ref_worksheet4.insert_chart('J3', ref_fed_ind_chart2)
 
@@ -6772,13 +7117,17 @@ for economy in Economy_codes:
         
     for fuel_agg in ref_trn_1['fuel_code'].unique():
         j = ref_trn_1[ref_trn_1['fuel_code'] == fuel_agg].index[0]
-        ref_transport_chart1.add_series({
-            'name':       [economy + '_transport', chart_height + j + 1, 0],
-            'categories': [economy + '_transport', chart_height, 2, chart_height, ref_trn_1_cols - 1],
-            'values':     [economy + '_transport', chart_height + j + 1, 2, chart_height + j + 1, ref_trn_1_cols - 1],
-            'fill':       {'color': ref_trn_1['fuel_code'].map(colours_dict).loc[j]},
-            'border':     {'none': True} 
-        })
+        if not ref_trn_1['fuel_code'].iloc[j] in ['Total']:
+            ref_transport_chart1.add_series({
+                'name':       [economy + '_transport', chart_height + j + 1, 0],
+                'categories': [economy + '_transport', chart_height, 2, chart_height, ref_trn_1_cols - 1],
+                'values':     [economy + '_transport', chart_height + j + 1, 2, chart_height + j + 1, ref_trn_1_cols - 1],
+                'fill':       {'color': ref_trn_1['fuel_code'].map(colours_dict).loc[j]},
+                'border':     {'none': True} 
+            })
+
+        else:
+            pass
     
     ref_worksheet5.insert_chart('B3', ref_transport_chart1)
             
@@ -6831,14 +7180,18 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.    
         for modality in ref_trn_2['item_code_new'].unique():
             j = ref_trn_2[ref_trn_2['item_code_new'] == modality].index[0]
-            ref_transport_chart2.add_series({
-                'name':       [economy + '_transport', chart_height + ref_trn_1_rows + j + 4, 1],
-                'categories': [economy + '_transport', chart_height + ref_trn_1_rows + 3, 2, chart_height + ref_trn_1_rows + 3, ref_trn_2_cols - 1],
-                'values':     [economy + '_transport', chart_height + ref_trn_1_rows + j + 4, 2, chart_height + ref_trn_1_rows + j + 4, ref_trn_2_cols - 1],
-                'fill':       {'color': ref_trn_2['item_code_new'].map(colours_dict).loc[j]},
-                'border':     {'none': True},
-                'gap':        100
-            })
+            if not ref_trn_2['item_code_new'].iloc[j] in ['Total']:
+                ref_transport_chart2.add_series({
+                    'name':       [economy + '_transport', chart_height + ref_trn_1_rows + j + 4, 1],
+                    'categories': [economy + '_transport', chart_height + ref_trn_1_rows + 3, 2, chart_height + ref_trn_1_rows + 3, ref_trn_2_cols - 1],
+                    'values':     [economy + '_transport', chart_height + ref_trn_1_rows + j + 4, 2, chart_height + ref_trn_1_rows + j + 4, ref_trn_2_cols - 1],
+                    'fill':       {'color': ref_trn_2['item_code_new'].map(colours_dict).loc[j]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
         
         ref_worksheet5.insert_chart('J3', ref_transport_chart2)
 
@@ -6907,12 +7260,16 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_ag_1_rows):
-            ref_ag_chart1.add_series({
-                'name':       [economy + '_agriculture', chart_height + i + 1, 0],
-                'categories': [economy + '_agriculture', chart_height, 2, chart_height, ref_ag_1_cols - 1],
-                'values':     [economy + '_agriculture', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
-                'line':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
-            })    
+            if not ref_ag_1['fuel_code'].iloc[i] in ['Total']:
+                ref_ag_chart1.add_series({
+                    'name':       [economy + '_agriculture', chart_height + i + 1, 0],
+                    'categories': [economy + '_agriculture', chart_height, 2, chart_height, ref_ag_1_cols - 1],
+                    'values':     [economy + '_agriculture', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
+                    'line':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet6.insert_chart('B3', ref_ag_chart1)
 
@@ -6966,13 +7323,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_ag_1_rows):
-            ref_ag_chart2.add_series({
-                'name':       [economy + '_agriculture', chart_height + i + 1, 0],
-                'categories': [economy + '_agriculture', chart_height, 2, chart_height, ref_ag_1_cols - 1],
-                'values':     [economy + '_agriculture', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
-                'fill':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_ag_1['fuel_code'].iloc[i] in ['Total']:
+                ref_ag_chart2.add_series({
+                    'name':       [economy + '_agriculture', chart_height + i + 1, 0],
+                    'categories': [economy + '_agriculture', chart_height, 2, chart_height, ref_ag_1_cols - 1],
+                    'values':     [economy + '_agriculture', chart_height + i + 1, 2, chart_height + i + 1, ref_ag_1_cols - 1],
+                    'fill':       {'color': ref_ag_1['fuel_code'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet6.insert_chart('J3', ref_ag_chart2)
 
@@ -7024,14 +7385,18 @@ for economy in Economy_codes:
 
         # Configure the series of the chart from the dataframe data.    
         for i in range(ref_ag_2_rows):
-            ref_ag_chart3.add_series({
-                'name':       [economy + '_agriculture', chart_height + ref_ag_1_rows + i + 4, 0],
-                'categories': [economy + '_agriculture', chart_height + ref_ag_1_rows + 3, 2, chart_height + ref_ag_1_rows + 3, ref_ag_2_cols - 1],
-                'values':     [economy + '_agriculture', chart_height + ref_ag_1_rows + i + 4, 2, chart_height + ref_ag_1_rows + i + 4, ref_ag_2_cols - 1],
-                'fill':       {'color': ref_ag_2['fuel_code'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })
+            if not ref_ag_2['fuel_code'].iloc[i] in ['Total']:
+                ref_ag_chart3.add_series({
+                    'name':       [economy + '_agriculture', chart_height + ref_ag_1_rows + i + 4, 0],
+                    'categories': [economy + '_agriculture', chart_height + ref_ag_1_rows + 3, 2, chart_height + ref_ag_1_rows + 3, ref_ag_2_cols - 1],
+                    'values':     [economy + '_agriculture', chart_height + ref_ag_1_rows + i + 4, 2, chart_height + ref_ag_1_rows + i + 4, ref_ag_2_cols - 1],
+                    'fill':       {'color': ref_ag_2['fuel_code'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+            
+            else:
+                pass
         
         ref_worksheet6.insert_chart('R3', ref_ag_chart3)
 
@@ -7109,15 +7474,19 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_fedfuel_1_rows):
-        netz_fedfuel_chart1.add_series({
-            'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 0],
-            'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 2,\
-                 (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, netz_fedfuel_1_cols - 1],
-            'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 2,\
-                 (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, netz_fedfuel_1_cols - 1],
-            'fill':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not netz_fedfuel_1['fuel_code'].iloc[i] in ['Total']:
+            netz_fedfuel_chart1.add_series({
+                'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 0],
+                'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, netz_fedfuel_1_cols - 1],
+                'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, netz_fedfuel_1_cols - 1],
+                'fill':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet1.insert_chart('B' + str(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 9), netz_fedfuel_chart1)
 
@@ -7168,16 +7537,20 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in netz_fedfuel_2['fuel_code'].unique():
         i = netz_fedfuel_2[netz_fedfuel_2['fuel_code'] == component].index[0]
-        netz_fedfuel_chart2.add_series({
-            'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10, 0],
-            'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9,\
-                 2, (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9, netz_fedfuel_2_cols - 1],
-            'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10,\
-                 2, (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10, netz_fedfuel_2_cols - 1],
-            'fill':       {'color': netz_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not netz_fedfuel_2['fuel_code'].iloc[i] in ['Total']:
+            netz_fedfuel_chart2.add_series({
+                'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10, 0],
+                'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9,\
+                    2, (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9, netz_fedfuel_2_cols - 1],
+                'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10,\
+                    2, (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + i + 10, netz_fedfuel_2_cols - 1],
+                'fill':       {'color': netz_fedfuel_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet1.insert_chart('J' + str(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 9), netz_fedfuel_chart2)
 
@@ -7227,14 +7600,18 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_fedfuel_1_rows):
-        netz_fedfuel_chart3.add_series({
-            'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 0],
-            'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 2,\
-                 (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, netz_fedfuel_1_cols - 1],
-            'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 2,\
-                 (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, netz_fedfuel_1_cols - 1],
-            'line':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
-        })    
+        if not netz_fedfuel_1['fuel_code'].iloc[i] in ['Total']:
+            netz_fedfuel_chart3.add_series({
+                'name':       [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 0],
+                'categories': [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, netz_fedfuel_1_cols - 1],
+                'values':     [economy + '_FED_fuel', (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + i + 7, netz_fedfuel_1_cols - 1],
+                'line':       {'color': netz_fedfuel_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
+            })
+
+        else:
+            pass    
         
     ref_worksheet1.insert_chart('R' + str(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 9), netz_fedfuel_chart3)
 
@@ -7297,13 +7674,17 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_fedsector_2_rows):
-        netz_fedsector_chart3.add_series({
-            'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 1],
-            'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 2, (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, netz_fedsector_2_cols - 1],
-            'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 2, (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, netz_fedsector_2_cols - 1],
-            'fill':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not netz_fedsector_2['item_code_new'].iloc[i] in ['Total']:
+            netz_fedsector_chart3.add_series({
+                'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 1],
+                'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 2, (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, netz_fedsector_2_cols - 1],
+                'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 2, (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, netz_fedsector_2_cols - 1],
+                'fill':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet2.insert_chart('B' + str(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 12), netz_fedsector_chart3)
 
@@ -7354,16 +7735,20 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in netz_fedsector_3['item_code_new'].unique():
         i = netz_fedsector_3[netz_fedsector_3['item_code_new'] == component].index[0]
-        netz_fedsector_chart4.add_series({
-            'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, 1],
-            'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, 2,\
-                (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, netz_fedsector_3_cols - 1],
-            'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, 2,\
-                (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, netz_fedsector_3_cols - 1],
-            'fill':       {'color': netz_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not netz_fedsector_3['item_code_new'].iloc[i] in ['Total']:
+            netz_fedsector_chart4.add_series({
+                'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, 1],
+                'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, 2,\
+                    (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, netz_fedsector_3_cols - 1],
+                'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, 2,\
+                    (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + i + 13, netz_fedsector_3_cols - 1],
+                'fill':       {'color': netz_fedsector_3['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet2.insert_chart('J' + str(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 12), netz_fedsector_chart4)
 
@@ -7414,14 +7799,18 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_fedsector_2_rows):
-        netz_fedsector_chart5.add_series({
-            'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 1],
-            'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 2,\
-                (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, netz_fedsector_2_cols - 1],
-            'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 2,\
-                (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, netz_fedsector_2_cols - 1],
-            'line':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1}
-        })    
+        if not netz_fedsector_2['item_code_new'].iloc[i] in ['Total']:
+            netz_fedsector_chart5.add_series({
+                'name':       [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 1],
+                'categories': [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, netz_fedsector_2_cols - 1],
+                'values':     [economy + '_FED_sector', (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + i + 10, netz_fedsector_2_cols - 1],
+                'line':       {'color': netz_fedsector_2['item_code_new'].map(colours_dict).loc[i], 'width': 1}
+            })
+
+        else:
+            pass    
         
     ref_worksheet2.insert_chart('R' + str(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 12), netz_fedsector_chart5)
     
@@ -7483,15 +7872,19 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in netz_bld_2['fuel_code'].unique():
         i = netz_bld_2[netz_bld_2['fuel_code'] == component].index[0]
-        netz_fed_bld_chart1.add_series({
-            'name':       [economy + '_buildings', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, 0],
-            'categories': [economy + '_buildings', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, 2,\
-                (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, netz_bld_2_cols - 1],
-            'values':     [economy + '_buildings', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, 2,\
-                (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, netz_bld_2_cols - 1],
-            'fill':       {'color': netz_bld_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })
+        if not netz_bld_2['fuel_code'].iloc[i] in ['Total']:
+            netz_fed_bld_chart1.add_series({
+                'name':       [economy + '_buildings', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, 0],
+                'categories': [economy + '_buildings', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, 2,\
+                    (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, netz_bld_2_cols - 1],
+                'values':     [economy + '_buildings', (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + i + 7, netz_bld_2_cols - 1],
+                'fill':       {'color': netz_bld_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass
 
     ref_worksheet3.insert_chart('B' + str(chart_height + ref_bld_2_rows + ref_bld_3_rows + 9), netz_fed_bld_chart1)
     
@@ -7613,15 +8006,19 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_ind_1_rows):
-        netz_fed_ind_chart1.add_series({
-            'name':       [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, 1],
-            'categories': [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, 2,\
-                (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, netz_ind_1_cols - 1],
-            'values':     [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, netz_ind_1_cols - 1],
-            'fill':       {'color': netz_ind_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not netz_ind_1['item_code_new'].iloc[i] in ['Industry']:
+            netz_fed_ind_chart1.add_series({
+                'name':       [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, 1],
+                'categories': [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, netz_ind_1_cols - 1],
+                'values':     [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + i + 7, netz_ind_1_cols - 1],
+                'fill':       {'color': netz_ind_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet4.insert_chart('B' + str(chart_height + ref_ind_1_rows + ref_ind_2_rows + 9), netz_fed_ind_chart1)
     
@@ -7674,15 +8071,19 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for fuel_agg in netz_ind_2['fuel_code'].unique():
         j = netz_ind_2[netz_ind_2['fuel_code'] == fuel_agg].index[0]
-        netz_fed_ind_chart2.add_series({
-            'name':       [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, 0],
-            'categories': [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, 2,\
-                (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, netz_ind_2_cols - 1],
-            'values':     [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, 2,\
-                (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, netz_ind_2_cols - 1],
-            'fill':       {'color': netz_ind_2['fuel_code'].map(colours_dict).loc[j]},
-            'border':     {'none': True}
-        })
+        if not netz_ind_2['fuel_code'].iloc[j] in ['Total']:
+            netz_fed_ind_chart2.add_series({
+                'name':       [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, 0],
+                'categories': [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, netz_ind_2_cols - 1],
+                'values':     [economy + '_industry', (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, 2,\
+                    (2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + j + 10, netz_ind_2_cols - 1],
+                'fill':       {'color': netz_ind_2['fuel_code'].map(colours_dict).loc[j]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass
     
     ref_worksheet4.insert_chart('J' + str(chart_height + ref_ind_1_rows + ref_ind_2_rows + 9), netz_fed_ind_chart2)
 
@@ -7744,15 +8145,19 @@ for economy in Economy_codes:
         
     for fuel_agg in netz_trn_1['fuel_code'].unique():
         j = netz_trn_1[netz_trn_1['fuel_code'] == fuel_agg].index[0]
-        netz_transport_chart1.add_series({
-            'name':       [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, 0],
-            'categories': [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, 2,\
-                (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, netz_trn_1_cols - 1],
-            'values':     [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, 2,\
-                (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, netz_trn_1_cols - 1],
-            'fill':       {'color': netz_trn_1['fuel_code'].map(colours_dict).loc[j]},
-            'border':     {'none': True} 
-        })
+        if not netz_trn_1['fuel_code'].iloc[j] in ['Total']:
+            netz_transport_chart1.add_series({
+                'name':       [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, 0],
+                'categories': [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, netz_trn_1_cols - 1],
+                'values':     [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, 2,\
+                    (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + j + 7, netz_trn_1_cols - 1],
+                'fill':       {'color': netz_trn_1['fuel_code'].map(colours_dict).loc[j]},
+                'border':     {'none': True} 
+            })
+
+        else:
+            pass
     
     ref_worksheet5.insert_chart('B' + str(chart_height + ref_trn_1_rows + ref_trn_2_rows + 9), netz_transport_chart1)
             
@@ -7805,16 +8210,20 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.    
         for modality in netz_trn_2['item_code_new'].unique():
             j = netz_trn_2[netz_trn_2['item_code_new'] == modality].index[0]
-            netz_transport_chart2.add_series({
-                'name':       [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 1],
-                'categories': [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, 2,\
-                    (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, netz_trn_2_cols - 1],
-                'values':     [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 2,\
-                    (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, netz_trn_2_cols - 1],
-                'fill':       {'color': netz_trn_2['item_code_new'].map(colours_dict).loc[j]},
-                'border':     {'none': True},
-                'gap':        100
-            })
+            if not netz_trn_2['item_code_new'].iloc[j] in ['Total']:
+                netz_transport_chart2.add_series({
+                    'name':       [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 1],
+                    'categories': [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, 2,\
+                        (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, netz_trn_2_cols - 1],
+                    'values':     [economy + '_transport', (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, 2,\
+                        (2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + j + 10, netz_trn_2_cols - 1],
+                    'fill':       {'color': netz_trn_2['item_code_new'].map(colours_dict).loc[j]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
         
         ref_worksheet5.insert_chart('J' + str(chart_height + ref_trn_1_rows + ref_trn_2_rows + 9), netz_transport_chart2)
 
@@ -7879,14 +8288,18 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_ag_1_rows):
-            netz_ag_chart1.add_series({
-                'name':       [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
-                'categories': [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
-                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
-                'values':     [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
-                'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
-            })    
+            if not netz_ag_1['fuel_code'].iloc[i] in ['Total']:
+                netz_ag_chart1.add_series({
+                    'name':       [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
+                    'categories': [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
+                        (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
+                    'values':     [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
+                    'line':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i], 'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet6.insert_chart('B' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart1)
 
@@ -7940,15 +8353,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_ag_1_rows):
-            netz_ag_chart2.add_series({
-                'name':       [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
-                'categories': [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
-                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
-                'values':     [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
-                'fill':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_ag_1['fuel_code'].iloc[i] in ['Total']:
+                netz_ag_chart2.add_series({
+                    'name':       [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 0],
+                    'categories': [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, 2,\
+                        (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, netz_ag_1_cols - 1],
+                    'values':     [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + i + 7, netz_ag_1_cols - 1],
+                    'fill':       {'color': netz_ag_1['fuel_code'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet6.insert_chart('J' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart2)
 
@@ -8000,16 +8417,20 @@ for economy in Economy_codes:
 
         # Configure the series of the chart from the dataframe data.    
         for i in range(netz_ag_2_rows):
-            netz_ag_chart3.add_series({
-                'name':       [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, 0],
-                'categories': [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, 2,\
-                    (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, netz_ag_2_cols - 1],
-                'values':     [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10,\
-                    2, (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, netz_ag_2_cols - 1],
-                'fill':       {'color': netz_ag_2['fuel_code'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })
+            if not netz_ag_2['fuel_code'].iloc[i] in ['Total']:
+                netz_ag_chart3.add_series({
+                    'name':       [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, 0],
+                    'categories': [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, 2,\
+                        (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, netz_ag_2_cols - 1],
+                    'values':     [economy + '_agriculture', (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10,\
+                        2, (2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + i + 10, netz_ag_2_cols - 1],
+                    'fill':       {'color': netz_ag_2['fuel_code'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
         
         ref_worksheet6.insert_chart('R' + str(chart_height + ref_ag_1_rows + ref_ag_2_rows + 9), netz_ag_chart3)
 
@@ -8212,14 +8633,18 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in ref_tpes_2['fuel_code'].unique():
         i = ref_tpes_2[ref_tpes_2['fuel_code'] == component].index[0]
-        ref_tpes_chart3.add_series({
-            'name':       [economy + '_TPES', chart_height + ref_tpes_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES', chart_height + ref_tpes_1_rows + 3, 2, chart_height + ref_tpes_1_rows + 3, ref_tpes_2_cols - 1],
-            'values':     [economy + '_TPES', chart_height + ref_tpes_1_rows + i + 4, 2, chart_height + ref_tpes_1_rows + i + 4, ref_tpes_2_cols - 1],
-            'fill':       {'color': ref_tpes_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not ref_tpes_2['fuel_code'].iloc[i] in ['Total']:
+            ref_tpes_chart3.add_series({
+                'name':       [economy + '_TPES', chart_height + ref_tpes_1_rows + i + 4, 0],
+                'categories': [economy + '_TPES', chart_height + ref_tpes_1_rows + 3, 2, chart_height + ref_tpes_1_rows + 3, ref_tpes_2_cols - 1],
+                'values':     [economy + '_TPES', chart_height + ref_tpes_1_rows + i + 4, 2, chart_height + ref_tpes_1_rows + i + 4, ref_tpes_2_cols - 1],
+                'fill':       {'color': ref_tpes_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet11.insert_chart('J3', ref_tpes_chart3)
 
@@ -8286,13 +8711,17 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_prod_1_rows):
-        ref_prod_chart2.add_series({
-            'name':       [economy + '_prod', chart_height + i + 1, 0],
-            'categories': [economy + '_prod', chart_height, 2, chart_height, ref_prod_1_cols - 1],
-            'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
-            'fill':       {'color': ref_prod_1['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not ref_prod_1['fuel_code'].iloc[i] in ['Total']:
+            ref_prod_chart2.add_series({
+                'name':       [economy + '_prod', chart_height + i + 1, 0],
+                'categories': [economy + '_prod', chart_height, 2, chart_height, ref_prod_1_cols - 1],
+                'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
+                'fill':       {'color': ref_prod_1['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet12.insert_chart('B3', ref_prod_chart2)
 
@@ -8344,13 +8773,17 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_prod_1_rows):
-        ref_prod_chart2.add_series({
-            'name':       [economy + '_prod', chart_height + i + 1, 0],
-            'categories': [economy + '_prod', chart_height, 2, chart_height, ref_prod_1_cols - 1],
-            'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
-            'line':       {'color': ref_prod_1['fuel_code'].map(colours_dict).loc[i],
-                           'width': 1} 
-        })    
+        if not ref_prod_1['fuel_code'].iloc[i] in ['Total']:
+            ref_prod_chart2.add_series({
+                'name':       [economy + '_prod', chart_height + i + 1, 0],
+                'categories': [economy + '_prod', chart_height, 2, chart_height, ref_prod_1_cols - 1],
+                'values':     [economy + '_prod', chart_height + i + 1, 2, chart_height + i + 1, ref_prod_1_cols - 1],
+                'line':       {'color': ref_prod_1['fuel_code'].map(colours_dict).loc[i],
+                               'width': 1} 
+            })
+
+        else:
+            pass    
         
     ref_worksheet12.insert_chart('R3', ref_prod_chart2)
 
@@ -8402,14 +8835,18 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in ref_prod_2['fuel_code'].unique():
         i = ref_prod_2[ref_prod_2['fuel_code'] == component].index[0]
-        ref_prod_chart3.add_series({
-            'name':       [economy + '_prod', chart_height + ref_prod_1_rows + i + 4, 0],
-            'categories': [economy + '_prod', chart_height + ref_prod_1_rows + 3, 2, chart_height + ref_prod_1_rows + 3, ref_prod_2_cols - 1],
-            'values':     [economy + '_prod', chart_height + ref_prod_1_rows + i + 4, 2, chart_height + ref_prod_1_rows + i + 4, ref_prod_2_cols - 1],
-            'fill':       {'color': ref_prod_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not ref_prod_2['fuel_code'].iloc[i] in ['Total']:
+            ref_prod_chart3.add_series({
+                'name':       [economy + '_prod', chart_height + ref_prod_1_rows + i + 4, 0],
+                'categories': [economy + '_prod', chart_height + ref_prod_1_rows + 3, 2, chart_height + ref_prod_1_rows + 3, ref_prod_2_cols - 1],
+                'values':     [economy + '_prod', chart_height + ref_prod_1_rows + i + 4, 2, chart_height + ref_prod_1_rows + i + 4, ref_prod_2_cols - 1],
+                'fill':       {'color': ref_prod_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet12.insert_chart('J3', ref_prod_chart3)
     
@@ -8533,13 +8970,17 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for fuel in ref_imports_1['fuel_code'].unique():
         i = ref_imports_1[ref_imports_1['fuel_code'] == fuel].index[0]
-        ref_imports_line.add_series({
-            'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + 3, 2, chart_height + ref_tpes_comp_1_rows + 3, ref_imports_1_cols - 1],
-            'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 2, chart_height + ref_tpes_comp_1_rows + i + 4, ref_imports_1_cols - 1],
-            'line':       {'color': ref_imports_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1},
-        })    
+        if not ref_imports_1['fuel_code'].iloc[i] in ['Total']:
+            ref_imports_line.add_series({
+                'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 0],
+                'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + 3, 2, chart_height + ref_tpes_comp_1_rows + 3, ref_imports_1_cols - 1],
+                'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + i + 4, 2, chart_height + ref_tpes_comp_1_rows + i + 4, ref_imports_1_cols - 1],
+                'line':       {'color': ref_imports_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1},
+            })
+
+        else:
+            pass    
         
     ref_worksheet13.insert_chart('J3', ref_imports_line)
 
@@ -8587,14 +9028,18 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.    
     for i in range(ref_imports_2_rows):
-        ref_imports_column.add_series({
-            'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 0],
-            'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, ref_imports_2_cols - 1],
-            'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, ref_imports_2_cols - 1],
-            'fill':       {'color': ref_imports_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not ref_imports_2['fuel_code'].iloc[i] in ['Total']:
+            ref_imports_column.add_series({
+                'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 0],
+                'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, ref_imports_2_cols - 1],
+                'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, ref_imports_2_cols - 1],
+                'fill':       {'color': ref_imports_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet13.insert_chart('R3', ref_imports_column)
 
@@ -8646,13 +9091,18 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for fuel in ref_exports_1['fuel_code'].unique():
         i = ref_exports_1[ref_exports_1['fuel_code'] == fuel].index[0]
-        ref_exports_line.add_series({
-            'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 0],
-            'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, ref_imports_1_cols - 1],
-            'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, ref_imports_1_cols - 1],
-            'line':       {'color': ref_exports_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1},
-        })    
+        if not ref_exports_1['fuel_code'].iloc[i] in ['Total']:
+            ref_exports_line.add_series({
+                'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 0],
+                'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, ref_imports_1_cols - 1],
+                'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, ref_imports_1_cols - 1],
+                'line':       {'color': ref_exports_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1},
+            })
+
+        else:
+            pass    
+
     # 40    
     ref_worksheet13.insert_chart('Z3', ref_exports_line)
 
@@ -8700,14 +9150,18 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.    
     for i in range(ref_exports_2_rows):
-        ref_exports_column.add_series({
-            'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 0],
-            'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, ref_exports_2_cols - 1],
-            'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, ref_exports_2_cols - 1],
-            'fill':       {'color': ref_exports_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not ref_exports_2['fuel_code'].iloc[i] in ['Total']:
+            ref_exports_column.add_series({
+                'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 0],
+                'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, ref_exports_2_cols - 1],
+                'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, ref_exports_2_cols - 1],
+                'fill':       {'color': ref_exports_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet13.insert_chart('AH3', ref_exports_column)
 
@@ -9101,16 +9555,20 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in netz_tpes_2['fuel_code'].unique():
         i = netz_tpes_2[netz_tpes_2['fuel_code'] == component].index[0]
-        netz_tpes_chart3.add_series({
-            'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 0],
-            'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, 2,\
-                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, netz_tpes_2_cols - 1],
-            'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 2,\
-                (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, netz_tpes_2_cols - 1],
-            'fill':       {'color': netz_tpes_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not netz_tpes_2['fuel_code'].iloc[i] in ['Total']:
+            netz_tpes_chart3.add_series({
+                'name':       [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 0],
+                'categories': [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, netz_tpes_2_cols - 1],
+                'values':     [economy + '_TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, netz_tpes_2_cols - 1],
+                'fill':       {'color': netz_tpes_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet11.insert_chart('J' + str(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 9), netz_tpes_chart3)
 
@@ -9173,15 +9631,19 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_prod_1_rows):
-        netz_prod_chart2.add_series({
-            'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 0],
-            'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, 2,\
-                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, netz_prod_1_cols - 1],
-            'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, netz_prod_1_cols - 1],
-            'fill':       {'color': netz_prod_1['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not netz_prod_1['fuel_code'].iloc[i] in ['Total']:
+            netz_prod_chart2.add_series({
+                'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 0],
+                'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, netz_prod_1_cols - 1],
+                'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, netz_prod_1_cols - 1],
+                'fill':       {'color': netz_prod_1['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     ref_worksheet12.insert_chart('B' + str(chart_height + ref_prod_1_rows + ref_prod_2_rows + 9), netz_prod_chart2)
 
@@ -9233,15 +9695,19 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_prod_1_rows):
-        netz_prod_chart2.add_series({
-            'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 0],
-            'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, 2,\
-                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, netz_prod_1_cols - 1],
-            'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, netz_prod_1_cols - 1],
-            'line':       {'color': netz_prod_1['fuel_code'].map(colours_dict).loc[i],
-                           'width': 1} 
-        })    
+        if not netz_prod_1['fuel_code'].iloc[i] in ['Total']:
+            netz_prod_chart2.add_series({
+                'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 0],
+                'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, netz_prod_1_cols - 1],
+                'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + i + 7, netz_prod_1_cols - 1],
+                'line':       {'color': netz_prod_1['fuel_code'].map(colours_dict).loc[i],
+                            'width': 1} 
+            })
+
+        else:
+            pass    
         
     ref_worksheet12.insert_chart('R' + str(chart_height + ref_prod_1_rows + ref_prod_2_rows + 9), netz_prod_chart2)
 
@@ -9293,16 +9759,20 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in netz_prod_2['fuel_code'].unique():
         i = netz_prod_2[netz_prod_2['fuel_code'] == component].index[0]
-        netz_prod_chart3.add_series({
-            'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, 0],
-            'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, 2,\
-                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, netz_prod_2_cols - 1],
-            'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, 2,\
-                (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, netz_prod_2_cols - 1],
-            'fill':       {'color': netz_prod_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not netz_prod_2['fuel_code'].iloc[i] in ['Total']:
+            netz_prod_chart3.add_series({
+                'name':       [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, 0],
+                'categories': [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, netz_prod_2_cols - 1],
+                'values':     [economy + '_prod', (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + i + 10, netz_prod_2_cols - 1],
+                'fill':       {'color': netz_prod_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     ref_worksheet12.insert_chart('J' + str(chart_height + ref_prod_1_rows + ref_prod_2_rows + 9), netz_prod_chart3)
     
@@ -9426,13 +9896,17 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for fuel in netz_imports_1['fuel_code'].unique():
         i = netz_imports_1[netz_imports_1['fuel_code'] == fuel].index[0]
-        netz_imports_line.add_series({
-            'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 0],
-            'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + 3, 2, chart_height + netz_tpes_comp_1_rows + 3, netz_imports_1_cols - 1],
-            'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 2, chart_height + netz_tpes_comp_1_rows + i + 4, netz_imports_1_cols - 1],
-            'line':       {'color': netz_imports_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1},
-        })    
+        if not netz_imports_1['fuel_code'].iloc[i] in ['Total']:
+            netz_imports_line.add_series({
+                'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 0],
+                'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + 3, 2, chart_height + netz_tpes_comp_1_rows + 3, netz_imports_1_cols - 1],
+                'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + i + 4, 2, chart_height + netz_tpes_comp_1_rows + i + 4, netz_imports_1_cols - 1],
+                'line':       {'color': netz_imports_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1},
+            })
+
+        else:
+            pass    
         
     netz_worksheet13.insert_chart('J3', netz_imports_line)
 
@@ -9480,14 +9954,18 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.    
     for i in range(netz_imports_2_rows):
-        netz_imports_column.add_series({
-            'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 0],
-            'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, netz_imports_2_cols - 1],
-            'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, netz_imports_2_cols - 1],
-            'fill':       {'color': netz_imports_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not netz_imports_2['fuel_code'].iloc[i] in ['Total']:
+            netz_imports_column.add_series({
+                'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 0],
+                'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, netz_imports_2_cols - 1],
+                'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, netz_imports_2_cols - 1],
+                'fill':       {'color': netz_imports_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     netz_worksheet13.insert_chart('R3', netz_imports_column)
 
@@ -9539,13 +10017,17 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.
     for fuel in netz_exports_1['fuel_code'].unique():
         i = netz_exports_1[netz_exports_1['fuel_code'] == fuel].index[0]
-        netz_exports_line.add_series({
-            'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 0],
-            'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, netz_imports_1_cols - 1],
-            'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, netz_imports_1_cols - 1],
-            'line':       {'color': netz_exports_1['fuel_code'].map(colours_dict).loc[i], 
-                           'width': 1},
-        })    
+        if not netz_exports_1['fuel_code'].iloc[i] in ['Total']:
+            netz_exports_line.add_series({
+                'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 0],
+                'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, netz_imports_1_cols - 1],
+                'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, netz_imports_1_cols - 1],
+                'line':       {'color': netz_exports_1['fuel_code'].map(colours_dict).loc[i], 
+                            'width': 1},
+            })
+
+        else:
+            pass    
         
     netz_worksheet13.insert_chart('Z3', netz_exports_line)
 
@@ -9593,14 +10075,18 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.    
     for i in range(netz_exports_2_rows):
-        netz_exports_column.add_series({
-            'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 0],
-            'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, netz_exports_2_cols - 1],
-            'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, netz_exports_2_cols - 1],
-            'fill':       {'color': netz_exports_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not netz_exports_2['fuel_code'].iloc[i] in ['Total']:
+            netz_exports_column.add_series({
+                'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 0],
+                'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, netz_exports_2_cols - 1],
+                'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, netz_exports_2_cols - 1],
+                'fill':       {'color': netz_exports_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     netz_worksheet13.insert_chart('AH3', netz_exports_column)
 
@@ -9870,13 +10356,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_pow_use_2_rows):
-            usefuel_chart1.add_series({
-                'name':       [economy + '_pow_input', chart_height + i + 1, 0],
-                'categories': [economy + '_pow_input', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
-                'values':     [economy + '_pow_input', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
-                'fill':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_pow_use_2['FUEL'].iloc[i] in ['Total']:
+                usefuel_chart1.add_series({
+                    'name':       [economy + '_pow_input', chart_height + i + 1, 0],
+                    'categories': [economy + '_pow_input', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
+                    'values':     [economy + '_pow_input', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
+                    'fill':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet21.insert_chart('B3', usefuel_chart1)
 
@@ -9928,14 +10418,18 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.    
         for i in range(ref_pow_use_3_rows):
-            usefuel_chart2.add_series({
-                'name':       [economy + '_pow_input', chart_height + ref_pow_use_2_rows + i + 4, 0],
-                'categories': [economy + '_pow_input', chart_height + ref_pow_use_2_rows + 3, 2, chart_height + ref_pow_use_2_rows + 3, ref_pow_use_3_cols - 1],
-                'values':     [economy + '_pow_input', chart_height + ref_pow_use_2_rows + i + 4, 2, chart_height + ref_pow_use_2_rows + i + 4, ref_pow_use_3_cols - 1],
-                'fill':       {'color': ref_pow_use_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })
+            if not ref_pow_use_3['FUEL'].iloc[i] in ['Total']:
+                usefuel_chart2.add_series({
+                    'name':       [economy + '_pow_input', chart_height + ref_pow_use_2_rows + i + 4, 0],
+                    'categories': [economy + '_pow_input', chart_height + ref_pow_use_2_rows + 3, 2, chart_height + ref_pow_use_2_rows + 3, ref_pow_use_3_cols - 1],
+                    'values':     [economy + '_pow_input', chart_height + ref_pow_use_2_rows + i + 4, 2, chart_height + ref_pow_use_2_rows + i + 4, ref_pow_use_3_cols - 1],
+                    'fill':       {'color': ref_pow_use_3['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
 
         ref_worksheet21.insert_chart('J3', usefuel_chart2)
 
@@ -9989,12 +10483,16 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_pow_use_2_rows):
-            usefuel_chart3.add_series({
-                'name':       [economy + '_pow_input', chart_height + i + 1, 0],
-                'categories': [economy + '_pow_input', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
-                'values':     [economy + '_pow_input', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
-                'line':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1}
-            })    
+            if not ref_pow_use_2['FUEL'].iloc[i] in ['Total']:
+                usefuel_chart3.add_series({
+                    'name':       [economy + '_pow_input', chart_height + i + 1, 0],
+                    'categories': [economy + '_pow_input', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
+                    'values':     [economy + '_pow_input', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
+                    'line':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet21.insert_chart('R3', usefuel_chart3)
 
@@ -10063,7 +10561,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_elecgen_2_rows):
-            if not ref_elecgen_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+            if not ref_elecgen_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
                 prodelec_bytech_chart1.add_series({
                     'name':       [economy + '_elec_gen', chart_height + i + 1, 0],
                     'categories': [economy + '_elec_gen', chart_height, 2, chart_height, ref_elecgen_2_cols - 1],
@@ -10073,14 +10571,18 @@ for economy in Economy_codes:
                 })
 
             else:
-                prodelec_bytech_chart1.add_series({
-                    'name':       [economy + '_elec_gen', chart_height + i + 1, 0],
-                    'categories': [economy + '_elec_gen', chart_height, 2, chart_height, ref_elecgen_2_cols - 1],
-                    'values':     [economy + '_elec_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_2_cols - 1],
-                    'pattern':    {'fg_color': ref_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
-                })
+                if not ref_elecgen_2['TECHNOLOGY'].iloc[i] in ['Total']:
+                    prodelec_bytech_chart1.add_series({
+                        'name':       [economy + '_elec_gen', chart_height + i + 1, 0],
+                        'categories': [economy + '_elec_gen', chart_height, 2, chart_height, ref_elecgen_2_cols - 1],
+                        'values':     [economy + '_elec_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_2_cols - 1],
+                        'pattern':    {'fg_color': ref_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass
             
         ref_worksheet22.insert_chart('B3', prodelec_bytech_chart1)
 
@@ -10132,7 +10634,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_elecgen_3_rows):
-            if not ref_elecgen_3['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+            if not ref_elecgen_3['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
                 prodelec_bytech_chart2.add_series({
                     'name':       [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 0],
                     'categories': [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
@@ -10143,15 +10645,19 @@ for economy in Economy_codes:
                 })
 
             else:
-                prodelec_bytech_chart2.add_series({
-                    'name':       [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 0],
-                    'categories': [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
-                    'values':     [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
-                    'pattern':    {'fg_color': ref_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True},
-                    'gap':        100
-                })
+                if not ref_elecgen_3['TECHNOLOGY'].iloc[i] in ['Total']:
+                    prodelec_bytech_chart2.add_series({
+                        'name':       [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 0],
+                        'categories': [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + 3, 2, chart_height + ref_elecgen_2_rows + 3, ref_elecgen_3_cols - 1],
+                        'values':     [economy + '_elec_gen', chart_height + ref_elecgen_2_rows + i + 4, 2, chart_height + ref_elecgen_2_rows + i + 4, ref_elecgen_3_cols - 1],
+                        'pattern':    {'fg_color': ref_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })
+                
+                else:
+                    pass
             
         ref_worksheet22.insert_chart('J3', prodelec_bytech_chart2)
     
@@ -10224,13 +10730,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_refinery_1_rows):
-            refinery_chart1.add_series({
-                'name':       [economy + '_refining', chart_height + i + 1, 0],
-                'categories': [economy + '_refining', chart_height, 2, chart_height, ref_refinery_1_cols - 1],
-                'values':     [economy + '_refining', chart_height + i + 1, 2, chart_height + i + 1, ref_refinery_1_cols - 1],
-                'line':       {'color': ref_refinery_1['FUEL'].map(colours_dict).loc[i],
-                               'width': 1}
-            })    
+            if not ref_refinery_1['FUEL'].iloc[i] in ['Total']:
+                refinery_chart1.add_series({
+                    'name':       [economy + '_refining', chart_height + i + 1, 0],
+                    'categories': [economy + '_refining', chart_height, 2, chart_height, ref_refinery_1_cols - 1],
+                    'values':     [economy + '_refining', chart_height + i + 1, 2, chart_height + i + 1, ref_refinery_1_cols - 1],
+                    'line':       {'color': ref_refinery_1['FUEL'].map(colours_dict).loc[i],
+                                'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet23.insert_chart('B3', refinery_chart1)
 
@@ -10284,13 +10794,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_refinery_2_rows):
-            refinery_chart2.add_series({
-                'name':       [economy + '_refining', chart_height + ref_refinery_1_rows + i + 4, 0],
-                'categories': [economy + '_refining', chart_height + ref_refinery_1_rows + 3, 2, chart_height + ref_refinery_1_rows + 3, ref_refinery_2_cols - 1],
-                'values':     [economy + '_refining', chart_height + ref_refinery_1_rows + i + 4, 2, chart_height + ref_refinery_1_rows + i + 4, ref_refinery_2_cols - 1],
-                'line':       {'color': ref_refinery_2['FUEL'].map(colours_dict).loc[i],
-                               'width': 1}
-            })    
+            if not ref_refinery_2['FUEL'].iloc[i] in ['Total']:
+                refinery_chart2.add_series({
+                    'name':       [economy + '_refining', chart_height + ref_refinery_1_rows + i + 4, 0],
+                    'categories': [economy + '_refining', chart_height + ref_refinery_1_rows + 3, 2, chart_height + ref_refinery_1_rows + 3, ref_refinery_2_cols - 1],
+                    'values':     [economy + '_refining', chart_height + ref_refinery_1_rows + i + 4, 2, chart_height + ref_refinery_1_rows + i + 4, ref_refinery_2_cols - 1],
+                    'line':       {'color': ref_refinery_2['FUEL'].map(colours_dict).loc[i],
+                                'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet23.insert_chart('J3', refinery_chart2)
 
@@ -10342,14 +10856,18 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_refinery_3_rows):
-            refinery_chart3.add_series({
-                'name':       [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 0],
-                'categories': [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, ref_refinery_3_cols - 1],
-                'values':     [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, ref_refinery_3_cols - 1],
-                'fill':       {'color': ref_refinery_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })    
+            if not ref_refinery_3['FUEL'].iloc[i] in ['Total']:
+                refinery_chart3.add_series({
+                    'name':       [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 0],
+                    'categories': [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + 6, ref_refinery_3_cols - 1],
+                    'values':     [economy + '_refining', chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, 2, chart_height + ref_refinery_1_rows + ref_refinery_2_rows + i + 7, ref_refinery_3_cols - 1],
+                    'fill':       {'color': ref_refinery_3['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass    
             
         ref_worksheet23.insert_chart('R3', refinery_chart3)
 
@@ -10418,7 +10936,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_powcap_1_rows):
-            if not ref_powcap_1['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+            if not ref_powcap_1['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
                 pow_cap_chart1.add_series({
                     'name':       [economy + '_pow_cap', chart_height + i + 1, 0],
                     'categories': [economy + '_pow_cap', chart_height, 1, chart_height, ref_powcap_1_cols - 1],
@@ -10428,14 +10946,18 @@ for economy in Economy_codes:
                 })
 
             else:
-                pow_cap_chart1.add_series({
-                    'name':       [economy + '_pow_cap', chart_height + i + 1, 0],
-                    'categories': [economy + '_pow_cap', chart_height, 1, chart_height, ref_powcap_1_cols - 1],
-                    'values':     [economy + '_pow_cap', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_1_cols - 1],
-                    'pattern':    {'fg_color': ref_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
-                })    
+                if not ref_powcap_1['TECHNOLOGY'].iloc[i] in ['Total']:
+                    pow_cap_chart1.add_series({
+                        'name':       [economy + '_pow_cap', chart_height + i + 1, 0],
+                        'categories': [economy + '_pow_cap', chart_height, 1, chart_height, ref_powcap_1_cols - 1],
+                        'values':     [economy + '_pow_cap', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_1_cols - 1],
+                        'pattern':    {'fg_color': ref_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass    
             
         ref_worksheet24.insert_chart('B3', pow_cap_chart1)
 
@@ -10487,7 +11009,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_powcap_2_rows):
-            if not ref_powcap_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+            if not ref_powcap_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
                 pow_cap_chart2.add_series({
                     'name':       [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 0],
                     'categories': [economy + '_pow_cap', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
@@ -10498,15 +11020,19 @@ for economy in Economy_codes:
                 })
 
             else:
-                pow_cap_chart2.add_series({
-                    'name':       [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 0],
-                    'categories': [economy + '_pow_cap', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
-                    'values':     [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
-                    'pattern':    {'fg_color': ref_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True},
-                    'gap':        100
-                })    
+                if not ref_powcap_2['TECHNOLOGY'].iloc[i] in ['Total']:
+                    pow_cap_chart2.add_series({
+                        'name':       [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 0],
+                        'categories': [economy + '_pow_cap', chart_height + ref_powcap_1_rows + 3, 1, chart_height + ref_powcap_1_rows + 3, ref_powcap_2_cols - 1],
+                        'values':     [economy + '_pow_cap', chart_height + ref_powcap_1_rows + i + 4, 1, chart_height + ref_powcap_1_rows + i + 4, ref_powcap_2_cols - 1],
+                        'pattern':    {'fg_color': ref_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })
+
+                else:
+                    pass    
             
         ref_worksheet24.insert_chart('J3', pow_cap_chart2)
 
@@ -10771,13 +11297,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_ownuse_1_rows):
-            ref_own_chart1.add_series({
-                'name':       [economy + '_ownuse', chart_height + i + 1, 0],
-                'categories': [economy + '_ownuse', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
-                'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
-                'fill':       {'color': ref_ownuse_1['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_ownuse_1['FUEL'].iloc[i] in ['Total']:
+                ref_own_chart1.add_series({
+                    'name':       [economy + '_ownuse', chart_height + i + 1, 0],
+                    'categories': [economy + '_ownuse', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
+                    'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
+                    'fill':       {'color': ref_ownuse_1['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet26.insert_chart('B3', ref_own_chart1)
 
@@ -10831,13 +11361,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_ownuse_1_rows):
-            ref_own_chart2.add_series({
-                'name':       [economy + '_ownuse', chart_height + i + 1, 0],
-                'categories': [economy + '_ownuse', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
-                'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
-                'line':       {'color': ref_ownuse_1['FUEL'].map(colours_dict).loc[i],
-                               'width': 1}
-            })    
+            if not ref_ownuse_1['FUEL'].iloc[i] in ['Total']:
+                ref_own_chart2.add_series({
+                    'name':       [economy + '_ownuse', chart_height + i + 1, 0],
+                    'categories': [economy + '_ownuse', chart_height, 2, chart_height, ref_ownuse_1_cols - 1],
+                    'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, ref_ownuse_1_cols - 1],
+                    'line':       {'color': ref_ownuse_1['FUEL'].map(colours_dict).loc[i],
+                                'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet26.insert_chart('J3', ref_own_chart2)
 
@@ -10890,14 +11424,18 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_ownuse_2_rows):
-            ref_own_chart3.add_series({
-                'name':       [economy + '_ownuse', chart_height + ref_ownuse_1_rows + i + 4, 0],
-                'categories': [economy + '_ownuse', chart_height + ref_ownuse_1_rows + 3, 2, chart_height + ref_ownuse_1_rows + 3, ref_ownuse_2_cols - 1],
-                'values':     [economy + '_ownuse', chart_height + ref_ownuse_1_rows + i + 4, 2, chart_height + ref_ownuse_1_rows + i + 4, ref_ownuse_2_cols - 1],
-                'fill':       {'color': ref_ownuse_2['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })    
+            if not ref_ownuse_2['FUEL'].iloc[i] in ['Total']:
+                ref_own_chart3.add_series({
+                    'name':       [economy + '_ownuse', chart_height + ref_ownuse_1_rows + i + 4, 0],
+                    'categories': [economy + '_ownuse', chart_height + ref_ownuse_1_rows + 3, 2, chart_height + ref_ownuse_1_rows + 3, ref_ownuse_2_cols - 1],
+                    'values':     [economy + '_ownuse', chart_height + ref_ownuse_1_rows + i + 4, 2, chart_height + ref_ownuse_1_rows + i + 4, ref_ownuse_2_cols - 1],
+                    'fill':       {'color': ref_ownuse_2['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass    
             
         ref_worksheet26.insert_chart('R3', ref_own_chart3)
 
@@ -10966,7 +11504,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_heatgen_2_rows):
-            if not ref_heatgen_2['TECHNOLOGY'].iloc[i] in ['Gas CCS']:
+            if not ref_heatgen_2['TECHNOLOGY'].iloc[i] in ['Gas CCS', 'Total']:
                 heatgen_bytech_chart1.add_series({
                     'name':       [economy + '_heat_gen', chart_height + i + 1, 0],
                     'categories': [economy + '_heat_gen', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
@@ -10976,14 +11514,18 @@ for economy in Economy_codes:
                 })
 
             else:
-                heatgen_bytech_chart1.add_series({
-                    'name':       [economy + '_heat_gen', chart_height + i + 1, 0],
-                    'categories': [economy + '_heat_gen', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
-                    'values':     [economy + '_heat_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_heatgen_2_cols - 1],
-                    'pattern':    {'fg_color': ref_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
-                })    
+                if not ref_heatgen_2['TECHNOLOGY'].iloc[i] in ['Total']:
+                    heatgen_bytech_chart1.add_series({
+                        'name':       [economy + '_heat_gen', chart_height + i + 1, 0],
+                        'categories': [economy + '_heat_gen', chart_height, 2, chart_height, ref_heatgen_2_cols - 1],
+                        'values':     [economy + '_heat_gen', chart_height + i + 1, 2, chart_height + i + 1, ref_heatgen_2_cols - 1],
+                        'pattern':    {'fg_color': ref_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass    
             
         ref_worksheet27.insert_chart('B3', heatgen_bytech_chart1)
 
@@ -11035,7 +11577,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_heatgen_3_rows):
-            if not ref_heatgen_3['TECHNOLOGY'].iloc[i] in ['Gas CCS']:
+            if not ref_heatgen_3['TECHNOLOGY'].iloc[i] in ['Gas CCS', 'Total']:
                 heatgen_bytech_chart2.add_series({
                     'name':       [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 0],
                     'categories': [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
@@ -11046,15 +11588,19 @@ for economy in Economy_codes:
                 })
 
             else:
-                heatgen_bytech_chart2.add_series({
-                    'name':       [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 0],
-                    'categories': [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
-                    'values':     [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
-                    'pattern':    {'fg_color': ref_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True},
-                    'gap':        100
-                })    
+                if not ref_heatgen_3['TECHNOLOGY'].iloc[i] in ['Total']:
+                    heatgen_bytech_chart2.add_series({
+                        'name':       [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 0],
+                        'categories': [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + 3, 2, chart_height + ref_heatgen_2_rows + 3, ref_heatgen_3_cols - 1],
+                        'values':     [economy + '_heat_gen', chart_height + ref_heatgen_2_rows + i + 4, 2, chart_height + ref_heatgen_2_rows + i + 4, ref_heatgen_3_cols - 1],
+                        'pattern':    {'fg_color': ref_heatgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })
+
+                else:
+                    pass    
             
         ref_worksheet27.insert_chart('J3', heatgen_bytech_chart2)
     
@@ -11129,13 +11675,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_heat_use_2_rows):
-            ref_heatuse_chart1.add_series({
-                'name':       [economy + '_heat_input', chart_height + i + 1, 0],
-                'categories': [economy + '_heat_input', chart_height, 2, chart_height, ref_heat_use_2_cols - 1],
-                'values':     [economy + '_heat_input', chart_height + i + 1, 2, chart_height + i + 1, ref_heat_use_2_cols - 1],
-                'fill':       {'color': ref_heat_use_2['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_heat_use_2['FUEL'].iloc[i] in ['Total']:
+                ref_heatuse_chart1.add_series({
+                    'name':       [economy + '_heat_input', chart_height + i + 1, 0],
+                    'categories': [economy + '_heat_input', chart_height, 2, chart_height, ref_heat_use_2_cols - 1],
+                    'values':     [economy + '_heat_input', chart_height + i + 1, 2, chart_height + i + 1, ref_heat_use_2_cols - 1],
+                    'fill':       {'color': ref_heat_use_2['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet28.insert_chart('B3', ref_heatuse_chart1)
 
@@ -11187,14 +11737,18 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.    
         for i in range(ref_heat_use_3_rows):
-            ref_heatuse_chart2.add_series({
-                'name':       [economy + '_heat_input', chart_height + ref_heat_use_2_rows + i + 4, 0],
-                'categories': [economy + '_heat_input', chart_height + ref_heat_use_2_rows + 3, 2, chart_height + ref_heat_use_2_rows + 3, ref_heat_use_3_cols - 1],
-                'values':     [economy + '_heat_input', chart_height + ref_heat_use_2_rows + i + 4, 2, chart_height + ref_heat_use_2_rows + i + 4, ref_heat_use_3_cols - 1],
-                'fill':       {'color': ref_heat_use_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })
+            if not ref_heat_use_3['FUEL'].iloc[i] in ['Total']:
+                ref_heatuse_chart2.add_series({
+                    'name':       [economy + '_heat_input', chart_height + ref_heat_use_2_rows + i + 4, 0],
+                    'categories': [economy + '_heat_input', chart_height + ref_heat_use_2_rows + 3, 2, chart_height + ref_heat_use_2_rows + 3, ref_heat_use_3_cols - 1],
+                    'values':     [economy + '_heat_input', chart_height + ref_heat_use_2_rows + i + 4, 2, chart_height + ref_heat_use_2_rows + i + 4, ref_heat_use_3_cols - 1],
+                    'fill':       {'color': ref_heat_use_3['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
 
         ref_worksheet28.insert_chart('J3', ref_heatuse_chart2)
 
@@ -11266,15 +11820,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_pow_use_2_rows):
-            netz_usefuel_chart1.add_series({
-                'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
-                'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
-                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
-                'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
-                'fill':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_pow_use_2['FUEL'].iloc[i] in ['Total']:
+                netz_usefuel_chart1.add_series({
+                    'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
+                    'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
+                        (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
+                    'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
+                    'fill':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet21.insert_chart('B' + str(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 9), netz_usefuel_chart1)
 
@@ -11326,16 +11884,20 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.    
         for i in range(netz_pow_use_3_rows):
-            netz_usefuel_chart2.add_series({
-                'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 0],
-                'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, 2,\
-                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, netz_pow_use_3_cols - 1],
-                'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 2,\
-                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, netz_pow_use_3_cols - 1],
-                'fill':       {'color': netz_pow_use_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })
+            if not netz_pow_use_3['FUEL'].iloc[i] in ['Total']:
+                netz_usefuel_chart2.add_series({
+                    'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 0],
+                    'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, 2,\
+                        (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, netz_pow_use_3_cols - 1],
+                    'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, netz_pow_use_3_cols - 1],
+                    'fill':       {'color': netz_pow_use_3['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
 
         ref_worksheet21.insert_chart('J' + str(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 9), netz_usefuel_chart2)
 
@@ -11389,14 +11951,18 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_pow_use_2_rows):
-            netz_usefuel_chart3.add_series({
-                'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
-                'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
-                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
-                'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
-                'line':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1}
-            })    
+            if not netz_pow_use_2['FUEL'].iloc[i] in ['Total']:
+                netz_usefuel_chart3.add_series({
+                    'name':       [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
+                    'categories': [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
+                        (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
+                    'values':     [economy + '_pow_input', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
+                    'line':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet21.insert_chart('R' + str(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 9), netz_usefuel_chart3)
 
@@ -11461,7 +12027,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_elecgen_2_rows):
-            if not netz_elecgen_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:    
+            if not netz_elecgen_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:    
                 netz_prodelec_bytech_chart1.add_series({
                     'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 0],
                     'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 2,\
@@ -11473,16 +12039,20 @@ for economy in Economy_codes:
                 })
 
             else:
-                netz_prodelec_bytech_chart1.add_series({
-                    'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 0],
-                    'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 2,\
-                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, netz_elecgen_2_cols - 1],
-                    'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 2,\
-                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, netz_elecgen_2_cols - 1],
-                    'pattern':    {'fg_color': netz_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
-                })
+                if not netz_elecgen_2['TECHNOLOGY'].iloc[i] in ['Total']:
+                    netz_prodelec_bytech_chart1.add_series({
+                        'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 0],
+                        'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 2,\
+                            (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, netz_elecgen_2_cols - 1],
+                        'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, 2,\
+                            (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + i + 7, netz_elecgen_2_cols - 1],
+                        'pattern':    {'fg_color': netz_elecgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass
            
         ref_worksheet22.insert_chart('B' + str(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 9), netz_prodelec_bytech_chart1)
 
@@ -11534,7 +12104,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_elecgen_3_rows):
-            if not netz_elecgen_3['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+            if not netz_elecgen_3['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
                 netz_prodelec_bytech_chart2.add_series({
                     'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 0],
                     'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, 2,\
@@ -11546,18 +12116,19 @@ for economy in Economy_codes:
                     'gap':        100
                 })
 
-            else: 
-                netz_prodelec_bytech_chart2.add_series({
-                    'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 0],
-                    'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, 2,\
-                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, netz_elecgen_3_cols - 1],
-                    'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 2,\
-                        (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, netz_elecgen_3_cols - 1],
-                    'pattern':    {'fg_color': netz_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True},
-                    'gap':        100
-                })   
+            else:
+                if not netz_elecgen_3['TECHNOLOGY'].iloc[i] in ['Total']: 
+                    netz_prodelec_bytech_chart2.add_series({
+                        'name':       [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 0],
+                        'categories': [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, 2,\
+                            (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, netz_elecgen_3_cols - 1],
+                        'values':     [economy + '_elec_gen', (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, 2,\
+                            (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + i + 10, netz_elecgen_3_cols - 1],
+                        'pattern':    {'fg_color': netz_elecgen_3['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })   
             
         ref_worksheet22.insert_chart('J' + str(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 9), netz_prodelec_bytech_chart2)
     
@@ -11625,15 +12196,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_refinery_1_rows):
-            netz_refinery_chart1.add_series({
-                'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, 0],
-                'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, 2,\
-                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, netz_refinery_1_cols - 1],
-                'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, 2,\
-                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, netz_refinery_1_cols - 1],
-                'line':       {'color': netz_refinery_1['FUEL'].map(colours_dict).loc[i],
-                               'width': 1}
-            })    
+            if not netz_refinery_1['FUEL'].iloc[i] in ['Total']:
+                netz_refinery_chart1.add_series({
+                    'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, 0],
+                    'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, 2,\
+                        (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, netz_refinery_1_cols - 1],
+                    'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + i + 10, netz_refinery_1_cols - 1],
+                    'line':       {'color': netz_refinery_1['FUEL'].map(colours_dict).loc[i],
+                                'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet23.insert_chart('B' + str(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 12), netz_refinery_chart1)
 
@@ -11687,15 +12262,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_refinery_2_rows):
-            netz_refinery_chart2.add_series({
-                'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, 0],
-                'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12, 2,\
-                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12, netz_refinery_2_cols - 1],
-                'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, 2,\
-                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, netz_refinery_2_cols - 1],
-                'line':       {'color': netz_refinery_2['FUEL'].map(colours_dict).loc[i],
-                               'width': 1}
-            })    
+            if not netz_refinery_2['FUEL'].iloc[i] in ['Total']:
+                netz_refinery_chart2.add_series({
+                    'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, 0],
+                    'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12, 2,\
+                        (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12, netz_refinery_2_cols - 1],
+                    'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, 2,\
+                        (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + i + 13, netz_refinery_2_cols - 1],
+                    'line':       {'color': netz_refinery_2['FUEL'].map(colours_dict).loc[i],
+                                'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet23.insert_chart('J' + str(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 12), netz_refinery_chart2)
 
@@ -11747,16 +12326,20 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_refinery_3_rows):
-            netz_refinery_chart3.add_series({
-                'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, 0],
-                'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, 2,\
-                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, netz_refinery_3_cols - 1],
-                'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, 2,\
-                    (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, netz_refinery_3_cols - 1],
-                'fill':       {'color': netz_refinery_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })    
+            if not netz_refinery_3['FUEL'].iloc[i] in ['Total']:
+                netz_refinery_chart3.add_series({
+                    'name':       [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, 0],
+                    'categories': [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, 2,\
+                        (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, netz_refinery_3_cols - 1],
+                    'values':     [economy + '_refining', (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, 2,\
+                        (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + i + 16, netz_refinery_3_cols - 1],
+                    'fill':       {'color': netz_refinery_3['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass    
             
         ref_worksheet23.insert_chart('R' + str(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 12), netz_refinery_chart3)
 
@@ -11821,7 +12404,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_powcap_1_rows):
-            if not netz_powcap_1['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+            if not netz_powcap_1['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
                 netz_pow_cap_chart1.add_series({
                     'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 0],
                     'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, 1,\
@@ -11833,16 +12416,20 @@ for economy in Economy_codes:
                 })
 
             else:
-                netz_pow_cap_chart1.add_series({
-                    'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 0],
-                    'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, 1,\
-                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, netz_powcap_1_cols - 1],
-                    'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 1,\
-                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, netz_powcap_1_cols - 1],
-                    'pattern':    {'fg_color': netz_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
-                })    
+                if not netz_powcap_1['TECHNOLOGY'].iloc[i] in ['Total']:
+                    netz_pow_cap_chart1.add_series({
+                        'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 0],
+                        'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, 1,\
+                            (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, netz_powcap_1_cols - 1],
+                        'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, 1,\
+                            (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + i + 7, netz_powcap_1_cols - 1],
+                        'pattern':    {'fg_color': netz_powcap_1['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass    
 
         ref_worksheet24.insert_chart('B' + str(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 9), netz_pow_cap_chart1)
 
@@ -11894,7 +12481,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_powcap_2_rows):
-            if not netz_powcap_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS']:
+            if not netz_powcap_2['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
                 netz_pow_cap_chart2.add_series({
                     'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 0],
                     'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, 1,\
@@ -11907,17 +12494,21 @@ for economy in Economy_codes:
                 })
 
             else:
-                netz_pow_cap_chart2.add_series({
-                    'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 0],
-                    'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, 1,\
-                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, netz_powcap_2_cols - 1],
-                    'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 1,\
-                        (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, netz_powcap_2_cols - 1],
-                    'pattern':    {'fg_color': netz_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True},
-                    'gap':        100
-                })    
+                if not netz_powcap_2['TECHNOLOGY'].iloc[i] in ['Total']:
+                    netz_pow_cap_chart2.add_series({
+                        'name':       [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 0],
+                        'categories': [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, 1,\
+                            (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, netz_powcap_2_cols - 1],
+                        'values':     [economy + '_pow_cap', (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, 1,\
+                            (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + i + 10, netz_powcap_2_cols - 1],
+                        'pattern':    {'fg_color': netz_powcap_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })
+
+                else:
+                    pass    
             
         ref_worksheet24.insert_chart('J' + str(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 9), netz_pow_cap_chart2)
 
@@ -12180,15 +12771,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_ownuse_1_rows):
-            netz_own_chart1.add_series({
-                'name':       [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, 0],
-                'categories': [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, 2,\
-                    (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, netz_ownuse_1_cols - 1],
-                'values':     [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, netz_ownuse_1_cols - 1],
-                'fill':       {'color': netz_ownuse_1['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_ownuse_1['FUEL'].iloc[i] in ['Total']:
+                netz_own_chart1.add_series({
+                    'name':       [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, 0],
+                    'categories': [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, 2,\
+                        (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, netz_ownuse_1_cols - 1],
+                    'values':     [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + i + 7, netz_ownuse_1_cols - 1],
+                    'fill':       {'color': netz_ownuse_1['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet26.insert_chart('B' + str(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 9), netz_own_chart1)
 
@@ -12242,13 +12837,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_ownuse_1_rows):
-            netz_own_chart2.add_series({
-                'name':       [economy + '_ownuse', chart_height + i + 1, 0],
-                'categories': [economy + '_ownuse', chart_height, 2, chart_height, netz_ownuse_1_cols - 1],
-                'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, netz_ownuse_1_cols - 1],
-                'line':       {'color': netz_ownuse_1['FUEL'].map(colours_dict).loc[i],
-                               'width': 1}
-            })    
+            if not netz_ownuse_1['FUEL'].iloc[i] in ['Total']:
+                netz_own_chart2.add_series({
+                    'name':       [economy + '_ownuse', chart_height + i + 1, 0],
+                    'categories': [economy + '_ownuse', chart_height, 2, chart_height, netz_ownuse_1_cols - 1],
+                    'values':     [economy + '_ownuse', chart_height + i + 1, 2, chart_height + i + 1, netz_ownuse_1_cols - 1],
+                    'line':       {'color': netz_ownuse_1['FUEL'].map(colours_dict).loc[i],
+                                'width': 1}
+                })
+
+            else:
+                pass    
             
         ref_worksheet26.insert_chart('J' + str(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 9), netz_own_chart2)
 
@@ -12301,16 +12900,20 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_ownuse_2_rows):
-            netz_own_chart3.add_series({
-                'name':       [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, 0],
-                'categories': [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, 2,\
-                    (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, netz_ownuse_2_cols - 1],
-                'values':     [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, 2,\
-                    (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, netz_ownuse_2_cols - 1],
-                'fill':       {'color': netz_ownuse_2['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })    
+            if not netz_ownuse_2['FUEL'].iloc[i] in ['Total']:
+                netz_own_chart3.add_series({
+                    'name':       [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, 0],
+                    'categories': [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, 2,\
+                        (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, netz_ownuse_2_cols - 1],
+                    'values':     [economy + '_ownuse', (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + i + 10, netz_ownuse_2_cols - 1],
+                    'fill':       {'color': netz_ownuse_2['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass    
             
         ref_worksheet26.insert_chart('R' + str(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 9), netz_own_chart3)
 
@@ -12375,7 +12978,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_heatgen_2_rows):
-            if not netz_heatgen_2['TECHNOLOGY'].iloc[i] in ['Gas CCS']: 
+            if not netz_heatgen_2['TECHNOLOGY'].iloc[i] in ['Gas CCS', 'Total']: 
                 heatgen_bytech_chart1.add_series({
                     'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 0],
                     'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 2,\
@@ -12387,16 +12990,20 @@ for economy in Economy_codes:
                 })
 
             else:
-                heatgen_bytech_chart1.add_series({
-                    'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 0],
-                    'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 2,\
-                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, netz_heatgen_2_cols - 1],
-                    'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 2,\
-                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, netz_heatgen_2_cols - 1],
-                    'pattern':    {'fg_color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
-                })    
+                if not netz_heatgen_2['TECHNOLOGY'].iloc[i] in ['Total']:
+                    heatgen_bytech_chart1.add_series({
+                        'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 0],
+                        'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 2,\
+                            (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, netz_heatgen_2_cols - 1],
+                        'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, 2,\
+                            (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + i + 7, netz_heatgen_2_cols - 1],
+                        'pattern':    {'fg_color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass    
             
         ref_worksheet27.insert_chart('B' + str(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 9), heatgen_bytech_chart1)
 
@@ -12448,7 +13055,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_heatgen_3_rows):
-            if not netz_heatgen_3['TECHNOLOGY'].iloc[i] in ['Gas CCS']: 
+            if not netz_heatgen_3['TECHNOLOGY'].iloc[i] in ['Gas CCS', 'Total']: 
                 heatgen_bytech_chart2.add_series({
                     'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 0],
                     'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, 2,\
@@ -12461,17 +13068,21 @@ for economy in Economy_codes:
                 })
 
             else:
-                heatgen_bytech_chart2.add_series({
-                    'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 0],
-                    'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, 2,\
-                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, netz_heatgen_3_cols - 1],
-                    'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 2,\
-                        (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, netz_heatgen_3_cols - 1],
-                    'pattern':    {'fg_color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True},
-                    'gap':        100
-                })
+                if not netz_heatgen_2['TECHNOLOGY'].iloc[i] in ['Total']:
+                    heatgen_bytech_chart2.add_series({
+                        'name':       [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 0],
+                        'categories': [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, 2,\
+                            (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, netz_heatgen_3_cols - 1],
+                        'values':     [economy + '_heat_gen', (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, 2,\
+                            (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + i + 10, netz_heatgen_3_cols - 1],
+                        'pattern':    {'fg_color': netz_heatgen_2['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })
+
+                else:
+                    pass
 
         ref_worksheet27.insert_chart('J' + str(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 9), heatgen_bytech_chart2)
     
@@ -12527,15 +13138,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_heat_use_2_rows):
-            netz_heatuse_chart1.add_series({
-                'name':       [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, 0],
-                'categories': [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, 2,\
-                    (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, netz_heat_use_2_cols - 1],
-                'values':     [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, 2,\
-                    (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, netz_heat_use_2_cols - 1],
-                'fill':       {'color': netz_heat_use_2['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_heat_use_2['FUEL'].iloc[i] in ['Total']:
+                netz_heatuse_chart1.add_series({
+                    'name':       [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, 0],
+                    'categories': [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, 2,\
+                        (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, netz_heat_use_2_cols - 1],
+                    'values':     [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, 2,\
+                        (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + i + 7, netz_heat_use_2_cols - 1],
+                    'fill':       {'color': netz_heat_use_2['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet28.insert_chart('B' + str(chart_height + ref_heat_use_2_rows + ref_heat_use_3_rows + 9), netz_heatuse_chart1)
 
@@ -12587,16 +13202,20 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.    
         for i in range(netz_heat_use_3_rows):
-            netz_heatuse_chart2.add_series({
-                'name':       [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, 0],
-                'categories': [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9, 2,\
-                    (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9, netz_heat_use_3_cols - 1],
-                'values':     [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, 2,\
-                    (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, netz_heat_use_3_cols - 1],
-                'fill':       {'color': netz_heat_use_3['FUEL'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        100
-            })
+            if not netz_heat_use_3['FUEL'].iloc[i] in ['Total']:
+                netz_heatuse_chart2.add_series({
+                    'name':       [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, 0],
+                    'categories': [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9, 2,\
+                        (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9, netz_heat_use_3_cols - 1],
+                    'values':     [economy + '_heat_input', (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, 2,\
+                        (chart_height * 2) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + i + 10, netz_heat_use_3_cols - 1],
+                    'fill':       {'color': netz_heat_use_3['FUEL'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
 
         ref_worksheet28.insert_chart('J' + str(chart_height + ref_heat_use_2_rows + ref_heat_use_3_rows + 9), netz_heatuse_chart2)
 
@@ -13723,14 +14342,18 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in ref_emiss_fuel_2['fuel_code'].unique():
         i = ref_emiss_fuel_2[ref_emiss_fuel_2['fuel_code'] == component].index[0]
-        ref_em_fuel_chart2.add_series({
-            'name':       [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + i + 4, 0],
-            'categories': [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + 3, 2, chart_height + ref_emiss_fuel_1_rows + 3, ref_emiss_fuel_2_cols - 1],
-            'values':     [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + i + 4, 2, chart_height + ref_emiss_fuel_1_rows + i + 4, ref_emiss_fuel_2_cols - 1],
-            'fill':       {'color': ref_emiss_fuel_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not ref_emiss_fuel_2['fuel_code'].iloc[i] in ['Total']:
+            ref_em_fuel_chart2.add_series({
+                'name':       [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + i + 4, 0],
+                'categories': [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + 3, 2, chart_height + ref_emiss_fuel_1_rows + 3, ref_emiss_fuel_2_cols - 1],
+                'values':     [economy + '_Emiss_fuel', chart_height + ref_emiss_fuel_1_rows + i + 4, 2, chart_height + ref_emiss_fuel_1_rows + i + 4, ref_emiss_fuel_2_cols - 1],
+                'fill':       {'color': ref_emiss_fuel_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     both_worksheet34.insert_chart('J3', ref_em_fuel_chart2)
 
@@ -13862,13 +14485,17 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_emiss_sector_1_rows):
-        ref_em_sector_chart1.add_series({
-            'name':       [economy + '_Emiss_sector', chart_height + i + 1, 1],
-            'categories': [economy + '_Emiss_sector', chart_height, 2, chart_height, ref_emiss_sector_1_cols - 1],
-            'values':     [economy + '_Emiss_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_emiss_sector_1_cols - 1],
-            'line':       {'color': ref_emiss_sector_1['item_code_new'].map(colours_dict).loc[i], 
-                           'width': 1}
-        })    
+        if not ref_emiss_sector_1['item_code_new'].iloc[i] in ['Total']:
+            ref_em_sector_chart1.add_series({
+                'name':       [economy + '_Emiss_sector', chart_height + i + 1, 1],
+                'categories': [economy + '_Emiss_sector', chart_height, 2, chart_height, ref_emiss_sector_1_cols - 1],
+                'values':     [economy + '_Emiss_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_emiss_sector_1_cols - 1],
+                'line':       {'color': ref_emiss_sector_1['item_code_new'].map(colours_dict).loc[i], 
+                            'width': 1}
+            })
+
+        else:
+            pass    
         
     both_worksheet35.insert_chart('R3', ref_em_sector_chart1)
 
@@ -13919,13 +14546,17 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(ref_emiss_sector_1_rows):
-        ref_em_sector_chart2.add_series({
-            'name':       [economy + '_Emiss_sector', chart_height + i + 1, 1],
-            'categories': [economy + '_Emiss_sector', chart_height, 2, chart_height, ref_emiss_sector_1_cols - 1],
-            'values':     [economy + '_Emiss_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_emiss_sector_1_cols - 1],
-            'fill':       {'color': ref_emiss_sector_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not ref_emiss_sector_1['item_code_new'].iloc[i] in ['Total']:
+            ref_em_sector_chart2.add_series({
+                'name':       [economy + '_Emiss_sector', chart_height + i + 1, 1],
+                'categories': [economy + '_Emiss_sector', chart_height, 2, chart_height, ref_emiss_sector_1_cols - 1],
+                'values':     [economy + '_Emiss_sector', chart_height + i + 1, 2, chart_height + i + 1, ref_emiss_sector_1_cols - 1],
+                'fill':       {'color': ref_emiss_sector_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     both_worksheet35.insert_chart('B3', ref_em_sector_chart2)
 
@@ -13976,14 +14607,18 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in ref_emiss_sector_2['item_code_new'].unique():
         i = ref_emiss_sector_2[ref_emiss_sector_2['item_code_new'] == component].index[0]
-        ref_em_sector_chart3.add_series({
-            'name':       [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + i + 4, 1],
-            'categories': [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + 3, 2, chart_height + ref_emiss_sector_1_rows + 3, ref_emiss_sector_2_cols - 1],
-            'values':     [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + i + 4, 2, chart_height + ref_emiss_sector_1_rows + i + 4, ref_emiss_sector_2_cols - 1],
-            'fill':       {'color': ref_emiss_sector_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not ref_emiss_sector_2['item_code_new'].iloc[i] in ['Total']:
+            ref_em_sector_chart3.add_series({
+                'name':       [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + i + 4, 1],
+                'categories': [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + 3, 2, chart_height + ref_emiss_sector_1_rows + 3, ref_emiss_sector_2_cols - 1],
+                'values':     [economy + '_Emiss_sector', chart_height + ref_emiss_sector_1_rows + i + 4, 2, chart_height + ref_emiss_sector_1_rows + i + 4, ref_emiss_sector_2_cols - 1],
+                'fill':       {'color': ref_emiss_sector_2['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     both_worksheet35.insert_chart('J3', ref_em_sector_chart3)
 
@@ -14100,16 +14735,20 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in netz_emiss_fuel_2['fuel_code'].unique():
         i = netz_emiss_fuel_2[netz_emiss_fuel_2['fuel_code'] == component].index[0]
-        netz_em_fuel_chart2.add_series({
-            'name':       [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, 0],
-            'categories': [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + 9, 2,\
-                (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + 9, netz_emiss_fuel_2_cols - 1],
-            'values':     [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, 2,\
-                (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, netz_emiss_fuel_2_cols - 1],
-            'fill':       {'color': netz_emiss_fuel_2['fuel_code'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not netz_emiss_fuel_2['fuel_code'].iloc[i] in ['Total']:
+            netz_em_fuel_chart2.add_series({
+                'name':       [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, 0],
+                'categories': [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + 9, netz_emiss_fuel_2_cols - 1],
+                'values':     [economy + '_Emiss_fuel', (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + i + 10, netz_emiss_fuel_2_cols - 1],
+                'fill':       {'color': netz_emiss_fuel_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     both_worksheet34.insert_chart('J' + str(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 9), netz_em_fuel_chart2)
 
@@ -14232,15 +14871,19 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_emiss_sector_1_rows):
-        netz_em_sector_chart1.add_series({
-            'name':       [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 1],
-            'categories': [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, 2,\
-                (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, netz_emiss_sector_1_cols - 1],
-            'values':     [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, netz_emiss_sector_1_cols - 1],
-            'line':       {'color': netz_emiss_sector_1['item_code_new'].map(colours_dict).loc[i], 
-                           'width': 1}
-        })    
+        if not netz_emiss_sector_1['item_code_new'].iloc[i] in ['Total']:
+            netz_em_sector_chart1.add_series({
+                'name':       [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 1],
+                'categories': [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, netz_emiss_sector_1_cols - 1],
+                'values':     [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, netz_emiss_sector_1_cols - 1],
+                'line':       {'color': netz_emiss_sector_1['item_code_new'].map(colours_dict).loc[i], 
+                            'width': 1}
+            })
+
+        else:
+            pass    
         
     both_worksheet35.insert_chart('R' + str(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 9), netz_em_sector_chart1)
 
@@ -14291,15 +14934,19 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.
     for i in range(netz_emiss_sector_1_rows):
-        netz_em_sector_chart2.add_series({
-            'name':       [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 1],
-            'categories': [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, 2,\
-                (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, netz_emiss_sector_1_cols - 1],
-            'values':     [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 2,\
-                (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, netz_emiss_sector_1_cols - 1],
-            'fill':       {'color': netz_emiss_sector_1['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True}
-        })    
+        if not netz_emiss_sector_1['item_code_new'].iloc[i] in ['Total']:
+            netz_em_sector_chart2.add_series({
+                'name':       [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 1],
+                'categories': [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, 2,\
+                    (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, netz_emiss_sector_1_cols - 1],
+                'values':     [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, 2,\
+                    (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + i + 7, netz_emiss_sector_1_cols - 1],
+                'fill':       {'color': netz_emiss_sector_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        else:
+            pass    
         
     both_worksheet35.insert_chart('B' + str(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 9), netz_em_sector_chart2)
 
@@ -14350,16 +14997,20 @@ for economy in Economy_codes:
     # Configure the series of the chart from the dataframe data.    
     for component in netz_emiss_sector_2['item_code_new'].unique():
         i = netz_emiss_sector_2[netz_emiss_sector_2['item_code_new'] == component].index[0]
-        netz_em_sector_chart3.add_series({
-            'name':       [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, 1],
-            'categories': [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9, 2,\
-                (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9, netz_emiss_sector_2_cols - 1],
-            'values':     [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, 2,\
-                (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, netz_emiss_sector_2_cols - 1],
-            'fill':       {'color': netz_emiss_sector_2['item_code_new'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        100
-        })
+        if not netz_emiss_sector_2['item_code_new'].iloc[i] in ['Total']:
+            netz_em_sector_chart3.add_series({
+                'name':       [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, 1],
+                'categories': [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9, 2,\
+                    (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9, netz_emiss_sector_2_cols - 1],
+                'values':     [economy + '_Emiss_sector', (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + i + 10, netz_emiss_sector_2_cols - 1],
+                'fill':       {'color': netz_emiss_sector_2['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+
+        else:
+            pass
     
     both_worksheet35.insert_chart('J' + str(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 9), netz_em_sector_chart3)
 
@@ -15074,13 +15725,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_coalcons_1_rows):
-            ref_coalcons_chart1.add_series({
-                'name':       [economy + '_coal', chart_height + i + 1, 1],
-                'categories': [economy + '_coal', chart_height, 2, chart_height, ref_coalcons_1_cols - 1],
-                'values':     [economy + '_coal', chart_height + i + 1, 2, chart_height + i + 1, ref_coalcons_1_cols - 1],
-                'fill':       {'color': ref_coalcons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_coalcons_1['item_code_new'].iloc[i] in ['Total']:
+                ref_coalcons_chart1.add_series({
+                    'name':       [economy + '_coal', chart_height + i + 1, 1],
+                    'categories': [economy + '_coal', chart_height, 2, chart_height, ref_coalcons_1_cols - 1],
+                    'values':     [economy + '_coal', chart_height + i + 1, 2, chart_height + i + 1, ref_coalcons_1_cols - 1],
+                    'fill':       {'color': ref_coalcons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet41.insert_chart('B3', ref_coalcons_chart1)
     
@@ -15198,15 +15853,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_coalcons_1_rows):
-            netz_coalcons_chart1.add_series({
-                'name':       [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, 1],
-                'categories': [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6, 2,\
-                    (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6, netz_coalcons_1_cols - 1],
-                'values':     [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, netz_coalcons_1_cols - 1],
-                'fill':       {'color': netz_coalcons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_coalcons_1['item_code_new'].iloc[i] in ['Total']:
+                netz_coalcons_chart1.add_series({
+                    'name':       [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, 1],
+                    'categories': [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6, 2,\
+                        (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6, netz_coalcons_1_cols - 1],
+                    'values':     [economy + '_coal', (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + i + 7, netz_coalcons_1_cols - 1],
+                    'fill':       {'color': netz_coalcons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet41.insert_chart('B' + str(chart_height + ref_coalcons_1_rows + ref_coal_1_rows + 9), netz_coalcons_chart1)
 
@@ -15338,13 +15997,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_gascons_1_rows):
-            ref_gascons_chart1.add_series({
-                'name':       [economy + '_gas', chart_height + i + 1, 1],
-                'categories': [economy + '_gas', chart_height, 2, chart_height, ref_gascons_1_cols - 1],
-                'values':     [economy + '_gas', chart_height + i + 1, 2, chart_height + i + 1, ref_gascons_1_cols - 1],
-                'fill':       {'color': ref_gascons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_gascons_1['item_code_new'].iloc[i] in ['Total']:
+                ref_gascons_chart1.add_series({
+                    'name':       [economy + '_gas', chart_height + i + 1, 1],
+                    'categories': [economy + '_gas', chart_height, 2, chart_height, ref_gascons_1_cols - 1],
+                    'values':     [economy + '_gas', chart_height + i + 1, 2, chart_height + i + 1, ref_gascons_1_cols - 1],
+                    'fill':       {'color': ref_gascons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet42.insert_chart('B3', ref_gascons_chart1)
 
@@ -15462,15 +16125,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_gascons_1_rows):
-            netz_gascons_chart1.add_series({
-                'name':       [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, 1],
-                'categories': [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6, 2,\
-                    (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6, netz_gascons_1_cols - 1],
-                'values':     [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, netz_gascons_1_cols - 1],
-                'fill':       {'color': netz_gascons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_gascons_1['item_code_new'].iloc[i] in ['Total']:
+                netz_gascons_chart1.add_series({
+                    'name':       [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, 1],
+                    'categories': [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6, 2,\
+                        (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6, netz_gascons_1_cols - 1],
+                    'values':     [economy + '_gas', (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + i + 7, netz_gascons_1_cols - 1],
+                    'fill':       {'color': netz_gascons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet42.insert_chart('B' + str(chart_height + ref_gascons_1_rows + ref_gas_1_rows + 9), netz_gascons_chart1)
 
@@ -15602,13 +16269,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_crudecons_1_rows):
-            ref_crudecons_chart1.add_series({
-                'name':       [economy + '_crude_NGL', chart_height + i + 1, 1],
-                'categories': [economy + '_crude_NGL', chart_height, 2, chart_height, ref_crudecons_1_cols - 1],
-                'values':     [economy + '_crude_NGL', chart_height + i + 1, 2, chart_height + i + 1, ref_crudecons_1_cols - 1],
-                'fill':       {'color': ref_crudecons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_crudecons_1['item_code_new'].iloc[i] in ['Total']:
+                ref_crudecons_chart1.add_series({
+                    'name':       [economy + '_crude_NGL', chart_height + i + 1, 1],
+                    'categories': [economy + '_crude_NGL', chart_height, 2, chart_height, ref_crudecons_1_cols - 1],
+                    'values':     [economy + '_crude_NGL', chart_height + i + 1, 2, chart_height + i + 1, ref_crudecons_1_cols - 1],
+                    'fill':       {'color': ref_crudecons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet43.insert_chart('B3', ref_crudecons_chart1)
 
@@ -15726,15 +16397,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_crudecons_1_rows):
-            netz_crudecons_chart1.add_series({
-                'name':       [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, 1],
-                'categories': [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6, 2,\
-                    (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6, netz_crudecons_1_cols - 1],
-                'values':     [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, netz_crudecons_1_cols - 1],
-                'fill':       {'color': netz_crudecons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_crudecons_1['item_code_new'].iloc[i] in ['Total']:
+                netz_crudecons_chart1.add_series({
+                    'name':       [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, 1],
+                    'categories': [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6, 2,\
+                        (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6, netz_crudecons_1_cols - 1],
+                    'values':     [economy + '_crude_NGL', (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + i + 7, netz_crudecons_1_cols - 1],
+                    'fill':       {'color': netz_crudecons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet43.insert_chart('B' + str(chart_height + ref_crudecons_1_rows + ref_crude_1_rows + 9), netz_crudecons_chart1)
 
@@ -15866,13 +16541,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_petprodcons_1_rows):
-            ref_petprodcons_chart1.add_series({
-                'name':       [economy + '_petprod', chart_height + i + 1, 1],
-                'categories': [economy + '_petprod', chart_height, 2, chart_height, ref_petprodcons_1_cols - 1],
-                'values':     [economy + '_petprod', chart_height + i + 1, 2, chart_height + i + 1, ref_petprodcons_1_cols - 1],
-                'fill':       {'color': ref_petprodcons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_petprodcons_1['item_code_new'].iloc[i] in ['Total']:
+                ref_petprodcons_chart1.add_series({
+                    'name':       [economy + '_petprod', chart_height + i + 1, 1],
+                    'categories': [economy + '_petprod', chart_height, 2, chart_height, ref_petprodcons_1_cols - 1],
+                    'values':     [economy + '_petprod', chart_height + i + 1, 2, chart_height + i + 1, ref_petprodcons_1_cols - 1],
+                    'fill':       {'color': ref_petprodcons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet44.insert_chart('B3', ref_petprodcons_chart1)
 
@@ -15990,15 +16669,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_petprodcons_1_rows):
-            netz_petprodcons_chart1.add_series({
-                'name':       [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 1],
-                'categories': [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 2,\
-                    (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, netz_petprodcons_1_cols - 1],
-                'values':     [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 2,\
-                    (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, netz_petprodcons_1_cols - 1],
-                'fill':       {'color': netz_petprodcons_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_petprodcons_1['item_code_new'].iloc[i] in ['Total']:
+                netz_petprodcons_chart1.add_series({
+                    'name':       [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 1],
+                    'categories': [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 2,\
+                        (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, netz_petprodcons_1_cols - 1],
+                    'values':     [economy + '_petprod', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, netz_petprodcons_1_cols - 1],
+                    'fill':       {'color': netz_petprodcons_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet44.insert_chart('B' + str(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 9), netz_petprodcons_chart1)
 
@@ -16132,13 +16815,17 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_hyd_1_rows):
-            ref_hydrogen_chart1.add_series({
-                'name':       [economy + '_hydrogen', chart_height + i + 1, 1],
-                'categories': [economy + '_hydrogen', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
-                'values':     [economy + '_hydrogen', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
-                'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not ref_hyd_1['item_code_new'].iloc[i] in ['Total']:
+                ref_hydrogen_chart1.add_series({
+                    'name':       [economy + '_hydrogen', chart_height + i + 1, 1],
+                    'categories': [economy + '_hydrogen', chart_height, 2, chart_height, ref_hyd_1_cols - 1],
+                    'values':     [economy + '_hydrogen', chart_height + i + 1, 2, chart_height + i + 1, ref_hyd_1_cols - 1],
+                    'fill':       {'color': ref_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet45.insert_chart('B3', ref_hydrogen_chart1)
 
@@ -16255,14 +16942,18 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.    
         for component in ref_hyd_use_1['FUEL'].unique():
             i = ref_hyd_use_1[ref_hyd_use_1['FUEL'] == component].index[0]
-            ref_hyduse_chart1.add_series({
-                'name':       [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 0],
-                'categories': [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 2,\
-                    chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, ref_hyd_use_1_cols - 1],
-                'values':     [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 2,\
-                    chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, ref_hyd_use_1_cols - 1],
-                'line':       {'color': ref_hyd_use_1['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
-            })
+            if not ref_hyd_use_1['FUEL'].iloc[i] in ['Total']:
+                ref_hyduse_chart1.add_series({
+                    'name':       [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 0],
+                    'categories': [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, 2,\
+                        chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + 6, ref_hyd_use_1_cols - 1],
+                    'values':     [economy + '_hydrogen', chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, 2,\
+                        chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + i + 7, ref_hyd_use_1_cols - 1],
+                    'line':       {'color': ref_hyd_use_1['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
+                })
+
+            else:
+                pass
         
         ref_worksheet45.insert_chart('R3', ref_hyduse_chart1)
 
@@ -16318,15 +17009,19 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_hyd_1_rows):
-            netz_hydrogen_chart1.add_series({
-                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, 1],
-                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, 2,\
-                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, netz_hyd_1_cols - 1],
-                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, 2,\
-                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, netz_hyd_1_cols - 1],
-                'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })    
+            if not netz_hyd_1['item_code_new'].iloc[i] in ['Total']:
+                netz_hydrogen_chart1.add_series({
+                    'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, 1],
+                    'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, 2,\
+                        (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, netz_hyd_1_cols - 1],
+                    'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + i + 10, netz_hyd_1_cols - 1],
+                    'fill':       {'color': netz_hyd_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass    
             
         ref_worksheet45.insert_chart('B' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 12), netz_hydrogen_chart1)
 
@@ -16443,14 +17138,18 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.    
         for component in netz_hyd_use_1['FUEL'].unique():
             i = netz_hyd_use_1[netz_hyd_use_1['FUEL'] == component].index[0]
-            netz_hyduse_chart1.add_series({
-                'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, 0],
-                'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + 15, 2,\
-                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + 15, netz_hyd_use_1_cols - 1],
-                'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, 2,\
-                    (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, netz_hyd_use_1_cols - 1],
-                'line':       {'color': netz_hyd_use_1['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
-            })
+            if not netz_hyd_use_1['FUEL'].iloc[i] in ['Total']:
+                netz_hyduse_chart1.add_series({
+                    'name':       [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, 0],
+                    'categories': [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + 15, 2,\
+                        (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + 15, netz_hyd_use_1_cols - 1],
+                    'values':     [economy + '_hydrogen', (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, 2,\
+                        (2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + netz_hyd_1_rows + ref_hyd_use_1_rows + netz_hydrogen_3_rows + i + 16, netz_hyd_use_1_cols - 1],
+                    'line':       {'color': netz_hyd_use_1['FUEL'].map(colours_dict).loc[i], 'width': 1.25}
+                })
+
+            else:
+                pass
         
         ref_worksheet45.insert_chart('R' + str(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 12), netz_hyduse_chart1)
 
@@ -16520,7 +17219,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(ref_renewcons_1_rows):
-            if not ref_renewcons_1['item_code_new'].iloc[i] in ['Buildings (biomass)']:
+            if not ref_renewcons_1['item_code_new'].iloc[i] in ['Buildings (biomass)', 'Total']:
                 ref_renewcons_chart1.add_series({
                     'name':       [economy + '_renew', chart_height + i + 1, 1],
                     'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
@@ -16530,17 +17229,20 @@ for economy in Economy_codes:
                 })
 
             else:
-                ref_renewcons_chart1.add_series({
-                    'name':       [economy + '_renew', chart_height + i + 1, 1],
-                    'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
-                    'values':     [economy + '_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_renewcons_1_cols - 1],
-                    'pattern':    {'bg_color': ref_renewcons_1['item_code_new'].map(colours_dict).loc[i],
-                                   'fg_color': 'white',
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
-                })
+                if not ref_renewcons_1['item_code_new'].iloc[i] in ['Total']:
+                    ref_renewcons_chart1.add_series({
+                        'name':       [economy + '_renew', chart_height + i + 1, 1],
+                        'categories': [economy + '_renew', chart_height, 2, chart_height, ref_renewcons_1_cols - 1],
+                        'values':     [economy + '_renew', chart_height + i + 1, 2, chart_height + i + 1, ref_renewcons_1_cols - 1],
+                        'pattern':    {'bg_color': ref_renewcons_1['item_code_new'].map(colours_dict).loc[i],
+                                    'fg_color': 'white',
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
 
-            
+                else:
+                    pass
+
         ref_worksheet46.insert_chart('B3', ref_renewcons_chart1)
 
     else:
@@ -16657,7 +17359,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.
         for i in range(netz_renewcons_1_rows):
-            if not netz_renewcons_1['item_code_new'].iloc[i] in ['Buildings (biomass)']:
+            if not netz_renewcons_1['item_code_new'].iloc[i] in ['Buildings (biomass)', 'Total']:
                 netz_renewcons_chart1.add_series({
                     'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 1],
                     'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, 2,\
@@ -16669,18 +17371,21 @@ for economy in Economy_codes:
                 })
 
             else:
-                netz_renewcons_chart1.add_series({
-                    'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 1],
-                    'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, 2,\
-                        (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, netz_renewcons_1_cols - 1],
-                    'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 2,\
-                        (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, netz_renewcons_1_cols - 1],
-                    'pattern':    {'bg_color': netz_renewcons_1['item_code_new'].map(colours_dict).loc[i],
-                                   'fg_color': 'white',
-                                   'pattern': 'wide_downward_diagonal'},
-                    'border':     {'none': True}
-                })
+                if not netz_renewcons_1['item_code_new'].iloc[i] in ['Total']:
+                    netz_renewcons_chart1.add_series({
+                        'name':       [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 1],
+                        'categories': [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, 2,\
+                            (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, netz_renewcons_1_cols - 1],
+                        'values':     [economy + '_renew', (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, 2,\
+                            (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + i + 7, netz_renewcons_1_cols - 1],
+                        'pattern':    {'bg_color': netz_renewcons_1['item_code_new'].map(colours_dict).loc[i],
+                                    'fg_color': 'white',
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
 
+                else:
+                    pass
             
         ref_worksheet46.insert_chart('B' + str(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 9), netz_renewcons_chart1)
 
@@ -17447,14 +18152,18 @@ for economy in Economy_codes:
         })
         
         # Configure the series of the chart from the dataframe data.
-        for i in range(ref_elec_1_rows):            
-            ref_elecsec_chart1.add_series({
-                'name':       [economy + '_elec', chart_height + i + 1, 1],
-                'categories': [economy + '_elec', chart_height, 2, chart_height, ref_elec_1_cols - 1],
-                'values':     [economy + '_elec', chart_height + i + 1, 2, chart_height + i + 1, ref_elec_1_cols - 1],
-                'fill':       {'color': ref_elec_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })
+        for i in range(ref_elec_1_rows):
+            if not ref_elec_1['item_code_new'].iloc[i] in ['Total']:            
+                ref_elecsec_chart1.add_series({
+                    'name':       [economy + '_elec', chart_height + i + 1, 1],
+                    'categories': [economy + '_elec', chart_height, 2, chart_height, ref_elec_1_cols - 1],
+                    'values':     [economy + '_elec', chart_height + i + 1, 2, chart_height + i + 1, ref_elec_1_cols - 1],
+                    'fill':       {'color': ref_elec_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass
             
         ref_worksheet49.insert_chart('B3', ref_elecsec_chart1)
 
@@ -17508,16 +18217,20 @@ for economy in Economy_codes:
         })
         
         # Configure the series of the chart from the dataframe data.
-        for i in range(netz_elec_1_rows):            
-            netz_elecsec_chart1.add_series({
-                'name':       [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + i + 4, 1],
-                'categories': [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + 3, 2,\
-                    (2 * chart_height) + ref_elec_1_rows + 3, netz_elec_1_cols - 1],
-                'values':     [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + i + 4, 2,\
-                    (2 * chart_height) + ref_elec_1_rows + i + 4, netz_elec_1_cols - 1],
-                'fill':       {'color': netz_elec_1['item_code_new'].map(colours_dict).loc[i]},
-                'border':     {'none': True}
-            })
+        for i in range(netz_elec_1_rows):
+            if not netz_elec_1['item_code_new'].iloc[i] in ['Total']:            
+                netz_elecsec_chart1.add_series({
+                    'name':       [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + i + 4, 1],
+                    'categories': [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + 3, 2,\
+                        (2 * chart_height) + ref_elec_1_rows + 3, netz_elec_1_cols - 1],
+                    'values':     [economy + '_elec', (2 * chart_height) + ref_elec_1_rows + i + 4, 2,\
+                        (2 * chart_height) + ref_elec_1_rows + i + 4, netz_elec_1_cols - 1],
+                    'fill':       {'color': netz_elec_1['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass
             
         ref_worksheet49.insert_chart('B' + str(chart_height + ref_elec_1_rows + 6), netz_elecsec_chart1)
 
