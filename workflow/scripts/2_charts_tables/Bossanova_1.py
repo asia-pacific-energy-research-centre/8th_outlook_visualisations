@@ -918,7 +918,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+# Economy_codes = ['APEC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1069,7 +1069,7 @@ for economy in Economy_codes:
 
     # New FED by sector (not including non-energy)
 
-    ref_tfec_1 = ref_fedsector_2[ref_fedsector_2['item_code_new'] != 'Non-energy'].copy().groupby(['fuel_code'])\
+    ref_tfec_1 = ref_fedsector_2[~ref_fedsector_2['item_code_new'].isin(['Non-energy', 'Total'])].copy().groupby(['fuel_code'])\
         .sum().assign(item_code_new = 'TFEC', fuel_code = 'Total').reset_index(drop = True)
 
     ref_tfec_1 = ref_tfec_1[['fuel_code', 'item_code_new'] + list(ref_tfec_1.loc[:, '2000':'2050'])]
@@ -1517,7 +1517,7 @@ for economy in Economy_codes:
 
     # New FED by sector (not including non-energy)
 
-    netz_tfec_1 = netz_fedsector_2[netz_fedsector_2['item_code_new'] != 'Non-energy'].copy().groupby(['fuel_code'])\
+    netz_tfec_1 = netz_fedsector_2[~netz_fedsector_2['item_code_new'].isin(['Non-energy', 'Total'])].copy().groupby(['fuel_code'])\
         .sum().assign(item_code_new = 'TFEC', fuel_code = 'Total').reset_index(drop = True)
 
     netz_tfec_1 = netz_tfec_1[['fuel_code', 'item_code_new'] + list(netz_tfec_1.loc[:, '2000':'2050'])]
