@@ -103,17 +103,18 @@ interim_stock1 = ref_aggregate_df1[ref_aggregate_df1['TECHNOLOGY']\
     .isin(['SUP_6_1_crude_oil_stock_build', 
             'SUP_8_1_natural_gas_stock_build', 
             'SUP_2_coal_products_stock_build'])].copy()\
-                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
+                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy'])
 
 interim_stock2 =  ref_aggregate_df1[~ref_aggregate_df1['TECHNOLOGY']\
     .isin(['SUP_6_1_crude_oil_stock_build', 
             'SUP_8_1_natural_gas_stock_build', 
             'SUP_2_coal_products_stock_build'])].copy()
 
+interim_stock1 = interim_stock1 * -1
 interim_stock1 = interim_stock1.reset_index()
 
 # Stitch back together
-ref_aggregate_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
+ref_aggregate_df1 = interim_stock2.append(interim_stock1).reset_index(drop = True)
 
 # Create empty dataframe to store NET ZERO aggregated results 
 netz_aggregate_df1 = pd.DataFrame(columns = ['TECHNOLOGY', 'FUEL', 'REGION', 2050])
@@ -139,17 +140,18 @@ interim_stock1 = netz_aggregate_df1[netz_aggregate_df1['TECHNOLOGY']\
     .isin(['SUP_6_1_crude_oil_stock_build', 
             'SUP_8_1_natural_gas_stock_build', 
             'SUP_2_coal_products_stock_build'])].copy()\
-                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
+                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy'])
 
 interim_stock2 =  netz_aggregate_df1[~netz_aggregate_df1['TECHNOLOGY']\
     .isin(['SUP_6_1_crude_oil_stock_build', 
             'SUP_8_1_natural_gas_stock_build', 
             'SUP_2_coal_products_stock_build'])].copy()
 
+interim_stock1 = interim_stock1 * -1
 interim_stock1 = interim_stock1.reset_index()
 
 # Stitch back together
-netz_aggregate_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
+netz_aggregate_df1 = interim_stock2.append(interim_stock1).reset_index(drop = True)
 
 # Now aggregate all the results for APEC
 
@@ -635,17 +637,18 @@ interim_stock1 = ref_aggtrans_df1[ref_aggtrans_df1['TECHNOLOGY']\
     .isin(['SUP_6_1_crude_oil_stock_build', 
             'SUP_8_1_natural_gas_stock_build', 
             'SUP_2_coal_products_stock_build'])].copy()\
-                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
+                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy'])
 
 interim_stock2 =  ref_aggtrans_df1[~ref_aggtrans_df1['TECHNOLOGY']\
     .isin(['SUP_6_1_crude_oil_stock_build', 
             'SUP_8_1_natural_gas_stock_build', 
             'SUP_2_coal_products_stock_build'])].copy()
 
+interim_stock1 = interim_stock1 * -1
 interim_stock1 = interim_stock1.reset_index()
 
 # Stitch back together
-ref_aggtrans_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
+ref_aggtrans_df1 = interim_stock2.append(interim_stock1).reset_index(drop = True)
 
 ref_osemo_only_1 = ref_aggtrans_df1[ref_aggtrans_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
     .groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index() 
@@ -670,17 +673,18 @@ interim_stock1 = netz_aggtrans_df1[netz_aggtrans_df1['TECHNOLOGY']\
     .isin(['SUP_6_1_crude_oil_stock_build', 
             'SUP_8_1_natural_gas_stock_build', 
             'SUP_2_coal_products_stock_build'])].copy()\
-                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
+                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy'])
 
 interim_stock2 =  netz_aggtrans_df1[~netz_aggtrans_df1['TECHNOLOGY']\
     .isin(['SUP_6_1_crude_oil_stock_build', 
             'SUP_8_1_natural_gas_stock_build', 
             'SUP_2_coal_products_stock_build'])].copy()
 
+interim_stock1 = interim_stock1 * -1
 interim_stock1 = interim_stock1.reset_index()
 
 # Stitch back together
-netz_aggtrans_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
+netz_aggtrans_df1 = interim_stock2.append(interim_stock1).reset_index(drop = True)
 
 netz_osemo_only_1 = netz_aggtrans_df1[netz_aggtrans_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
     .groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index() 
