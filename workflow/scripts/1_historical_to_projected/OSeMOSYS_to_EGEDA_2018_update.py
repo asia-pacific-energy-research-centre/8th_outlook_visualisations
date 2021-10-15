@@ -97,23 +97,23 @@ if ref_file_df['File'].isna().any() == False:
     
     ref_aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
 
-    # bunkers draw downs and build. Need to change stock build to negative
+# bunkers draw downs and build. Need to change stock build to negative
 
-    interim_stock1 = ref_aggregate_df1[ref_aggregate_df1['TECHNOLOGY']\
-        .isin(['SUP_6_1_crude_oil_stock_build', 
-               'SUP_8_1_natural_gas_stock_build', 
-               'SUP_2_coal_products_stock_build'])].copy()\
-                   .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
+interim_stock1 = ref_aggregate_df1[ref_aggregate_df1['TECHNOLOGY']\
+    .isin(['SUP_6_1_crude_oil_stock_build', 
+            'SUP_8_1_natural_gas_stock_build', 
+            'SUP_2_coal_products_stock_build'])].copy()\
+                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
 
-    interim_stock2 =  ref_aggregate_df1[~ref_aggregate_df1['TECHNOLOGY']\
-        .isin(['SUP_6_1_crude_oil_stock_build', 
-               'SUP_8_1_natural_gas_stock_build', 
-               'SUP_2_coal_products_stock_build'])].copy()
+interim_stock2 =  ref_aggregate_df1[~ref_aggregate_df1['TECHNOLOGY']\
+    .isin(['SUP_6_1_crude_oil_stock_build', 
+            'SUP_8_1_natural_gas_stock_build', 
+            'SUP_2_coal_products_stock_build'])].copy()
 
-    interim_stock1 = interim_stock1.reset_index()
+interim_stock1 = interim_stock1.reset_index()
 
-    # Stitch back together
-    ref_aggregate_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
+# Stitch back together
+ref_aggregate_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
 
 # Create empty dataframe to store NET ZERO aggregated results 
 netz_aggregate_df1 = pd.DataFrame(columns = ['TECHNOLOGY', 'FUEL', 'REGION', 2050])
@@ -133,23 +133,23 @@ if netz_file_df['File'].isna().any() == False:
 
     netz_aggregate_df1 = interim_df2.append(interim_df1).reset_index(drop = True)
 
-    # bunkers draw downs and build. Need to change stock build to negative
+# bunkers draw downs and build. Need to change stock build to negative
 
-    interim_stock1 = netz_aggregate_df1[netz_aggregate_df1['TECHNOLOGY']\
-        .isin(['SUP_6_1_crude_oil_stock_build', 
-               'SUP_8_1_natural_gas_stock_build', 
-               'SUP_2_coal_products_stock_build'])].copy()\
-                   .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
+interim_stock1 = netz_aggregate_df1[netz_aggregate_df1['TECHNOLOGY']\
+    .isin(['SUP_6_1_crude_oil_stock_build', 
+            'SUP_8_1_natural_gas_stock_build', 
+            'SUP_2_coal_products_stock_build'])].copy()\
+                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
 
-    interim_stock2 =  netz_aggregate_df1[~netz_aggregate_df1['TECHNOLOGY']\
-        .isin(['SUP_6_1_crude_oil_stock_build', 
-               'SUP_8_1_natural_gas_stock_build', 
-               'SUP_2_coal_products_stock_build'])].copy()
+interim_stock2 =  netz_aggregate_df1[~netz_aggregate_df1['TECHNOLOGY']\
+    .isin(['SUP_6_1_crude_oil_stock_build', 
+            'SUP_8_1_natural_gas_stock_build', 
+            'SUP_2_coal_products_stock_build'])].copy()
 
-    interim_stock1 = interim_stock1.reset_index()
+interim_stock1 = interim_stock1.reset_index()
 
-    # Stitch back together
-    netz_aggregate_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
+# Stitch back together
+netz_aggregate_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
 
 # Now aggregate all the results for APEC
 
@@ -629,23 +629,23 @@ for i in range(ref_file_trans.shape[0]):
     _df['Sheet_energy'] = ref_file_trans.iloc[i, 2]
     ref_aggtrans_df1 = ref_aggtrans_df1.append(_df)
 
-    # bunkers draw downs and build. Need to change stock build to negative
+# bunkers draw downs and build. Need to change stock build to negative
 
-    interim_stock1 = ref_aggtrans_df1[ref_aggtrans_df1['TECHNOLOGY']\
-        .isin(['SUP_6_1_crude_oil_stock_build', 
-               'SUP_8_1_natural_gas_stock_build', 
-               'SUP_2_coal_products_stock_build'])].copy()\
-                   .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
+interim_stock1 = ref_aggtrans_df1[ref_aggtrans_df1['TECHNOLOGY']\
+    .isin(['SUP_6_1_crude_oil_stock_build', 
+            'SUP_8_1_natural_gas_stock_build', 
+            'SUP_2_coal_products_stock_build'])].copy()\
+                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
 
-    interim_stock2 =  ref_aggtrans_df1[~ref_aggtrans_df1['TECHNOLOGY']\
-        .isin(['SUP_6_1_crude_oil_stock_build', 
-               'SUP_8_1_natural_gas_stock_build', 
-               'SUP_2_coal_products_stock_build'])].copy()
+interim_stock2 =  ref_aggtrans_df1[~ref_aggtrans_df1['TECHNOLOGY']\
+    .isin(['SUP_6_1_crude_oil_stock_build', 
+            'SUP_8_1_natural_gas_stock_build', 
+            'SUP_2_coal_products_stock_build'])].copy()
 
-    interim_stock1 = interim_stock1.reset_index()
+interim_stock1 = interim_stock1.reset_index()
 
-    # Stitch back together
-    ref_aggtrans_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
+# Stitch back together
+ref_aggtrans_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
 
 ref_osemo_only_1 = ref_aggtrans_df1[ref_aggtrans_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
     .groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index() 
@@ -664,23 +664,23 @@ for i in range(netz_file_trans.shape[0]):
     _df['Sheet_energy'] = netz_file_trans.iloc[i, 2]
     netz_aggtrans_df1 = netz_aggtrans_df1.append(_df)
 
-    # bunkers draw downs and build. Need to change stock build to negative
+# bunkers draw downs and build. Need to change stock build to negative
 
-    interim_stock1 = netz_aggtrans_df1[netz_aggtrans_df1['TECHNOLOGY']\
-        .isin(['SUP_6_1_crude_oil_stock_build', 
-               'SUP_8_1_natural_gas_stock_build', 
-               'SUP_2_coal_products_stock_build'])].copy()\
-                   .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
+interim_stock1 = netz_aggtrans_df1[netz_aggtrans_df1['TECHNOLOGY']\
+    .isin(['SUP_6_1_crude_oil_stock_build', 
+            'SUP_8_1_natural_gas_stock_build', 
+            'SUP_2_coal_products_stock_build'])].copy()\
+                .set_index(['TECHNOLOGY', 'FUEL', 'REGION', 'TIMESLICE', 'Workbook', 'Sheet_energy']) * -1
 
-    interim_stock2 =  netz_aggtrans_df1[~netz_aggtrans_df1['TECHNOLOGY']\
-        .isin(['SUP_6_1_crude_oil_stock_build', 
-               'SUP_8_1_natural_gas_stock_build', 
-               'SUP_2_coal_products_stock_build'])].copy()
+interim_stock2 =  netz_aggtrans_df1[~netz_aggtrans_df1['TECHNOLOGY']\
+    .isin(['SUP_6_1_crude_oil_stock_build', 
+            'SUP_8_1_natural_gas_stock_build', 
+            'SUP_2_coal_products_stock_build'])].copy()
 
-    interim_stock1 = interim_stock1.reset_index()
+interim_stock1 = interim_stock1.reset_index()
 
-    # Stitch back together
-    netz_aggtrans_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
+# Stitch back together
+netz_aggtrans_df1 = interim_stock2.append(interim_stock2).reset_index(drop = True)
 
 netz_osemo_only_1 = netz_aggtrans_df1[netz_aggtrans_df1['Sheet_energy'] == 'UseByTechnology'].copy()\
     .groupby(['TECHNOLOGY', 'FUEL', 'REGION']).sum().reset_index() 
