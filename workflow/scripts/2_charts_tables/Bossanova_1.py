@@ -918,7 +918,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['APEC']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -3724,10 +3724,8 @@ for economy in Economy_codes:
         .loc[:, '2000':'2050'])]
 
     ref_modren_2 = ref_modren_1.append(ref_modren_elecheat).reset_index(drop = True)
-    ref_modren_2 = ref_modren_2.append(ref_modren_2.sum(numeric_only = True), ignore_index = True) 
 
-    ref_modren_2.iloc[ref_modren_2.shape[0] - 1, 0] = 'Modern renewables'
-    ref_modren_2.iloc[ref_modren_2.shape[0] - 1, 1] = 'Total'
+    # NEW EDIT: First slot in 'Total' electricity and heat (including losses and own use)
 
     # Grab historical for all electricity and heat
     historical_eh2 = EGEDA_hist_eh2[EGEDA_hist_eh2['economy'] == economy].copy().iloc[:, 1:-2]
@@ -3736,12 +3734,62 @@ for economy in Economy_codes:
 
     ref_all_elecheat = ref_all_elecheat[['fuel_code', 'item_code_new'] + list(ref_all_elecheat.loc[:, '2000':'2050'])]
 
-    ref_modren_3 = ref_modren_2.append([ref_all_elecheat, ref_tfec_1]).reset_index(drop = True)
+    ref_modren_2 = ref_modren_2.append(ref_all_elecheat).reset_index(drop = True)
 
-    non_ren_eh1 = ['Non modern renewables', 'Electricity and heat'] + list(ref_modren_3.iloc[ref_modren_3.shape[0] - 2, 2:] - ref_modren_3.iloc[ref_modren_3.shape[0] - 4, 2:])
+    # Now a new line (ratio of 2nd last line to last line)
+    ref_rengen_ratio = ['Renewable generation ratio', 'incl losses']\
+        + list(ref_modren_2.iloc[ref_modren_2.shape[0] - 2, 2:] / ref_modren_2.iloc[ref_modren_2.shape[0] - 1, 2:])
+    ref_rengen_series1 = pd.Series(ref_rengen_ratio, index = ref_modren_2.columns)
+
+    # Now electricity and heat in TFEC
+    ref_eh_tfec1 = ref_fedfuel_1[ref_fedfuel_1['fuel_code'].isin(['Electricity', 'Heat'])].copy()
+
+    ref_eh_tfec1.loc['Total'] = ref_eh_tfec1.sum()
+
+    ref_eh_tfec1.loc['Total', 'fuel_code'] = 'Total'
+    ref_eh_tfec1.loc['Total', 'item_code_new'] = 'Electricity and heat TFEC'    
+
+    ref_eh_tfec1 = ref_eh_tfec1[ref_eh_tfec1['fuel_code'] == 'Total'].copy().reset_index(drop = True)
+
+    ref_modren_2 = ref_modren_2.append(ref_rengen_series1, ignore_index = True).reset_index(drop = True)
+    ref_modren_2 = ref_modren_2.append(ref_eh_tfec1).reset_index(drop = True)
+
+    # Another new line that is ratio multiplied by elec and heat tfec
+    ref_eh_tfec2 = ['Modern renewables', 'Electricity and heat TFEC']\
+        + list(ref_modren_2.iloc[ref_modren_2.shape[0] - 2, 2:] * ref_modren_2.iloc[ref_modren_2.shape[0] - 1, 2:])
+    ref_eh_series2 = pd.Series(ref_eh_tfec2, index = ref_modren_2.columns)
+
+    ref_modren_2 = ref_modren_2.append(ref_eh_series2, ignore_index = True).reset_index(drop = True)
+
+    ref_modren_2temp = ref_modren_2[ref_modren_2['item_code_new'] == 'Electricity and heat'].copy().reset_index(drop = True)
+    
+    ref_modren_2 = ref_modren_2[(ref_modren_2['item_code_new']\
+        .isin(['Agriculture', 'Buildings', 'Transport', 'Industry', 'Non-specified others', 'Electricity and heat TFEC'])) &
+        (ref_modren_2['fuel_code'] == 'Modern renewables')]\
+            .copy().reset_index(drop = True)
+
+    ####################
+
+    ref_modren_2 = ref_modren_2.append(ref_modren_2.sum(numeric_only = True), ignore_index = True) 
+
+    ref_modren_2.iloc[ref_modren_2.shape[0] - 1, 0] = 'Modern renewables'
+    ref_modren_2.iloc[ref_modren_2.shape[0] - 1, 1] = 'Total'
+
+    ref_modren_2 = ref_modren_2.append(ref_modren_2temp).reset_index(drop = True)
+
+    # Grab historical for all electricity and heat
+    # historical_eh2 = EGEDA_hist_eh2[EGEDA_hist_eh2['economy'] == economy].copy().iloc[:, 1:-2]
+
+    # ref_all_elecheat = historical_eh2.merge(ref_elecheat, how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    # ref_all_elecheat = ref_all_elecheat[['fuel_code', 'item_code_new'] + list(ref_all_elecheat.loc[:, '2000':'2050'])]
+
+    ref_modren_3 = ref_modren_2.append([ref_tfec_1]).reset_index(drop = True)
+
+    non_ren_eh1 = ['Non modern renewables', 'Electricity and heat'] + list(ref_modren_3.iloc[ref_modren_3.shape[0] - 2, 2:] - ref_modren_3.iloc[ref_modren_3.shape[0] - 3, 2:])
     non_ren_series1 = pd.Series(non_ren_eh1, index = ref_modren_3.columns)
 
-    modren_prop1 = ['Modern renewables', 'Reference'] + list(ref_modren_3.iloc[ref_modren_3.shape[0] - 3, 2:] / ref_modren_3.iloc[ref_modren_3.shape[0] - 1, 2:])
+    modren_prop1 = ['Modern renewables', 'Reference'] + list(ref_modren_3.iloc[ref_modren_3.shape[0] - 4, 2:] / ref_modren_3.iloc[ref_modren_3.shape[0] - 1, 2:])
     modren_prop_series1 = pd.Series(modren_prop1, index = ref_modren_3.columns)
 
     ref_modren_4 = ref_modren_3.append([non_ren_series1, modren_prop_series1], ignore_index = True).reset_index(drop = True)
@@ -3809,10 +3857,7 @@ for economy in Economy_codes:
         .loc[:, '2000':'2050'])]
 
     netz_modren_2 = netz_modren_1.append(netz_modren_elecheat).reset_index(drop = True)
-    netz_modren_2 = netz_modren_2.append(netz_modren_2.sum(numeric_only = True), ignore_index = True) 
-
-    netz_modren_2.iloc[netz_modren_2.shape[0] - 1, 0] = 'Modern renewables'
-    netz_modren_2.iloc[netz_modren_2.shape[0] - 1, 1] = 'Total'
+    # NEW EDIT: First slot in 'Total' electricity and heat (including losses and own use)
 
     # Grab historical for all electricity and heat
     historical_eh2 = EGEDA_hist_eh2[EGEDA_hist_eh2['economy'] == economy].copy().iloc[:, 1:-2]
@@ -3821,12 +3866,62 @@ for economy in Economy_codes:
 
     netz_all_elecheat = netz_all_elecheat[['fuel_code', 'item_code_new'] + list(netz_all_elecheat.loc[:, '2000':'2050'])]
 
-    netz_modren_3 = netz_modren_2.append([netz_all_elecheat, netz_tfec_1]).reset_index(drop = True)
+    netz_modren_2 = netz_modren_2.append(netz_all_elecheat).reset_index(drop = True)
 
-    non_ren_eh1 = ['Non modern renewables', 'Electricity and heat'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 2, 2:] - netz_modren_3.iloc[netz_modren_3.shape[0] - 4, 2:])
+    # Now a new line (ratio of 2nd last line to last line)
+    netz_rengen_ratio = ['Renewable generation ratio', 'incl losses']\
+        + list(netz_modren_2.iloc[netz_modren_2.shape[0] - 2, 2:] / netz_modren_2.iloc[netz_modren_2.shape[0] - 1, 2:])
+    netz_rengen_series1 = pd.Series(netz_rengen_ratio, index = netz_modren_2.columns)
+
+    # Now electricity and heat in TFEC
+    netz_eh_tfec1 = netz_fedfuel_1[netz_fedfuel_1['fuel_code'].isin(['Electricity', 'Heat'])].copy()
+
+    netz_eh_tfec1.loc['Total'] = netz_eh_tfec1.sum()
+
+    netz_eh_tfec1.loc['Total', 'fuel_code'] = 'Total'
+    netz_eh_tfec1.loc['Total', 'item_code_new'] = 'Electricity and heat TFEC'    
+
+    netz_eh_tfec1 = netz_eh_tfec1[netz_eh_tfec1['fuel_code'] == 'Total'].copy().reset_index(drop = True)
+
+    netz_modren_2 = netz_modren_2.append(netz_rengen_series1, ignore_index = True).reset_index(drop = True)
+    netz_modren_2 = netz_modren_2.append(netz_eh_tfec1).reset_index(drop = True)
+
+    # Another new line that is ratio multiplied by elec and heat tfec
+    netz_eh_tfec2 = ['Modern renewables', 'Electricity and heat TFEC']\
+        + list(netz_modren_2.iloc[netz_modren_2.shape[0] - 2, 2:] * netz_modren_2.iloc[netz_modren_2.shape[0] - 1, 2:])
+    netz_eh_series2 = pd.Series(netz_eh_tfec2, index = netz_modren_2.columns)
+
+    netz_modren_2 = netz_modren_2.append(netz_eh_series2, ignore_index = True).reset_index(drop = True)
+
+    netz_modren_2temp = netz_modren_2[netz_modren_2['item_code_new'] == 'Electricity and heat'].copy().reset_index(drop = True)
+    
+    netz_modren_2 = netz_modren_2[(netz_modren_2['item_code_new']\
+        .isin(['Agriculture', 'Buildings', 'Transport', 'Industry', 'Non-specified others', 'Electricity and heat TFEC'])) &
+        (netz_modren_2['fuel_code'] == 'Modern renewables')]\
+            .copy().reset_index(drop = True)
+
+    ####################
+
+    netz_modren_2 = netz_modren_2.append(netz_modren_2.sum(numeric_only = True), ignore_index = True) 
+
+    netz_modren_2.iloc[netz_modren_2.shape[0] - 1, 0] = 'Modern renewables'
+    netz_modren_2.iloc[netz_modren_2.shape[0] - 1, 1] = 'Total'
+
+    netz_modren_2 = netz_modren_2.append(netz_modren_2temp).reset_index(drop = True)
+
+    # Grab historical for all electricity and heat
+    # historical_eh2 = EGEDA_hist_eh2[EGEDA_hist_eh2['economy'] == economy].copy().iloc[:, 1:-2]
+
+    # netz_all_elecheat = historical_eh2.merge(netz_elecheat, how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
+
+    # netz_all_elecheat = netz_all_elecheat[['fuel_code', 'item_code_new'] + list(netz_all_elecheat.loc[:, '2000':'2050'])]
+
+    netz_modren_3 = netz_modren_2.append([netz_tfec_1]).reset_index(drop = True)
+
+    non_ren_eh1 = ['Non modern renewables', 'Electricity and heat'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 2, 2:] - netz_modren_3.iloc[netz_modren_3.shape[0] - 3, 2:])
     non_ren_series1 = pd.Series(non_ren_eh1, index = netz_modren_3.columns)
 
-    modren_prop1 = ['Modern renewables', 'Net-zero'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 3, 2:] / netz_modren_3.iloc[netz_modren_3.shape[0] - 1, 2:])
+    modren_prop1 = ['Modern renewables', 'Net-zero'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 4, 2:] / netz_modren_3.iloc[netz_modren_3.shape[0] - 1, 2:])
     modren_prop_series1 = pd.Series(modren_prop1, index = netz_modren_3.columns)
 
     netz_modren_4 = netz_modren_3.append([non_ren_series1, modren_prop_series1], ignore_index = True).reset_index(drop = True)
