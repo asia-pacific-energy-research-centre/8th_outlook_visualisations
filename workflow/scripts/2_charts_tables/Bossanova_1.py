@@ -918,7 +918,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['APEC']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1003,7 +1003,7 @@ for economy in Economy_codes:
         .reset_index()[['fuel_code', 'item_code_new'] + list(ref_fedfuel_1.loc[:,'2000':'2050'])]\
             .set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
-    ref_fedfuel_1.loc['Total'] = ref_fedfuel_1.sum()
+    ref_fedfuel_1.loc['Total'] = ref_fedfuel_1.sum(numeric_only = True)
 
     ref_fedfuel_1.loc['Total', 'fuel_code'] = 'Total'
     ref_fedfuel_1.loc['Total', 'item_code_new'] = '12_total_final_consumption'
@@ -1050,7 +1050,7 @@ for economy in Economy_codes:
     ref_fedsector_2 = ref_fedsector_2[ref_fedsector_2['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
     ref_fedsector_2 = ref_fedsector_2[['fuel_code', 'item_code_new'] + list(ref_fedsector_2.loc[:, '2000':])].replace(np.nan, 0)
 
-    ref_fedsector_2.loc['Total'] = ref_fedsector_2.sum()
+    ref_fedsector_2.loc['Total'] = ref_fedsector_2.sum(numeric_only = True)
 
     ref_fedsector_2.loc['Total', 'fuel_code'] = '19_total'
     ref_fedsector_2.loc['Total', 'item_code_new'] = 'Total'
@@ -1119,7 +1119,7 @@ for economy in Economy_codes:
     ref_bld_2 = ref_bld_2[ref_bld_2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code')\
         .loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
-    ref_bld_2.loc['Total'] = ref_bld_2.sum()
+    ref_bld_2.loc['Total'] = ref_bld_2.sum(numeric_only = True)
 
     ref_bld_2.loc['Total', 'fuel_code'] = 'Total'
     ref_bld_2.loc['Total', 'item_code_new'] = '16_x_buildings'
@@ -1137,7 +1137,7 @@ for economy in Economy_codes:
     ref_bld_3.loc[ref_bld_3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
     ref_bld_3.loc[ref_bld_3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
 
-    ref_bld_3.loc['Total'] = ref_bld_3.sum()
+    ref_bld_3.loc['Total'] = ref_bld_3.sum(numeric_only = True)
 
     ref_bld_3.loc['Total', 'fuel_code'] = '19_total'
     ref_bld_3.loc['Total', 'item_code_new'] = 'Buildings'
@@ -1167,7 +1167,7 @@ for economy in Economy_codes:
 
     ref_ind_1 = ref_ind_1[['fuel_code', 'item_code_new'] + list(ref_ind_1.loc[:, '2000':])].replace(np.nan, 0)
 
-    ref_ind_1.loc['Total'] = ref_ind_1.sum()
+    ref_ind_1.loc['Total'] = ref_ind_1.sum(numeric_only = True)
 
     ref_ind_1.loc['Total', 'fuel_code'] = '19_total'
     ref_ind_1.loc['Total', 'item_code_new'] = 'Industry'
@@ -1206,7 +1206,7 @@ for economy in Economy_codes:
 
     ref_ind_2 = ref_ind_2[ref_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index().replace(np.nan, 0)
 
-    ref_ind_2.loc['Total'] = ref_ind_2.sum()
+    ref_ind_2.loc['Total'] = ref_ind_2.sum(numeric_only = True)
 
     ref_ind_2.loc['Total', 'fuel_code'] = 'Total'
     ref_ind_2.loc['Total', 'item_code_new'] = '14_industry_sector'
@@ -1249,7 +1249,7 @@ for economy in Economy_codes:
 
     ref_trn_1 = ref_trn_1[ref_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index().replace(np.nan, 0)
 
-    ref_trn_1.loc['Total'] = ref_trn_1.sum()
+    ref_trn_1.loc['Total'] = ref_trn_1.sum(numeric_only = True)
 
     ref_trn_1.loc['Total', 'fuel_code'] = 'Total'
     ref_trn_1.loc['Total', 'item_code_new'] = '15_transport_sector'
@@ -1277,7 +1277,7 @@ for economy in Economy_codes:
 
     ref_trn_2 = ref_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True).replace(np.nan, 0)
 
-    ref_trn_2.loc['Total'] = ref_trn_2.sum()
+    ref_trn_2.loc['Total'] = ref_trn_2.sum(numeric_only = True)
 
     ref_trn_2.loc['Total', 'fuel_code'] = '19_total'
     ref_trn_2.loc['Total', 'item_code_new'] = 'Total'
@@ -1318,7 +1318,7 @@ for economy in Economy_codes:
 
     ref_ag_1 = ref_ag_1[ref_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
-    ref_ag_1.loc['Total'] = ref_ag_1.sum()
+    ref_ag_1.loc['Total'] = ref_ag_1.sum(numeric_only = True)
 
     ref_ag_1.loc['Total', 'fuel_code'] = 'Total'
     ref_ag_1.loc['Total', 'item_code_new'] = 'Agriculture'
@@ -1356,7 +1356,7 @@ for economy in Economy_codes:
     ref_hyd_1 = ref_hyd_1[ref_hyd_1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
         .copy().reset_index(drop = True).replace(np.nan, 0)
 
-    ref_hyd_1.loc['Total'] = ref_hyd_1.sum()
+    ref_hyd_1.loc['Total'] = ref_hyd_1.sum(numeric_only = True)
 
     ref_hyd_1.loc['Total', 'fuel_code'] = 'Hydrogen'
     ref_hyd_1.loc['Total', 'item_code_new'] = 'Total'
@@ -1451,7 +1451,7 @@ for economy in Economy_codes:
         .reset_index()[['fuel_code', 'item_code_new'] + list(netz_fedfuel_1.loc[:,'2000':'2050'])]\
             .set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
-    netz_fedfuel_1.loc['Total'] = netz_fedfuel_1.sum()
+    netz_fedfuel_1.loc['Total'] = netz_fedfuel_1.sum(numeric_only = True)
 
     netz_fedfuel_1.loc['Total', 'fuel_code'] = 'Total'
     netz_fedfuel_1.loc['Total', 'item_code_new'] = '12_total_final_consumption'
@@ -1498,7 +1498,7 @@ for economy in Economy_codes:
     netz_fedsector_2 = netz_fedsector_2[netz_fedsector_2['item_code_new'].isin(FED_agg_sectors)].set_index('item_code_new').loc[FED_agg_sectors].reset_index()
     netz_fedsector_2 = netz_fedsector_2[['fuel_code', 'item_code_new'] + list(netz_fedsector_2.loc[:, '2000':])].replace(np.nan, 0)
 
-    netz_fedsector_2.loc['Total'] = netz_fedsector_2.sum()
+    netz_fedsector_2.loc['Total'] = netz_fedsector_2.sum(numeric_only = True)
 
     netz_fedsector_2.loc['Total', 'fuel_code'] = '19_total'
     netz_fedsector_2.loc['Total', 'item_code_new'] = 'Total'
@@ -1565,7 +1565,7 @@ for economy in Economy_codes:
     netz_bld_2 = netz_bld_2[netz_bld_2['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code')\
         .loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
-    netz_bld_2.loc['Total'] = netz_bld_2.sum()
+    netz_bld_2.loc['Total'] = netz_bld_2.sum(numeric_only = True)
 
     netz_bld_2.loc['Total', 'fuel_code'] = 'Total'
     netz_bld_2.loc['Total', 'item_code_new'] = '16_x_buildings'
@@ -1583,7 +1583,7 @@ for economy in Economy_codes:
     netz_bld_3.loc[netz_bld_3['item_code_new'] == '16_1_commercial_and_public_services', 'item_code_new'] = 'Services' 
     netz_bld_3.loc[netz_bld_3['item_code_new'] == '16_2_residential', 'item_code_new'] = 'Residential'
 
-    netz_bld_3.loc['Total'] = netz_bld_3.sum()
+    netz_bld_3.loc['Total'] = netz_bld_3.sum(numeric_only = True)
 
     netz_bld_3.loc['Total', 'fuel_code'] = '19_total'
     netz_bld_3.loc['Total', 'item_code_new'] = 'Buildings'
@@ -1615,7 +1615,7 @@ for economy in Economy_codes:
 
     netz_ind_1 = netz_ind_1[['fuel_code', 'item_code_new'] + list(netz_ind_1.loc[:, '2000':])].replace(np.nan, 0)
 
-    netz_ind_1.loc['Total'] = netz_ind_1.sum()
+    netz_ind_1.loc['Total'] = netz_ind_1.sum(numeric_only = True)
 
     netz_ind_1.loc['Total', 'fuel_code'] = '19_total'
     netz_ind_1.loc['Total', 'item_code_new'] = 'Industry'
@@ -1654,7 +1654,7 @@ for economy in Economy_codes:
 
     netz_ind_2 = netz_ind_2[netz_ind_2['fuel_code'].isin(FED_agg_fuels_ind)].set_index('fuel_code').loc[FED_agg_fuels_ind].reset_index().replace(np.nan, 0)
 
-    netz_ind_2.loc['Total'] = netz_ind_2.sum()
+    netz_ind_2.loc['Total'] = netz_ind_2.sum(numeric_only = True)
 
     netz_ind_2.loc['Total', 'fuel_code'] = 'Total'
     netz_ind_2.loc['Total', 'item_code_new'] = '14_industry_sector'
@@ -1697,7 +1697,7 @@ for economy in Economy_codes:
 
     netz_trn_1 = netz_trn_1[netz_trn_1['fuel_code'].isin(Transport_fuels_agg)].set_index('fuel_code').loc[Transport_fuels_agg].reset_index().replace(np.nan, 0)
 
-    netz_trn_1.loc['Total'] = netz_trn_1.sum()
+    netz_trn_1.loc['Total'] = netz_trn_1.sum(numeric_only = True)
 
     netz_trn_1.loc['Total', 'fuel_code'] = 'Total'
     netz_trn_1.loc['Total', 'item_code_new'] = '15_transport_sector'
@@ -1725,7 +1725,7 @@ for economy in Economy_codes:
 
     netz_trn_2 = netz_trn_2[['fuel_code', 'item_code_new'] + col_chart_years_transport].reset_index(drop = True).replace(np.nan, 0)
 
-    netz_trn_2.loc['Total'] = netz_trn_2.sum()
+    netz_trn_2.loc['Total'] = netz_trn_2.sum(numeric_only = True)
 
     netz_trn_2.loc['Total', 'fuel_code'] = '19_total'
     netz_trn_2.loc['Total', 'item_code_new'] = 'Total'
@@ -1766,7 +1766,7 @@ for economy in Economy_codes:
 
     netz_ag_1 = netz_ag_1[netz_ag_1['fuel_code'].isin(FED_agg_fuels)].set_index('fuel_code').loc[FED_agg_fuels].reset_index().replace(np.nan, 0)
 
-    netz_ag_1.loc['Total'] = netz_ag_1.sum()
+    netz_ag_1.loc['Total'] = netz_ag_1.sum(numeric_only = True)
 
     netz_ag_1.loc['Total', 'fuel_code'] = 'Total'
     netz_ag_1.loc['Total', 'item_code_new'] = 'Agriculture'
@@ -1804,7 +1804,7 @@ for economy in Economy_codes:
     netz_hyd_1 = netz_hyd_1[netz_hyd_1['item_code_new'].isin(['Agriculture', 'Buildings', 'Industry', 'Transport'])]\
         .copy().reset_index(drop = True).replace(np.nan, 0)
 
-    netz_hyd_1.loc['Total'] = netz_hyd_1.sum()
+    netz_hyd_1.loc['Total'] = netz_hyd_1.sum(numeric_only = True)
 
     netz_hyd_1.loc['Total', 'fuel_code'] = 'Hydrogen'
     netz_hyd_1.loc['Total', 'item_code_new'] = 'Total'
@@ -1846,7 +1846,7 @@ for economy in Economy_codes:
 
     ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(TPES_agg_fuels1)].set_index('fuel_code').loc[TPES_agg_fuels1].reset_index().replace(np.nan, 0)
 
-    ref_tpes_1.loc['Total'] = ref_tpes_1.sum()
+    ref_tpes_1.loc['Total'] = ref_tpes_1.sum(numeric_only = True)
 
     ref_tpes_1.loc['Total', 'fuel_code'] = 'Total'
     ref_tpes_1.loc['Total', 'item_code_new'] = '7_total_primary_energy_supply'
@@ -1889,7 +1889,7 @@ for economy in Economy_codes:
 
     ref_prod_1 = ref_prod_1[ref_prod_1['fuel_code'].isin(TPES_agg_fuels2)].set_index('fuel_code').loc[TPES_agg_fuels2].reset_index().replace(np.nan, 0)
 
-    ref_prod_1.loc['Total'] = ref_prod_1.sum()
+    ref_prod_1.loc['Total'] = ref_prod_1.sum(numeric_only = True)
 
     ref_prod_1.loc['Total', 'fuel_code'] = 'Total'
     ref_prod_1.loc['Total', 'item_code_new'] = '1_indigenous_production'
@@ -1963,7 +1963,7 @@ for economy in Economy_codes:
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(ref_imports_1.loc[:, '2000':])].replace(np.nan, 0)
 
-    ref_imports_1.loc['Total'] = ref_imports_1.sum()
+    ref_imports_1.loc['Total'] = ref_imports_1.sum(numeric_only = True)
 
     ref_imports_1.loc['Total', 'fuel_code'] = 'Total'
     ref_imports_1.loc['Total', 'item_code_new'] = '2_imports'
@@ -2010,7 +2010,7 @@ for economy in Economy_codes:
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(ref_exports_1.loc[:, '2000':])].replace(np.nan, 0)
 
-    ref_exports_1.loc['Total'] = ref_exports_1.sum()
+    ref_exports_1.loc['Total'] = ref_exports_1.sum(numeric_only = True)
 
     ref_exports_1.loc['Total', 'fuel_code'] = 'Total'
     ref_exports_1.loc['Total', 'item_code_new'] = '3_exports'
@@ -2129,7 +2129,7 @@ for economy in Economy_codes:
 
     netz_tpes_1 = netz_tpes_1[netz_tpes_1['fuel_code'].isin(TPES_agg_fuels1)].set_index('fuel_code').loc[TPES_agg_fuels1].reset_index().replace(np.nan, 0)
 
-    netz_tpes_1.loc['Total'] = netz_tpes_1.sum()
+    netz_tpes_1.loc['Total'] = netz_tpes_1.sum(numeric_only = True)
 
     netz_tpes_1.loc['Total', 'fuel_code'] = 'Total'
     netz_tpes_1.loc['Total', 'item_code_new'] = '7_total_primary_energy_supply'
@@ -2172,7 +2172,7 @@ for economy in Economy_codes:
 
     netz_prod_1 = netz_prod_1[netz_prod_1['fuel_code'].isin(TPES_agg_fuels2)].set_index('fuel_code').loc[TPES_agg_fuels2].reset_index().replace(np.nan, 0)
 
-    netz_prod_1.loc['Total'] = netz_prod_1.sum()
+    netz_prod_1.loc['Total'] = netz_prod_1.sum(numeric_only = True)
 
     netz_prod_1.loc['Total', 'fuel_code'] = 'Total'
     netz_prod_1.loc['Total', 'item_code_new'] = '1_indigenous_production'
@@ -2246,7 +2246,7 @@ for economy in Economy_codes:
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(netz_imports_1.loc[:, '2000':])].replace(np.nan, 0)
 
-    netz_imports_1.loc['Total'] = netz_imports_1.sum()
+    netz_imports_1.loc['Total'] = netz_imports_1.sum(numeric_only = True)
 
     netz_imports_1.loc['Total', 'fuel_code'] = 'Total'
     netz_imports_1.loc['Total', 'item_code_new'] = '2_imports'
@@ -2293,7 +2293,7 @@ for economy in Economy_codes:
         .set_index('fuel_code').loc[TPES_agg_trade].reset_index()\
             [['fuel_code', 'item_code_new'] + list(netz_exports_1.loc[:, '2000':])].replace(np.nan, 0)
 
-    netz_exports_1.loc['Total'] = netz_exports_1.sum()
+    netz_exports_1.loc['Total'] = netz_exports_1.sum(numeric_only = True)
 
     netz_exports_1.loc['Total', 'fuel_code'] = 'Total'
     netz_exports_1.loc['Total', 'item_code_new'] = '2_imports'
@@ -2464,7 +2464,7 @@ for economy in Economy_codes:
 
     ref_pow_use_2 = ref_pow_use_2[['FUEL', 'Transformation'] + list(ref_pow_use_2.loc[:, '2000':'2050'])]
 
-    ref_pow_use_2.loc['Total'] = ref_pow_use_2.sum()
+    ref_pow_use_2.loc['Total'] = ref_pow_use_2.sum(numeric_only = True)
 
     ref_pow_use_2.loc['Total', 'FUEL'] = 'Total'
     ref_pow_use_2.loc['Total', 'Transformation'] = 'Input fuel'
@@ -2559,7 +2559,7 @@ for economy in Economy_codes:
     s = ref_elecgen_2.select_dtypes(include=[np.number]) / 3.6 
     ref_elecgen_2[s.columns] = s
 
-    ref_elecgen_2.loc['Total'] = ref_elecgen_2.sum()
+    ref_elecgen_2.loc['Total'] = ref_elecgen_2.sum(numeric_only = True)
 
     ref_elecgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
     ref_elecgen_2.loc['Total', 'Generation'] = 'Electricity'
@@ -2590,7 +2590,7 @@ for economy in Economy_codes:
     ref_refinery_1.loc[ref_refinery_1['FUEL'] == 'd_ref_6_1_crude_oil', 'FUEL'] = 'Crude oil'
     ref_refinery_1.loc[ref_refinery_1['FUEL'] == 'd_ref_6_x_ngls', 'FUEL'] = 'NGLs'
 
-    ref_refinery_1.loc['Total'] = ref_refinery_1.sum()
+    ref_refinery_1.loc['Total'] = ref_refinery_1.sum(numeric_only = True)
 
     ref_refinery_1.loc['Total', 'FUEL'] = 'Total'
     ref_refinery_1.loc['Total', 'Transformation'] = 'Input to refinery'
@@ -2629,7 +2629,7 @@ for economy in Economy_codes:
 
     ref_refinery_2 = ref_refinery_2.sort_values('FUEL')
 
-    ref_refinery_2.loc['Total'] = ref_refinery_2.sum()
+    ref_refinery_2.loc['Total'] = ref_refinery_2.sum(numeric_only = True)
 
     ref_refinery_2.loc['Total', 'FUEL'] = 'Total'
     ref_refinery_2.loc['Total', 'Transformation'] = 'Output from refinery'
@@ -2729,7 +2729,7 @@ for economy in Economy_codes:
 
     ref_hyd_use_1 = ref_hyd_use_1[ref_hyd_use_1['FUEL'].isin(['Coal', 'Gas', 'Electricity'])].reset_index(drop = True)
 
-    ref_hyd_use_1.loc['Total'] = ref_hyd_use_1.sum()
+    ref_hyd_use_1.loc['Total'] = ref_hyd_use_1.sum(numeric_only = True)
 
     ref_hyd_use_1.loc['Total', 'FUEL'] = 'Total'
     ref_hyd_use_1.loc['Total', 'TECHNOLOGY'] = 'Input fuel'
@@ -2780,7 +2780,7 @@ for economy in Economy_codes:
 
     ref_powcap_1 = ref_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
-    ref_powcap_1.loc['Total'] = ref_powcap_1.sum()
+    ref_powcap_1.loc['Total'] = ref_powcap_1.sum(numeric_only = True)
 
     ref_powcap_1.loc['Total', 'TECHNOLOGY'] = 'Total'
 
@@ -2898,7 +2898,7 @@ for economy in Economy_codes:
 
     ref_ownuse_1 = ref_ownuse_1[['FUEL', 'Sector'] + list(ref_ownuse_1.loc[:, '2000':'2050'])]
 
-    ref_ownuse_1.loc['Total'] = ref_ownuse_1.sum()
+    ref_ownuse_1.loc['Total'] = ref_ownuse_1.sum(numeric_only = True)
 
     ref_ownuse_1.loc['Total', 'FUEL'] = 'Total'
     ref_ownuse_1.loc['Total', 'Sector'] = 'Own-use and losses'
@@ -2966,7 +2966,7 @@ for economy in Economy_codes:
 
     ref_heatgen_2 = ref_heatgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
 
-    ref_heatgen_2.loc['Total'] = ref_heatgen_2.sum()
+    ref_heatgen_2.loc['Total'] = ref_heatgen_2.sum(numeric_only = True)
 
     ref_heatgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
     ref_heatgen_2.loc['Total', 'Generation'] = 'Heat'
@@ -3024,7 +3024,7 @@ for economy in Economy_codes:
 
     ref_heat_use_2 = ref_heat_use_2[['FUEL', 'Transformation'] + list(ref_heat_use_2.loc[:,'2017':'2050'])]
 
-    ref_heat_use_2.loc['Total'] = ref_heat_use_2.sum()
+    ref_heat_use_2.loc['Total'] = ref_heat_use_2.sum(numeric_only = True)
 
     ref_heat_use_2.loc['Total', 'FUEL'] = 'Total'
     ref_heat_use_2.loc['Total', 'Transformation'] = 'Heat plant input fuel'
@@ -3121,7 +3121,7 @@ for economy in Economy_codes:
 
     netz_pow_use_2 = netz_pow_use_2[['FUEL', 'Transformation'] + list(netz_pow_use_2.loc[:, '2000':'2050'])]
 
-    netz_pow_use_2.loc['Total'] = netz_pow_use_2.sum()
+    netz_pow_use_2.loc['Total'] = netz_pow_use_2.sum(numeric_only = True)
 
     netz_pow_use_2.loc['Total', 'FUEL'] = 'Total'
     netz_pow_use_2.loc['Total', 'Transformation'] = 'Input fuel'
@@ -3216,7 +3216,7 @@ for economy in Economy_codes:
     s = netz_elecgen_2.select_dtypes(include=[np.number]) / 3.6 
     netz_elecgen_2[s.columns] = s
 
-    netz_elecgen_2.loc['Total'] = netz_elecgen_2.sum()
+    netz_elecgen_2.loc['Total'] = netz_elecgen_2.sum(numeric_only = True)
 
     netz_elecgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
     netz_elecgen_2.loc['Total', 'Generation'] = 'Electricity'
@@ -3247,7 +3247,7 @@ for economy in Economy_codes:
     netz_refinery_1.loc[netz_refinery_1['FUEL'] == 'd_ref_6_1_crude_oil', 'FUEL'] = 'Crude oil'
     netz_refinery_1.loc[netz_refinery_1['FUEL'] == 'd_ref_6_x_ngls', 'FUEL'] = 'NGLs'
 
-    netz_refinery_1.loc['Total'] = netz_refinery_1.sum()
+    netz_refinery_1.loc['Total'] = netz_refinery_1.sum(numeric_only = True)
 
     netz_refinery_1.loc['Total', 'FUEL'] = 'Total'
     netz_refinery_1.loc['Total', 'Transformation'] = 'Input to refinery'
@@ -3286,7 +3286,7 @@ for economy in Economy_codes:
 
     netz_refinery_2 = netz_refinery_2.sort_values('FUEL')
 
-    netz_refinery_2.loc['Total'] = netz_refinery_2.sum()
+    netz_refinery_2.loc['Total'] = netz_refinery_2.sum(numeric_only = True)
 
     netz_refinery_2.loc['Total', 'FUEL'] = 'Total'
     netz_refinery_2.loc['Total', 'Transformation'] = 'Output from refinery'
@@ -3431,7 +3431,7 @@ for economy in Economy_codes:
 
     netz_powcap_1 = netz_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
-    netz_powcap_1.loc['Total'] = netz_powcap_1.sum()
+    netz_powcap_1.loc['Total'] = netz_powcap_1.sum(numeric_only = True)
 
     netz_powcap_1.loc['Total', 'TECHNOLOGY'] = 'Total'
 
@@ -3521,7 +3521,7 @@ for economy in Economy_codes:
 
     netz_ownuse_1 = netz_ownuse_1[['FUEL', 'Sector'] + list(netz_ownuse_1.loc[:, '2000':'2050'])]
 
-    netz_ownuse_1.loc['Total'] = netz_ownuse_1.sum()
+    netz_ownuse_1.loc['Total'] = netz_ownuse_1.sum(numeric_only = True)
 
     netz_ownuse_1.loc['Total', 'FUEL'] = 'Total'
     netz_ownuse_1.loc['Total', 'Sector'] = 'Own-use and losses'
@@ -3589,7 +3589,7 @@ for economy in Economy_codes:
 
     netz_heatgen_2 = netz_heatgen_2.sort_values('TECHNOLOGY').reset_index(drop = True)
 
-    netz_heatgen_2.loc['Total'] = netz_heatgen_2.sum()
+    netz_heatgen_2.loc['Total'] = netz_heatgen_2.sum(numeric_only = True)
 
     netz_heatgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
     netz_heatgen_2.loc['Total', 'Generation'] = 'Heat'
@@ -3647,7 +3647,7 @@ for economy in Economy_codes:
 
     netz_heat_use_2 = netz_heat_use_2[['FUEL', 'Transformation'] + list(netz_heat_use_2.loc[:,'2017':'2050'])]
 
-    netz_heat_use_2.loc['Total'] = netz_heat_use_2.sum()
+    netz_heat_use_2.loc['Total'] = netz_heat_use_2.sum(numeric_only = True)
 
     netz_heat_use_2.loc['Total', 'FUEL'] = 'Total'
     netz_heat_use_2.loc['Total', 'Transformation'] = 'Heat plant input fuel'
@@ -3744,7 +3744,7 @@ for economy in Economy_codes:
     # Now electricity and heat in TFEC
     ref_eh_tfec1 = ref_fedfuel_1[ref_fedfuel_1['fuel_code'].isin(['Electricity', 'Heat'])].copy()
 
-    ref_eh_tfec1.loc['Total'] = ref_eh_tfec1.sum()
+    ref_eh_tfec1.loc['Total'] = ref_eh_tfec1.sum(numeric_only = True)
 
     ref_eh_tfec1.loc['Total', 'fuel_code'] = 'Total'
     ref_eh_tfec1.loc['Total', 'item_code_new'] = 'Electricity and heat TFEC'    
@@ -3876,7 +3876,7 @@ for economy in Economy_codes:
     # Now electricity and heat in TFEC
     netz_eh_tfec1 = netz_fedfuel_1[netz_fedfuel_1['fuel_code'].isin(['Electricity', 'Heat'])].copy()
 
-    netz_eh_tfec1.loc['Total'] = netz_eh_tfec1.sum()
+    netz_eh_tfec1.loc['Total'] = netz_eh_tfec1.sum(numeric_only = True)
 
     netz_eh_tfec1.loc['Total', 'fuel_code'] = 'Total'
     netz_eh_tfec1.loc['Total', 'item_code_new'] = 'Electricity and heat TFEC'    
@@ -4263,7 +4263,7 @@ for economy in Economy_codes:
     ref_emiss_fuel_1 = ref_emiss_fuel_1[ref_emiss_fuel_1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()\
         .replace(np.nan, 0)
 
-    ref_emiss_fuel_1.loc['Total'] = ref_emiss_fuel_1.sum()
+    ref_emiss_fuel_1.loc['Total'] = ref_emiss_fuel_1.sum(numeric_only = True)
 
     ref_emiss_fuel_1.loc['Total', 'fuel_code'] = 'Total'
     ref_emiss_fuel_1.loc['Total', 'item_code_new'] = 'Emissions'
@@ -4314,7 +4314,7 @@ for economy in Economy_codes:
         .replace(np.nan, 0)
     ref_emiss_sector_1 = ref_emiss_sector_1[['fuel_code', 'item_code_new'] + list(ref_emiss_sector_1.loc[:, '2000':'2050'])]
 
-    ref_emiss_sector_1.loc['Total'] = ref_emiss_sector_1.sum()
+    ref_emiss_sector_1.loc['Total'] = ref_emiss_sector_1.sum(numeric_only = True)
 
     ref_emiss_sector_1.loc['Total', 'fuel_code'] = '19_total'
     ref_emiss_sector_1.loc['Total', 'item_code_new'] = 'Total'
@@ -4360,7 +4360,7 @@ for economy in Economy_codes:
     netz_emiss_fuel_1 = netz_emiss_fuel_1[netz_emiss_fuel_1['fuel_code'].isin(Emissions_agg_fuels)].set_index('fuel_code').loc[Emissions_agg_fuels].reset_index()\
         .replace(np.nan, 0)
 
-    netz_emiss_fuel_1.loc['Total'] = netz_emiss_fuel_1.sum()
+    netz_emiss_fuel_1.loc['Total'] = netz_emiss_fuel_1.sum(numeric_only = True)
 
     netz_emiss_fuel_1.loc['Total', 'fuel_code'] = 'Total'
     netz_emiss_fuel_1.loc['Total', 'item_code_new'] = 'Emissions'
@@ -4411,7 +4411,7 @@ for economy in Economy_codes:
         .replace(np.nan, 0)
     netz_emiss_sector_1 = netz_emiss_sector_1[['fuel_code', 'item_code_new'] + list(netz_emiss_sector_1.loc[:, '2000':'2050'])]
 
-    netz_emiss_sector_1.loc['Total'] = netz_emiss_sector_1.sum()
+    netz_emiss_sector_1.loc['Total'] = netz_emiss_sector_1.sum(numeric_only = True)
 
     netz_emiss_sector_1.loc['Total', 'fuel_code'] = '19_total'
     netz_emiss_sector_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5115,7 +5115,7 @@ for economy in Economy_codes:
     ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    ref_coalcons_1.loc['Total'] = ref_coalcons_1.sum()
+    ref_coalcons_1.loc['Total'] = ref_coalcons_1.sum(numeric_only = True)
 
     ref_coalcons_1.loc['Total', 'fuel_code'] = 'Coal'
     ref_coalcons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5204,7 +5204,7 @@ for economy in Economy_codes:
     ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
     ref_gascons_1.loc[ref_gascons_1['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Power'
 
-    ref_gascons_1.loc['Total'] = ref_gascons_1.sum()
+    ref_gascons_1.loc['Total'] = ref_gascons_1.sum(numeric_only = True)
 
     ref_gascons_1.loc['Total', 'fuel_code'] = 'Gas'
     ref_gascons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5324,7 +5324,7 @@ for economy in Economy_codes:
     ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
     ref_crudecons_1.loc[ref_crudecons_1['item_code_new'] == '9_4_oil_refineries', 'item_code_new'] = 'Refining'
 
-    ref_crudecons_1.loc['Total'] = ref_crudecons_1.sum()
+    ref_crudecons_1.loc['Total'] = ref_crudecons_1.sum(numeric_only = True)
 
     ref_crudecons_1.loc['Total', 'fuel_code'] = 'Crude oil & NGL'
     ref_crudecons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5434,7 +5434,7 @@ for economy in Economy_codes:
     ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    ref_petprodcons_1.loc['Total'] = ref_petprodcons_1.sum()
+    ref_petprodcons_1.loc['Total'] = ref_petprodcons_1.sum(numeric_only = True)
 
     ref_petprodcons_1.loc['Total', 'fuel_code'] = 'Petroleum products'
     ref_petprodcons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5554,7 +5554,7 @@ for economy in Economy_codes:
 
     ref_renewcons_1.loc[ref_renewcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
 
-    ref_renewcons_1.loc['Total'] = ref_renewcons_1.sum()
+    ref_renewcons_1.loc['Total'] = ref_renewcons_1.sum(numeric_only = True)
 
     ref_renewcons_1.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
     ref_renewcons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5641,7 +5641,7 @@ for economy in Economy_codes:
     netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    netz_coalcons_1.loc['Total'] = netz_coalcons_1.sum()
+    netz_coalcons_1.loc['Total'] = netz_coalcons_1.sum(numeric_only = True)
 
     netz_coalcons_1.loc['Total', 'fuel_code'] = 'Coal'
     netz_coalcons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5728,7 +5728,7 @@ for economy in Economy_codes:
     netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
     netz_gascons_1.loc[netz_gascons_1['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Power'
 
-    netz_gascons_1.loc['Total'] = netz_gascons_1.sum()
+    netz_gascons_1.loc['Total'] = netz_gascons_1.sum(numeric_only = True)
 
     netz_gascons_1.loc['Total', 'fuel_code'] = 'Gas'
     netz_gascons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5848,7 +5848,7 @@ for economy in Economy_codes:
     netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
     netz_crudecons_1.loc[netz_crudecons_1['item_code_new'] == '9_4_oil_refineries', 'item_code_new'] = 'Refining'
 
-    netz_crudecons_1.loc['Total'] = netz_crudecons_1.sum()
+    netz_crudecons_1.loc['Total'] = netz_crudecons_1.sum(numeric_only = True)
 
     netz_crudecons_1.loc['Total', 'fuel_code'] = 'Crude oil & NGL'
     netz_crudecons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -5958,7 +5958,7 @@ for economy in Economy_codes:
     netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
     netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    netz_petprodcons_1.loc['Total'] = netz_petprodcons_1.sum()
+    netz_petprodcons_1.loc['Total'] = netz_petprodcons_1.sum(numeric_only = True)
 
     netz_petprodcons_1.loc['Total', 'fuel_code'] = 'Petroleum products'
     netz_petprodcons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -6078,7 +6078,7 @@ for economy in Economy_codes:
 
     netz_renewcons_1.loc[netz_renewcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
 
-    netz_renewcons_1.loc['Total'] = netz_renewcons_1.sum()
+    netz_renewcons_1.loc['Total'] = netz_renewcons_1.sum(numeric_only = True)
 
     netz_renewcons_1.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
     netz_renewcons_1.loc['Total', 'item_code_new'] = 'Total'
@@ -6234,7 +6234,7 @@ for economy in Economy_codes:
     ref_elec_1.loc[ref_elec_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
     ref_elec_1.loc[ref_elec_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    ref_elec_1.loc['Total'] = ref_elec_1.sum()
+    ref_elec_1.loc['Total'] = ref_elec_1.sum(numeric_only = True)
 
     ref_elec_1.loc['Total', 'fuel_code'] = 'Electricity'
     ref_elec_1.loc['Total', 'item_code_new'] = 'Total'
@@ -6268,7 +6268,7 @@ for economy in Economy_codes:
     netz_elec_1.loc[netz_elec_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
     netz_elec_1.loc[netz_elec_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
 
-    netz_elec_1.loc['Total'] = netz_elec_1.sum()
+    netz_elec_1.loc['Total'] = netz_elec_1.sum(numeric_only = True)
 
     netz_elec_1.loc['Total', 'fuel_code'] = 'Electricity'
     netz_elec_1.loc['Total', 'item_code_new'] = 'Total'
