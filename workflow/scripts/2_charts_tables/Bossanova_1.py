@@ -291,7 +291,7 @@ use_agg_fuels_1 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Nuclear', 'Hydro', 'Solar',
                    'Biomass', 'Geothermal', 'Other renewables', 'Other', 'Total']
 use_agg_fuels_2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other']
 
-heat_agg_fuels = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste']
+heat_agg_fuels = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste', 'Total']
 
 # TECHNOLOGY aggregations for ProductionByTechnology
 
