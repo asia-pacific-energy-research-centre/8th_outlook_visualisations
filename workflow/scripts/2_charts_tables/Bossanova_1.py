@@ -2458,16 +2458,16 @@ for economy in Economy_codes:
 
     ref_pow_use_2 = historical_input.merge(ref_pow_use_2, how = 'right', on = ['FUEL', 'Transformation']).replace(np.nan, 0)
 
-    ref_pow_use_2['FUEL'] = pd.Categorical(ref_pow_use_2['FUEL'], use_agg_fuels_1)
-
-    ref_pow_use_2 = ref_pow_use_2.sort_values('FUEL').reset_index(drop = True)
-
     ref_pow_use_2 = ref_pow_use_2[['FUEL', 'Transformation'] + list(ref_pow_use_2.loc[:, '2000':'2050'])]
 
     ref_pow_use_2.loc['Total'] = ref_pow_use_2.sum(numeric_only = True)
 
     ref_pow_use_2.loc['Total', 'FUEL'] = 'Total'
     ref_pow_use_2.loc['Total', 'Transformation'] = 'Input fuel'
+
+    ref_pow_use_2['FUEL'] = pd.Categorical(ref_pow_use_2['FUEL'], use_agg_fuels_1 + ['Total'])
+
+    ref_pow_use_2 = ref_pow_use_2.sort_values('FUEL').reset_index(drop = True)
 
     # Get rid of zero rows
     non_zero = (ref_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
