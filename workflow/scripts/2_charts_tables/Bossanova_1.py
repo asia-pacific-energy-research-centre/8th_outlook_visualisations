@@ -283,12 +283,12 @@ elec_ou = ['17_electricity']
 heat_ou = ['18_heat']
 waste_ou = ['16_2_industrial_waste', '16_4_municipal_solid_waste_nonrenewable']
 
-own_use_fuels = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat', 'Waste']
+own_use_fuels = ['Coal', 'Oil', 'Gas', 'Renewables', 'Electricity', 'Heat', 'Waste', 'Total']
 
 # Note, 12_1_of_which_photovoltaics is a subset of 12_solar so including will lead to double counting
 
 use_agg_fuels_1 = ['Coal', 'Lignite', 'Oil', 'Gas', 'Nuclear', 'Hydro', 'Solar', 'Wind', 
-                   'Biomass', 'Geothermal', 'Other renewables', 'Other']
+                   'Biomass', 'Geothermal', 'Other renewables', 'Other', 'Total']
 use_agg_fuels_2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other']
 
 heat_agg_fuels = ['Coal', 'Lignite', 'Oil', 'Gas', 'Biomass', 'Waste']
@@ -336,11 +336,12 @@ all_elec_heat = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP'
 
 # POW_EXPORT_ELEC_PP need to work this in
 
-prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports']
+prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 'Bio', 
+                 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports', 'Total']
 prod_agg_tech2 = ['Coal', 'Coal CCS', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
-                 'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports']
+                 'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports', 'Total']
 
-heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Nuclear', 'Biomass', 'Waste', 'Non-specified', 'Other']
+heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Nuclear', 'Biomass', 'Waste', 'Non-specified', 'Other', 'Total']
 
 # Power input fuel categories
 
@@ -2465,7 +2466,7 @@ for economy in Economy_codes:
     ref_pow_use_2.loc['Total', 'FUEL'] = 'Total'
     ref_pow_use_2.loc['Total', 'Transformation'] = 'Input fuel'
 
-    ref_pow_use_2['FUEL'] = pd.Categorical(ref_pow_use_2['FUEL'], use_agg_fuels_1 + ['Total'])
+    ref_pow_use_2['FUEL'] = pd.Categorical(ref_pow_use_2['FUEL'], use_agg_fuels_1)
 
     ref_pow_use_2 = ref_pow_use_2.sort_values('FUEL').reset_index(drop = True)
 
@@ -2624,7 +2625,7 @@ for economy in Economy_codes:
     ref_refinery_2['FUEL'] = pd.Categorical(
         ref_refinery_2['FUEL'], 
         categories = ['Motor gasoline', 'Aviation gasoline', 'Naphtha', 'Jet fuel', 'Other kerosene', 
-                      'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other'], 
+                      'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other', 'Total'], 
         ordered = True)
 
     ref_refinery_2 = ref_refinery_2.sort_values('FUEL')
@@ -2776,7 +2777,7 @@ for economy in Economy_codes:
 
     ref_powcap_1 = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
 
-    ref_powcap_1['TECHNOLOGY'] = pd.Categorical(ref_powcap_1['TECHNOLOGY'], prod_agg_tech[:-1])
+    ref_powcap_1['TECHNOLOGY'] = pd.Categorical(ref_powcap_1['TECHNOLOGY'], prod_agg_tech)
 
     ref_powcap_1 = ref_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
@@ -3281,7 +3282,7 @@ for economy in Economy_codes:
     netz_refinery_2['FUEL'] = pd.Categorical(
         netz_refinery_2['FUEL'], 
         categories = ['Motor gasoline', 'Aviation gasoline', 'Naphtha', 'Jet fuel', 'Other kerosene', 
-                      'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other'], 
+                      'Gas diesel oil', 'Fuel oil', 'LPG', 'Refinery gas', 'Ethane', 'Other', 'Total'], 
         ordered = True)
 
     netz_refinery_2 = netz_refinery_2.sort_values('FUEL')
@@ -3427,7 +3428,7 @@ for economy in Economy_codes:
 
     netz_powcap_1 = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
 
-    netz_powcap_1['TECHNOLOGY'] = pd.Categorical(netz_powcap_1['TECHNOLOGY'], prod_agg_tech[:-1])
+    netz_powcap_1['TECHNOLOGY'] = pd.Categorical(netz_powcap_1['TECHNOLOGY'], prod_agg_tech)
 
     netz_powcap_1 = netz_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
