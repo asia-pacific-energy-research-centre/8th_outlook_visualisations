@@ -11072,7 +11072,7 @@ for economy in Economy_codes:
     ref_worksheet24.write(1, 0, 'Units: Gigawatts', cell_format2)
 
     # Create a electricity production area chart
-    if ref_powcap_1_rows > 0:
+    if ref_powcap_1_rows > 1:
         pow_cap_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
         pow_cap_chart1.set_size({
             'width': 500,
@@ -11147,7 +11147,7 @@ for economy in Economy_codes:
         pass
 
     # Create a industry subsector FED chart
-    if ref_powcap_2_rows > 0:
+    if ref_powcap_2_rows > 1:
         pow_cap_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         pow_cap_chart2.set_size({
             'width': 500,
@@ -12540,7 +12540,7 @@ for economy in Economy_codes:
     # netz_worksheet24.write(0, 0, economy + ' electricity capacity by technology', cell_format1)
     
     # Create a electricity production area chart
-    if netz_powcap_1_rows > 0:
+    if netz_powcap_1_rows > 1:
         netz_pow_cap_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
         netz_pow_cap_chart1.set_size({
             'width': 500,
@@ -12619,7 +12619,7 @@ for economy in Economy_codes:
         pass
 
     # Create a industry subsector FED chart
-    if netz_powcap_2_rows > 0:
+    if netz_powcap_2_rows > 1:
         netz_pow_cap_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         netz_pow_cap_chart2.set_size({
             'width': 500,
