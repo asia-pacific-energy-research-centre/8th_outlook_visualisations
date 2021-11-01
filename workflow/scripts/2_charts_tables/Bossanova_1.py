@@ -2028,6 +2028,22 @@ for economy in Economy_codes:
     ref_exports_2_rows = ref_exports_2.shape[0]
     ref_exports_2_cols = ref_exports_2.shape[1]
 
+    # Temporary exports file to get net trade dataframe
+
+    ref_exports_temp1 = ref_exports_2.copy().select_dtypes(include = [np.number]) * -1
+    ref_exports_temp2 = ref_exports_2.copy()
+    ref_exports_temp2[ref_exports_temp1.columns] = ref_exports_temp1
+
+    # Net trade
+
+    ref_nettrade_1 = ref_imports_2.copy().append(ref_exports_temp2).groupby('fuel_code').sum()\
+        .assign(item_code_new = 'Net trade').reset_index()
+
+    ref_nettrade_1 = ref_nettrade_1[['fuel_code', 'item_code_new'] + col_chart_years]
+
+    ref_nettrade_1_rows = ref_nettrade_1.shape[0]
+    ref_nettrade_1_cols = ref_nettrade_1.shape[1]
+
     # Electricity trade
 
     ref_electrade_1 = ref_imports_2[ref_imports_2['fuel_code'] == 'Electricity'].copy()\
@@ -2309,7 +2325,20 @@ for economy in Economy_codes:
     netz_exports_2 = netz_exports_1[['fuel_code', 'item_code_new'] + col_chart_years]
 
     netz_exports_2_rows = netz_exports_2.shape[0]
-    netz_exports_2_cols = netz_exports_2.shape[1] 
+    netz_exports_2_cols = netz_exports_2.shape[1]
+
+    # Temporary exports file to get net trade dataframe
+
+    netz_exports_temp1 = netz_exports_2.copy().select_dtypes(include = [np.number]) * -1
+    netz_exports_temp2 = netz_exports_2.copy()
+    netz_exports_temp2[netz_exports_temp1.columns] = netz_exports_temp1
+
+    # Net trade
+
+    netz_nettrade_1 = netz_imports_2.copy().append(netz_exports_temp2).groupby('fuel_code').sum()\
+        .assign(item_code_new = 'Net trade').reset_index()
+
+    netz_nettrade_1 = netz_nettrade_1[['fuel_code', 'item_code_new'] + col_chart_years] 
 
     # Electricity trade
 
@@ -2326,6 +2355,9 @@ for economy in Economy_codes:
 
     netz_electrade_1_rows = netz_electrade_1.shape[0]
     netz_electrade_1_cols = netz_electrade_1.shape[1]
+
+    netz_nettrade_1_rows = netz_nettrade_1.shape[0]
+    netz_nettrade_1_cols = netz_nettrade_1.shape[1]
 
     # Bunkers dataframes
 
@@ -6393,8 +6425,10 @@ for economy in Economy_codes:
     netz_exports_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9)
     ref_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12)
     ref_electrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15)
+    ref_nettrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_ref', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18)   
     netz_exports_2.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12)
     netz_electrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15)
+    netz_nettrade_1.to_excel(writer, sheet_name = economy + '_TPES_comp_netz', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18)
     ref_bunkers_1.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = chart_height)
     netz_bunkers_1.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6)
     ref_bunkers_2.to_excel(writer, sheet_name = economy + '_bunkers', index = False, startrow = chart_height + ref_bunkers_1_rows + 3)
@@ -8983,6 +9017,7 @@ for economy in Economy_codes:
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + 15, None, header_format)
+    ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + ref_electrade_1_rows + 18, None, header_format)
     ref_worksheet13.write(0, 0, economy + ' TPES components reference', cell_format1)
     ref_worksheet13.write(1, 0, 'Units: Petajoules', cell_format2)
 
@@ -9362,6 +9397,71 @@ for economy in Economy_codes:
             })
         
         ref_worksheet13.insert_chart('AP3', ref_electrade_column)
+
+    else:
+        pass
+
+    # Create a net trade column
+    if ref_nettrade_1_rows > 0:
+        ref_nettrade_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        ref_nettrade_column.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_nettrade_column.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_nettrade_column.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_nettrade_column.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Net trade (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_nettrade_column.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        ref_nettrade_column.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(ref_nettrade_1_rows):
+            if not ref_nettrade_1['fuel_code'].iloc[i] in ['Total']:
+                ref_nettrade_column.add_series({
+                    'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 0],
+                    'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, 2,\
+                        chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, ref_nettrade_1_cols - 1],
+                    'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 2,\
+                        chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + ref_electrade_1_rows + i + 19, ref_nettrade_1_cols - 1],
+                    'fill':       {'color': ref_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
+        
+        ref_worksheet13.insert_chart('AX3', ref_nettrade_column)
 
     else:
         pass
@@ -9953,6 +10053,7 @@ for economy in Economy_codes:
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + 15, None, header_format)
+    netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + netz_electrade_1_rows + 18, None, header_format)
     netz_worksheet13.write(0, 0, economy + ' TPES components net-zero', cell_format1)
     netz_worksheet13.write(1, 0, 'Units: Petajoules', cell_format2)
 
@@ -10329,6 +10430,71 @@ for economy in Economy_codes:
             })
         
         netz_worksheet13.insert_chart('AP3', netz_electrade_column)
+
+    else:
+        pass
+
+    # Create a net trade column
+    if netz_nettrade_1_rows > 0:
+        netz_nettrade_column = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        netz_nettrade_column.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_nettrade_column.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_nettrade_column.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_nettrade_column.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'name': 'Net trade (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_nettrade_column.set_legend({
+            'font': {'font': 'Segoe UI', 'size': 10}
+            #'none': True
+        })
+            
+        netz_nettrade_column.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(netz_nettrade_1_rows):
+            if not netz_nettrade_1['fuel_code'].iloc[i] in ['Total']:
+                netz_nettrade_column.add_series({
+                    'name':       [economy + '_TPES_comp_ref', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 0],
+                    'categories': [economy + '_TPES_comp_ref', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, 2,\
+                        chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, netz_nettrade_1_cols - 1],
+                    'values':     [economy + '_TPES_comp_ref', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 2,\
+                        chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + netz_electrade_1_rows + i + 19, netz_nettrade_1_cols - 1],
+                    'fill':       {'color': netz_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                pass
+        
+        netz_worksheet13.insert_chart('AX3', netz_nettrade_column)
 
     else:
         pass
