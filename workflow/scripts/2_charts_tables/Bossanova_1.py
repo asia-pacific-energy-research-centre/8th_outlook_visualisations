@@ -2041,6 +2041,8 @@ for economy in Economy_codes:
 
     ref_nettrade_1 = ref_nettrade_1[['fuel_code', 'item_code_new'] + col_chart_years]
 
+    ref_nettrade_1.loc[ref_nettrade_1['fuel_code'] == 'Total', 'fuel_code'] = 'Trade balance'
+
     ref_nettrade_1_rows = ref_nettrade_1.shape[0]
     ref_nettrade_1_cols = ref_nettrade_1.shape[1]
 
@@ -2338,7 +2340,12 @@ for economy in Economy_codes:
     netz_nettrade_1 = netz_imports_2.copy().append(netz_exports_temp2).groupby('fuel_code').sum()\
         .assign(item_code_new = 'Net trade').reset_index()
 
-    netz_nettrade_1 = netz_nettrade_1[['fuel_code', 'item_code_new'] + col_chart_years] 
+    netz_nettrade_1 = netz_nettrade_1[['fuel_code', 'item_code_new'] + col_chart_years]
+
+    netz_nettrade_1.loc[netz_nettrade_1['fuel_code'] == 'Total', 'fuel_code'] = 'Trade balance'
+
+    netz_nettrade_1_rows = netz_nettrade_1.shape[0]
+    netz_nettrade_1_cols = netz_nettrade_1.shape[1] 
 
     # Electricity trade
 
@@ -2355,9 +2362,6 @@ for economy in Economy_codes:
 
     netz_electrade_1_rows = netz_electrade_1.shape[0]
     netz_electrade_1_cols = netz_electrade_1.shape[1]
-
-    netz_nettrade_1_rows = netz_nettrade_1.shape[0]
-    netz_nettrade_1_cols = netz_nettrade_1.shape[1]
 
     # Bunkers dataframes
 
@@ -9446,7 +9450,7 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.    
         for i in range(ref_nettrade_1_rows):
-            if not ref_nettrade_1['fuel_code'].iloc[i] in ['Total']:
+            if not ref_nettrade_1['fuel_code'].iloc[i] in ['Trade balance']:
                 ref_nettrade_column.add_series({
                     'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 0],
                     'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, 2,\
@@ -9460,6 +9464,29 @@ for economy in Economy_codes:
 
             else:
                 pass
+
+        # Marker series
+        ref_nettrade_line = workbook.add_chart({'type': 'line'})
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(ref_nettrade_1_rows):
+            if ref_nettrade_1['fuel_code'].iloc[i] in ['Trade balance']:
+                ref_nettrade_line.add_series({
+                    'name':       [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 0],
+                    'categories': [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, 2,\
+                        chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, ref_nettrade_1_cols - 1],
+                    'values':     [economy + '_TPES_comp_ref', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 2,\
+                        chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + ref_electrade_1_rows + i + 19, ref_nettrade_1_cols - 1],
+                    'marker':     {'fill': {'color': ref_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
+                                   'type': 'diamond',
+                                   'size': 8},
+                    'line':       {'none': True}
+                })
+
+            else:
+                pass
+
+        ref_nettrade_column.combine(ref_nettrade_line)
         
         ref_worksheet13.insert_chart('AX3', ref_nettrade_column)
 
@@ -10479,12 +10506,12 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.    
         for i in range(netz_nettrade_1_rows):
-            if not netz_nettrade_1['fuel_code'].iloc[i] in ['Total']:
+            if not netz_nettrade_1['fuel_code'].iloc[i] in ['Trade balance']:
                 netz_nettrade_column.add_series({
-                    'name':       [economy + '_TPES_comp_ref', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 0],
-                    'categories': [economy + '_TPES_comp_ref', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, 2,\
+                    'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 0],
+                    'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, 2,\
                         chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, netz_nettrade_1_cols - 1],
-                    'values':     [economy + '_TPES_comp_ref', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 2,\
+                    'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 2,\
                         chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + netz_electrade_1_rows + i + 19, netz_nettrade_1_cols - 1],
                     'fill':       {'color': netz_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
@@ -10493,6 +10520,29 @@ for economy in Economy_codes:
 
             else:
                 pass
+
+        # Marker series
+        netz_nettrade_line = workbook.add_chart({'type': 'line'})
+        
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(netz_nettrade_1_rows):
+            if netz_nettrade_1['fuel_code'].iloc[i] in ['Trade balance']:
+                netz_nettrade_line.add_series({
+                    'name':       [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 0],
+                    'categories': [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, 2,\
+                        chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, netz_nettrade_1_cols - 1],
+                    'values':     [economy + '_TPES_comp_netz', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 2,\
+                        chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + netz_electrade_1_rows + i + 19, netz_nettrade_1_cols - 1],
+                    'marker':     {'fill': {'color': netz_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
+                                   'type': 'diamond',
+                                   'size': 8},
+                    'line':       {'none': True}
+                })
+
+            else:
+                pass
+
+        netz_nettrade_column.combine(netz_nettrade_line)
         
         netz_worksheet13.insert_chart('AX3', netz_nettrade_column)
 
