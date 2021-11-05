@@ -9479,6 +9479,7 @@ for economy in Economy_codes:
                         chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + ref_electrade_1_rows + i + 19, ref_nettrade_1_cols - 1],
                     'marker':     {'fill': {'color': ref_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
                                    'type': 'diamond',
+                                   'border': {'none': True},
                                    'size': 8},
                     'line':       {'none': True}
                 })
@@ -10535,6 +10536,7 @@ for economy in Economy_codes:
                         chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + netz_electrade_1_rows + i + 19, netz_nettrade_1_cols - 1],
                     'marker':     {'fill': {'color': netz_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
                                    'type': 'diamond',
+                                   'border': {'none': True},
                                    'size': 8},
                     'line':       {'none': True}
                 })
