@@ -19119,7 +19119,7 @@ for economy in Economy_codes:
         'line': {'color': '#828282',
                 'width': 1}
     })
-        
+
     emiss_wedge_chart1.set_legend({
         'font': {'font': 'Segoe UI', 'size': 10}
         #'none': True
@@ -19133,7 +19133,8 @@ for economy in Economy_codes:
     emiss_line_1 = workbook.add_chart({'type': 'line'})
     
     # Configure the series of the chart from the dataframe data.
-    for i in [7, 0, 1, 2, 3, 4, 5, 6, 8, 9]:
+    for i in list(emissions_wedge_1.loc[emissions_wedge_1['item_code_new'].isna()].index) +\
+        list(emissions_wedge_1.loc[emissions_wedge_1['item_code_new'].isna() == False].index):
         if emissions_wedge_1['item_code_new'].iloc[i] in ['Power', 'Own use', 'Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-specified']:
             emiss_wedge_chart1.add_series({
                 'name':       ['CO2 wedge', chart_height + i + 1, 1],
@@ -19220,7 +19221,8 @@ for economy in Economy_codes:
     emiss_line_2 = workbook.add_chart({'type': 'line'})
     
     # Configure the series of the chart from the dataframe data.
-    for i in [4, 0, 1, 2, 3, 5, 6]:
+    for i in list(emissions_wedge_2.loc[emissions_wedge_2['fuel_code'].isna()].index) +\
+        list(emissions_wedge_2.loc[emissions_wedge_2['fuel_code'].isna() == False].index):
         if emissions_wedge_2['fuel_code'].iloc[i] in ['Coal', 'Oil', 'Gas', 'Heat & others']:
             emiss_wedge_chart2.add_series({
                 'name':       ['CO2 wedge', chart_height + emissions_wedge_1_rows + i + 4, 0],
