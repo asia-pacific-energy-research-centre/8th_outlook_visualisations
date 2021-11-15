@@ -2,6 +2,7 @@
 
 # import dependencies
 
+from numpy.core.numeric import NaN
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -4479,6 +4480,62 @@ for economy in Economy_codes:
     emiss_total_1_rows = emiss_total_1.shape[0]
     emiss_total_1_cols = emiss_total_1.shape[1]
 
+    # New emissions dataframe (for wedge chart)
+
+    # SECTOR
+
+    # Carbon neutrality emissions minus Reference emissions
+
+    emiss_diff_sector = netz_emiss_sector_1.iloc[:-1,:].select_dtypes(include = [np.number]) - \
+        ref_emiss_sector_1.iloc[:-1,:].select_dtypes(include = [np.number])
+
+    emissions_wedge_1 = ref_emiss_sector_1.iloc[:-1,:].copy()
+
+    emissions_wedge_1[emiss_diff_sector.columns] = emiss_diff_sector
+
+    # Now add phantom row for wedge
+
+    emissions_wedge_1 = emissions_wedge_1.append(emiss_total_1.iloc[0,:].copy()).reset_index(drop = True)
+
+    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Reference', 'fuel_code'] = np.nan
+    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Emissions', 'item_code_new'] = np.nan
+
+    emissions_wedge_1 = emissions_wedge_1.append(emiss_total_1.copy()).reset_index(drop = True)
+
+    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Reference', 'item_code_new'] = 'Reference'
+    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Net-zero', 'item_code_new'] = 'Carbon neutrality'
+    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Reference', 'fuel_code'] = '19_total'
+    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon neutrality', 'fuel_code'] = '19_total'
+
+    emissions_wedge_1_rows = emissions_wedge_1.shape[0]
+    emissions_wedge_1_cols = emissions_wedge_1.shape[1]
+
+    # FUEL
+
+    # Carbon neutrality emissions minus Reference emissions
+
+    emiss_diff_fuel = netz_emiss_fuel_1.iloc[:-1,:].select_dtypes(include = [np.number]) - \
+        ref_emiss_fuel_1.iloc[:-1,:].select_dtypes(include = [np.number])
+
+    emissions_wedge_2 = ref_emiss_fuel_1.iloc[:-1,:].copy()
+
+    emissions_wedge_2[emiss_diff_fuel.columns] = emiss_diff_fuel
+
+    # Now add phantom row for wedge
+
+    emissions_wedge_2 = emissions_wedge_2.append(emiss_total_1.iloc[0,:].copy()).reset_index(drop = True)
+
+    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Reference', 'fuel_code'] = np.nan
+    emissions_wedge_2.loc[emissions_wedge_2['item_code_new'] == 'Emissions', 'item_code_new'] = np.nan
+
+    emissions_wedge_2 = emissions_wedge_2.append(emiss_total_1.copy()).reset_index(drop = True)
+
+    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Net-zero', 'fuel_code'] = 'Carbon neutrality'
+
+    emissions_wedge_2_rows = emissions_wedge_2.shape[0]
+    emissions_wedge_2_cols = emissions_wedge_2.shape[1]
+
+
     ##################################################################################################
 
     # Fuel dataframe builds
@@ -6503,6 +6560,8 @@ for economy in Economy_codes:
     netz_emiss_sector_1.to_excel(writer, sheet_name = 'CO2 by sector', index = False, startrow = (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6)
     ref_emiss_sector_2.to_excel(writer, sheet_name = 'CO2 by sector', index = False, startrow = chart_height + ref_emiss_sector_1_rows + 3)
     netz_emiss_sector_2.to_excel(writer, sheet_name = 'CO2 by sector', index = False, startrow = (2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9)
+    emissions_wedge_1.to_excel(writer, sheet_name = 'CO2 wedge', index = False, startrow = chart_height)
+    emissions_wedge_2.to_excel(writer, sheet_name = 'CO2 wedge', index = False, startrow = chart_height + emissions_wedge_1_rows + 3)
     ref_co2int_2.to_excel(writer, sheet_name = 'CO2 intensity', index = False, startrow = chart_height)
     netz_co2int_2.to_excel(writer, sheet_name = 'CO2 intensity', index = False, startrow = chart_height + ref_co2int_2_rows + 3)
     emiss_total_1.to_excel(writer, sheet_name = 'CO2 intensity', index = False, startrow = chart_height + ref_co2int_2_rows + netz_co2int_2_rows + 6)
@@ -19010,6 +19069,197 @@ for economy in Economy_codes:
         })    
         
     both_worksheet38.insert_chart('J3', emiss_chart1)
+
+    # Emissions wedge charts
+
+    # Access the workbook and second sheet
+    both_worksheet39 = writer.sheets['CO2 wedge']
+    
+    # Apply comma format and header format to relevant data rows
+    both_worksheet39.set_column(2, emissions_wedge_1_cols + 1, None, space_format)
+    both_worksheet39.set_row(chart_height, None, header_format)
+    both_worksheet39.set_row(chart_height + emissions_wedge_1_rows + 3, None, header_format)
+    both_worksheet39.write(0, 0, economy + ' emissions wedge charts', cell_format1)
+
+    # Wedge chart: Sector
+
+    emiss_wedge_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    emiss_wedge_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    emiss_wedge_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    emiss_wedge_chart1.set_x_axis({
+        # 'name': 'Year',
+        'label_position': 'low',
+        'crossing': 19,
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'position_axis': 'on_tick',
+        'interval_unit': 10,
+        'line': {'color': '#bebebe'}
+    })
+        
+    emiss_wedge_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'label_position': 'low',
+        # 'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#828282',
+                'width': 1}
+    })
+        
+    emiss_wedge_chart1.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    emiss_wedge_chart1.set_title({
+        'none': True
+    })
+
+    # line series' for adding in a line chart
+    emiss_line_1 = workbook.add_chart({'type': 'line'})
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in [7, 0, 1, 2, 3, 4, 5, 6, 8, 9]:
+        if emissions_wedge_1['item_code_new'].iloc[i] in ['Power', 'Own use', 'Industry', 'Transport', 'Buildings', 'Agriculture', 'Non-specified']:
+            emiss_wedge_chart1.add_series({
+                'name':       ['CO2 wedge', chart_height + i + 1, 1],
+                'categories': ['CO2 wedge', chart_height, 2, chart_height, emissions_wedge_1_cols - 1],
+                'values':     ['CO2 wedge', chart_height + i + 1, 2, chart_height + i + 1, emissions_wedge_1_cols - 1],
+                'fill':       {'color': emissions_wedge_1['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        elif emissions_wedge_1['item_code_new'].iloc[i] in [np.nan]:
+            emiss_wedge_chart1.add_series({
+                'name':       ['CO2 wedge', chart_height + i + 1, 1],
+                'categories': ['CO2 wedge', chart_height, 2, chart_height, emissions_wedge_1_cols - 1],
+                'values':     ['CO2 wedge', chart_height + i + 1, 2, chart_height + i + 1, emissions_wedge_1_cols - 1],
+                'fill':       {'none': True},
+                'border':     {'none': True}
+            })
+
+        elif emissions_wedge_1['item_code_new'].iloc[i] in ['Reference', 'Carbon neutrality']:
+            emiss_line_1.add_series({
+                'name':       ['CO2 wedge', chart_height + i + 1, 1],
+                'categories': ['CO2 wedge', chart_height, 2, chart_height, emissions_wedge_1_cols - 1],
+                'values':     ['CO2 wedge', chart_height + i + 1, 2, chart_height + i + 1, emissions_wedge_1_cols - 1],
+                'line':       {'color': emissions_wedge_1['item_code_new'].map(colours_dict).loc[i],
+                               'width': 1.25}
+            })
+
+        else:
+            pass
+
+    emiss_wedge_chart1.combine(emiss_line_1)
+        
+    both_worksheet39.insert_chart('B3', emiss_wedge_chart1)
+
+    # Wedge chart: Fuel
+
+    emiss_wedge_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+    emiss_wedge_chart2.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    emiss_wedge_chart2.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    emiss_wedge_chart2.set_x_axis({
+        # 'name': 'Year',
+        'label_position': 'low',
+        'crossing': 19,
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'position_axis': 'on_tick',
+        'interval_unit': 10,
+        'line': {'color': '#bebebe'}
+    })
+        
+    emiss_wedge_chart2.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        'label_position': 'low',
+        # 'name': 'PJ',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#828282',
+                'width': 1}
+    })
+        
+    emiss_wedge_chart2.set_legend({
+        'font': {'font': 'Segoe UI', 'size': 10}
+        #'none': True
+    })
+        
+    emiss_wedge_chart2.set_title({
+        'none': True
+    })
+
+    # line series' for adding in a line chart
+    emiss_line_2 = workbook.add_chart({'type': 'line'})
+    
+    # Configure the series of the chart from the dataframe data.
+    for i in [4, 0, 1, 2, 3, 5, 6]:
+        if emissions_wedge_2['fuel_code'].iloc[i] in ['Coal', 'Oil', 'Gas', 'Heat & others']:
+            emiss_wedge_chart2.add_series({
+                'name':       ['CO2 wedge', chart_height + emissions_wedge_1_rows + i + 4, 0],
+                'categories': ['CO2 wedge', chart_height + emissions_wedge_1_rows + 3, 2,\
+                    chart_height + emissions_wedge_1_rows + 3, emissions_wedge_2_cols - 1],
+                'values':     ['CO2 wedge', chart_height + emissions_wedge_1_rows + i + 4, 2,\
+                    chart_height + emissions_wedge_1_rows + i + 4, emissions_wedge_2_cols - 1],
+                'fill':       {'color': emissions_wedge_2['fuel_code'].map(colours_dict).loc[i]},
+                'border':     {'none': True}
+            })
+
+        elif emissions_wedge_2['fuel_code'].iloc[i] in [np.nan]:
+            emiss_wedge_chart2.add_series({
+                'name':       ['CO2 wedge', chart_height + emissions_wedge_1_rows + i + 4, 0],
+                'categories': ['CO2 wedge', chart_height + emissions_wedge_1_rows + 3, 2,\
+                    chart_height + emissions_wedge_1_rows + 3, emissions_wedge_2_cols - 1],
+                'values':     ['CO2 wedge', chart_height + emissions_wedge_1_rows + i + 4, 2,\
+                    chart_height + emissions_wedge_1_rows + i + 4, emissions_wedge_2_cols - 1],
+                'fill':       {'none': True},
+                'border':     {'none': True}
+            })
+
+        elif emissions_wedge_2['fuel_code'].iloc[i] in ['Reference', 'Carbon neutrality']:
+            emiss_line_2.add_series({
+                'name':       ['CO2 wedge', chart_height + emissions_wedge_1_rows + i + 4, 0],
+                'categories': ['CO2 wedge', chart_height + emissions_wedge_1_rows + 3, 2,\
+                    chart_height + emissions_wedge_1_rows + 3, emissions_wedge_2_cols - 1],
+                'values':     ['CO2 wedge', chart_height + emissions_wedge_1_rows + i + 4, 2,\
+                    chart_height + emissions_wedge_1_rows + i + 4, emissions_wedge_2_cols - 1],
+                'line':       {'color': emissions_wedge_2['fuel_code'].map(colours_dict).loc[i],
+                               'width': 1.25}
+            })
+
+        else:
+            pass
+
+    emiss_wedge_chart2.combine(emiss_line_2)
+        
+    both_worksheet39.insert_chart('J3', emiss_wedge_chart2)
 
     writer.save()
 
