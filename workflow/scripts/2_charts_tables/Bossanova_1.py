@@ -920,7 +920,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-Economy_codes = ['01_AUS']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -6380,13 +6380,13 @@ for economy in Economy_codes:
                               columns = ['category', 'Emissions 2018', 'Population', 'GDP per capita',\
                                          'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
 
-    ref_kaya_1.loc[0, 'category'] = 'category1'
-    ref_kaya_1.loc[1, 'category'] = 'category2'
-    ref_kaya_1.loc[2, 'category'] = 'category3'
-    ref_kaya_1.loc[3, 'category'] = 'category4'
-    ref_kaya_1.loc[4, 'category'] = 'category5'
-    ref_kaya_1.loc[5, 'category'] = 'category6'
-    ref_kaya_1.loc[6, 'category'] = 'category7'
+    ref_kaya_1.loc[0, 'category'] = 'initial'
+    ref_kaya_1.loc[1, 'category'] = 'empty'
+    ref_kaya_1.loc[2, 'category'] = 'no improve'
+    ref_kaya_1.loc[3, 'category'] = 'empty'
+    ref_kaya_1.loc[4, 'category'] = 'no improve'
+    ref_kaya_1.loc[5, 'category'] = 'improve'
+    ref_kaya_1.loc[6, 'category'] = 'improve'
 
     # Calculations to populate dataframe
     ref_emissions_2018 = emiss_total_1.loc[0, '2018']
@@ -6416,6 +6416,8 @@ for economy in Economy_codes:
     # Emissions intensity column
     ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
     ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
+
+    ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
 
     ref_kaya_1_rows = ref_kaya_1.shape[0]
     ref_kaya_1_cols = ref_kaya_1.shape[1]
@@ -19318,7 +19320,7 @@ for economy in Economy_codes:
     both_worksheet51 = writer.sheets['Kaya']
     
     # Apply comma format and header format to relevant data rows
-    both_worksheet51.set_column(2, ref_kaya_1_cols + 1, None, space_format)
+    both_worksheet51.set_column(1, ref_kaya_1_cols + 1, None, space_format)
     both_worksheet51.set_row(chart_height, None, header_format)
     both_worksheet51.set_row(chart_height + ref_kaya_1_rows + 3, None, header_format)
     both_worksheet51.write(0, 0, economy + ' Kaya waterfall charts', cell_format1)
@@ -19339,7 +19341,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        #'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
         'line': {'color': '#bebebe'}
     })
         
@@ -19367,17 +19369,38 @@ for economy in Economy_codes:
     
     # Configure the series of the chart from the dataframe data.    
     for i in range(ref_kaya_1_rows):
-        ref_kaya_chart1.add_series({
-            'name':       ['Kaya', chart_height + i + 1, 0],
-            'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
-            'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
-            'fill':       {'color': ref_kaya_1['category'].map(colours_dict).loc[i]},
-            'border':     {'none': True},
-            'gap':        50
-        })
+        if ref_kaya_1['category'].iloc[i] in ['initial']:
+            ref_kaya_chart1.add_series({
+                'name':       ['Kaya', chart_height + i + 1, 0],
+                'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
+                'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
+                'fill':       {'color': ref_kaya_1['category'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        50
+            })
+
+        elif ref_kaya_1['category'].iloc[i] in ['improve', 'no improve']:
+            ref_kaya_chart1.add_series({
+                'name':       ['Kaya', chart_height + i + 1, 0],
+                'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
+                'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
+                'fill':       {'color': ref_kaya_1['category'].map(colours_dict).loc[i],
+                               'transparency': 50},
+                'border':     {'none': True},
+                'gap':        50
+            })
+
+        else:
+            ref_kaya_chart1.add_series({
+                'name':       ['Kaya', chart_height + i + 1, 0],
+                'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
+                'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
+                'fill':       {'none': True},
+                'border':     {'none': True},
+                'gap':        50
+            })
     
-    both_worksheet51.insert_chart('B3', ref_kaya_chart1)
-    
+    both_worksheet51.insert_chart('B3', ref_kaya_chart1)   
 
     writer.save()
 
