@@ -920,7 +920,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -6372,6 +6372,54 @@ for economy in Economy_codes:
     netz_elec_1_rows = netz_elec_1.shape[0]
     netz_elec_1_cols = netz_elec_1.shape[1]
 
+    # Building some waterfall data frames
+
+    #kaya_emiss_1 = emiss_total_1[['fuel_code', 'item_code_new', '2018', '2050']]
+
+    ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
+                              columns = ['category', 'Emissions 2018', 'Population', 'GDP per capita',\
+                                         'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
+
+    ref_kaya_1.loc[0, 'category'] = 'category1'
+    ref_kaya_1.loc[1, 'category'] = 'category2'
+    ref_kaya_1.loc[2, 'category'] = 'category3'
+    ref_kaya_1.loc[3, 'category'] = 'category4'
+    ref_kaya_1.loc[4, 'category'] = 'category5'
+    ref_kaya_1.loc[5, 'category'] = 'category6'
+    ref_kaya_1.loc[6, 'category'] = 'category7'
+
+    # Calculations to populate dataframe
+    ref_emissions_2018 = emiss_total_1.loc[0, '2018']
+    ref_emissions_2050 = emiss_total_1.loc[0, '2050']
+    pop_growth = (macro_1.loc[macro_1['Series'] == 'Population', '2050'] / macro_1.loc[macro_1['Series'] == 'Population', '2018']).to_numpy()
+    gdp_pc_growth = (macro_1.loc[macro_1['Series'] == 'GDP per capita', '2050'] / macro_1.loc[macro_1['Series'] == 'GDP per capita', '2018']).to_numpy()
+    ref_ei_growth = (ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2050'] / ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2018']).to_numpy()
+    ref_co2i_growth = (ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
+
+    # Emissions 2018 column
+    ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
+    ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
+    
+    # Population column (Emissions multiplied by population factor split into two data points)
+    ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018
+    ref_kaya_1.loc[2, 'Population'] = (pop_growth * ref_emissions_2018) - ref_emissions_2018
+
+    # GDP per capita column
+    ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018
+    ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
+    ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
+
+    # Energy intensity column
+    ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
+    ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
+
+    # Emissions intensity column
+    ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
+    ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
+
+    ref_kaya_1_rows = ref_kaya_1.shape[0]
+    ref_kaya_1_cols = ref_kaya_1.shape[1]
+
     # Df builds are complete
 
     ##############################################################################################################################
@@ -6565,6 +6613,7 @@ for economy in Economy_codes:
     ref_co2int_2.to_excel(writer, sheet_name = 'CO2 intensity', index = False, startrow = chart_height)
     netz_co2int_2.to_excel(writer, sheet_name = 'CO2 intensity', index = False, startrow = chart_height + ref_co2int_2_rows + 3)
     emiss_total_1.to_excel(writer, sheet_name = 'CO2 intensity', index = False, startrow = chart_height + ref_co2int_2_rows + netz_co2int_2_rows + 6)
+    ref_kaya_1.to_excel(writer, sheet_name = 'Kaya', index = False, startrow = chart_height)
 
     ################################################################################################################################
 
@@ -19262,6 +19311,73 @@ for economy in Economy_codes:
     emiss_wedge_chart2.combine(emiss_line_2)
         
     both_worksheet39.insert_chart('J3', emiss_wedge_chart2)
+
+    # Kaya identity waterfall charts
+
+    # Access the workbook and second sheet
+    both_worksheet51 = writer.sheets['Kaya']
+    
+    # Apply comma format and header format to relevant data rows
+    both_worksheet51.set_column(2, ref_kaya_1_cols + 1, None, space_format)
+    both_worksheet51.set_row(chart_height, None, header_format)
+    both_worksheet51.set_row(chart_height + ref_kaya_1_rows + 3, None, header_format)
+    both_worksheet51.write(0, 0, economy + ' Kaya waterfall charts', cell_format1)
+
+    # First kaya waterfall
+    ref_kaya_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+    ref_kaya_chart1.set_size({
+        'width': 500,
+        'height': 300
+    })
+    
+    ref_kaya_chart1.set_chartarea({
+        'border': {'none': True}
+    })
+    
+    ref_kaya_chart1.set_x_axis({
+        # 'name': 'Year',
+        'label_position': 'low',
+        'major_tick_mark': 'none',
+        'minor_tick_mark': 'none',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_kaya_chart1.set_y_axis({
+        'major_tick_mark': 'none', 
+        'minor_tick_mark': 'none',
+        # 'name': 'Petroleum products (PJ)',
+        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_format': '# ### ### ##0',
+        'major_gridlines': {
+            'visible': True,
+            'line': {'color': '#bebebe'}
+        },
+        'line': {'color': '#bebebe'}
+    })
+        
+    ref_kaya_chart1.set_legend({
+        #'font': {'font': 'Segoe UI', 'size': 10}
+        'none': True
+    })
+        
+    ref_kaya_chart1.set_title({
+        'none': True
+    })
+    
+    # Configure the series of the chart from the dataframe data.    
+    for i in range(ref_kaya_1_rows):
+        ref_kaya_chart1.add_series({
+            'name':       ['Kaya', chart_height + i + 1, 0],
+            'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
+            'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
+            'fill':       {'color': ref_kaya_1['category'].map(colours_dict).loc[i]},
+            'border':     {'none': True},
+            'gap':        50
+        })
+    
+    both_worksheet51.insert_chart('B3', ref_kaya_chart1)
+    
 
     writer.save()
 
