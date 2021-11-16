@@ -6374,53 +6374,61 @@ for economy in Economy_codes:
 
     # Building some waterfall data frames
 
-    #kaya_emiss_1 = emiss_total_1[['fuel_code', 'item_code_new', '2018', '2050']]
+    if economy in ['01_AUS', '02_BD', '03_CDA', '04_CHL', '05_PRC', '06_HKC',
+                   '07_INA', '08_JPN', '09_ROK', '10_MAS', '11_MEX', '12_NZ',
+                   '13_PNG', '14_PE', '15_RP', '16_RUS', '17_SIN', '18_CT', '19_THA',
+                   '20_USA', '21_VN', 'APEC']:
 
-    ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                              columns = ['category', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                         'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
+        ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
+                                columns = ['category', 'Emissions 2018', 'Population', 'GDP per capita',\
+                                            'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
 
-    ref_kaya_1.loc[0, 'category'] = 'initial'
-    ref_kaya_1.loc[1, 'category'] = 'empty'
-    ref_kaya_1.loc[2, 'category'] = 'no improve'
-    ref_kaya_1.loc[3, 'category'] = 'empty'
-    ref_kaya_1.loc[4, 'category'] = 'no improve'
-    ref_kaya_1.loc[5, 'category'] = 'improve'
-    ref_kaya_1.loc[6, 'category'] = 'improve'
+        ref_kaya_1.loc[0, 'category'] = 'initial'
+        ref_kaya_1.loc[1, 'category'] = 'empty'
+        ref_kaya_1.loc[2, 'category'] = 'no improve'
+        ref_kaya_1.loc[3, 'category'] = 'empty'
+        ref_kaya_1.loc[4, 'category'] = 'no improve'
+        ref_kaya_1.loc[5, 'category'] = 'improve'
+        ref_kaya_1.loc[6, 'category'] = 'improve'
 
-    # Calculations to populate dataframe
-    ref_emissions_2018 = emiss_total_1.loc[0, '2018']
-    ref_emissions_2050 = emiss_total_1.loc[0, '2050']
-    pop_growth = (macro_1.loc[macro_1['Series'] == 'Population', '2050'] / macro_1.loc[macro_1['Series'] == 'Population', '2018']).to_numpy()
-    gdp_pc_growth = (macro_1.loc[macro_1['Series'] == 'GDP per capita', '2050'] / macro_1.loc[macro_1['Series'] == 'GDP per capita', '2018']).to_numpy()
-    ref_ei_growth = (ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2050'] / ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2018']).to_numpy()
-    ref_co2i_growth = (ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
+        # Calculations to populate dataframe
+        ref_emissions_2018 = emiss_total_1.loc[0, '2018']
+        ref_emissions_2050 = emiss_total_1.loc[0, '2050']
+        pop_growth = (macro_1.loc[macro_1['Series'] == 'Population', '2050'] / macro_1.loc[macro_1['Series'] == 'Population', '2018']).to_numpy()
+        gdp_pc_growth = (macro_1.loc[macro_1['Series'] == 'GDP per capita', '2050'] / macro_1.loc[macro_1['Series'] == 'GDP per capita', '2018']).to_numpy()
+        ref_ei_growth = (ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2050'] / ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2018']).to_numpy()
+        ref_co2i_growth = (ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
 
-    # Emissions 2018 column
-    ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
-    ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
-    
-    # Population column (Emissions multiplied by population factor split into two data points)
-    ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018
-    ref_kaya_1.loc[2, 'Population'] = (pop_growth * ref_emissions_2018) - ref_emissions_2018
+        # Emissions 2018 column
+        ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
+        ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
+        
+        # Population column (Emissions multiplied by population factor split into two data points)
+        ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018
+        ref_kaya_1.loc[2, 'Population'] = (pop_growth * ref_emissions_2018) - ref_emissions_2018
 
-    # GDP per capita column
-    ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018
-    ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
-    ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
+        # GDP per capita column
+        ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018
+        ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
+        ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
 
-    # Energy intensity column
-    ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-    ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
+        # Energy intensity column
+        ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
+        ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
 
-    # Emissions intensity column
-    ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
-    ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
+        # Emissions intensity column
+        ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
+        ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
 
-    ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
+        ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
 
-    ref_kaya_1_rows = ref_kaya_1.shape[0]
-    ref_kaya_1_cols = ref_kaya_1.shape[1]
+        ref_kaya_1_rows = ref_kaya_1.shape[0]
+        ref_kaya_1_cols = ref_kaya_1.shape[1]
+
+    else:
+        ref_kaya_1 = pd.DataFrame()
+        ref_kaya_1_rows = ref_kaya_1.shape[0]
+        ref_kaya_1_cols = ref_kaya_1.shape[1]
 
     # Df builds are complete
 
@@ -6490,10 +6498,10 @@ for economy in Economy_codes:
     netz_powcap_1.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6)
     ref_powcap_2.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = chart_height + ref_powcap_1_rows + 3)
     netz_powcap_2.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9)
-    ref_pow_use_2.to_excel(writer, sheet_name = 'Power consumption', index = False, startrow = chart_height)
-    netz_pow_use_2.to_excel(writer, sheet_name = 'Power consumption', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6)
-    ref_pow_use_3.to_excel(writer, sheet_name = 'Power consumption', index = False, startrow = chart_height + ref_pow_use_2_rows + 3)
-    netz_pow_use_3.to_excel(writer, sheet_name = 'Power consumption', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9)
+    ref_pow_use_2.to_excel(writer, sheet_name = 'Power fuel consumption', index = False, startrow = chart_height)
+    netz_pow_use_2.to_excel(writer, sheet_name = 'Power fuel consumption', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6)
+    ref_pow_use_3.to_excel(writer, sheet_name = 'Power fuel consumption', index = False, startrow = chart_height + ref_pow_use_2_rows + 3)
+    netz_pow_use_3.to_excel(writer, sheet_name = 'Power fuel consumption', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9)
     ref_refinery_1.to_excel(writer, sheet_name = 'Refining', index = False, startrow = chart_height)
     netz_refinery_1.to_excel(writer, sheet_name = 'Refining', index = False, startrow = (2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9)
     ref_refinery_2.to_excel(writer, sheet_name = 'Refining', index = False, startrow = chart_height + ref_refinery_1_rows + 3)
@@ -6518,28 +6526,28 @@ for economy in Economy_codes:
     netz_heatgen_3.to_excel(writer, sheet_name = 'Heat generation', index = False, startrow = (2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9)
 
     # TPES
-    ref_tpes_1.to_excel(writer, sheet_name = 'TPES', index = False, startrow = chart_height)
-    netz_tpes_1.to_excel(writer, sheet_name = 'TPES', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6)
-    ref_tpes_2.to_excel(writer, sheet_name = 'TPES', index = False, startrow = chart_height + ref_tpes_1_rows + 3)
-    netz_tpes_2.to_excel(writer, sheet_name = 'TPES', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9)
+    ref_tpes_1.to_excel(writer, sheet_name = 'Supply', index = False, startrow = chart_height)
+    netz_tpes_1.to_excel(writer, sheet_name = 'Supply', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6)
+    ref_tpes_2.to_excel(writer, sheet_name = 'Supply', index = False, startrow = chart_height + ref_tpes_1_rows + 3)
+    netz_tpes_2.to_excel(writer, sheet_name = 'Supply', index = False, startrow = (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9)
     ref_prod_1.to_excel(writer, sheet_name = 'Production', index = False, startrow = chart_height)
     netz_prod_1.to_excel(writer, sheet_name = 'Production', index = False, startrow = (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6)
     ref_prod_2.to_excel(writer, sheet_name = 'Production', index = False, startrow = chart_height + ref_prod_1_rows + 3)
     netz_prod_2.to_excel(writer, sheet_name = 'Production', index = False, startrow = (2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9)
-    ref_tpes_comp_1.to_excel(writer, sheet_name = 'TPES REF', index = False, startrow = chart_height)
-    netz_tpes_comp_1.to_excel(writer, sheet_name = 'TPES CN', index = False, startrow = chart_height)
-    ref_imports_1.to_excel(writer, sheet_name = 'TPES REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + 3)
-    netz_imports_1.to_excel(writer, sheet_name = 'TPES CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + 3)
-    ref_imports_2.to_excel(writer, sheet_name = 'TPES REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6)
-    netz_imports_2.to_excel(writer, sheet_name = 'TPES CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6)
-    ref_exports_1.to_excel(writer, sheet_name = 'TPES REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9)
-    netz_exports_1.to_excel(writer, sheet_name = 'TPES CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9)
-    ref_exports_2.to_excel(writer, sheet_name = 'TPES REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12)
-    ref_electrade_1.to_excel(writer, sheet_name = 'TPES REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15)
-    ref_nettrade_1.to_excel(writer, sheet_name = 'TPES REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18)   
-    netz_exports_2.to_excel(writer, sheet_name = 'TPES CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12)
-    netz_electrade_1.to_excel(writer, sheet_name = 'TPES CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15)
-    netz_nettrade_1.to_excel(writer, sheet_name = 'TPES CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18)
+    ref_tpes_comp_1.to_excel(writer, sheet_name = 'Supply REF', index = False, startrow = chart_height)
+    netz_tpes_comp_1.to_excel(writer, sheet_name = 'Supply CN', index = False, startrow = chart_height)
+    ref_imports_1.to_excel(writer, sheet_name = 'Supply REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + 3)
+    netz_imports_1.to_excel(writer, sheet_name = 'Supply CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + 3)
+    ref_imports_2.to_excel(writer, sheet_name = 'Supply REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6)
+    netz_imports_2.to_excel(writer, sheet_name = 'Supply CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6)
+    ref_exports_1.to_excel(writer, sheet_name = 'Supply REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9)
+    netz_exports_1.to_excel(writer, sheet_name = 'Supply CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9)
+    ref_exports_2.to_excel(writer, sheet_name = 'Supply REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12)
+    ref_electrade_1.to_excel(writer, sheet_name = 'Supply REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15)
+    ref_nettrade_1.to_excel(writer, sheet_name = 'Supply REF', index = False, startrow = chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18)   
+    netz_exports_2.to_excel(writer, sheet_name = 'Supply CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12)
+    netz_electrade_1.to_excel(writer, sheet_name = 'Supply CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15)
+    netz_nettrade_1.to_excel(writer, sheet_name = 'Supply CN', index = False, startrow = chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18)
     ref_bunkers_1.to_excel(writer, sheet_name = 'Bunkers', index = False, startrow = chart_height)
     netz_bunkers_1.to_excel(writer, sheet_name = 'Bunkers', index = False, startrow = (2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6)
     ref_bunkers_2.to_excel(writer, sheet_name = 'Bunkers', index = False, startrow = chart_height + ref_bunkers_1_rows + 3)
@@ -8754,7 +8762,7 @@ for economy in Economy_codes:
     ################################################################### CHARTS ###################################################################
     # REFERENCE
     # Access the sheet created using writer above
-    ref_worksheet11 = writer.sheets['TPES']
+    ref_worksheet11 = writer.sheets['Supply']
     
     # Apply comma format and header format to relevant data rows
     ref_worksheet11.set_column(2, ref_tpes_1_cols + 1, None, space_format)
@@ -8819,9 +8827,9 @@ for economy in Economy_codes:
         for i in range(ref_tpes_1_rows):
             if not ref_tpes_1['fuel_code'].iloc[i] in ['Total']:
                 ref_tpes_chart2.add_series({
-                    'name':       ['TPES', chart_height + i + 1, 0],
-                    'categories': ['TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
-                    'values':     ['TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
+                    'name':       ['Supply', chart_height + i + 1, 0],
+                    'categories': ['Supply', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
+                    'values':     ['Supply', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
                     'fill':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True}
                 })    
@@ -8888,18 +8896,18 @@ for economy in Economy_codes:
         for i in range(ref_tpes_1_rows):
             if not ref_tpes_1['fuel_code'].iloc[i] in ['Total']:
                 ref_tpes_chart4.add_series({
-                    'name':       ['TPES', chart_height + i + 1, 0],
-                    'categories': ['TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
-                    'values':     ['TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
+                    'name':       ['Supply', chart_height + i + 1, 0],
+                    'categories': ['Supply', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
+                    'values':     ['Supply', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
                     'line':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i], 
                                 'width': 1}
                 })
 
             else:
                 ref_tpes_chart4.add_series({
-                    'name':       ['TPES', chart_height + i + 1, 0],
-                    'categories': ['TPES', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
-                    'values':     ['TPES', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
+                    'name':       ['Supply', chart_height + i + 1, 0],
+                    'categories': ['Supply', chart_height, 2, chart_height, ref_tpes_1_cols - 1],
+                    'values':     ['Supply', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_1_cols - 1],
                     'line':       {'color': ref_tpes_1['fuel_code'].map(colours_dict).loc[i], 
                                 'width': 1.5}
                 })    
@@ -8960,9 +8968,9 @@ for economy in Economy_codes:
             i = ref_tpes_2[ref_tpes_2['fuel_code'] == component].index[0]
             if not ref_tpes_2['fuel_code'].iloc[i] in ['Total']:
                 ref_tpes_chart3.add_series({
-                    'name':       ['TPES', chart_height + ref_tpes_1_rows + i + 4, 0],
-                    'categories': ['TPES', chart_height + ref_tpes_1_rows + 3, 2, chart_height + ref_tpes_1_rows + 3, ref_tpes_2_cols - 1],
-                    'values':     ['TPES', chart_height + ref_tpes_1_rows + i + 4, 2, chart_height + ref_tpes_1_rows + i + 4, ref_tpes_2_cols - 1],
+                    'name':       ['Supply', chart_height + ref_tpes_1_rows + i + 4, 0],
+                    'categories': ['Supply', chart_height + ref_tpes_1_rows + 3, 2, chart_height + ref_tpes_1_rows + 3, ref_tpes_2_cols - 1],
+                    'values':     ['Supply', chart_height + ref_tpes_1_rows + i + 4, 2, chart_height + ref_tpes_1_rows + i + 4, ref_tpes_2_cols - 1],
                     'fill':       {'color': ref_tpes_2['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
                     'gap':        100
@@ -9199,7 +9207,7 @@ for economy in Economy_codes:
     ###################################### TPES components I ###########################################
     
     # access the sheet for production created above
-    ref_worksheet13 = writer.sheets['TPES REF']
+    ref_worksheet13 = writer.sheets['Supply REF']
     
     # Apply comma format and header format to relevant data rows
     ref_worksheet13.set_column(2, ref_imports_1_cols + 1, None, space_format)
@@ -9260,9 +9268,9 @@ for economy in Economy_codes:
         for component in ref_tpes_comp_1['item_code_new'].unique():
             i = ref_tpes_comp_1[ref_tpes_comp_1['item_code_new'] == component].index[0]
             ref_tpes_comp_chart1.add_series({
-                'name':       ['TPES REF', chart_height + i + 1, 1],
-                'categories': ['TPES REF', chart_height, 2, chart_height, ref_tpes_comp_1_cols - 1],
-                'values':     ['TPES REF', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_comp_1_cols - 1],
+                'name':       ['Supply REF', chart_height + i + 1, 1],
+                'categories': ['Supply REF', chart_height, 2, chart_height, ref_tpes_comp_1_cols - 1],
+                'values':     ['Supply REF', chart_height + i + 1, 2, chart_height + i + 1, ref_tpes_comp_1_cols - 1],
                 'fill':       {'color': ref_tpes_comp_1['item_code_new'].map(colours_dict).loc[i]},
                 'border':     {'none': True},
                 'gap':        100
@@ -9327,9 +9335,9 @@ for economy in Economy_codes:
             i = ref_imports_1[ref_imports_1['fuel_code'] == fuel].index[0]
             if not ref_imports_1['fuel_code'].iloc[i] in ['Total']:
                 ref_imports_line.add_series({
-                    'name':       ['TPES REF', chart_height + ref_tpes_comp_1_rows + i + 4, 0],
-                    'categories': ['TPES REF', chart_height + ref_tpes_comp_1_rows + 3, 2, chart_height + ref_tpes_comp_1_rows + 3, ref_imports_1_cols - 1],
-                    'values':     ['TPES REF', chart_height + ref_tpes_comp_1_rows + i + 4, 2, chart_height + ref_tpes_comp_1_rows + i + 4, ref_imports_1_cols - 1],
+                    'name':       ['Supply REF', chart_height + ref_tpes_comp_1_rows + i + 4, 0],
+                    'categories': ['Supply REF', chart_height + ref_tpes_comp_1_rows + 3, 2, chart_height + ref_tpes_comp_1_rows + 3, ref_imports_1_cols - 1],
+                    'values':     ['Supply REF', chart_height + ref_tpes_comp_1_rows + i + 4, 2, chart_height + ref_tpes_comp_1_rows + i + 4, ref_imports_1_cols - 1],
                     'line':       {'color': ref_imports_1['fuel_code'].map(colours_dict).loc[i], 
                                 'width': 1},
                 })
@@ -9389,9 +9397,9 @@ for economy in Economy_codes:
         for i in range(ref_imports_2_rows):
             if not ref_imports_2['fuel_code'].iloc[i] in ['Total']:
                 ref_imports_column.add_series({
-                    'name':       ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 0],
-                    'categories': ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, ref_imports_2_cols - 1],
-                    'values':     ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, ref_imports_2_cols - 1],
+                    'name':       ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 0],
+                    'categories': ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + 6, ref_imports_2_cols - 1],
+                    'values':     ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + i + 7, ref_imports_2_cols - 1],
                     'fill':       {'color': ref_imports_2['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
                     'gap':        100
@@ -9459,9 +9467,9 @@ for economy in Economy_codes:
             i = ref_exports_1[ref_exports_1['fuel_code'] == fuel].index[0]
             if not ref_exports_1['fuel_code'].iloc[i] in ['Total']:
                 ref_exports_line.add_series({
-                    'name':       ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 0],
-                    'categories': ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, ref_imports_1_cols - 1],
-                    'values':     ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, ref_imports_1_cols - 1],
+                    'name':       ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 0],
+                    'categories': ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + 9, ref_imports_1_cols - 1],
+                    'values':     ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + i + 10, ref_imports_1_cols - 1],
                     'line':       {'color': ref_exports_1['fuel_code'].map(colours_dict).loc[i], 
                                 'width': 1},
                 })
@@ -9522,9 +9530,9 @@ for economy in Economy_codes:
         for i in range(ref_exports_2_rows):
             if not ref_exports_2['fuel_code'].iloc[i] in ['Total']:
                 ref_exports_column.add_series({
-                    'name':       ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 0],
-                    'categories': ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, ref_exports_2_cols - 1],
-                    'values':     ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, ref_exports_2_cols - 1],
+                    'name':       ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 0],
+                    'categories': ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, ref_exports_2_cols - 1],
+                    'values':     ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, 2, chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + i + 13, ref_exports_2_cols - 1],
                     'fill':       {'color': ref_exports_2['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
                     'gap':        100
@@ -9584,10 +9592,10 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.    
         for i in range(ref_electrade_1_rows):
             ref_electrade_column.add_series({
-                'name':       ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + i + 16, 1],
-                'categories': ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15, 2,\
+                'name':       ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + i + 16, 1],
+                'categories': ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15, 2,\
                     chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + 15, ref_electrade_1_cols - 1],
-                'values':     ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + i + 16, 2,\
+                'values':     ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + i + 16, 2,\
                     chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + i + 16, ref_electrade_1_cols - 1],
                 'fill':       {'color': ref_electrade_1['item_code_new'].map(colours_dict).loc[i]},
                 'border':     {'none': True},
@@ -9646,10 +9654,10 @@ for economy in Economy_codes:
         for i in range(ref_nettrade_1_rows):
             if not ref_nettrade_1['fuel_code'].iloc[i] in ['Trade balance']:
                 ref_nettrade_column.add_series({
-                    'name':       ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 0],
-                    'categories': ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, 2,\
+                    'name':       ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 0],
+                    'categories': ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, 2,\
                         chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, ref_nettrade_1_cols - 1],
-                    'values':     ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 2,\
+                    'values':     ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 2,\
                         chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + ref_electrade_1_rows + i + 19, ref_nettrade_1_cols - 1],
                     'fill':       {'color': ref_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
@@ -9666,10 +9674,10 @@ for economy in Economy_codes:
         for i in range(ref_nettrade_1_rows):
             if ref_nettrade_1['fuel_code'].iloc[i] in ['Trade balance']:
                 ref_nettrade_line.add_series({
-                    'name':       ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 0],
-                    'categories': ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, 2,\
+                    'name':       ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 0],
+                    'categories': ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, 2,\
                         chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + 18, ref_nettrade_1_cols - 1],
-                    'values':     ['TPES REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 2,\
+                    'values':     ['Supply REF', chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_2_rows + ref_electrade_1_rows + i + 19, 2,\
                         chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + ref_electrade_1_rows + i + 19, ref_nettrade_1_cols - 1],
                     'marker':     {'fill': {'color': ref_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
                                    'type': 'diamond',
@@ -9893,10 +9901,10 @@ for economy in Economy_codes:
         for i in range(netz_tpes_1_rows):
             if not netz_tpes_1['fuel_code'].iloc[i] in ['Total']:
                 netz_tpes_chart2.add_series({
-                    'name':       ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
-                    'categories': ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
+                    'name':       ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
+                    'categories': ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
                         (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
-                    'values':     ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
+                    'values':     ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
                         (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
                     'fill':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True}
@@ -9964,10 +9972,10 @@ for economy in Economy_codes:
         for i in range(netz_tpes_1_rows):
             if not netz_tpes_1['fuel_code'].iloc[i] in ['Total']:
                 netz_tpes_chart4.add_series({
-                    'name':       ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
-                    'categories': ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
+                    'name':       ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
+                    'categories': ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
                         (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
-                    'values':     ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
+                    'values':     ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
                         (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
                     'line':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i], 
                                 'width': 1}
@@ -9975,10 +9983,10 @@ for economy in Economy_codes:
 
             else:
                 netz_tpes_chart4.add_series({
-                    'name':       ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
-                    'categories': ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
+                    'name':       ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 0],
+                    'categories': ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, 2,\
                         (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, netz_tpes_1_cols - 1],
-                    'values':     ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
+                    'values':     ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, 2,\
                         (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + i + 7, netz_tpes_1_cols - 1],
                     'line':       {'color': netz_tpes_1['fuel_code'].map(colours_dict).loc[i], 
                                 'width': 1.5}
@@ -10040,10 +10048,10 @@ for economy in Economy_codes:
             i = netz_tpes_2[netz_tpes_2['fuel_code'] == component].index[0]
             if not netz_tpes_2['fuel_code'].iloc[i] in ['Total']:
                 netz_tpes_chart3.add_series({
-                    'name':       ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 0],
-                    'categories': ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, 2,\
+                    'name':       ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 0],
+                    'categories': ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, 2,\
                         (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + 9, netz_tpes_2_cols - 1],
-                    'values':     ['TPES', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 2,\
+                    'values':     ['Supply', (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, 2,\
                         (2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + netz_tpes_1_rows + i + 10, netz_tpes_2_cols - 1],
                     'fill':       {'color': netz_tpes_2['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
@@ -10283,7 +10291,7 @@ for economy in Economy_codes:
     ###################################### TPES components I ###########################################
     
     # access the sheet for production created above
-    netz_worksheet13 = writer.sheets['TPES CN']
+    netz_worksheet13 = writer.sheets['Supply CN']
     
     # Apply comma format and header format to relevant data rows
     netz_worksheet13.set_column(2, netz_imports_1_cols + 1, None, space_format)
@@ -10344,9 +10352,9 @@ for economy in Economy_codes:
         for component in netz_tpes_comp_1['item_code_new'].unique():
             i = netz_tpes_comp_1[netz_tpes_comp_1['item_code_new'] == component].index[0]
             netz_tpes_comp_chart1.add_series({
-                'name':       ['TPES CN', chart_height + i + 1, 1],
-                'categories': ['TPES CN', chart_height, 2, chart_height, netz_tpes_comp_1_cols - 1],
-                'values':     ['TPES CN', chart_height + i + 1, 2, chart_height + i + 1, netz_tpes_comp_1_cols - 1],
+                'name':       ['Supply CN', chart_height + i + 1, 1],
+                'categories': ['Supply CN', chart_height, 2, chart_height, netz_tpes_comp_1_cols - 1],
+                'values':     ['Supply CN', chart_height + i + 1, 2, chart_height + i + 1, netz_tpes_comp_1_cols - 1],
                 'fill':       {'color': netz_tpes_comp_1['item_code_new'].map(colours_dict).loc[i]},
                 'border':     {'none': True},
                 'gap':        100
@@ -10410,9 +10418,9 @@ for economy in Economy_codes:
             i = netz_imports_1[netz_imports_1['fuel_code'] == fuel].index[0]
             if not netz_imports_1['fuel_code'].iloc[i] in ['Total']:
                 netz_imports_line.add_series({
-                    'name':       ['TPES CN', chart_height + netz_tpes_comp_1_rows + i + 4, 0],
-                    'categories': ['TPES CN', chart_height + netz_tpes_comp_1_rows + 3, 2, chart_height + netz_tpes_comp_1_rows + 3, netz_imports_1_cols - 1],
-                    'values':     ['TPES CN', chart_height + netz_tpes_comp_1_rows + i + 4, 2, chart_height + netz_tpes_comp_1_rows + i + 4, netz_imports_1_cols - 1],
+                    'name':       ['Supply CN', chart_height + netz_tpes_comp_1_rows + i + 4, 0],
+                    'categories': ['Supply CN', chart_height + netz_tpes_comp_1_rows + 3, 2, chart_height + netz_tpes_comp_1_rows + 3, netz_imports_1_cols - 1],
+                    'values':     ['Supply CN', chart_height + netz_tpes_comp_1_rows + i + 4, 2, chart_height + netz_tpes_comp_1_rows + i + 4, netz_imports_1_cols - 1],
                     'line':       {'color': netz_imports_1['fuel_code'].map(colours_dict).loc[i], 
                                 'width': 1},
                 })
@@ -10472,9 +10480,9 @@ for economy in Economy_codes:
         for i in range(netz_imports_2_rows):
             if not netz_imports_2['fuel_code'].iloc[i] in ['Total']:
                 netz_imports_column.add_series({
-                    'name':       ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 0],
-                    'categories': ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, netz_imports_2_cols - 1],
-                    'values':     ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, netz_imports_2_cols - 1],
+                    'name':       ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 0],
+                    'categories': ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + 6, netz_imports_2_cols - 1],
+                    'values':     ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + i + 7, netz_imports_2_cols - 1],
                     'fill':       {'color': netz_imports_2['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
                     'gap':        100
@@ -10541,9 +10549,9 @@ for economy in Economy_codes:
             i = netz_exports_1[netz_exports_1['fuel_code'] == fuel].index[0]
             if not netz_exports_1['fuel_code'].iloc[i] in ['Total']:
                 netz_exports_line.add_series({
-                    'name':       ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 0],
-                    'categories': ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, netz_imports_1_cols - 1],
-                    'values':     ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, netz_imports_1_cols - 1],
+                    'name':       ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 0],
+                    'categories': ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + 9, netz_imports_1_cols - 1],
+                    'values':     ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + i + 10, netz_imports_1_cols - 1],
                     'line':       {'color': netz_exports_1['fuel_code'].map(colours_dict).loc[i], 
                                 'width': 1},
                 })
@@ -10603,9 +10611,9 @@ for economy in Economy_codes:
         for i in range(netz_exports_2_rows):
             if not netz_exports_2['fuel_code'].iloc[i] in ['Total']:
                 netz_exports_column.add_series({
-                    'name':       ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 0],
-                    'categories': ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, netz_exports_2_cols - 1],
-                    'values':     ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, netz_exports_2_cols - 1],
+                    'name':       ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 0],
+                    'categories': ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, netz_exports_2_cols - 1],
+                    'values':     ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, 2, chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + i + 13, netz_exports_2_cols - 1],
                     'fill':       {'color': netz_exports_2['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
                     'gap':        100
@@ -10665,10 +10673,10 @@ for economy in Economy_codes:
         # Configure the series of the chart from the dataframe data.    
         for i in range(netz_electrade_1_rows):
             netz_electrade_column.add_series({
-                'name':       ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + i + 16, 1],
-                'categories': ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15, 2,\
+                'name':       ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + i + 16, 1],
+                'categories': ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15, 2,\
                     chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + 15, netz_electrade_1_cols - 1],
-                'values':     ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + i + 16, 2,\
+                'values':     ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + i + 16, 2,\
                     chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + i + 16, netz_electrade_1_cols - 1],
                 'fill':       {'color': netz_electrade_1['item_code_new'].map(colours_dict).loc[i]},
                 'border':     {'none': True},
@@ -10727,10 +10735,10 @@ for economy in Economy_codes:
         for i in range(netz_nettrade_1_rows):
             if not netz_nettrade_1['fuel_code'].iloc[i] in ['Trade balance']:
                 netz_nettrade_column.add_series({
-                    'name':       ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 0],
-                    'categories': ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, 2,\
+                    'name':       ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 0],
+                    'categories': ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, 2,\
                         chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, netz_nettrade_1_cols - 1],
-                    'values':     ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 2,\
+                    'values':     ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 2,\
                         chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + netz_electrade_1_rows + i + 19, netz_nettrade_1_cols - 1],
                     'fill':       {'color': netz_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
@@ -10747,10 +10755,10 @@ for economy in Economy_codes:
         for i in range(netz_nettrade_1_rows):
             if netz_nettrade_1['fuel_code'].iloc[i] in ['Trade balance']:
                 netz_nettrade_line.add_series({
-                    'name':       ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 0],
-                    'categories': ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, 2,\
+                    'name':       ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 0],
+                    'categories': ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, 2,\
                         chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + 18, netz_nettrade_1_cols - 1],
-                    'values':     ['TPES CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 2,\
+                    'values':     ['Supply CN', chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_2_rows + netz_electrade_1_rows + i + 19, 2,\
                         chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + netz_electrade_1_rows + i + 19, netz_nettrade_1_cols - 1],
                     'marker':     {'fill': {'color': netz_nettrade_1['fuel_code'].map(colours_dict).loc[i]},
                                    'type': 'diamond',
@@ -10915,7 +10923,7 @@ for economy in Economy_codes:
     # TRANSFORMATION CHARTS
 
     # Access the workbook and first sheet with data from df1 
-    ref_worksheet21 = writer.sheets['Power consumption']
+    ref_worksheet21 = writer.sheets['Power fuel consumption']
     
     # Comma format and header format        
     # space_format = workbook.add_format({'num_format': '#,##0'})
@@ -10985,9 +10993,9 @@ for economy in Economy_codes:
         for i in range(ref_pow_use_2_rows):
             if not ref_pow_use_2['FUEL'].iloc[i] in ['Total']:
                 usefuel_chart1.add_series({
-                    'name':       ['Power consumption', chart_height + i + 1, 0],
-                    'categories': ['Power consumption', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
-                    'values':     ['Power consumption', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
+                    'name':       ['Power fuel consumption', chart_height + i + 1, 0],
+                    'categories': ['Power fuel consumption', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
+                    'values':     ['Power fuel consumption', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
                     'fill':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i]},
                     'border':     {'none': True}
                 })
@@ -11047,9 +11055,9 @@ for economy in Economy_codes:
         for i in range(ref_pow_use_3_rows):
             if not ref_pow_use_3['FUEL'].iloc[i] in ['Total']:
                 usefuel_chart2.add_series({
-                    'name':       ['Power consumption', chart_height + ref_pow_use_2_rows + i + 4, 0],
-                    'categories': ['Power consumption', chart_height + ref_pow_use_2_rows + 3, 2, chart_height + ref_pow_use_2_rows + 3, ref_pow_use_3_cols - 1],
-                    'values':     ['Power consumption', chart_height + ref_pow_use_2_rows + i + 4, 2, chart_height + ref_pow_use_2_rows + i + 4, ref_pow_use_3_cols - 1],
+                    'name':       ['Power fuel consumption', chart_height + ref_pow_use_2_rows + i + 4, 0],
+                    'categories': ['Power fuel consumption', chart_height + ref_pow_use_2_rows + 3, 2, chart_height + ref_pow_use_2_rows + 3, ref_pow_use_3_cols - 1],
+                    'values':     ['Power fuel consumption', chart_height + ref_pow_use_2_rows + i + 4, 2, chart_height + ref_pow_use_2_rows + i + 4, ref_pow_use_3_cols - 1],
                     'fill':       {'color': ref_pow_use_3['FUEL'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
                     'gap':        100
@@ -11115,9 +11123,9 @@ for economy in Economy_codes:
         for i in range(ref_pow_use_2_rows):
             if not ref_pow_use_2['FUEL'].iloc[i] in ['Total']:
                 usefuel_chart3.add_series({
-                    'name':       ['Power consumption', chart_height + i + 1, 0],
-                    'categories': ['Power consumption', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
-                    'values':     ['Power consumption', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
+                    'name':       ['Power fuel consumption', chart_height + i + 1, 0],
+                    'categories': ['Power fuel consumption', chart_height, 2, chart_height, ref_pow_use_2_cols - 1],
+                    'values':     ['Power fuel consumption', chart_height + i + 1, 2, chart_height + i + 1, ref_pow_use_2_cols - 1],
                     'line':       {'color': ref_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1}
                 })
 
@@ -12467,10 +12475,10 @@ for economy in Economy_codes:
         for i in range(netz_pow_use_2_rows):
             if not netz_pow_use_2['FUEL'].iloc[i] in ['Total']:
                 netz_usefuel_chart1.add_series({
-                    'name':       ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
-                    'categories': ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
+                    'name':       ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
+                    'categories': ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
                         (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
-                    'values':     ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
+                    'values':     ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
                         (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
                     'fill':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i]},
                     'border':     {'none': True}
@@ -12531,10 +12539,10 @@ for economy in Economy_codes:
         for i in range(netz_pow_use_3_rows):
             if not netz_pow_use_3['FUEL'].iloc[i] in ['Total']:
                 netz_usefuel_chart2.add_series({
-                    'name':       ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 0],
-                    'categories': ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, 2,\
+                    'name':       ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 0],
+                    'categories': ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, 2,\
                         (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, netz_pow_use_3_cols - 1],
-                    'values':     ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 2,\
+                    'values':     ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, 2,\
                         (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + i + 10, netz_pow_use_3_cols - 1],
                     'fill':       {'color': netz_pow_use_3['FUEL'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
@@ -12601,10 +12609,10 @@ for economy in Economy_codes:
         for i in range(netz_pow_use_2_rows):
             if not netz_pow_use_2['FUEL'].iloc[i] in ['Total']:
                 netz_usefuel_chart3.add_series({
-                    'name':       ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
-                    'categories': ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
+                    'name':       ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 0],
+                    'categories': ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 2,\
                         (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, netz_pow_use_2_cols - 1],
-                    'values':     ['Power consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
+                    'values':     ['Power fuel consumption', (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, 2,\
                         (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + i + 7, netz_pow_use_2_cols - 1],
                     'line':       {'color': netz_pow_use_2['FUEL'].map(colours_dict).loc[i], 'width': 1}
                 })
@@ -19326,81 +19334,85 @@ for economy in Economy_codes:
     both_worksheet51.write(0, 0, economy + ' Kaya waterfall charts', cell_format1)
 
     # First kaya waterfall
-    ref_kaya_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
-    ref_kaya_chart1.set_size({
-        'width': 500,
-        'height': 300
-    })
-    
-    ref_kaya_chart1.set_chartarea({
-        'border': {'none': True}
-    })
-    
-    ref_kaya_chart1.set_x_axis({
-        # 'name': 'Year',
-        'label_position': 'low',
-        'major_tick_mark': 'none',
-        'minor_tick_mark': 'none',
-        #'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'line': {'color': '#bebebe'}
-    })
+    if ref_kaya_1_rows > 0:
+        ref_kaya_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        ref_kaya_chart1.set_size({
+            'width': 500,
+            'height': 300
+        })
         
-    ref_kaya_chart1.set_y_axis({
-        'major_tick_mark': 'none', 
-        'minor_tick_mark': 'none',
-        # 'name': 'Petroleum products (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
-        'num_format': '# ### ### ##0',
-        'major_gridlines': {
-            'visible': True,
+        ref_kaya_chart1.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_kaya_chart1.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            #'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
             'line': {'color': '#bebebe'}
-        },
-        'line': {'color': '#bebebe'}
-    })
+        })
+            
+        ref_kaya_chart1.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'Petroleum products (PJ)',
+            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_kaya_chart1.set_legend({
+            #'font': {'font': 'Segoe UI', 'size': 10}
+            'none': True
+        })
+            
+        ref_kaya_chart1.set_title({
+            'none': True
+        })
         
-    ref_kaya_chart1.set_legend({
-        #'font': {'font': 'Segoe UI', 'size': 10}
-        'none': True
-    })
+        # Configure the series of the chart from the dataframe data.    
+        for i in range(ref_kaya_1_rows):
+            if ref_kaya_1['category'].iloc[i] in ['initial']:
+                ref_kaya_chart1.add_series({
+                    'name':       ['Kaya', chart_height + i + 1, 0],
+                    'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
+                    'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
+                    'fill':       {'color': ref_kaya_1['category'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        50
+                })
+
+            elif ref_kaya_1['category'].iloc[i] in ['improve', 'no improve']:
+                ref_kaya_chart1.add_series({
+                    'name':       ['Kaya', chart_height + i + 1, 0],
+                    'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
+                    'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
+                    'fill':       {'color': ref_kaya_1['category'].map(colours_dict).loc[i],
+                                'transparency': 50},
+                    'border':     {'none': True},
+                    'gap':        50
+                })
+
+            else:
+                ref_kaya_chart1.add_series({
+                    'name':       ['Kaya', chart_height + i + 1, 0],
+                    'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
+                    'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
+                    'fill':       {'none': True},
+                    'border':     {'none': True},
+                    'gap':        50
+                })
         
-    ref_kaya_chart1.set_title({
-        'none': True
-    })
-    
-    # Configure the series of the chart from the dataframe data.    
-    for i in range(ref_kaya_1_rows):
-        if ref_kaya_1['category'].iloc[i] in ['initial']:
-            ref_kaya_chart1.add_series({
-                'name':       ['Kaya', chart_height + i + 1, 0],
-                'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
-                'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
-                'fill':       {'color': ref_kaya_1['category'].map(colours_dict).loc[i]},
-                'border':     {'none': True},
-                'gap':        50
-            })
+        both_worksheet51.insert_chart('B3', ref_kaya_chart1)
 
-        elif ref_kaya_1['category'].iloc[i] in ['improve', 'no improve']:
-            ref_kaya_chart1.add_series({
-                'name':       ['Kaya', chart_height + i + 1, 0],
-                'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
-                'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
-                'fill':       {'color': ref_kaya_1['category'].map(colours_dict).loc[i],
-                               'transparency': 50},
-                'border':     {'none': True},
-                'gap':        50
-            })
-
-        else:
-            ref_kaya_chart1.add_series({
-                'name':       ['Kaya', chart_height + i + 1, 0],
-                'categories': ['Kaya', chart_height, 1, chart_height, ref_kaya_1_cols - 1],
-                'values':     ['Kaya', chart_height + i + 1, 1, chart_height + i + 1, ref_kaya_1_cols - 1],
-                'fill':       {'none': True},
-                'border':     {'none': True},
-                'gap':        50
-            })
-    
-    both_worksheet51.insert_chart('B3', ref_kaya_chart1)   
+    else:
+        pass   
 
     writer.save()
 
