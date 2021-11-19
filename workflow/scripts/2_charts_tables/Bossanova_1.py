@@ -342,7 +342,7 @@ prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear'
 prod_agg_tech2 = ['Coal', 'Coal CCS', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
                  'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports', 'Total']
 
-heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Nuclear', 'Biomass', 'Waste', 'Non-specified', 'Other', 'Total']
+heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Nuclear', 'Biomass', 'Waste', 'Non-specified', 'Heat only units', 'Total']
 
 # Power input fuel categories
 
@@ -853,7 +853,7 @@ ref_cement_2 = ref_cement_1.groupby(['REGION', 'tech_mix']).sum().reset_index()
 ref_cement_2['Industry'] = 'Cement'
 ref_cement_2 = ref_cement_2[['REGION', 'Industry', 'tech_mix'] + list(ref_cement_2.loc[:,'2018':'2050'])]
 
-# NET-ZERO
+# CARBON NEUTRALITY
 
 # Heavy industry dataframes
 
@@ -902,7 +902,7 @@ ref_roadfuel_2 = ref_roadfuel_1.groupby(['REGION', 'modality']).sum().reset_inde
 ref_roadfuel_2['Transport'] = 'Road'
 ref_roadfuel_2 = ref_roadfuel_2[['REGION', 'Transport', 'modality'] + list(ref_roadfuel_2.loc[:,'2018':'2050'])]
 
-# NET-ZERO
+# CARBON NEUTRALITY
 netz_roadmodal_1 = netz_osemo_1[netz_osemo_1['TECHNOLOGY'].str.contains('TRN_')].copy()
 netz_roadmodal_1['modality'] = netz_osemo_1['TECHNOLOGY'].map(trn_mapping_2)
 
@@ -2121,7 +2121,7 @@ for economy in Economy_codes:
 
     ######################################################################################################################
 
-    # TPES NET-ZERO DATA FRAMES
+    # TPES CARBON NEUTRALITY DATA FRAMES
     # First data frame: TPES by fuels (and also fourth and sixth dataframe with slight tweaks)
     netz_tpes_df = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                           (EGEDA_years_netzero['item_code_new'] == '7_total_primary_energy_supply') &
@@ -2971,7 +2971,7 @@ for economy in Economy_codes:
     nuclear_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(nuke_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     waste_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
-    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
+    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only units')
     nons_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(nons_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Non-specified')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
@@ -3081,7 +3081,7 @@ for economy in Economy_codes:
 
     ######################################################################################################################
     
-    # NET-ZERO dataframes
+    # CARBON NEUTRALITY dataframes
 
     netz_pow_use_1 = netz_power_df1[(netz_power_df1['economy'] == economy) &
                         (netz_power_df1['Sheet_energy'] == 'UseByTechnology') &
@@ -3403,7 +3403,7 @@ for economy in Economy_codes:
     netz_hydrogen_3_rows = netz_hydrogen_3.shape[0]
     netz_hydrogen_3_cols = netz_hydrogen_3.shape[1]
 
-    # Net-zero hydrogen use
+    # CARBON NEUTRALITY hydrogen use
 
     netz_hyd_use_1 = netz_osemo_1[(netz_osemo_1['REGION'] == economy) &
                                 (netz_osemo_1['TECHNOLOGY'].str.startswith('HYD'))].copy().reset_index(drop = True)
@@ -3594,7 +3594,7 @@ for economy in Economy_codes:
     nuclear_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(nuke_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     waste_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
-    comb_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
+    comb_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only units')
     nons_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(nons_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Non-specified')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
@@ -3648,7 +3648,7 @@ for economy in Economy_codes:
      
     # Heat use dataframes
 
-    # NET-ZERO
+    # CARBON NEUTRALITY
 
     netz_heat_use_1 = netz_power_df1[(netz_power_df1['economy'] == economy) &
                                    (netz_power_df1['Sheet_energy'] == 'UseByTechnology') &
@@ -3837,7 +3837,7 @@ for economy in Economy_codes:
     ref_modren_4_rows = ref_modren_4.shape[0]
     ref_modren_4_cols = ref_modren_4.shape[1]
 
-    # NET-ZERO: Modern renewables
+    # CARBON NEUTRALITY: Modern renewables
     # Agriculture, buildings, industry, transport, non-specified others
 
     netz_ag_temp = netz_ag_1[netz_ag_1['fuel_code'] == 'Other renewables'].copy().groupby(['item_code_new']).sum().reset_index()
@@ -3959,7 +3959,7 @@ for economy in Economy_codes:
     non_ren_eh1 = ['Non modern renewables', 'Electricity and heat'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 2, 2:] - netz_modren_3.iloc[netz_modren_3.shape[0] - 3, 2:])
     non_ren_series1 = pd.Series(non_ren_eh1, index = netz_modren_3.columns)
 
-    modren_prop1 = ['Modern renewables', 'Net-zero'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 4, 2:] / netz_modren_3.iloc[netz_modren_3.shape[0] - 1, 2:])
+    modren_prop1 = ['Modern renewables', 'Carbon neutrality'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 4, 2:] / netz_modren_3.iloc[netz_modren_3.shape[0] - 1, 2:])
     modren_prop_series1 = pd.Series(modren_prop1, index = netz_modren_3.columns)
 
     netz_modren_4 = netz_modren_3.append([non_ren_series1, modren_prop_series1], ignore_index = True).reset_index(drop = True)
@@ -4023,7 +4023,7 @@ for economy in Economy_codes:
         ref_enint_3_rows = ref_enint_3.shape[0]
         ref_enint_3_cols = ref_enint_3.shape[1]
 
-        # NET-ZERO
+        # CARBON NEUTRALITY
 
         netz_enint_1 = netz_tfec_1.copy()
         netz_enint_1['Economy'] = economy
@@ -4038,7 +4038,7 @@ for economy in Economy_codes:
 
         netz_enint_2 = netz_enint_1.append(netz_ei_series1, ignore_index = True).reset_index(drop = True)
 
-        netz_ei_calc2 = [economy, 'Net-zero'] + list(netz_enint_2.iloc[2, 2:] / netz_enint_2.iloc[2, 7] * 100)
+        netz_ei_calc2 = [economy, 'Carbon neutrality'] + list(netz_enint_2.iloc[2, 2:] / netz_enint_2.iloc[2, 7] * 100)
         netz_ei_series2 = pd.Series(netz_ei_calc2, index = netz_enint_2.columns)
 
         netz_enint_3 = netz_enint_2.append(netz_ei_series2, ignore_index = True).reset_index(drop = True)
@@ -4090,7 +4090,7 @@ for economy in Economy_codes:
         ref_enint_sup3_rows = ref_enint_sup3.shape[0]
         ref_enint_sup3_cols = ref_enint_sup3.shape[1]
 
-        # NET-ZERO
+        # CARBON NEUTRALITY
         netz_enint_sup1 = netz_tpes_1[netz_tpes_1['fuel_code'] == 'Total'].copy().reset_index(drop = True)
         netz_enint_sup1['Economy'] = economy
         netz_enint_sup1['Series'] = 'TPES'
@@ -4099,12 +4099,12 @@ for economy in Economy_codes:
 
         netz_enint_sup1 = netz_enint_sup1[['Economy', 'Series'] + list(netz_enint_sup1.loc[:, '2000':'2050'])]
 
-        netz_calc1 = [economy, 'Net-zero'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
+        netz_calc1 = [economy, 'Carbon neutrality'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
         netz_series1 = pd.Series(netz_calc1, index = netz_enint_sup1.columns)
 
         netz_enint_sup2 = netz_enint_sup1.append(netz_series1, ignore_index = True).reset_index(drop = True)
 
-        netz_calc2 = [economy, 'Net-zero (indexed)'] + list(netz_enint_sup2.iloc[2, 2:] / netz_enint_sup2.iloc[2, 7] * 100)
+        netz_calc2 = [economy, 'Carbon neutrality (indexed)'] + list(netz_enint_sup2.iloc[2, 2:] / netz_enint_sup2.iloc[2, 7] * 100)
         netz_series2 = pd.Series(netz_calc2, index = netz_enint_sup2.columns)
 
         netz_enint_sup3 = netz_enint_sup2.append(netz_series2, ignore_index = True).reset_index(drop = True)
@@ -4168,7 +4168,7 @@ for economy in Economy_codes:
         ref_cement_3_rows = ref_cement_3.shape[0]
         ref_cement_3_cols = ref_cement_3.shape[1]
 
-    # NET-ZERO
+    # CARBON NEUTRALITY
     # Steel
     if any(economy in s for s in list(netz_steel_2['REGION'])):
         
@@ -4240,7 +4240,7 @@ for economy in Economy_codes:
         ref_roadfuel_3_rows = ref_roadfuel_3.shape[0]
         ref_roadfuel_3_cols = ref_roadfuel_3.shape[1]
 
-    # TRANSPORT NET-ZERO
+    # TRANSPORT CARBON NEUTRALITY
     # Road modality 
     if any(economy in s for s in list(netz_roadmodal_2['REGION'])):
 
@@ -4475,7 +4475,7 @@ for economy in Economy_codes:
     emiss_total_1 = emiss_total_1.append(netz_emiss_fuel_1[netz_emiss_fuel_1['fuel_code'] == 'Total'].copy())\
         .reset_index(drop = True) 
 
-    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Total', 'fuel_code'] = 'Net-zero'
+    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Total', 'fuel_code'] = 'Carbon neutrality'
 
     emiss_total_1_rows = emiss_total_1.shape[0]
     emiss_total_1_cols = emiss_total_1.shape[1]
@@ -4503,7 +4503,7 @@ for economy in Economy_codes:
     emissions_wedge_1 = emissions_wedge_1.append(emiss_total_1.copy()).reset_index(drop = True)
 
     emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Reference', 'item_code_new'] = 'Reference'
-    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Net-zero', 'item_code_new'] = 'Carbon neutrality'
+    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Carbon neutrality', 'item_code_new'] = 'Carbon neutrality'
     emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Reference', 'fuel_code'] = '19_total'
     emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon neutrality', 'fuel_code'] = '19_total'
 
@@ -4530,7 +4530,7 @@ for economy in Economy_codes:
 
     emissions_wedge_2 = emissions_wedge_2.append(emiss_total_1.copy()).reset_index(drop = True)
 
-    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Net-zero', 'fuel_code'] = 'Carbon neutrality'
+    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon neutrality', 'fuel_code'] = 'Carbon neutrality'
 
     emissions_wedge_2_rows = emissions_wedge_2.shape[0]
     emissions_wedge_2_cols = emissions_wedge_2.shape[1]
@@ -4839,7 +4839,7 @@ for economy in Economy_codes:
     ref_renew_2_rows = ref_renew_2.shape[0]
     ref_renew_2_cols = ref_renew_2.shape[1]
 
-    # NET-ZERO
+    # CARBON NEUTRALITY
 
     netz_coal_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                        (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
@@ -5659,7 +5659,7 @@ for economy in Economy_codes:
     ref_renewcons_1_cols = ref_renewcons_1.shape[1]
 
     ##########
-    # NET-ZERO
+    # CARBON NEUTRALITY
 
     # Industry
     # Transport
@@ -6289,12 +6289,12 @@ for economy in Economy_codes:
     ref_co2int_2_rows = ref_co2int_2.shape[0]
     ref_co2int_2_cols = ref_co2int_2.shape[1]
 
-    # NET-ZERO
+    # CARBON NEUTRALITY
     netz_co2int_1 = netz_emiss_fuel_1[netz_emiss_fuel_1['fuel_code'] == 'Total'].copy().reset_index(drop = True)
 
     netz_co2int_1 = netz_co2int_1.append(netz_tpes_1[netz_tpes_1['fuel_code'] == 'Total']).copy().reset_index(drop = True)
 
-    netz_calc1 = ['Net-zero', 'CO2 intensity'] + list(netz_co2int_1.iloc[0, 2:] / netz_co2int_1.iloc[1, 2:])
+    netz_calc1 = ['Carbon neutrality', 'CO2 intensity'] + list(netz_co2int_1.iloc[0, 2:] / netz_co2int_1.iloc[1, 2:])
     netz_series1 = pd.Series(netz_calc1, index = netz_co2int_1.columns)
 
     netz_co2int_2 = netz_co2int_1.append(netz_series1, ignore_index = True).reset_index(drop = True)
@@ -6338,7 +6338,7 @@ for economy in Economy_codes:
     ref_elec_1_rows = ref_elec_1.shape[0]
     ref_elec_1_cols = ref_elec_1.shape[1]
 
-    # NET-ZERO
+    # CARBON NEUTRALITY
     netz_elec_1 = netz_bld_2[netz_bld_2['fuel_code'] == 'Electricity'].copy()\
         .append(netz_ind_2[netz_ind_2['fuel_code'] == 'Electricity'].copy())\
             .append(netz_trn_1[netz_trn_1['fuel_code'] == 'Electricity'].copy())\
@@ -6388,7 +6388,7 @@ for economy in Economy_codes:
         gdp_pc_growth = (macro_1.loc[macro_1['Series'] == 'GDP per capita', '2050'] / macro_1.loc[macro_1['Series'] == 'GDP per capita', '2018']).to_numpy()
         ref_ei_growth = (ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2050'] / ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2018']).to_numpy()
         ref_co2i_growth = (ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
-        netz_ei_growth = (netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Net-zero', '2050'] / netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Net-zero', '2018']).to_numpy()
+        netz_ei_growth = (netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon neutrality', '2050'] / netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon neutrality', '2018']).to_numpy()
         netz_co2i_growth = (netz_co2int_2.loc[netz_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / netz_co2int_2.loc[netz_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
 
         if (pop_growth >= 1) & (ref_co2i_growth < 1):
@@ -6946,8 +6946,8 @@ for economy in Economy_codes:
     ref_worksheet1.set_row(chart_height + ref_fedfuel_1_rows + 3, None, header_format)
     ref_worksheet1.set_row((2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, None, header_format)
     ref_worksheet1.set_row((2 * chart_height) + ref_fedfuel_1_rows + ref_fedfuel_2_rows + netz_fedfuel_1_rows + 9, None, header_format)
-    ref_worksheet1.write(0, 0, economy + ' FED fuel reference', cell_format1)
-    ref_worksheet1.write(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 0, economy + ' FED fuel net-zero', cell_format1)
+    ref_worksheet1.write(0, 0, economy + ' FED fuel Reference', cell_format1)
+    ref_worksheet1.write(chart_height + ref_fedfuel_1_rows + ref_fedfuel_2_rows + 6, 0, economy + ' FED fuel Carbon Neutrality', cell_format1)
     ref_worksheet1.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # FED Fuel REFERENCE charts
@@ -6969,7 +6969,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -6980,18 +6980,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_fedfuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7033,7 +7034,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'interval_unit': 1,
         'line': {'color': '#bebebe'}
     })
@@ -7042,7 +7043,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -7051,7 +7052,7 @@ for economy in Economy_codes:
     })
         
     ref_fedfuel_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7094,7 +7095,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -7105,18 +7106,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_fedfuel_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7152,8 +7154,8 @@ for economy in Economy_codes:
     ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, None, header_format)
     ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + 12, None, header_format)
     ref_worksheet2.set_row((2 * chart_height) + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + netz_fedsector_2_rows + netz_fedsector_3_rows + 15, None, header_format)
-    ref_worksheet2.write(0, 0, economy + ' FED sector reference', cell_format1)
-    ref_worksheet2.write(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 0, economy + ' FED sector net-zero', cell_format1)
+    ref_worksheet2.write(0, 0, economy + ' FED sector Reference', cell_format1)
+    ref_worksheet2.write(chart_height + ref_fedsector_2_rows + ref_fedsector_3_rows + ref_tfec_1_rows + 9, 0, economy + ' FED sector Carbon Neutrality', cell_format1)
     ref_worksheet2.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -7174,7 +7176,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -7185,18 +7187,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_fedsector_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7238,7 +7241,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'interval_unit': 1,
         'line': {'color': '#bebebe'}
     })
@@ -7247,7 +7250,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -7256,7 +7259,7 @@ for economy in Economy_codes:
     })
         
     ref_fedsector_chart4.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7300,7 +7303,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -7311,18 +7314,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_fedsector_chart5.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7356,8 +7360,8 @@ for economy in Economy_codes:
     ref_worksheet3.set_row(chart_height + ref_bld_2_rows + 3, None, header_format)
     ref_worksheet3.set_row((2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + 6, None, header_format)
     ref_worksheet3.set_row((2 * chart_height) + ref_bld_2_rows + ref_bld_3_rows + netz_bld_2_rows + 9, None, header_format)
-    ref_worksheet3.write(0, 0, economy + ' buildings reference', cell_format1)
-    ref_worksheet3.write(chart_height + ref_bld_2_rows + ref_bld_3_rows + 6, 0, economy + ' buildings net-zero', cell_format1)
+    ref_worksheet3.write(0, 0, economy + ' buildings Reference', cell_format1)
+    ref_worksheet3.write(chart_height + ref_bld_2_rows + ref_bld_3_rows + 6, 0, economy + ' buildings Carbon Neutrality', cell_format1)
     ref_worksheet3.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED chart
@@ -7377,7 +7381,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -7388,18 +7392,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_fed_bld_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7443,7 +7448,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -7454,18 +7459,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_fed_bld_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7497,8 +7503,8 @@ for economy in Economy_codes:
     ref_worksheet4.set_row(chart_height + ref_ind_1_rows + 3, None, header_format)
     ref_worksheet4.set_row((2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + 6, None, header_format)
     ref_worksheet4.set_row((2 * chart_height) + ref_ind_1_rows + ref_ind_2_rows + netz_ind_1_rows + 9, None, header_format)
-    ref_worksheet4.write(0, 0, economy + ' industry reference', cell_format1)
-    ref_worksheet4.write(chart_height + ref_ind_1_rows + ref_ind_2_rows + 6, 0, economy + ' industry net-zero', cell_format1)
+    ref_worksheet4.write(0, 0, economy + ' industry Reference', cell_format1)
+    ref_worksheet4.write(chart_height + ref_ind_1_rows + ref_ind_2_rows + 6, 0, economy + ' industry Carbon Neutrality', cell_format1)
     ref_worksheet4.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a industry subsector FED chart
@@ -7518,7 +7524,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -7529,18 +7535,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_fed_ind_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7583,7 +7590,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -7594,18 +7601,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_fed_ind_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7641,8 +7649,8 @@ for economy in Economy_codes:
     ref_worksheet5.set_row(chart_height + ref_trn_1_rows + 3, None, header_format)
     ref_worksheet5.set_row((2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + 6, None, header_format)
     ref_worksheet5.set_row((2 * chart_height) + ref_trn_1_rows + ref_trn_2_rows + netz_trn_1_rows + 9, None, header_format)
-    ref_worksheet5.write(0, 0, economy + ' FED transport reference', cell_format1)
-    ref_worksheet5.write(chart_height + ref_trn_1_rows + ref_trn_2_rows + 6, 0, economy + ' FED transport net-zero', cell_format1)
+    ref_worksheet5.write(0, 0, economy + ' FED transport Reference', cell_format1)
+    ref_worksheet5.write(chart_height + ref_trn_1_rows + ref_trn_2_rows + 6, 0, economy + ' FED transport Carbon Neutrality', cell_format1)
     ref_worksheet5.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a transport FED area chart
@@ -7663,7 +7671,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -7674,18 +7682,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_transport_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -7729,7 +7738,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -7737,7 +7746,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -7747,7 +7756,7 @@ for economy in Economy_codes:
         })
             
         ref_transport_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -7787,8 +7796,8 @@ for economy in Economy_codes:
     ref_worksheet6.set_row(chart_height + ref_ag_1_rows + 3, None, header_format)
     ref_worksheet6.set_row((2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + 6, None, header_format)
     ref_worksheet6.set_row((2 * chart_height) + ref_ag_1_rows + ref_ag_2_rows + netz_ag_1_rows + 9, None, header_format)
-    ref_worksheet6.write(0, 0, economy + ' FED agriculture reference', cell_format1)
-    ref_worksheet6.write(chart_height + ref_ag_1_rows + ref_ag_2_rows + 6, 0, economy + ' FED agriculture net-zero', cell_format1)
+    ref_worksheet6.write(0, 0, economy + ' FED agriculture Reference', cell_format1)
+    ref_worksheet6.write(chart_height + ref_ag_1_rows + ref_ag_2_rows + 6, 0, economy + ' FED agriculture Carbon Neutrality', cell_format1)
     ref_worksheet6.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a Agriculture line chart 
@@ -7809,7 +7818,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -7820,18 +7829,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                    'width': 1,
+                    'dash_type': 'square_dot'}
         })
             
         ref_ag_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -7875,7 +7885,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -7886,18 +7896,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_ag_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -7941,7 +7952,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'interval_unit': 1,
             'line': {'color': '#bebebe'}
         })
@@ -7950,7 +7961,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -7959,7 +7970,7 @@ for economy in Economy_codes:
         })
             
         ref_ag_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -8029,7 +8040,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8040,18 +8051,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_fedfuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8095,7 +8107,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'interval_unit': 1,
         'line': {'color': '#bebebe'}
     })
@@ -8104,7 +8116,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -8113,7 +8125,7 @@ for economy in Economy_codes:
     })
         
     netz_fedfuel_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8158,7 +8170,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8169,18 +8181,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_fedfuel_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8235,7 +8248,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8246,18 +8259,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_fedsector_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8299,7 +8313,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'interval_unit': 1,
         'line': {'color': '#bebebe'}
     })
@@ -8308,7 +8322,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -8317,7 +8331,7 @@ for economy in Economy_codes:
     })
         
     netz_fedsector_chart4.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8363,7 +8377,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8374,18 +8388,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_fedsector_chart5.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8438,7 +8453,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8449,18 +8464,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_fed_bld_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8506,7 +8522,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8517,18 +8533,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_fed_bld_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8579,7 +8596,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8590,18 +8607,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_fed_ind_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8646,7 +8664,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8657,18 +8675,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_fed_ind_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8724,7 +8743,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -8735,18 +8754,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_transport_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -8792,7 +8812,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -8800,7 +8820,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -8810,7 +8830,7 @@ for economy in Economy_codes:
         })
             
         netz_transport_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -8870,7 +8890,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -8881,18 +8901,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_ag_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -8938,7 +8959,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -8949,18 +8970,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_ag_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9006,7 +9028,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'interval_unit': 1,
             'line': {'color': '#bebebe'}
         })
@@ -9015,7 +9037,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -9024,7 +9046,7 @@ for economy in Economy_codes:
         })
             
         netz_ag_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9069,8 +9091,8 @@ for economy in Economy_codes:
     ref_worksheet11.set_row(chart_height + ref_tpes_1_rows + 3, None, header_format)
     ref_worksheet11.set_row((2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + 6, None, header_format)
     ref_worksheet11.set_row((2 * chart_height) + ref_tpes_1_rows + ref_tpes_2_rows + ref_tpes_1_rows + 9, None, header_format)
-    ref_worksheet11.write(0, 0, economy + ' TPES fuel reference', cell_format1)
-    ref_worksheet11.write(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 6, 0, economy + ' TPES fuel net-zero', cell_format1)
+    ref_worksheet11.write(0, 0, economy + ' TPES fuel Reference', cell_format1)
+    ref_worksheet11.write(chart_height + ref_tpes_1_rows + ref_tpes_2_rows + 6, 0, economy + ' TPES fuel Carbon Neutrality', cell_format1)
     ref_worksheet11.write(1, 0, 'Units: Petajoules', cell_format2)
 
     ######################################################
@@ -9092,7 +9114,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -9103,18 +9125,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_tpes_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9161,7 +9184,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -9172,18 +9195,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_tpes_chart4.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9235,7 +9259,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'interval_unit': 1,
             'line': {'color': '#bebebe'}
         })
@@ -9244,7 +9268,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -9254,7 +9278,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9294,8 +9318,8 @@ for economy in Economy_codes:
     ref_worksheet12.set_row(chart_height + ref_prod_1_rows + 3, None, header_format)
     ref_worksheet12.set_row((2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + 6, None, header_format)
     ref_worksheet12.set_row((2 * chart_height) + ref_prod_1_rows + ref_prod_2_rows + netz_prod_1_rows + 9, None, header_format)
-    ref_worksheet12.write(0, 0, economy + ' prod fuel reference', cell_format1)
-    ref_worksheet12.write(chart_height + ref_prod_1_rows + ref_prod_2_rows + 6, 0, economy + ' prod fuel net-zero', cell_format1)
+    ref_worksheet12.write(0, 0, economy + ' production by fuel Reference', cell_format1)
+    ref_worksheet12.write(chart_height + ref_prod_1_rows + ref_prod_2_rows + 6, 0, economy + ' production by fuel Carbon Neutrality', cell_format1)
     ref_worksheet12.write(1, 0, 'Units: Petajoules', cell_format2)    
 
     ###################### Create another PRODUCTION chart with only 6 categories #################################
@@ -9318,7 +9342,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -9329,18 +9353,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_prod_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9387,7 +9412,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -9398,18 +9423,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_prod_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9456,7 +9482,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'interval_unit': 1,
             'line': {'color': '#bebebe'}
         })
@@ -9465,7 +9491,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -9474,7 +9500,7 @@ for economy in Economy_codes:
         })
             
         ref_prod_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9517,7 +9543,7 @@ for economy in Economy_codes:
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + 12, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + 15, None, header_format)
     ref_worksheet13.set_row(chart_height + ref_tpes_comp_1_rows + ref_imports_1_rows + ref_imports_2_rows + ref_exports_1_rows + ref_exports_1_rows + ref_electrade_1_rows + 18, None, header_format)
-    ref_worksheet13.write(0, 0, economy + ' TPES components reference', cell_format1)
+    ref_worksheet13.write(0, 0, economy + ' TPES components Reference', cell_format1)
     ref_worksheet13.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a TPES components chart
@@ -9537,7 +9563,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -9545,7 +9571,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -9555,7 +9581,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_comp_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9599,7 +9625,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -9610,18 +9636,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Imports (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_imports_line.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9666,7 +9693,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -9674,7 +9701,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Imports by fuel (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -9684,7 +9711,7 @@ for economy in Economy_codes:
         })
             
         ref_imports_column.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9731,7 +9758,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -9742,18 +9769,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Exports (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_exports_line.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9799,7 +9827,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -9807,7 +9835,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Exports by fuel (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -9817,7 +9845,7 @@ for economy in Economy_codes:
         })
             
         ref_exports_column.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9862,7 +9890,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -9870,7 +9898,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Electricity trade (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -9880,7 +9908,7 @@ for economy in Economy_codes:
         })
             
         ref_electrade_column.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -9923,7 +9951,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -9931,7 +9959,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Net trade (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -9941,7 +9969,7 @@ for economy in Economy_codes:
         })
             
         ref_nettrade_column.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10006,8 +10034,8 @@ for economy in Economy_codes:
     ref_worksheet14.set_row(chart_height + ref_bunkers_1_rows + 3, None, header_format)
     ref_worksheet14.set_row((2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, None, header_format)
     ref_worksheet14.set_row((2 * chart_height) + ref_bunkers_1_rows + ref_bunkers_2_rows + netz_bunkers_1_rows + 9, None, header_format)
-    ref_worksheet14.write(0, 0, economy + ' TPES bunkers reference', cell_format1)
-    ref_worksheet14.write(chart_height + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, 0, economy + ' TPES bunkers net-zero', cell_format1)
+    ref_worksheet14.write(0, 0, economy + ' TPES bunkers Reference', cell_format1)
+    ref_worksheet14.write(chart_height + ref_bunkers_1_rows + ref_bunkers_2_rows + 6, 0, economy + ' TPES bunkers Carbon Neutrality', cell_format1)
     ref_worksheet14.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # MARINE BUNKER: Create a line chart subset by fuel
@@ -10028,7 +10056,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -10039,18 +10067,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Marine bunkers (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_marine_line.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10091,7 +10120,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -10102,18 +10131,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Aviation bunkers (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_aviation_line.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10137,7 +10167,7 @@ for economy in Economy_codes:
         pass
 
     ###############################################################################################################
-    # Net-zero
+    # CARBON NEUTRALITY
     # Access the sheet created using writer above
     # netz_worksheet11 = writer.sheets['TPES']
     
@@ -10166,7 +10196,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -10177,18 +10207,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_tpes_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10237,7 +10268,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -10248,18 +10279,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_tpes_chart4.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10315,7 +10347,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'interval_unit': 1,
             'line': {'color': '#bebebe'}
         })
@@ -10324,7 +10356,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -10334,7 +10366,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10396,7 +10428,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -10407,18 +10439,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_prod_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10467,7 +10500,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -10478,18 +10511,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_prod_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10538,7 +10572,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'interval_unit': 1,
             'line': {'color': '#bebebe'}
         })
@@ -10547,7 +10581,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -10556,7 +10590,7 @@ for economy in Economy_codes:
         })
             
         netz_prod_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10601,7 +10635,7 @@ for economy in Economy_codes:
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + 12, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + 15, None, header_format)
     netz_worksheet13.set_row(chart_height + netz_tpes_comp_1_rows + netz_imports_1_rows + netz_imports_2_rows + netz_exports_1_rows + netz_exports_1_rows + netz_electrade_1_rows + 18, None, header_format)
-    netz_worksheet13.write(0, 0, economy + ' TPES components net-zero', cell_format1)
+    netz_worksheet13.write(0, 0, economy + ' TPES components Carbon Neutrality', cell_format1)
     netz_worksheet13.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a TPES components chart
@@ -10621,7 +10655,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -10629,7 +10663,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -10639,7 +10673,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_comp_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10682,7 +10716,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -10693,18 +10727,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Imports (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_imports_line.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10749,7 +10784,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -10757,7 +10792,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Imports by fuel (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -10767,7 +10802,7 @@ for economy in Economy_codes:
         })
             
         netz_imports_column.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10813,7 +10848,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -10824,18 +10859,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Exports (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_exports_line.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10880,7 +10916,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -10888,7 +10924,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Exports by fuel (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -10898,7 +10934,7 @@ for economy in Economy_codes:
         })
             
         netz_exports_column.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -10943,7 +10979,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -10951,7 +10987,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Electricity trade (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -10961,7 +10997,7 @@ for economy in Economy_codes:
         })
             
         netz_electrade_column.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11004,7 +11040,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -11012,7 +11048,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Net trade (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -11022,7 +11058,7 @@ for economy in Economy_codes:
         })
             
         netz_nettrade_column.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11105,7 +11141,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -11116,18 +11152,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Marine bunkers (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_marine_line.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11170,7 +11207,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -11181,18 +11218,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Aviation bunkers (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_aviation_line.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11235,9 +11273,9 @@ for economy in Economy_codes:
     ref_worksheet21.set_row(chart_height + ref_pow_use_2_rows + 3, None, header_format)
     ref_worksheet21.set_row((2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, None, header_format)
     ref_worksheet21.set_row((2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + netz_pow_use_2_rows + 9, None, header_format)
-    ref_worksheet21.write(0, 0, economy + ' power input fuel reference (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
+    ref_worksheet21.write(0, 0, economy + ' power input fuel Reference (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
     ref_worksheet21.write(chart_height + ref_pow_use_2_rows + ref_pow_use_3_rows + 6, 0,\
-        economy + ' power input fuel net-zero (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
+        economy + ' power input fuel Carbon Neutrality (NOTE: THIS IS NOT ELECTRICITY GENERATION)', cell_format1)
     ref_worksheet21.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a use by fuel area chart
@@ -11258,7 +11296,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -11269,18 +11307,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         usefuel_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11324,7 +11363,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -11332,7 +11371,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -11342,7 +11381,7 @@ for economy in Economy_codes:
         })
             
         usefuel_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11388,7 +11427,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -11399,18 +11438,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         usefuel_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11447,8 +11487,8 @@ for economy in Economy_codes:
     ref_worksheet22.set_row(chart_height + ref_elecgen_2_rows + 3, None, header_format)
     ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, None, header_format)
     ref_worksheet22.set_row((2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9, None, header_format)
-    ref_worksheet22.write(0, 0, economy + ' electricity generation reference', cell_format1)
-    ref_worksheet22.write(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 0, economy + ' electricity generation net-zero', cell_format1)
+    ref_worksheet22.write(0, 0, economy + ' electricity generation Reference', cell_format1)
+    ref_worksheet22.write(chart_height + ref_elecgen_2_rows + ref_elecgen_3_rows + 6, 0, economy + ' electricity generation Carbon Neutrality', cell_format1)
     ref_worksheet22.write(1, 0, 'Units: Terrawatt hours', cell_format2)
 
     # Create a electricity production area chart
@@ -11469,7 +11509,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -11480,18 +11520,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'TWh',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         prodelec_bytech_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11546,7 +11587,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -11554,7 +11595,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'TWh',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -11564,7 +11605,7 @@ for economy in Economy_codes:
         })
             
         prodelec_bytech_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11619,8 +11660,8 @@ for economy in Economy_codes:
     ref_worksheet23.set_row((2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, None, header_format)
     ref_worksheet23.set_row((2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + 12, None, header_format)
     ref_worksheet23.set_row((2 * chart_height) + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + netz_refinery_1_rows + netz_refinery_2_rows + 15, None, header_format)
-    ref_worksheet23.write(0, 0, economy + ' refining reference', cell_format1)
-    ref_worksheet23.write(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, 0, economy + ' refining net-zero', cell_format1)
+    ref_worksheet23.write(0, 0, economy + ' refining Reference', cell_format1)
+    ref_worksheet23.write(chart_height + ref_refinery_1_rows + ref_refinery_2_rows + ref_refinery_3_rows + 9, 0, economy + ' refining Carbon Neutrality', cell_format1)
     ref_worksheet23.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create ainput refining line chart
@@ -11640,7 +11681,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -11650,7 +11691,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -11660,7 +11701,7 @@ for economy in Economy_codes:
         })
             
         refinery_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11704,7 +11745,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -11714,7 +11755,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -11724,7 +11765,7 @@ for economy in Economy_codes:
         })
             
         refinery_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11768,7 +11809,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -11776,7 +11817,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -11786,7 +11827,7 @@ for economy in Economy_codes:
         })
             
         refinery_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11825,8 +11866,8 @@ for economy in Economy_codes:
     ref_worksheet24.set_row(chart_height + ref_powcap_1_rows + 3, None, header_format)
     ref_worksheet24.set_row((2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6, None, header_format)
     ref_worksheet24.set_row((2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9, None, header_format)
-    ref_worksheet24.write(0, 0, economy + ' power capacity reference', cell_format1)
-    ref_worksheet24.write(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 6, 0, economy + ' power capacity net-zero', cell_format1)
+    ref_worksheet24.write(0, 0, economy + ' power capacity Reference', cell_format1)
+    ref_worksheet24.write(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 6, 0, economy + ' power capacity Carbon Neutrality', cell_format1)
     ref_worksheet24.write(1, 0, 'Units: Gigawatts', cell_format2)
 
     # Create a electricity production area chart
@@ -11846,7 +11887,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -11856,7 +11897,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'GW',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -11866,7 +11907,7 @@ for economy in Economy_codes:
         })
             
         pow_cap_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11921,7 +11962,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -11929,7 +11970,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'GW',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -11939,7 +11980,7 @@ for economy in Economy_codes:
         })
             
         pow_cap_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -11990,8 +12031,8 @@ for economy in Economy_codes:
     ref_worksheet25.set_row(chart_height + ref_trans_3_rows + 3, None, header_format)
     ref_worksheet25.set_row((2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + 6, None, header_format)
     ref_worksheet25.set_row((2 * chart_height) + ref_trans_3_rows + ref_trans_4_rows + ref_trans_3_rows + 9, None, header_format)
-    ref_worksheet25.write(0, 0, economy + ' transformation reference', cell_format1)
-    ref_worksheet25.write(chart_height + ref_trans_3_rows + ref_trans_4_rows + 6, 0, economy + ' transformation net-zero', cell_format1)
+    ref_worksheet25.write(0, 0, economy + ' transformation Reference', cell_format1)
+    ref_worksheet25.write(chart_height + ref_trans_3_rows + ref_trans_4_rows + 6, 0, economy + ' transformation Carbon Neutrality', cell_format1)
     ref_worksheet25.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a transformation area chart
@@ -12011,7 +12052,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -12021,7 +12062,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -12031,7 +12072,7 @@ for economy in Economy_codes:
         })
             
         ref_trnsfrm_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12071,7 +12112,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -12081,7 +12122,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -12091,7 +12132,7 @@ for economy in Economy_codes:
         })
             
         ref_trnsfrm_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12132,7 +12173,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -12140,7 +12181,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -12150,7 +12191,7 @@ for economy in Economy_codes:
         })
             
         ref_trnsfrm_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12186,8 +12227,8 @@ for economy in Economy_codes:
     ref_worksheet26.set_row(chart_height + ref_ownuse_1_rows + 3, None, header_format)
     ref_worksheet26.set_row((2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, None, header_format)
     ref_worksheet26.set_row((2 * chart_height) + ref_ownuse_1_rows + ref_ownuse_2_rows + netz_ownuse_1_rows + 9, None, header_format)
-    ref_worksheet26.write(0, 0, economy + ' own use and losses reference', cell_format1)
-    ref_worksheet26.write(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, 0, economy + ' own use and losses net-zero', cell_format1)
+    ref_worksheet26.write(0, 0, economy + ' own use and losses Reference', cell_format1)
+    ref_worksheet26.write(chart_height + ref_ownuse_1_rows + ref_ownuse_2_rows + 6, 0, economy + ' own use and losses Carbon Neutrality', cell_format1)
     ref_worksheet26.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Createn own-use transformation area chart by fuel
@@ -12208,7 +12249,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -12219,18 +12260,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_own_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12275,7 +12317,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -12286,18 +12328,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_own_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12342,7 +12385,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -12350,7 +12393,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -12360,7 +12403,7 @@ for economy in Economy_codes:
         })
             
         ref_own_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12399,8 +12442,9 @@ for economy in Economy_codes:
     ref_worksheet27.set_row(chart_height + ref_heatgen_2_rows + 3, None, header_format)
     ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, None, header_format)
     ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, None, header_format)
-    ref_worksheet27.write(0, 0, economy + ' heat generation reference', cell_format1)
-    ref_worksheet27.write(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 0, economy + ' heat generation net-zero', cell_format1)
+    ref_worksheet27.write(0, 0, economy + ' heat generation Reference (note: the category "heat only units" consume multiple different fuels, depending on the economy)', cell_format1)
+    ref_worksheet27.write(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 0, economy +\
+        ' heat generation Carbon Neutrality (note: the category "heat only units" consume multiple different fuels, depending on the economy)', cell_format1)
     ref_worksheet27.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a electricity production area chart
@@ -12421,7 +12465,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -12432,18 +12476,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         heatgen_bytech_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12498,7 +12543,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -12506,7 +12551,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -12516,7 +12561,7 @@ for economy in Economy_codes:
         })
             
         heatgen_bytech_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12572,9 +12617,9 @@ for economy in Economy_codes:
     ref_worksheet28.set_row(chart_height + ref_heat_use_2_rows + 3, None, header_format)
     ref_worksheet28.set_row((2 * chart_height) + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, None, header_format)
     ref_worksheet28.set_row((2 * chart_height) + ref_heat_use_2_rows + ref_heat_use_3_rows + netz_heat_use_2_rows + 9, None, header_format)
-    ref_worksheet28.write(0, 0, economy + ' heat input fuel reference', cell_format1)
+    ref_worksheet28.write(0, 0, economy + ' heat input fuel Reference', cell_format1)
     ref_worksheet28.write(chart_height + ref_heat_use_2_rows + ref_heat_use_3_rows + 6, 0,\
-        economy + ' heat input fuel net-zero', cell_format1)
+        economy + ' heat input fuel Carbon Neutrality', cell_format1)
     ref_worksheet28.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a use by fuel area chart
@@ -12594,7 +12639,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -12604,7 +12649,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -12614,7 +12659,7 @@ for economy in Economy_codes:
         })
             
         ref_heatuse_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12658,7 +12703,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -12666,7 +12711,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -12676,7 +12721,7 @@ for economy in Economy_codes:
         })
             
         ref_heatuse_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12740,7 +12785,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -12751,18 +12796,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_usefuel_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12808,7 +12854,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -12816,7 +12862,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -12826,7 +12872,7 @@ for economy in Economy_codes:
         })
             
         netz_usefuel_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12874,7 +12920,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -12885,18 +12931,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_usefuel_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -12953,7 +13000,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -12964,18 +13011,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'TWh',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_prodelec_bytech_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13034,7 +13082,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -13042,7 +13090,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'TWh',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13052,7 +13100,7 @@ for economy in Economy_codes:
         })
             
         netz_prodelec_bytech_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13124,7 +13172,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -13134,7 +13182,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13144,7 +13192,7 @@ for economy in Economy_codes:
         })
             
         netz_refinery_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13190,7 +13238,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -13200,7 +13248,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13210,7 +13258,7 @@ for economy in Economy_codes:
         })
             
         netz_refinery_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13256,7 +13304,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -13264,7 +13312,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13274,7 +13322,7 @@ for economy in Economy_codes:
         })
             
         netz_refinery_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13332,7 +13380,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -13342,7 +13390,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'GW',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13352,7 +13400,7 @@ for economy in Economy_codes:
         })
             
         netz_pow_cap_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13411,7 +13459,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -13419,7 +13467,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'GW',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13429,7 +13477,7 @@ for economy in Economy_codes:
         })
             
         netz_pow_cap_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13501,7 +13549,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -13511,7 +13559,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13521,7 +13569,7 @@ for economy in Economy_codes:
         })
             
         netz_trnsfrm_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13563,7 +13611,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -13573,7 +13621,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13583,7 +13631,7 @@ for economy in Economy_codes:
         })
             
         netz_trnsfrm_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13626,7 +13674,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -13634,7 +13682,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13644,7 +13692,7 @@ for economy in Economy_codes:
         })
             
         netz_trnsfrm_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13700,7 +13748,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -13711,18 +13759,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_own_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13769,7 +13818,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -13780,18 +13829,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_own_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13836,7 +13886,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -13844,7 +13894,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -13854,7 +13904,7 @@ for economy in Economy_codes:
         })
             
         netz_own_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13913,7 +13963,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -13924,18 +13974,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         heatgen_bytech_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -13994,7 +14045,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -14002,7 +14053,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -14012,7 +14063,7 @@ for economy in Economy_codes:
         })
             
         heatgen_bytech_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -14075,7 +14126,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -14085,7 +14136,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -14095,7 +14146,7 @@ for economy in Economy_codes:
         })
             
         netz_heatuse_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -14141,7 +14192,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -14149,7 +14200,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -14159,7 +14210,7 @@ for economy in Economy_codes:
         })
             
         netz_heatuse_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -14220,7 +14271,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -14231,17 +14282,18 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Proportion',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
                 
         modren_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
                 
@@ -14250,7 +14302,7 @@ for economy in Economy_codes:
         })
             
         # Configure the series of the chart from the dataframe data.
-        # for component in ['Reference proportion', 'Net-zero proportion']:
+        # for component in ['Reference proportion', 'Carbon Neutrality proportion']:
         i = ref_modren_4[ref_modren_4['item_code_new'] == 'Reference'].index[0]
         modren_chart1.add_series({
             'name':       ['Modern renewables', chart_height + i + 1, 1],
@@ -14259,7 +14311,7 @@ for economy in Economy_codes:
             'line':       {'color': ref_modren_4['item_code_new'].map(colours_dict).loc[i],
                             'width': 1.5}
         })
-        j = netz_modren_4[netz_modren_4['item_code_new'] == 'Net-zero'].index[0]
+        j = netz_modren_4[netz_modren_4['item_code_new'] == 'Carbon neutrality'].index[0]
         modren_chart1.add_series({
             'name':       ['Modern renewables', chart_height + ref_modren_4_rows + j + 4, 1],
             'categories': ['Modern renewables', chart_height + ref_modren_4_rows + 3, 2, chart_height + ref_modren_4_rows + 3, netz_modren_4_cols - 1],
@@ -14286,7 +14338,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
         })
@@ -14295,7 +14347,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Reference modern renewable electricity share',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -14304,7 +14356,7 @@ for economy in Economy_codes:
         })
             
         modren_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -14342,7 +14394,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
         })
@@ -14350,8 +14402,8 @@ for economy in Economy_codes:
         modren_chart3.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            'name': 'Net-zero modern renewable electricity share',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'name': 'Carbon Neutrality modern renewable electricity share',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
@@ -14360,7 +14412,7 @@ for economy in Economy_codes:
         })
             
         modren_chart3.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -14417,7 +14469,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -14428,18 +14480,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'TFEC energy intensity (2005 = 100)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
                 
         enint_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
                 
@@ -14456,7 +14509,7 @@ for economy in Economy_codes:
             'line':       {'color': ref_enint_3['Series'].map(colours_dict).loc[i],
                             'width': 1.5}
         })
-        j = netz_enint_3[netz_enint_3['Series'] == 'Net-zero'].index[0]
+        j = netz_enint_3[netz_enint_3['Series'] == 'Carbon neutrality'].index[0]
         enint_chart1.add_series({
             'name':       ['Energy intensity', chart_height + ref_enint_3_rows + j + 4, 1],
             'categories': ['Energy intensity', chart_height + ref_enint_3_rows + 3, 2, chart_height + ref_enint_3_rows + 3, netz_enint_3_cols - 1],
@@ -14497,7 +14550,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -14508,18 +14561,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'TPES energy intensity',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0.0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
                 
         enint_chart2.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
                 
@@ -14540,7 +14594,7 @@ for economy in Economy_codes:
 
             })
 
-        j = netz_enint_sup3[netz_enint_sup3['Series'] == 'Net-zero'].index[0]
+        j = netz_enint_sup3[netz_enint_sup3['Series'] == 'Carbon neutrality'].index[0]
         enint_chart2.add_series({
             'name':       ['Energy intensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + j + 10, 1],
             'categories': ['Energy intensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + 9, 2,\
@@ -14587,7 +14641,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -14598,18 +14652,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'GDP (billions 2018 USD PPP 2018)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
                 
         GDP_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10},
+            'font': {'name': 'Segoe UI', 'size': 9},
             'none': True
         })
                 
@@ -14647,7 +14702,7 @@ for economy in Economy_codes:
                 'label_position': 'low',
                 'major_tick_mark': 'none',
                 'minor_tick_mark': 'none',
-                'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+                'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
                 #'position_axis': 'on_tick',
                 'interval_unit': 10,
                 'line': {'color': '#bebebe'}
@@ -14657,7 +14712,7 @@ for economy in Economy_codes:
                 'major_tick_mark': 'none', 
                 'minor_tick_mark': 'none',
                 'name': 'GDP growth',
-                'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+                'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
                 'num_format': '0%',
                 'major_gridlines': {
                     'visible': True,
@@ -14667,7 +14722,7 @@ for economy in Economy_codes:
             })
                     
             GDP_chart2.set_legend({
-                'font': {'font': 'Segoe UI', 'size': 10},
+                'font': {'name': 'Segoe UI', 'size': 9},
                 'none': True
             })
                     
@@ -14708,7 +14763,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -14719,18 +14774,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'Population (millions)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
                 
         pop_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10},
+            'font': {'name': 'Segoe UI', 'size': 9},
             'none': True
         })
                 
@@ -14768,7 +14824,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -14779,18 +14835,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             'name': 'GDP per capita (2018 USD PPP)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
                 
         GDPpc_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10},
+            'font': {'name': 'Segoe UI', 'size': 9},
             'none': True
         })
                 
@@ -14828,9 +14885,9 @@ for economy in Economy_codes:
     both_worksheet33.set_row((2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 9, None, header_format)
     both_worksheet33.set_row((2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + 12, None, header_format)
     both_worksheet33.set_row((2 * chart_height) + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + netz_steel_3_rows + netz_chem_3_rows + 15, None, header_format)
-    both_worksheet33.write(0, 0, economy + ' heavy industry fuel use reference', cell_format1)
+    both_worksheet33.write(0, 0, economy + ' heavy industry fuel use Reference', cell_format1)
     both_worksheet33.write(chart_height + ref_steel_3_rows + ref_chem_3_rows + ref_cement_3_rows + 9, 0,\
-        economy + ' heavy industry fuel use net-zero', cell_format1)
+        economy + ' heavy industry fuel use Carbon Neutrality', cell_format1)
     both_worksheet33.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Steel stacked chart
@@ -14850,7 +14907,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -14860,7 +14917,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -14870,7 +14927,7 @@ for economy in Economy_codes:
         })
             
         ref_steel_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -14910,7 +14967,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -14920,7 +14977,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -14930,7 +14987,7 @@ for economy in Economy_codes:
         })
             
         ref_chem_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -14970,7 +15027,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -14980,7 +15037,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -14990,7 +15047,7 @@ for economy in Economy_codes:
         })
             
         ref_cement_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -15032,7 +15089,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -15042,7 +15099,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -15052,7 +15109,7 @@ for economy in Economy_codes:
         })
             
         netz_steel_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -15094,7 +15151,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -15104,7 +15161,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -15114,7 +15171,7 @@ for economy in Economy_codes:
         })
             
         netz_chem_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -15156,7 +15213,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -15166,7 +15223,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -15176,7 +15233,7 @@ for economy in Economy_codes:
         })
             
         netz_cement_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -15214,8 +15271,8 @@ for economy in Economy_codes:
     both_worksheet34.set_row(chart_height + ref_emiss_fuel_1_rows + 3, None, header_format)
     both_worksheet34.set_row((2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 6, None, header_format)
     both_worksheet34.set_row((2 * chart_height) + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + netz_emiss_fuel_1_rows + 9, None, header_format)
-    both_worksheet34.write(0, 0, economy + ' emissions by fuel reference scenario', cell_format1)
-    both_worksheet34.write(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 6, 0, economy + ' emissions by fuel net-zero scenario', cell_format1)
+    both_worksheet34.write(0, 0, economy + ' emissions by fuel Reference scenario', cell_format1)
+    both_worksheet34.write(chart_height + ref_emiss_fuel_1_rows + ref_emiss_fuel_2_rows + 6, 0, economy + ' emissions by fuel Carbon Neutrality scenario', cell_format1)
     both_worksheet34.write(1, 0, 'Units: Million tonnes of CO2', cell_format2)
 
     ################################################################### CHARTS ###################################################################
@@ -15237,7 +15294,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -15248,18 +15305,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_em_fuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15301,7 +15359,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'interval_unit': 1,
         'line': {'color': '#bebebe'}
     })
@@ -15310,7 +15368,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         #'name': 'CO2 proportion',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -15319,7 +15377,7 @@ for economy in Economy_codes:
     })
         
     ref_em_fuel_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15362,7 +15420,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -15373,18 +15431,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_em_fuel_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15425,8 +15484,8 @@ for economy in Economy_codes:
     both_worksheet35.set_row(chart_height + ref_emiss_sector_1_rows + 3, None, header_format)
     both_worksheet35.set_row((2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, None, header_format)
     both_worksheet35.set_row((2 * chart_height) + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + netz_emiss_sector_1_rows + 9, None, header_format)
-    both_worksheet35.write(0, 0, economy + ' emissions by demand sector reference scenario', cell_format1)
-    both_worksheet35.write(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, 0, economy + ' emissions by demand sector net-zero scenario', cell_format1)
+    both_worksheet35.write(0, 0, economy + ' emissions by demand sector Reference scenario', cell_format1)
+    both_worksheet35.write(chart_height + ref_emiss_sector_1_rows + ref_emiss_sector_2_rows + 6, 0, economy + ' emissions by demand sector Carbon Neutrality scenario', cell_format1)
     both_worksheet35.write(1, 0, 'Units: Million tonnes of CO2', cell_format2)
     
     # Create an EMISSIONS sector line chart
@@ -15447,7 +15506,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -15458,18 +15517,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_em_sector_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15511,7 +15571,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -15522,18 +15582,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     ref_em_sector_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15575,7 +15636,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'interval_unit': 1,
         'line': {'color': '#bebebe'}
     })
@@ -15584,7 +15645,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         #'name': 'Proportion of CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -15593,7 +15654,7 @@ for economy in Economy_codes:
     })
         
     ref_em_sector_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15640,7 +15701,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -15651,18 +15712,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_em_fuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15706,7 +15768,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'interval_unit': 1,
         'line': {'color': '#bebebe'}
     })
@@ -15715,7 +15777,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         #'name': 'CO2 proportion',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -15724,7 +15786,7 @@ for economy in Economy_codes:
     })
         
     netz_em_fuel_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15769,7 +15831,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -15780,18 +15842,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_em_fuel_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15845,7 +15908,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -15856,18 +15919,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_em_sector_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15911,7 +15975,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -15922,18 +15986,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         #'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     netz_em_sector_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -15977,7 +16042,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'interval_unit': 1,
         'line': {'color': '#bebebe'}
     })
@@ -15986,7 +16051,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         #'name': 'Proportion of CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
@@ -15995,7 +16060,7 @@ for economy in Economy_codes:
     })
         
     netz_em_sector_chart3.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -16035,9 +16100,9 @@ for economy in Economy_codes:
     both_worksheet36.set_row(chart_height + ref_roadmodal_3_rows + 3, None, header_format)
     both_worksheet36.set_row((2 * chart_height) + ref_roadmodal_3_rows + ref_roadfuel_3_rows + 6, None, header_format)
     both_worksheet36.set_row((2 * chart_height) + ref_roadmodal_3_rows + ref_roadfuel_3_rows + netz_roadmodal_3_rows + 9, None, header_format)
-    both_worksheet36.write(0, 0, economy + ' road transport reference', cell_format1)
+    both_worksheet36.write(0, 0, economy + ' road transport Reference', cell_format1)
     both_worksheet36.write(chart_height + ref_roadmodal_3_rows + ref_roadfuel_3_rows + 6, 0,\
-        economy + ' road transport net-zero', cell_format1)
+        economy + ' road transport Carbon Neutrality', cell_format1)
     both_worksheet36.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Road modal area stacked chart
@@ -16057,7 +16122,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -16067,7 +16132,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -16077,7 +16142,7 @@ for economy in Economy_codes:
         })
             
         ref_roadmodal_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16117,7 +16182,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -16127,7 +16192,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -16137,7 +16202,7 @@ for economy in Economy_codes:
         })
             
         ref_roadfuel_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16162,7 +16227,7 @@ for economy in Economy_codes:
     else: 
         pass
     
-    # NET-ZERO
+    # CARBON NEUTRALITY
 
     # Road modal area stacked chart
     if netz_roadmodal_3_rows > 0:
@@ -16181,7 +16246,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -16191,7 +16256,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -16201,7 +16266,7 @@ for economy in Economy_codes:
         })
             
         netz_roadmodal_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16243,7 +16308,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -16253,7 +16318,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -16263,7 +16328,7 @@ for economy in Economy_codes:
         })
             
         netz_roadfuel_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16300,7 +16365,7 @@ for economy in Economy_codes:
     ref_worksheet15.set_row(chart_height, None, header_format)
     ref_worksheet15.set_row(chart_height + ref_nuke_1_rows + 3, None, header_format)
     ref_worksheet15.set_row(chart_height + ref_nuke_1_rows + ref_biomass_1_rows + 6, None, header_format)
-    ref_worksheet15.write(0, 0, economy + ' TPES nuclear, biomass and biofuels reference', cell_format1)
+    ref_worksheet15.write(0, 0, economy + ' TPES nuclear, biomass and biofuels Reference', cell_format1)
     ref_worksheet15.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a TPES nuclear  chart
@@ -16320,7 +16385,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -16328,7 +16393,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Nuclear (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -16338,7 +16403,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_nuke_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16379,7 +16444,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'line': {'color': '#bebebe'}
     })
         
@@ -16387,7 +16452,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Biomass (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
@@ -16397,7 +16462,7 @@ for economy in Economy_codes:
     })
         
     ref_tpes_biomass_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -16437,7 +16502,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'line': {'color': '#bebebe'}
     })
         
@@ -16445,7 +16510,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Biofuels (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
@@ -16455,7 +16520,7 @@ for economy in Economy_codes:
     })
         
     ref_tpes_biofuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -16491,7 +16556,7 @@ for economy in Economy_codes:
     netz_worksheet16.set_row(chart_height, None, header_format)
     netz_worksheet16.set_row(chart_height + netz_nuke_1_rows + 3, None, header_format)
     netz_worksheet16.set_row(chart_height + netz_nuke_1_rows + netz_biomass_1_rows + 6, None, header_format)
-    netz_worksheet16.write(0, 0, economy + ' TPES nuclear, biomass and biofuels net-zero', cell_format1)
+    netz_worksheet16.write(0, 0, economy + ' TPES nuclear, biomass and biofuels Carbon Neutrality', cell_format1)
     netz_worksheet16.write(1, 0, 'Units: Petajoules', cell_format2)
     
     # Create a TPES nuclear  chart
@@ -16511,7 +16576,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -16519,7 +16584,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             'name': 'Nuclear (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -16529,7 +16594,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_nuke_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16570,7 +16635,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'line': {'color': '#bebebe'}
     })
         
@@ -16578,7 +16643,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Biomass (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
@@ -16588,7 +16653,7 @@ for economy in Economy_codes:
     })
         
     netz_tpes_biomass_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -16628,7 +16693,7 @@ for economy in Economy_codes:
         'label_position': 'low',
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'line': {'color': '#bebebe'}
     })
         
@@ -16636,7 +16701,7 @@ for economy in Economy_codes:
         'major_tick_mark': 'none', 
         'minor_tick_mark': 'none',
         'name': 'Biofuels (PJ)',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
@@ -16646,7 +16711,7 @@ for economy in Economy_codes:
     })
         
     netz_tpes_biofuel_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -16683,8 +16748,8 @@ for economy in Economy_codes:
     ref_worksheet41.set_row(chart_height + ref_coalcons_1_rows + 3, None, header_format)
     ref_worksheet41.set_row((2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6, None, header_format)
     ref_worksheet41.set_row((2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + 9, None, header_format)
-    ref_worksheet41.write(0, 0, economy + ' coal reference', cell_format1)
-    ref_worksheet41.write(chart_height + ref_coalcons_1_rows + ref_coal_1_rows + 6, 0, economy + ' coal net-zero', cell_format1)
+    ref_worksheet41.write(0, 0, economy + ' coal Reference', cell_format1)
+    ref_worksheet41.write(chart_height + ref_coalcons_1_rows + ref_coal_1_rows + 6, 0, economy + ' coal Carbon Neutrality', cell_format1)
     ref_worksheet41.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -16705,7 +16770,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -16716,18 +16781,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_coalcons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16771,7 +16837,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -16779,7 +16845,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Coal (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -16789,7 +16855,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_coal_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16816,7 +16882,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Net-zero coal charts
+    # Carbon Neutrality coal charts
 
     # Create a FED sector area chart
     if netz_coalcons_1_rows > 0:
@@ -16836,7 +16902,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -16847,18 +16913,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_coalcons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16904,7 +16971,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -16912,7 +16979,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Coal (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -16922,7 +16989,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_coal_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -16961,8 +17028,8 @@ for economy in Economy_codes:
     ref_worksheet42.set_row(chart_height + ref_gascons_1_rows + 3, None, header_format)
     ref_worksheet42.set_row((2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + 6, None, header_format)
     ref_worksheet42.set_row((2 * chart_height) + ref_gascons_1_rows + ref_gas_1_rows + netz_gascons_1_rows + 9, None, header_format)
-    ref_worksheet42.write(0, 0, economy + ' gas reference', cell_format1)
-    ref_worksheet42.write(chart_height + ref_gascons_1_rows + ref_gas_1_rows + 6, 0, economy + ' gas net-zero', cell_format1)
+    ref_worksheet42.write(0, 0, economy + ' gas Reference', cell_format1)
+    ref_worksheet42.write(chart_height + ref_gascons_1_rows + ref_gas_1_rows + 6, 0, economy + ' gas Carbon Neutrality', cell_format1)
     ref_worksheet42.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -16983,7 +17050,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -16994,18 +17061,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_gascons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17049,7 +17117,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -17057,7 +17125,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Gas (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17067,7 +17135,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_gas_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17094,7 +17162,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Net-zero 
+    # Carbon Neutrality 
 
     # Create a FED sector area chart
     if netz_gascons_1_rows > 0:
@@ -17114,7 +17182,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -17125,18 +17193,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_gascons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17182,7 +17251,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -17190,7 +17259,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Gas (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17200,7 +17269,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_gas_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17239,8 +17308,8 @@ for economy in Economy_codes:
     ref_worksheet43.set_row(chart_height + ref_crudecons_1_rows + 3, None, header_format)
     ref_worksheet43.set_row((2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6, None, header_format)
     ref_worksheet43.set_row((2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9, None, header_format)
-    ref_worksheet43.write(0, 0, economy + ' crude & NGL reference', cell_format1)
-    ref_worksheet43.write(chart_height + ref_crudecons_1_rows + ref_crude_1_rows + 6, 0, economy + ' crude & NGL net-zero', cell_format1)
+    ref_worksheet43.write(0, 0, economy + ' crude & NGL Reference', cell_format1)
+    ref_worksheet43.write(chart_height + ref_crudecons_1_rows + ref_crude_1_rows + 6, 0, economy + ' crude & NGL Carbon Neutrality', cell_format1)
     ref_worksheet43.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -17261,7 +17330,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -17272,18 +17341,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_crudecons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17327,7 +17397,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -17335,7 +17405,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Crude oil & NGL (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17345,7 +17415,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_crude_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17372,7 +17442,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Net-zero
+    # Carbon Neutrality
 
     # Create a FED sector area chart
     if netz_crudecons_1_rows > 0:
@@ -17392,7 +17462,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -17403,18 +17473,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_crudecons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17460,7 +17531,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -17468,7 +17539,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             #'name': 'Crude oil & NGL (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17478,7 +17549,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_crude_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17517,8 +17588,8 @@ for economy in Economy_codes:
     ref_worksheet44.set_row(chart_height + ref_petprodcons_1_rows + 3, None, header_format)
     ref_worksheet44.set_row((2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, None, header_format)
     ref_worksheet44.set_row((2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, None, header_format)
-    ref_worksheet44.write(0, 0, economy + ' petroleum products reference', cell_format1)
-    ref_worksheet44.write(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 0, economy + ' petroleum products net-zero', cell_format1)
+    ref_worksheet44.write(0, 0, economy + ' petroleum products Reference', cell_format1)
+    ref_worksheet44.write(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 0, economy + ' petroleum products Carbon Neutrality', cell_format1)
     ref_worksheet44.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -17539,7 +17610,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -17550,18 +17621,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_petprodcons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17605,7 +17677,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -17613,7 +17685,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Petroleum products (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17623,7 +17695,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_petprod_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17650,7 +17722,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Net-zero
+    # Carbon Neutrality
     
     # Create a FED sector area chart
     if netz_petprodcons_1_rows > 0:
@@ -17670,7 +17742,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -17681,18 +17753,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_petprodcons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17738,7 +17811,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -17746,7 +17819,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Petroleum products (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17756,7 +17829,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_petprod_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17797,8 +17870,8 @@ for economy in Economy_codes:
     ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, None, header_format)
     ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + netz_hyd_1_rows + 12, None, header_format)
     ref_worksheet45.set_row((2 * chart_height) + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + netz_hyd_1_rows + netz_hydrogen_3_rows + 15, None, header_format)
-    ref_worksheet45.write(0, 0, economy + ' hydrogen reference', cell_format1)
-    ref_worksheet45.write(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, 0, economy + ' hydrogen net-zero', cell_format1)
+    ref_worksheet45.write(0, 0, economy + ' hydrogen Reference', cell_format1)
+    ref_worksheet45.write(chart_height + ref_hyd_1_rows + ref_hydrogen_3_rows + ref_hyd_use_1_rows + 9, 0, economy + ' hydrogen Carbon Neutrality', cell_format1)
     ref_worksheet45.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -17818,7 +17891,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -17828,7 +17901,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17838,7 +17911,7 @@ for economy in Economy_codes:
         })
             
         ref_hydrogen_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17882,7 +17955,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -17890,7 +17963,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Hydrogen (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17900,7 +17973,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_hydrogen_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17944,7 +18017,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -17954,7 +18027,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Hydrogen (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -17964,7 +18037,7 @@ for economy in Economy_codes:
         })
             
         ref_hyduse_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -17993,7 +18066,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Net-zero
+    # Carbon Neutrality
     
     # Create a FED sector area chart
     if netz_hyd_1_rows > 0:
@@ -18012,7 +18085,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -18022,7 +18095,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18032,7 +18105,7 @@ for economy in Economy_codes:
         })
             
         netz_hydrogen_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18078,7 +18151,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -18086,7 +18159,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Hydrogen (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18096,7 +18169,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_hydrogen_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18140,7 +18213,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -18150,7 +18223,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Hydrogen (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18160,7 +18233,7 @@ for economy in Economy_codes:
         })
             
         netz_hyduse_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18201,8 +18274,8 @@ for economy in Economy_codes:
     ref_worksheet46.set_row(chart_height + ref_renewcons_1_rows + 3, None, header_format)
     ref_worksheet46.set_row((2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6, None, header_format)
     ref_worksheet46.set_row((2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9, None, header_format)
-    ref_worksheet46.write(0, 0, economy + ' liquid and solid renewables reference', cell_format1)
-    ref_worksheet46.write(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 6, 0, economy + ' liquid and solid renewables net-zero', cell_format1)
+    ref_worksheet46.write(0, 0, economy + ' liquid and solid renewables Reference', cell_format1)
+    ref_worksheet46.write(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 6, 0, economy + ' liquid and solid renewables Carbon Neutrality', cell_format1)
     ref_worksheet46.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -18223,7 +18296,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -18234,18 +18307,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_renewcons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18301,7 +18375,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -18309,7 +18383,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Petroleum products (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18319,7 +18393,7 @@ for economy in Economy_codes:
         })
             
         ref_tpes_renew_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18346,7 +18420,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Net-zero
+    # Carbon Neutrality
     
     # Create a FED sector area chart
     if netz_renewcons_1_rows > 0:
@@ -18366,7 +18440,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -18377,18 +18451,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_renewcons_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18448,7 +18523,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -18456,7 +18531,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Petroleum products (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18466,7 +18541,7 @@ for economy in Economy_codes:
         })
             
         netz_tpes_renew_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18507,8 +18582,8 @@ for economy in Economy_codes:
     ref_worksheet47.set_row((2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9, None, header_format)
     ref_worksheet47.set_row((2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + 12, None, header_format)
     ref_worksheet47.set_row((2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + netz_ct_prod1_rows + netz_ct_imports1_rows + 15, None, header_format)
-    ref_worksheet47.write(0, 0, economy + ' coal types reference', cell_format1)
-    ref_worksheet47.write(chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9, 0, economy + ' coal types net-zero', cell_format1)
+    ref_worksheet47.write(0, 0, economy + ' coal types Reference', cell_format1)
+    ref_worksheet47.write(chart_height + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9, 0, economy + ' coal types Carbon Neutrality', cell_format1)
     ref_worksheet47.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Coal production line chart 
@@ -18528,7 +18603,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -18538,7 +18613,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18548,7 +18623,7 @@ for economy in Economy_codes:
         })
             
         ref_coalprod_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18587,7 +18662,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -18597,7 +18672,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18607,7 +18682,7 @@ for economy in Economy_codes:
         })
             
         ref_coalim_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18646,7 +18721,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -18656,7 +18731,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18666,7 +18741,7 @@ for economy in Economy_codes:
         })
             
         ref_coalex_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18707,7 +18782,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -18717,7 +18792,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18727,7 +18802,7 @@ for economy in Economy_codes:
         })
             
         netz_coalprod_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18768,7 +18843,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -18778,7 +18853,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18788,7 +18863,7 @@ for economy in Economy_codes:
         })
             
         netz_coalim_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18829,7 +18904,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -18839,7 +18914,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18849,7 +18924,7 @@ for economy in Economy_codes:
         })
             
         netz_coalex_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18885,8 +18960,8 @@ for economy in Economy_codes:
     ref_worksheet48.set_row(chart_height + ref_gasim_1_rows + 3, None, header_format)
     ref_worksheet48.set_row((2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + 6, None, header_format)
     ref_worksheet48.set_row((2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + 9, None, header_format)
-    ref_worksheet48.write(0, 0, economy + ' gas trade reference', cell_format1)
-    ref_worksheet48.write(chart_height + ref_gasim_1_rows + ref_gasex_1_rows + 6, 0, economy + ' gas trade net-zero', cell_format1)
+    ref_worksheet48.write(0, 0, economy + ' gas trade Reference', cell_format1)
+    ref_worksheet48.write(chart_height + ref_gasim_1_rows + ref_gasex_1_rows + 6, 0, economy + ' gas trade Carbon Neutrality', cell_format1)
     ref_worksheet48.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Gas imports line chart 
@@ -18906,7 +18981,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -18916,7 +18991,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18926,7 +19001,7 @@ for economy in Economy_codes:
         })
             
         ref_gasim_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -18965,7 +19040,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -18975,7 +19050,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -18985,7 +19060,7 @@ for economy in Economy_codes:
         })
             
         ref_gasex_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -19026,7 +19101,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -19036,7 +19111,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -19046,7 +19121,7 @@ for economy in Economy_codes:
         })
             
         netz_gasim_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -19087,7 +19162,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 8,
             'line': {'color': '#bebebe'}
@@ -19097,7 +19172,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -19107,7 +19182,7 @@ for economy in Economy_codes:
         })
             
         netz_gasex_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -19140,8 +19215,8 @@ for economy in Economy_codes:
     ref_worksheet49.set_column(1, ref_elec_1_cols + 1, None, space_format)
     ref_worksheet49.set_row(chart_height, None, header_format)
     ref_worksheet49.set_row((2 * chart_height) + ref_elec_1_rows + 3, None, header_format)
-    ref_worksheet49.write(0, 0, economy + ' electricity consumption reference', cell_format1)
-    ref_worksheet49.write(chart_height + ref_elec_1_rows + 3, 0, economy + ' electricity consumption net-zero', cell_format1)
+    ref_worksheet49.write(0, 0, economy + ' electricity consumption Reference', cell_format1)
+    ref_worksheet49.write(chart_height + ref_elec_1_rows + 3, 0, economy + ' electricity consumption Carbon Neutrality', cell_format1)
     ref_worksheet49.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a Electricity sector area chart
@@ -19163,7 +19238,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -19174,18 +19249,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         ref_elecsec_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -19213,7 +19289,7 @@ for economy in Economy_codes:
         pass
 
     # Create a Electricity sector area chart
-    # NET-ZERO
+    # CARBON NEUTRALITY
     if netz_elec_1_rows > 0:
         netz_elecsec_chart1 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
         netz_elecsec_chart1.set_size({
@@ -19231,7 +19307,7 @@ for economy in Economy_codes:
             'crossing': 19,
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'position_axis': 'on_tick',
             'interval_unit': 10,
             'line': {'color': '#bebebe'}
@@ -19242,18 +19318,19 @@ for economy in Economy_codes:
             'minor_tick_mark': 'none',
             'label_position': 'low',
             # 'name': 'PJ',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
                 'line': {'color': '#bebebe'}
             },
-            'line': {'color': '#828282',
-                    'width': 1}
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
         })
             
         netz_elecsec_chart1.set_legend({
-            'font': {'font': 'Segoe UI', 'size': 10}
+            'font': {'name': 'Segoe UI', 'size': 9}
             #'none': True
         })
             
@@ -19312,7 +19389,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -19323,18 +19400,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         'name': 'CO2 intensity',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0.00',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
             
     co2int_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
             
@@ -19354,7 +19432,7 @@ for economy in Economy_codes:
                        'width': 1.5}
         })
 
-    j = netz_co2int_2[netz_co2int_2['fuel_code'] == 'Net-zero'].index[0]
+    j = netz_co2int_2[netz_co2int_2['fuel_code'] == 'Carbon neutrality'].index[0]
     co2int_chart1.add_series({
         'name':       ['CO2 intensity', chart_height + ref_co2int_2_rows + j + 4, 0],
         'categories': ['CO2 intensity', chart_height + ref_co2int_2_rows + 3, 2,\
@@ -19384,7 +19462,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -19395,18 +19473,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         'name': 'Million tonnes CO2',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                 'width': 1}
+        'line': {'color': '#323232',
+                 'width': 1,
+                 'dash_type': 'square_dot'}
     })
         
     emiss_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -19457,7 +19536,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -19468,18 +19547,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
         'line': {'color': '#828282',
-                'width': 1}
+                'width': 1,
+                'dash_type': 'square_dot'}
     })
 
     emiss_wedge_chart1.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -19545,7 +19625,7 @@ for economy in Economy_codes:
         'crossing': 19,
         'major_tick_mark': 'none',
         'minor_tick_mark': 'none',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'position_axis': 'on_tick',
         'interval_unit': 10,
         'line': {'color': '#bebebe'}
@@ -19556,18 +19636,19 @@ for economy in Economy_codes:
         'minor_tick_mark': 'none',
         'label_position': 'low',
         # 'name': 'PJ',
-        'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+        'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
         'num_format': '# ### ### ##0',
         'major_gridlines': {
             'visible': True,
             'line': {'color': '#bebebe'}
         },
-        'line': {'color': '#828282',
-                'width': 1}
+        'line': {'color': '#323232',
+                'width': 1,
+                'dash_type': 'square_dot'}
     })
         
     emiss_wedge_chart2.set_legend({
-        'font': {'font': 'Segoe UI', 'size': 10}
+        'font': {'name': 'Segoe UI', 'size': 9}
         #'none': True
     })
         
@@ -19649,7 +19730,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            #'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            #'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -19657,7 +19738,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Petroleum products (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -19667,7 +19748,7 @@ for economy in Economy_codes:
         })
             
         ref_kaya_chart1.set_legend({
-            #'font': {'font': 'Segoe UI', 'size': 10}
+            #'font': {'name': 'Segoe UI', 'size': 9}
             'none': True
         })
             
@@ -19730,7 +19811,7 @@ for economy in Economy_codes:
             'label_position': 'low',
             'major_tick_mark': 'none',
             'minor_tick_mark': 'none',
-            #'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            #'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'line': {'color': '#bebebe'}
         })
             
@@ -19738,7 +19819,7 @@ for economy in Economy_codes:
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
             # 'name': 'Petroleum products (PJ)',
-            'num_font': {'font': 'Segoe UI', 'size': 10, 'color': '#323232'},
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
                 'visible': True,
@@ -19748,7 +19829,7 @@ for economy in Economy_codes:
         })
             
         netz_kaya_chart1.set_legend({
-            #'font': {'font': 'Segoe UI', 'size': 10}
+            #'font': {'name': 'Segoe UI', 'size': 9}
             'none': True
         })
             
