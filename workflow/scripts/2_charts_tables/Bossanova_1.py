@@ -5410,8 +5410,9 @@ for economy in Economy_codes:
     ref_crude_power = ref_crude_power[['fuel_code', 'item_code_new'] + list(ref_crude_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
     
     # Refining
-    ref_crude_refinery = ref_refinery_1.copy().groupby(['Transformation']).sum().reset_index(drop = True)\
-                            .assign(fuel_code = '6_crude_oil_and_ngl', item_code_new = '9_4_oil_refineries')
+    ref_crude_refinery = ref_refinery_1[ref_refinery_1['FUEL'].isin(['Crude oil', 'NGLs'])]\
+                                .copy().groupby(['Transformation']).sum().reset_index(drop = True)\
+                                    .assign(fuel_code = '6_crude_oil_and_ngl', item_code_new = '9_4_oil_refineries')
 
     hist_refine = EGEDA_hist_refining[EGEDA_hist_refining['economy'] == economy].copy()\
                      .iloc[:,:-2][['fuel_code', 'item_code_new'] + list(EGEDA_hist_refining.loc[:, '2000':'2016'])]\
@@ -5934,8 +5935,9 @@ for economy in Economy_codes:
     netz_crude_power = netz_crude_power[['fuel_code', 'item_code_new'] + list(netz_crude_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
     
     # Refining
-    netz_crude_refinery = netz_refinery_1.copy().groupby(['Transformation']).sum().reset_index(drop = True)\
-                            .assign(fuel_code = '6_crude_oil_and_ngl', item_code_new = '9_4_oil_refineries')
+    netz_crude_refinery = netz_refinery_1[netz_refinery_1['FUEL'].isin(['Crude oil', 'NGLs'])]\
+                                .copy().groupby(['Transformation']).sum().reset_index(drop = True)\
+                                    .assign(fuel_code = '6_crude_oil_and_ngl', item_code_new = '9_4_oil_refineries')
 
     hist_refine = EGEDA_hist_refining[EGEDA_hist_refining['economy'] == economy].copy()\
                      .iloc[:,:-2][['fuel_code', 'item_code_new'] + list(EGEDA_hist_refining.loc[:, '2000':'2016'])]\
