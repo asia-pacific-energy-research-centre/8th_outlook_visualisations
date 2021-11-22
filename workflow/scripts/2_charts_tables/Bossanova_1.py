@@ -3964,6 +3964,9 @@ for economy in Economy_codes:
 
     netz_modren_4 = netz_modren_3.append([non_ren_series1, modren_prop_series1], ignore_index = True).reset_index(drop = True)
 
+    # Remove historical from CN
+    netz_modren_4.loc[netz_modren_4['item_code_new'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+
     #netz_modren_4 = netz_modren_4[netz_modren_4['item_code_new'].isin(['Total', 'TFEC', 'Net-zero'])].copy().reset_index(drop = True)
 
     netz_modren_4_rows = netz_modren_4.shape[0]
@@ -4043,6 +4046,8 @@ for economy in Economy_codes:
 
         netz_enint_3 = netz_enint_2.append(netz_ei_series2, ignore_index = True).reset_index(drop = True)
 
+        netz_enint_3.loc[netz_enint_3['Series'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+
         if economy == 'APEC':
             target_row2 = ['APEC', 'Target'] + [55] * 51
             target_series2 = pd.Series(target_row2, index = netz_enint_3.columns)
@@ -4108,6 +4113,9 @@ for economy in Economy_codes:
         netz_series2 = pd.Series(netz_calc2, index = netz_enint_sup2.columns)
 
         netz_enint_sup3 = netz_enint_sup2.append(netz_series2, ignore_index = True).reset_index(drop = True)
+
+        # Remove CN historical
+        netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon neutrality', '2000':'2017'] = np.nan
 
         netz_enint_sup3_rows = netz_enint_sup3.shape[0]
         netz_enint_sup3_cols = netz_enint_sup3.shape[1]
@@ -4477,6 +4485,9 @@ for economy in Economy_codes:
 
     emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Total', 'fuel_code'] = 'Carbon neutrality'
 
+    # Remove historical from carbon neutrality
+    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+
     emiss_total_1_rows = emiss_total_1.shape[0]
     emiss_total_1_cols = emiss_total_1.shape[1]
 
@@ -4507,6 +4518,9 @@ for economy in Economy_codes:
     emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Reference', 'fuel_code'] = '19_total'
     emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon neutrality', 'fuel_code'] = '19_total'
 
+    # Get rid of data for CN for historical
+    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+
     emissions_wedge_1_rows = emissions_wedge_1.shape[0]
     emissions_wedge_1_cols = emissions_wedge_1.shape[1]
 
@@ -4531,6 +4545,9 @@ for economy in Economy_codes:
     emissions_wedge_2 = emissions_wedge_2.append(emiss_total_1.copy()).reset_index(drop = True)
 
     emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon neutrality', 'fuel_code'] = 'Carbon neutrality'
+
+    # Get rid of data for CN for historical
+    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon neutrality', '2000':'2017'] = np.nan
 
     emissions_wedge_2_rows = emissions_wedge_2.shape[0]
     emissions_wedge_2_cols = emissions_wedge_2.shape[1]
@@ -6298,6 +6315,9 @@ for economy in Economy_codes:
     netz_series1 = pd.Series(netz_calc1, index = netz_co2int_1.columns)
 
     netz_co2int_2 = netz_co2int_1.append(netz_series1, ignore_index = True).reset_index(drop = True)
+
+    # Remove 2000 to 2017 data from CN
+    netz_co2int_2.loc[netz_co2int_2['fuel_code'] == 'Carbon neutrality', '2000':'2017'] = np.nan
 
     netz_co2int_2_rows = netz_co2int_2.shape[0]
     netz_co2int_2_cols = netz_co2int_2.shape[1]
