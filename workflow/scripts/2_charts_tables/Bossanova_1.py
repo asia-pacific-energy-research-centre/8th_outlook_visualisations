@@ -6413,7 +6413,7 @@ for economy in Economy_codes:
         netz_ei_growth = (netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon neutrality', '2050'] / netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon neutrality', '2018']).to_numpy()
         netz_co2i_growth = (netz_co2int_2.loc[netz_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / netz_co2int_2.loc[netz_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
 
-        if (pop_growth >= 1) & (ref_co2i_growth < 1):
+        if (pop_growth >= 1) & (ref_co2i_growth < 1) & (ref_ei_growth < 1):
 
             ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
                                     columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
@@ -6453,7 +6453,7 @@ for economy in Economy_codes:
             ref_kaya_1_rows = ref_kaya_1.shape[0]
             ref_kaya_1_cols = ref_kaya_1.shape[1]
 
-        elif (pop_growth < 1) & (ref_co2i_growth < 1):
+        elif (pop_growth < 1) & (ref_co2i_growth < 1) & (ref_ei_growth < 1):
 
             ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
                                     columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
@@ -6493,7 +6493,7 @@ for economy in Economy_codes:
             ref_kaya_1_rows = ref_kaya_1.shape[0]
             ref_kaya_1_cols = ref_kaya_1.shape[1]
 
-        elif (pop_growth >= 1) & (ref_co2i_growth >= 1):
+        elif (pop_growth >= 1) & (ref_co2i_growth >= 1) & (ref_ei_growth < 1):
 
             ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
                                     columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
@@ -6533,7 +6533,7 @@ for economy in Economy_codes:
             ref_kaya_1_rows = ref_kaya_1.shape[0]
             ref_kaya_1_cols = ref_kaya_1.shape[1]
 
-        elif (pop_growth < 1) & (ref_co2i_growth >= 1):
+        elif (pop_growth < 1) & (ref_co2i_growth >= 1) & (ref_ei_growth < 1):
 
             ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
                                     columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
@@ -6563,6 +6563,46 @@ for economy in Economy_codes:
             # Energy intensity column
             ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
             ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
+
+            # Emissions intensity column
+            ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
+            ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
+
+            ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
+
+            ref_kaya_1_rows = ref_kaya_1.shape[0]
+            ref_kaya_1_cols = ref_kaya_1.shape[1]
+
+        elif (pop_growth >= 1) & (ref_co2i_growth >= 1) & (ref_ei_growth >= 1):
+
+            ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
+                                    columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
+                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
+
+            ref_kaya_1.loc[0, 'Reference'] = 'initial'
+            ref_kaya_1.loc[1, 'Reference'] = 'empty'
+            ref_kaya_1.loc[2, 'Reference'] = 'no improve'
+            ref_kaya_1.loc[3, 'Reference'] = 'empty'
+            ref_kaya_1.loc[4, 'Reference'] = 'no improve'
+            ref_kaya_1.loc[5, 'Reference'] = 'no improve'
+            ref_kaya_1.loc[6, 'Reference'] = 'no improve'
+
+            # Emissions 2018 column
+            ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
+            ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
+            
+            # Population column (Emissions multiplied by population factor split into two data points)
+            ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018
+            ref_kaya_1.loc[2, 'Population'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018   
+
+            # GDP per capita column
+            ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018
+            ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
+            ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
+
+            # Energy intensity column
+            ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth)
+            ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth)
 
             # Emissions intensity column
             ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
