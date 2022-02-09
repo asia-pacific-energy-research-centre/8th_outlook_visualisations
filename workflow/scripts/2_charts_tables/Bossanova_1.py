@@ -2316,7 +2316,7 @@ for economy in Economy_codes:
     netz_exports_1.loc['Total'] = netz_exports_1.sum(numeric_only = True)
 
     netz_exports_1.loc['Total', 'fuel_code'] = 'Total'
-    netz_exports_1.loc['Total', 'item_code_new'] = '2_imports'
+    netz_exports_1.loc['Total', 'item_code_new'] = '3_exports'
 
     # Get rid of zero rows
     non_zero = (netz_exports_1.loc[:,'2000':] != 0).any(axis = 1)
