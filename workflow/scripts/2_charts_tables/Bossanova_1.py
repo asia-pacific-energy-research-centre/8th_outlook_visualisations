@@ -920,7 +920,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -5584,6 +5584,17 @@ for economy in Economy_codes:
 
     ref_renew_bldtrad = ref_renew_bldtrad[['fuel_code', 'item_code_new'] + list(ref_renew_bldtrad.loc[:, '2000':'2050'])]
 
+    # Independent build for ref_renewcons_2 #######################################################################################################################
+    ref_renew_bldall = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                             (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                             (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
+                                                                                       '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                       '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
+
+    ref_renew_bldall = ref_renew_bldall[['fuel_code', 'item_code_new'] + list(ref_renew_bldall.loc[:, '2000':'2050'])]
+    ###############################################################################################################################################################
+
     ref_renew_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas','16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
@@ -5675,6 +5686,24 @@ for economy in Economy_codes:
     
     ref_renewcons_1_rows = ref_renewcons_1.shape[0]
     ref_renewcons_1_cols = ref_renewcons_1.shape[1]
+
+    # Alternative that just has buildings as one category
+
+    ref_renewcons_2 = ref_renew_ind.append([ref_renew_bldall, ref_renew_ag, ref_renew_trn, ref_renew_ne, 
+                                                ref_renew_ns, ref_renew_own, ref_renew_power])\
+                                                    .copy().reset_index(drop = True)
+
+    ref_renewcons_2.loc[ref_renewcons_2['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+
+    ref_renewcons_2.loc['Total'] = ref_renewcons_2.sum(numeric_only = True)
+
+    ref_renewcons_2.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
+    ref_renewcons_2.loc['Total', 'item_code_new'] = 'Total'
+
+    ref_renewcons_2 = ref_renewcons_2.copy().reset_index(drop = True)
+    
+    ref_renewcons_2_rows = ref_renewcons_2.shape[0]
+    ref_renewcons_2_cols = ref_renewcons_2.shape[1]
 
     ##########
     # CARBON NEUTRALITY
@@ -6109,6 +6138,17 @@ for economy in Economy_codes:
 
     netz_renew_bldtrad = netz_renew_bldtrad[['fuel_code', 'item_code_new'] + list(netz_renew_bldtrad.loc[:, '2000':'2050'])]
 
+    # Independent build for netz_renewcons_2 #############################################################################################################################
+    netz_renew_bldall = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
+                                            (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
+                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
+                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
+                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
+                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
+
+    netz_renew_bldall = netz_renew_bldall[['fuel_code', 'item_code_new'] + list(netz_renew_bldall.loc[:, '2000':'2050'])]
+    #####################################################################################################################################################################
+
     netz_renew_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                            (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
@@ -6200,6 +6240,23 @@ for economy in Economy_codes:
     
     netz_renewcons_1_rows = netz_renewcons_1.shape[0]
     netz_renewcons_1_cols = netz_renewcons_1.shape[1]
+
+    # Build for buildings in one category
+    netz_renewcons_2 = netz_renew_ind.append([netz_renew_bldall, netz_renew_ag, netz_renew_trn, netz_renew_ne, 
+                                                netz_renew_ns, netz_renew_own, netz_renew_power])\
+                                                    .copy().reset_index(drop = True)
+
+    netz_renewcons_2.loc[netz_renewcons_2['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
+
+    netz_renewcons_2.loc['Total'] = netz_renewcons_2.sum(numeric_only = True)
+
+    netz_renewcons_2.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
+    netz_renewcons_2.loc['Total', 'item_code_new'] = 'Total'
+
+    netz_renewcons_2 = netz_renewcons_2.copy().reset_index(drop = True)
+    
+    netz_renewcons_2_rows = netz_renewcons_2.shape[0]
+    netz_renewcons_2_cols = netz_renewcons_2.shape[1]
 
     ##########################
 
@@ -6946,6 +7003,10 @@ for economy in Economy_codes:
     ref_renew_2.to_excel(writer, sheet_name = 'Renewable fuels', index = False, startrow = chart_height + ref_renewcons_1_rows + 3)
     netz_renewcons_1.to_excel(writer, sheet_name = 'Renewable fuels', index = False, startrow = (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6)
     netz_renew_2.to_excel(writer, sheet_name = 'Renewable fuels', index = False, startrow = (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + netz_renewcons_1_rows + 9)
+    ref_renewcons_2.to_excel(writer, sheet_name = 'Renewable fuels VER2', index = False, startrow = chart_height)
+    ref_renew_2.to_excel(writer, sheet_name = 'Renewable fuels VER2', index = False, startrow = chart_height + ref_renewcons_2_rows + 3)
+    netz_renewcons_2.to_excel(writer, sheet_name = 'Renewable fuels VER2', index = False, startrow = (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + 6)
+    netz_renew_2.to_excel(writer, sheet_name = 'Renewable fuels VER2', index = False, startrow = (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + netz_renewcons_2_rows + 9)
     ref_elec_1.to_excel(writer, sheet_name = 'Electricity', index = False, startrow = chart_height)
     netz_elec_1.to_excel(writer, sheet_name = 'Electricity', index = False, startrow = (2 * chart_height) + ref_elec_1_rows + 3)
     ref_hyd_1.to_excel(writer, sheet_name = 'Hydrogen', index = False, startrow = chart_height)
@@ -18626,6 +18687,289 @@ for economy in Economy_codes:
             })
         
         ref_worksheet46.insert_chart('J' + str(chart_height + ref_renewcons_1_rows + ref_renew_2_rows + 9), netz_tpes_renew_chart1)
+
+    else:
+        pass
+
+    ############################################################################################################################################
+    #VERSION 2: ONLY 1 BUILDINGS CATEGORY
+
+    ##############
+    # Liquid and solid renewables
+    
+    # Access the workbook and second sheet with data from df2
+    both_worksheet61 = writer.sheets['Renewable fuels VER2']
+        
+    # Apply comma format and header format to relevant data rows
+    both_worksheet61.set_column(1, ref_renewcons_2_cols + 1, None, space_format)
+    both_worksheet61.set_row(chart_height, None, header_format)
+    both_worksheet61.set_row(chart_height + ref_renewcons_2_rows + 3, None, header_format)
+    both_worksheet61.set_row((2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + 6, None, header_format)
+    both_worksheet61.set_row((2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + netz_renewcons_2_rows + 9, None, header_format)
+    both_worksheet61.write(0, 0, economy + ' liquid and solid renewables Reference (NB: ONLY 1 BUILDINGS CATEGORY)', cell_format1)
+    both_worksheet61.write(chart_height + ref_renewcons_2_rows + ref_renew_2_rows + 6, 0, economy + ' liquid and solid renewables Carbon Neutrality (NB: ONLY 1 BUILDINGS CATEGORY)', cell_format1)
+    both_worksheet61.write(1, 0, 'Units: Petajoules', cell_format2)
+
+    # Create a FED sector area chart
+    if ref_renewcons_2_rows > 0:
+        ref_renewcons_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        ref_renewcons_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_renewcons_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_renewcons_chart2.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'crossing': 19,
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_renewcons_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'label_position': 'low',
+            # 'name': 'PJ',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
+        })
+            
+        ref_renewcons_chart2.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        ref_renewcons_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_renewcons_2_rows):
+            if not ref_renewcons_2['item_code_new'].iloc[i] in ['Total']:
+                ref_renewcons_chart2.add_series({
+                    'name':       ['Renewable fuels VER2', chart_height + i + 1, 1],
+                    'categories': ['Renewable fuels VER2', chart_height, 2, chart_height, ref_renewcons_2_cols - 1],
+                    'values':     ['Renewable fuels VER2', chart_height + i + 1, 2, chart_height + i + 1, ref_renewcons_2_cols - 1],
+                    'fill':       {'color': ref_renewcons_2['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass
+
+        both_worksheet61.insert_chart('B3', ref_renewcons_chart2)
+
+    else:
+        pass
+
+    # Create a TPES petroleum products chart
+    if ref_renew_2_rows > 0:
+        ref_tpes_renew_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        ref_tpes_renew_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        ref_tpes_renew_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        ref_tpes_renew_chart2.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_tpes_renew_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'Petroleum products (PJ)',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        ref_tpes_renew_chart2.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        ref_tpes_renew_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for component in fuel_final_bunk[:-1]:
+            i = ref_renew_2[ref_renew_2['item_code_new'] == component].index[0]
+            ref_tpes_renew_chart2.add_series({
+                'name':       ['Renewable fuels VER2', chart_height + ref_renewcons_2_rows + i + 4, 1],
+                'categories': ['Renewable fuels VER2', chart_height + ref_renewcons_2_rows + 3, 2,\
+                    chart_height + ref_renewcons_2_rows + 3, ref_renew_2_cols - 1],
+                'values':     ['Renewable fuels VER2', chart_height + ref_renewcons_2_rows + i + 4, 2,\
+                    chart_height + ref_renewcons_2_rows + i + 4, ref_renew_2_cols - 1],
+                'fill':       {'color': ref_renew_2['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+        
+        both_worksheet61.insert_chart('J3', ref_tpes_renew_chart2)
+
+    else:
+        pass
+
+    # Carbon Neutrality
+    
+    # Create a FED sector area chart
+    if netz_renewcons_2_rows > 0:
+        netz_renewcons_chart2 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_renewcons_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_renewcons_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_renewcons_chart2.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'crossing': 19,
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_renewcons_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'label_position': 'low',
+            # 'name': 'PJ',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
+        })
+            
+        netz_renewcons_chart2.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        netz_renewcons_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_renewcons_2_rows):
+            if not netz_renewcons_2['item_code_new'].iloc[i] in ['Total']:
+                netz_renewcons_chart2.add_series({
+                    'name':       ['Renewable fuels VER2', (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + i + 7, 1],
+                    'categories': ['Renewable fuels VER2', (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + 6, 2,\
+                        (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + 6, netz_renewcons_2_cols - 1],
+                    'values':     ['Renewable fuels VER2', (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + i + 7, netz_renewcons_2_cols - 1],
+                    'fill':       {'color': netz_renewcons_2['item_code_new'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                pass
+            
+        both_worksheet61.insert_chart('B' + str(chart_height + ref_renewcons_2_rows + ref_renew_2_rows + 9), netz_renewcons_chart2)
+
+    else:
+        pass
+
+    # Create a TPES petroleum products chart
+    if netz_renew_2_rows > 0:
+        netz_tpes_renew_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        netz_tpes_renew_chart2.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_tpes_renew_chart2.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_tpes_renew_chart2.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_tpes_renew_chart2.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'Petroleum products (PJ)',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_tpes_renew_chart2.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        netz_tpes_renew_chart2.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.    
+        for component in fuel_final_bunk[:-1]:
+            i = netz_renew_2[netz_renew_2['item_code_new'] == component].index[0]
+            netz_tpes_renew_chart2.add_series({
+                'name':       ['Renewable fuels VER2', (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + netz_renewcons_2_rows + i + 10, 1],
+                'categories': ['Renewable fuels VER2', (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + netz_renewcons_2_rows + 9, 2,\
+                    (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + netz_renewcons_2_rows + 9, netz_renew_2_cols - 1],
+                'values':     ['Renewable fuels VER2', (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + netz_renewcons_2_rows + i + 10, 2,\
+                    (2 * chart_height) + ref_renewcons_2_rows + ref_renew_2_rows + netz_renewcons_2_rows + i + 10, netz_renew_2_cols - 1],
+                'fill':       {'color': netz_renew_2['item_code_new'].map(colours_dict).loc[i]},
+                'border':     {'none': True},
+                'gap':        100
+            })
+        
+        both_worksheet61.insert_chart('J' + str(chart_height + ref_renewcons_2_rows + ref_renew_2_rows + 9), netz_tpes_renew_chart2)
 
     else:
         pass
