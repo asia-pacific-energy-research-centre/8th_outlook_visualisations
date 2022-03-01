@@ -2890,6 +2890,8 @@ for economy in Economy_codes:
     lignite_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(lignite_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Lignite')
     thermal_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(thermal_coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
 
+    other2_capacity = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(other_higheragg_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Other')
+
     # Capacity by tech dataframe (with the above aggregations added)
 
     ref_powcap_1 = ref_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
@@ -2907,6 +2909,19 @@ for economy in Economy_codes:
 
     ref_powcap_1.loc['Total', 'TECHNOLOGY'] = 'Total'
 
+    ref_powcap_NEW = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS',\
+        'Nuclear', 'Hydro', 'Wind', 'Solar'])].copy().append([other2_capacity]).reset_index(drop = True)
+
+    ref_powcap_NEW = ref_powcap_NEW[['TECHNOLOGY'] + list(ref_powcap_NEW.loc[:, '2018':'2050'])]
+
+    ref_powcap_NEW['TECHNOLOGY'] = pd.Categorical(ref_powcap_NEW['TECHNOLOGY'], pow_capacity_agg3)
+
+    ref_powcap_3 = ref_powcap_NEW.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    ref_powcap_3.loc['Total'] = ref_powcap_3.sum(numeric_only = True)
+
+    ref_powcap_3.loc['Total', 'TECHNOLOGY'] = 'Total'
+
     # Get rid of zero rows
     non_zero = (ref_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
     ref_powcap_1 = ref_powcap_1.loc[non_zero].reset_index(drop = True)
@@ -2918,6 +2933,19 @@ for economy in Economy_codes:
 
     ref_powcap_2_rows = ref_powcap_2.shape[0]
     ref_powcap_2_cols = ref_powcap_2.shape[1]
+
+    # Get rid of zero rows
+    non_zero = (ref_powcap_3.loc[:,'2018':] != 0).any(axis = 1)
+    ref_powcap_3 = ref_powcap_3.loc[non_zero].reset_index(drop = True)
+
+    ref_powcap_3_rows = ref_powcap_3.shape[0]
+    ref_powcap_3_cols = ref_powcap_3.shape[1]
+
+    ref_powcap_4 = ref_powcap_3[['TECHNOLOGY'] + trans_col_chart]
+
+    ref_powcap_4_rows = ref_powcap_4.shape[0]
+    ref_powcap_4_cols = ref_powcap_4.shape[1]
+
 
     #########################################################################################################################################
     ############ NEW DATAFRAMES #############################################################################################################
@@ -3587,6 +3615,8 @@ for economy in Economy_codes:
     lignite_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(lignite_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Lignite')
     thermal_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(thermal_coal_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Coal')
 
+    other2_capacity = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(other_higheragg_cap)].groupby(['REGION']).sum().assign(TECHNOLOGY = 'Other')
+
     # Capacity by tech dataframe (with the above aggregations added)
 
     netz_powcap_1 = netz_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
@@ -3604,6 +3634,19 @@ for economy in Economy_codes:
 
     netz_powcap_1.loc['Total', 'TECHNOLOGY'] = 'Total'
 
+    netz_powcap_NEW = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS',\
+        'Nuclear', 'Hydro', 'Wind', 'Solar'])].copy().append([other2_capacity]).reset_index(drop = True)
+
+    netz_powcap_NEW = netz_powcap_NEW[['TECHNOLOGY'] + list(netz_powcap_NEW.loc[:, '2018':'2050'])]
+
+    netz_powcap_NEW['TECHNOLOGY'] = pd.Categorical(netz_powcap_NEW['TECHNOLOGY'], pow_capacity_agg3)
+
+    netz_powcap_3 = netz_powcap_NEW.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    netz_powcap_3.loc['Total'] = netz_powcap_3.sum(numeric_only = True)
+
+    netz_powcap_3.loc['Total', 'TECHNOLOGY'] = 'Total'
+
     # Get rid of zero rows
     non_zero = (netz_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
     netz_powcap_1 = netz_powcap_1.loc[non_zero].reset_index(drop = True)
@@ -3615,6 +3658,19 @@ for economy in Economy_codes:
 
     netz_powcap_2_rows = netz_powcap_2.shape[0]
     netz_powcap_2_cols = netz_powcap_2.shape[1]
+
+    # Get rid of zero rows
+    non_zero = (netz_powcap_3.loc[:,'2018':] != 0).any(axis = 1)
+    netz_powcap_3 = netz_powcap_3.loc[non_zero].reset_index(drop = True)
+
+    netz_powcap_3_rows = netz_powcap_3.shape[0]
+    netz_powcap_3_cols = netz_powcap_3.shape[1]
+
+    netz_powcap_4 = netz_powcap_3[['TECHNOLOGY'] + trans_col_chart]
+
+    netz_powcap_4_rows = netz_powcap_4.shape[0]
+    netz_powcap_4_cols = netz_powcap_4.shape[1]
+
 
     #########################################################################################################################################
     ############ NEW DATAFRAMES #############################################################################################################
@@ -7068,6 +7124,10 @@ for economy in Economy_codes:
     netz_powcap_1.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6)
     ref_powcap_2.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = chart_height + ref_powcap_1_rows + 3)
     netz_powcap_2.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + netz_powcap_1_rows + 9)
+    ref_powcap_3.to_excel(writer, sheet_name = 'Capacity_VER2', index = False, startrow = chart_height)
+    netz_powcap_3.to_excel(writer, sheet_name = 'Capacity_VER2', index = False, startrow = (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + 6)
+    ref_powcap_4.to_excel(writer, sheet_name = 'Capacity_VER2', index = False, startrow = chart_height + ref_powcap_3_rows + 3)
+    netz_powcap_4.to_excel(writer, sheet_name = 'Capacity_VER2', index = False, startrow = (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + 9)
     ref_pow_use_2.to_excel(writer, sheet_name = 'Power fuel consumption', index = False, startrow = chart_height)
     netz_pow_use_2.to_excel(writer, sheet_name = 'Power fuel consumption', index = False, startrow = (2 * chart_height) + ref_pow_use_2_rows + ref_pow_use_3_rows + 6)
     ref_pow_use_3.to_excel(writer, sheet_name = 'Power fuel consumption', index = False, startrow = chart_height + ref_pow_use_2_rows + 3)
@@ -12463,6 +12523,169 @@ for economy in Economy_codes:
     else:
         pass
 
+    # Access the workbook and second sheet
+    ref_worksheet63 = writer.sheets['Capacity_VER2']
+    
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet63.set_column(1, ref_powcap_3_cols + 1, None, space_format)
+    ref_worksheet63.set_row(chart_height, None, header_format)
+    ref_worksheet63.set_row(chart_height + ref_powcap_3_rows + 3, None, header_format)
+    ref_worksheet63.set_row((2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + 6, None, header_format)
+    ref_worksheet63.set_row((2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + ref_powcap_3_rows + 9, None, header_format)
+    ref_worksheet63.write(0, 0, economy + ' power capacity Reference (alternative aggregation)', cell_format1)
+    ref_worksheet63.write(chart_height + ref_powcap_3_rows + ref_powcap_4_rows + 6, 0, economy + ' power capacity Carbon Neutrality (alternative aggregation)', cell_format1)
+    ref_worksheet63.write(1, 0, 'Units: Gigawatts', cell_format2)
+
+    # Create a electricity production area chart
+    if ref_powcap_3_rows > 1:
+        pow_cap_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        pow_cap_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        pow_cap_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        pow_cap_chart3.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        pow_cap_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'GW',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        pow_cap_chart3.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        pow_cap_chart3.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_powcap_3_rows):
+            if not ref_powcap_3['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
+                pow_cap_chart3.add_series({
+                    'name':       ['Capacity_VER2', chart_height + i + 1, 0],
+                    'categories': ['Capacity_VER2', chart_height, 1, chart_height, ref_powcap_3_cols - 1],
+                    'values':     ['Capacity_VER2', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_3_cols - 1],
+                    'fill':       {'color': ref_powcap_3['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                if not ref_powcap_3['TECHNOLOGY'].iloc[i] in ['Total']:
+                    pow_cap_chart3.add_series({
+                        'name':       ['Capacity_VER2', chart_height + i + 1, 0],
+                        'categories': ['Capacity_VER2', chart_height, 1, chart_height, ref_powcap_3_cols - 1],
+                        'values':     ['Capacity_VER2', chart_height + i + 1, 1, chart_height + i + 1, ref_powcap_3_cols - 1],
+                        'pattern':    {'fg_color': ref_powcap_3['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass    
+            
+        ref_worksheet63.insert_chart('B3', pow_cap_chart3)
+
+    else:
+        pass
+
+    # Create a industry subsector FED chart
+    if ref_powcap_4_rows > 1:
+        pow_cap_chart4 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        pow_cap_chart4.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        pow_cap_chart4.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        pow_cap_chart4.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        pow_cap_chart4.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'GW',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        pow_cap_chart4.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        pow_cap_chart4.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_powcap_4_rows):
+            if not ref_powcap_4['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
+                pow_cap_chart4.add_series({
+                    'name':       ['Capacity_VER2', chart_height + ref_powcap_3_rows + i + 4, 0],
+                    'categories': ['Capacity_VER2', chart_height + ref_powcap_3_rows + 3, 1, chart_height + ref_powcap_3_rows + 3, ref_powcap_4_cols - 1],
+                    'values':     ['Capacity_VER2', chart_height + ref_powcap_3_rows + i + 4, 1, chart_height + ref_powcap_3_rows + i + 4, ref_powcap_4_cols - 1],
+                    'fill':       {'color': ref_powcap_4['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                if not ref_powcap_4['TECHNOLOGY'].iloc[i] in ['Total']:
+                    pow_cap_chart4.add_series({
+                        'name':       ['Capacity_VER2', chart_height + ref_powcap_3_rows + i + 4, 0],
+                        'categories': ['Capacity_VER2', chart_height + ref_powcap_3_rows + 3, 1, chart_height + ref_powcap_3_rows + 3, ref_powcap_4_cols - 1],
+                        'values':     ['Capacity_VER2', chart_height + ref_powcap_3_rows + i + 4, 1, chart_height + ref_powcap_3_rows + i + 4, ref_powcap_4_cols - 1],
+                        'pattern':    {'fg_color': ref_powcap_4['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })
+
+                else:
+                    pass    
+            
+        ref_worksheet63.insert_chart('J3', pow_cap_chart4)
+
+    else:
+        pass
+
     ############################# Next sheet: Transformation sector ##################################
     
     # Access the workbook and second sheet
@@ -14119,6 +14342,164 @@ for economy in Economy_codes:
                     pass    
             
         ref_worksheet24.insert_chart('J' + str(chart_height + ref_powcap_1_rows + ref_powcap_2_rows + 9), netz_pow_cap_chart2)
+
+    else:
+        pass
+
+    # Create a electricity production area chart
+    if netz_powcap_3_rows > 1:
+        netz_pow_cap_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_pow_cap_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_pow_cap_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_pow_cap_chart3.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 8,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_pow_cap_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'GW',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_pow_cap_chart3.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        netz_pow_cap_chart3.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_powcap_3_rows):
+            if not netz_powcap_3['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
+                netz_pow_cap_chart3.add_series({
+                    'name':       ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + i + 7, 0],
+                    'categories': ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + 6, 1,\
+                        (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + 6, netz_powcap_3_cols - 1],
+                    'values':     ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + i + 7, 1,\
+                        (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + i + 7, netz_powcap_3_cols - 1],
+                    'fill':       {'color': netz_powcap_3['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                if not netz_powcap_3['TECHNOLOGY'].iloc[i] in ['Total']:
+                    netz_pow_cap_chart3.add_series({
+                        'name':       ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + i + 7, 0],
+                        'categories': ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + 6, 1,\
+                            (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + 6, netz_powcap_3_cols - 1],
+                        'values':     ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + i + 7, 1,\
+                            (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + i + 7, netz_powcap_3_cols - 1],
+                        'pattern':    {'fg_color': netz_powcap_3['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass    
+
+        ref_worksheet63.insert_chart('B' + str(chart_height + ref_powcap_3_rows + ref_powcap_4_rows + 9), netz_pow_cap_chart3)
+
+    else:
+        pass
+
+    # Create a industry subsector FED chart
+    if netz_powcap_4_rows > 1:
+        netz_pow_cap_chart4 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        netz_pow_cap_chart4.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_pow_cap_chart4.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_pow_cap_chart4.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_pow_cap_chart4.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'GW',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_pow_cap_chart4.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        netz_pow_cap_chart4.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_powcap_4_rows):
+            if not netz_powcap_4['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
+                netz_pow_cap_chart4.add_series({
+                    'name':       ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + i + 10, 0],
+                    'categories': ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + 9, 1,\
+                        (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + 9, netz_powcap_4_cols - 1],
+                    'values':     ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + i + 10, 1,\
+                        (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + i + 10, netz_powcap_4_cols - 1],
+                    'fill':       {'color': netz_powcap_4['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                if not netz_powcap_4['TECHNOLOGY'].iloc[i] in ['Total']:
+                    netz_pow_cap_chart4.add_series({
+                        'name':       ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + i + 10, 0],
+                        'categories': ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + 9, 1,\
+                            (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + 9, netz_powcap_4_cols - 1],
+                        'values':     ['Capacity_VER2', (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + i + 10, 1,\
+                            (2 * chart_height) + ref_powcap_3_rows + ref_powcap_4_rows + netz_powcap_3_rows + i + 10, netz_powcap_4_cols - 1],
+                        'pattern':    {'fg_color': netz_powcap_4['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })
+
+                else:
+                    pass    
+            
+        ref_worksheet63.insert_chart('J' + str(chart_height + ref_powcap_3_rows + ref_powcap_4_rows + 9), netz_pow_cap_chart4)
 
     else:
         pass
