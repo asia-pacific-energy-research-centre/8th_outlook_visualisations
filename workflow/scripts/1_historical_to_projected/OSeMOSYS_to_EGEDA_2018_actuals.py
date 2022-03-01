@@ -581,7 +581,7 @@ else:
 if ref_aggregate_df2_tojoin.empty == True:
     Joined_ref_df = EGEDA_years.copy().reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
 else:
-    Joined_ref_df = EGEDA_years.copy().iloc[:, :].merge(ref_aggregate_df2_tojoin[key_variables + list(ref_aggregate_df2_tojoin.loc[:,'2019':])],\
+    Joined_ref_df = EGEDA_years.copy().iloc[:, :].merge(ref_aggregate_df2_tojoin[key_variables + list(ref_aggregate_df2_tojoin.iloc[:,5:])],\
         on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_ref_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_reference.csv', index = False)
@@ -590,7 +590,7 @@ Joined_ref_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_reference.csv', index
 if netz_aggregate_df2_tojoin.empty == True:
     Joined_netz_df = EGEDA_years.copy().reindex(columns = EGEDA_years.columns.tolist() + list(range(2019, 2051)))
 else:
-    Joined_netz_df = EGEDA_years.copy().iloc[:, :].merge(netz_aggregate_df2_tojoin[key_variables + list(ref_aggregate_df2_tojoin.loc[:,'2019':])],\
+    Joined_netz_df = EGEDA_years.copy().iloc[:, :].merge(netz_aggregate_df2_tojoin[key_variables + list(ref_aggregate_df2_tojoin.iloc[:,5:])],\
         on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_netz_df.to_csv(path_final + '/OSeMOSYS_to_EGEDA_2018_netzero.csv', index = False)
@@ -1980,7 +1980,7 @@ EGEDA_emissions = pd.read_csv('./data/1_EGEDA/EGEDA_2018_emissions.csv')
 if ref_aggemiss_df2.empty:
     Joined_emissdf_ref = EGEDA_emissions.reindex(columns = EGEDA_emissions.columns.tolist() + list(range(2019, 2051)))
 else:
-    Joined_emissdf_ref = EGEDA_emissions.iloc[:, :].merge(ref_aggemiss_df2[key_variables + list(ref_aggemiss_df2.loc[:,'2019':])],\
+    Joined_emissdf_ref = EGEDA_emissions.iloc[:, :].merge(ref_aggemiss_df2[key_variables + list(ref_aggemiss_df2.iloc[:,5:])],\
         on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_emissdf_ref.to_csv(path_final + '/OSeMOSYS_to_EGEDA_emissions_2018_reference.csv', index = False)
@@ -1989,7 +1989,7 @@ Joined_emissdf_ref.to_csv(path_final + '/OSeMOSYS_to_EGEDA_emissions_2018_refere
 if netz_aggemiss_df2.empty:
     Joined_emissdf_netz = EGEDA_emissions.reindex(columns = EGEDA_emissions.columns.tolist() + list(range(2019, 2051)))
 else:
-    Joined_emissdf_netz = EGEDA_emissions.iloc[:, :].merge(netz_aggemiss_df2[key_variables + list(netz_aggemiss_df2.loc[:,'2019':])],\
+    Joined_emissdf_netz = EGEDA_emissions.iloc[:, :].merge(netz_aggemiss_df2[key_variables + list(netz_aggemiss_df2.iloc[:,5:])],\
         on = ['economy', 'fuel_code', 'item_code_new'], how = 'left')
 
 Joined_emissdf_netz.to_csv(path_final + '/OSeMOSYS_to_EGEDA_emissions_2018_netzero.csv', index = False)
