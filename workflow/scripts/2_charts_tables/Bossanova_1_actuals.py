@@ -318,6 +318,11 @@ thermal_coal_tech = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal
 solar_roof_tech = ['POW_SolarRoofPV_PP']
 solar_nr_tech = ['POW_SolarCSP_PP', 'POW_SolarFloatPV_PP', 'POW_SolarPV_PP']
 
+# Another aggregation of other from Alex
+other_higheragg_tech = ['POW_Solid_Biomass_PP', 'POW_CHP_BIO_PP', 'POW_Biogas_PP', 'POW_Geothermal_PP', 
+                        'POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage', 'POW_WasteToEnergy_PP',
+                        'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_CHP_PP']
+
 # Modern renewables
 
 modren_elec_heat = ['POW_Hydro_PP', 'POW_Storage_Hydro_PP', 'POW_IMP_Hydro_PP', 'POW_SolarCSP_PP', 
@@ -341,6 +346,7 @@ prod_agg_tech = ['Coal', 'Coal CCS', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear'
                  'Geothermal', 'Waste', 'Storage', 'Other', 'Imports', 'Total']
 prod_agg_tech2 = ['Coal', 'Coal CCS', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro', 'Nuclear', 'Wind', 'Solar', 
                  'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports', 'Total']
+prod_agg_tech3 = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Other', 'Imports', 'Total']
 
 heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Nuclear', 'Biomass', 'Waste', 'Non-specified', 'Heat only units', 'Total']
 
@@ -383,10 +389,15 @@ transmission_cap = ['POW_Transmission']
 lignite_cap = ['POW_Sub_Brown_PP']
 thermal_coal_cap = ['POW_Black_Coal_PP', 'POW_Other_Coal_PP', 'POW_Sub_BituCoal_PP', 'POW_Ultra_BituCoal_PP', 'POW_CHP_COAL_PP', 'POW_Ultra_CHP_PP']
 
+# Other cap from Alex
+other_higheragg_cap = ['POW_Geothermal_PP', 'POW_AggregatedEnergy_Storage_VPP', 'POW_EmbeddedBattery_Storage', 'POW_WasteToEnergy_PP',
+                       'POW_IPP_PP', 'POW_TIDAL_PP', 'POW_CHP_PP']
 
 pow_capacity_agg = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 'Solar', 'Geothermal', 'Waste', 'Storage', 'Other']
 pow_capacity_agg2 = ['Coal', 'Coal CCS', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 
                      'Solar', 'Geothermal', 'Waste', 'Storage', 'Other']
+
+pow_capacity_agg3 = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Other']
 
 # Heat power plants
 
@@ -467,6 +478,9 @@ no_coal = EGEDA_hist_gen[EGEDA_hist_gen['fuel_code'] != '1_coal'].copy().reset_i
 
 EGEDA_hist_gen = no_coal.append(lig_coal).reset_index(drop = True)
 
+# Create a copy for alternative historical with different aggregations
+EGEDA_hist_gen2 = EGEDA_hist_gen.copy()
+
 EGEDA_hist_gen['TECHNOLOGY'] = EGEDA_hist_gen['fuel_code'].map({'1_coal': 'Coal', 
                                                                 '1_5_lignite': 'Lignite', 
                                                                 '2_coal_products': 'Coal',
@@ -491,6 +505,32 @@ EGEDA_hist_gen = EGEDA_hist_gen[['economy', 'TECHNOLOGY', 'Generation'] + list(r
 
 EGEDA_hist_gen.to_csv('./data/4_Joined/EGEDA_hist_gen.csv', index = False)
 EGEDA_hist_gen = pd.read_csv('./data/4_Joined/EGEDA_hist_gen.csv')
+
+# Same historical generation with different aggregations
+EGEDA_hist_gen2['TECHNOLOGY'] = EGEDA_hist_gen2['fuel_code'].map({'1_coal': 'Coal', 
+                                                                  '1_5_lignite': 'Coal', 
+                                                                  '2_coal_products': 'Coal',
+                                                                  '6_crude_oil_and_ngl': 'Oil',
+                                                                  '7_petroleum_products': 'Oil',
+                                                                  '8_gas': 'Gas', 
+                                                                  '9_nuclear': 'Nuclear', 
+                                                                  '10_hydro': 'Hydro', 
+                                                                  '11_geothermal': 'Other', 
+                                                                  '12_solar': 'Solar', 
+                                                                  '13_tide_wave_ocean': 'Hydro', 
+                                                                  '14_wind': 'Wind', 
+                                                                  '15_solid_biomass': 'Other', 
+                                                                  '16_others': 'Other', 
+                                                                  '17_electricity': 'Imports',
+                                                                  '18_heat': 'Other'})
+
+EGEDA_hist_gen2['Generation'] = 'Electricity'
+
+EGEDA_hist_gen2 = EGEDA_hist_gen2[['economy', 'TECHNOLOGY', 'Generation'] + list(range(2000, 2019))].\
+    groupby(['economy', 'TECHNOLOGY', 'Generation']).sum().reset_index()
+
+EGEDA_hist_gen2.to_csv('./data/4_Joined/EGEDA_hist_gen2.csv', index = False)
+EGEDA_hist_gen2 = pd.read_csv('./data/4_Joined/EGEDA_hist_gen2.csv')
 
 ########################### Create historical heat dataframe for use later ###########################
 
@@ -920,7 +960,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+Economy_codes = ['APEC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -2567,6 +2607,9 @@ for economy in Economy_codes:
     roof_pp2 = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(solar_roof_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar roof')
     nonroof_pp = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(solar_nr_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar')
 
+    # New aggregations from ALEX
+    other_pp2 = ref_elecgen_1[ref_elecgen_1['TECHNOLOGY'].isin(other_higheragg_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
+
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
     ref_elecgen_2 = ref_elecgen_1.append([coal_pp2, coal_ccs_pp, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
@@ -2581,6 +2624,14 @@ for economy in Economy_codes:
 
     ref_elecgen_2 = ref_elecgen_2.loc[ref_elecgen_2.index.intersection(prod_agg_tech2)].reset_index()\
         .rename(columns = {'index': 'TECHNOLOGY'})
+
+    ref_elecgen_NEW = ref_elecgen_2[ref_elecgen_2['TECHNOLOGY'].isin(['Coal CCS', 'Gas', 'Gas CCS',\
+        'Oil', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Imports'])].copy().append([coal_pp, other_pp2]).reset_index(drop = True)
+
+    ref_elecgen_NEW = ref_elecgen_NEW[['TECHNOLOGY', 'Generation'] + list(ref_elecgen_NEW.loc[:, '2019':'2050'])]
+
+    ref_elecgen_NEW.loc[ref_elecgen_NEW['TECHNOLOGY'] == 'Coal', 'Generation'] = 'Electricity'
+    ref_elecgen_NEW.loc[ref_elecgen_NEW['TECHNOLOGY'] == 'Other', 'Generation'] = 'Electricity'
 
     #################################################################################
     historical_gen = EGEDA_hist_gen[EGEDA_hist_gen['economy'] == economy].copy().\
@@ -2613,6 +2664,40 @@ for economy in Economy_codes:
 
     ref_elecgen_3_rows = ref_elecgen_3.shape[0]
     ref_elecgen_3_cols = ref_elecgen_3.shape[1]
+
+    # And now for new aggregations
+    #################################################################################
+    historical_gen2 = EGEDA_hist_gen2[EGEDA_hist_gen2['economy'] == economy].copy().\
+        iloc[:,:][['TECHNOLOGY', 'Generation'] + list(EGEDA_hist_gen2.loc[:, '2000':'2018'])]
+
+    ref_elecgen_4 = historical_gen2.merge(ref_elecgen_NEW, how = 'right', on = ['TECHNOLOGY', 'Generation']).replace(np.nan, 0)
+
+    ref_elecgen_4['TECHNOLOGY'] = pd.Categorical(ref_elecgen_4['TECHNOLOGY'], prod_agg_tech3)
+
+    ref_elecgen_4 = ref_elecgen_4.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    # CHange to TWh from Petajoules
+
+    s = ref_elecgen_4.select_dtypes(include=[np.number]) / 3.6 
+    ref_elecgen_4[s.columns] = s
+
+    ref_elecgen_4.loc['Total'] = ref_elecgen_4.sum(numeric_only = True)
+
+    ref_elecgen_4.loc['Total', 'TECHNOLOGY'] = 'Total'
+    ref_elecgen_4.loc['Total', 'Generation'] = 'Electricity'
+
+    # Get rid of zero rows
+    non_zero = (ref_elecgen_4.loc[:,'2000':] != 0).any(axis = 1)
+    ref_elecgen_4 = ref_elecgen_4.loc[non_zero].reset_index(drop = True)
+
+    ref_elecgen_4_rows = ref_elecgen_4.shape[0]
+    ref_elecgen_4_cols = ref_elecgen_4.shape[1]
+
+    ref_elecgen_5 = ref_elecgen_4[['TECHNOLOGY', 'Generation'] + gen_col_chart_years]
+
+    ref_elecgen_5_rows = ref_elecgen_5.shape[0]
+    ref_elecgen_5_cols = ref_elecgen_5.shape[1]
+
 
     ##################################################################################################################################################################
 
@@ -3226,6 +3311,9 @@ for economy in Economy_codes:
     roof_pp2 = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(solar_roof_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar roof')
     nonroof_pp = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(solar_nr_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Solar')
 
+    # New aggregations from ALEX
+    other_pp2 = netz_elecgen_1[netz_elecgen_1['TECHNOLOGY'].isin(other_higheragg_tech)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
+
     # Generation of electricity by tech dataframe (with the above aggregations added)
 
     netz_elecgen_2 = netz_elecgen_1.append([coal_pp2, coal_ccs_pp, lignite_pp2, oil_pp, gas_pp, gas_ccs_pp, storage_pp, nuclear_pp,\
@@ -3240,6 +3328,14 @@ for economy in Economy_codes:
 
     netz_elecgen_2 = netz_elecgen_2.loc[netz_elecgen_2.index.intersection(prod_agg_tech2)].reset_index()\
         .rename(columns = {'index': 'TECHNOLOGY'})
+
+    netz_elecgen_NEW = netz_elecgen_2[netz_elecgen_2['TECHNOLOGY'].isin(['Coal CCS', 'Gas', 'Gas CCS',\
+        'Oil', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Imports'])].copy().append([coal_pp, other_pp2]).reset_index(drop = True)
+
+    netz_elecgen_NEW = netz_elecgen_NEW[['TECHNOLOGY', 'Generation'] + list(netz_elecgen_NEW.loc[:, '2019':'2050'])]
+
+    netz_elecgen_NEW.loc[netz_elecgen_NEW['TECHNOLOGY'] == 'Coal', 'Generation'] = 'Electricity'
+    netz_elecgen_NEW.loc[netz_elecgen_NEW['TECHNOLOGY'] == 'Other', 'Generation'] = 'Electricity'
 
     #################################################################################
     historical_gen = EGEDA_hist_gen[EGEDA_hist_gen['economy'] == economy].copy().\
@@ -3272,6 +3368,39 @@ for economy in Economy_codes:
 
     netz_elecgen_3_rows = netz_elecgen_3.shape[0]
     netz_elecgen_3_cols = netz_elecgen_3.shape[1]
+
+    # And now for new aggregations
+    #################################################################################
+    historical_gen2 = EGEDA_hist_gen2[EGEDA_hist_gen2['economy'] == economy].copy().\
+        iloc[:,:][['TECHNOLOGY', 'Generation'] + list(EGEDA_hist_gen2.loc[:, '2000':'2018'])]
+
+    netz_elecgen_4 = historical_gen2.merge(netz_elecgen_NEW, how = 'right', on = ['TECHNOLOGY', 'Generation']).replace(np.nan, 0)
+
+    netz_elecgen_4['TECHNOLOGY'] = pd.Categorical(netz_elecgen_4['TECHNOLOGY'], prod_agg_tech3)
+
+    netz_elecgen_4 = netz_elecgen_4.sort_values('TECHNOLOGY').reset_index(drop = True)
+
+    # CHange to TWh from Petajoules
+
+    s = netz_elecgen_4.select_dtypes(include=[np.number]) / 3.6 
+    netz_elecgen_4[s.columns] = s
+
+    netz_elecgen_4.loc['Total'] = netz_elecgen_4.sum(numeric_only = True)
+
+    netz_elecgen_4.loc['Total', 'TECHNOLOGY'] = 'Total'
+    netz_elecgen_4.loc['Total', 'Generation'] = 'Electricity'
+
+    # Get rid of zero rows
+    non_zero = (netz_elecgen_4.loc[:,'2000':] != 0).any(axis = 1)
+    netz_elecgen_4 = netz_elecgen_4.loc[non_zero].reset_index(drop = True)
+
+    netz_elecgen_4_rows = netz_elecgen_4.shape[0]
+    netz_elecgen_4_cols = netz_elecgen_4.shape[1]
+
+    netz_elecgen_5 = netz_elecgen_4[['TECHNOLOGY', 'Generation'] + gen_col_chart_years]
+
+    netz_elecgen_5_rows = netz_elecgen_5.shape[0]
+    netz_elecgen_5_cols = netz_elecgen_5.shape[1]
 
     ##################################################################################################################################################################
 
@@ -3903,7 +4032,7 @@ for economy in Economy_codes:
     # NEW EDIT: First slot in 'Total' electricity and heat (including losses and own use)
 
     # Grab historical for all electricity and heat
-    historical_eh2 = EGEDA_hist_eh2[EGEDA_hist_eh2['economy'] == economy].copy().iloc[:, 1:-2]
+    historical_eh2 = EGEDA_hist_eh2[EGEDA_hist_eh2['economy'] == economy].copy().iloc[:, 1:]
 
     netz_all_elecheat = historical_eh2.merge(netz_elecheat[['fuel_code', 'item_code_new'] + list(netz_elecheat.loc[:,'2019': '2050'])],\
         how = 'left', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
@@ -3965,13 +4094,13 @@ for economy in Economy_codes:
     non_ren_eh1 = ['Non modern renewables', 'Electricity and heat'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 2, 2:] - netz_modren_3.iloc[netz_modren_3.shape[0] - 3, 2:])
     non_ren_series1 = pd.Series(non_ren_eh1, index = netz_modren_3.columns)
 
-    modren_prop1 = ['Modern renewables', 'Carbon neutrality'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 4, 2:] / netz_modren_3.iloc[netz_modren_3.shape[0] - 1, 2:])
+    modren_prop1 = ['Modern renewables', 'Carbon Neutrality'] + list(netz_modren_3.iloc[netz_modren_3.shape[0] - 4, 2:] / netz_modren_3.iloc[netz_modren_3.shape[0] - 1, 2:])
     modren_prop_series1 = pd.Series(modren_prop1, index = netz_modren_3.columns)
 
     netz_modren_4 = netz_modren_3.append([non_ren_series1, modren_prop_series1], ignore_index = True).reset_index(drop = True)
 
     # Remove historical from CN
-    netz_modren_4.loc[netz_modren_4['item_code_new'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+    netz_modren_4.loc[netz_modren_4['item_code_new'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
 
     #netz_modren_4 = netz_modren_4[netz_modren_4['item_code_new'].isin(['Total', 'TFEC', 'Net-zero'])].copy().reset_index(drop = True)
 
@@ -4047,12 +4176,12 @@ for economy in Economy_codes:
 
         netz_enint_2 = netz_enint_1.append(netz_ei_series1, ignore_index = True).reset_index(drop = True)
 
-        netz_ei_calc2 = [economy, 'Carbon neutrality'] + list(netz_enint_2.iloc[2, 2:] / netz_enint_2.iloc[2, 7] * 100)
+        netz_ei_calc2 = [economy, 'Carbon Neutrality'] + list(netz_enint_2.iloc[2, 2:] / netz_enint_2.iloc[2, 7] * 100)
         netz_ei_series2 = pd.Series(netz_ei_calc2, index = netz_enint_2.columns)
 
         netz_enint_3 = netz_enint_2.append(netz_ei_series2, ignore_index = True).reset_index(drop = True)
 
-        netz_enint_3.loc[netz_enint_3['Series'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+        netz_enint_3.loc[netz_enint_3['Series'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
 
         if economy == 'APEC':
             target_row2 = ['APEC', 'Target'] + [55] * 51
@@ -4110,7 +4239,7 @@ for economy in Economy_codes:
 
         netz_enint_sup1 = netz_enint_sup1[['Economy', 'Series'] + list(netz_enint_sup1.loc[:, '2000':'2050'])]
 
-        netz_calc1 = [economy, 'Carbon neutrality'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
+        netz_calc1 = [economy, 'Carbon Neutrality'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
         netz_series1 = pd.Series(netz_calc1, index = netz_enint_sup1.columns)
 
         netz_enint_sup2 = netz_enint_sup1.append(netz_series1, ignore_index = True).reset_index(drop = True)
@@ -4121,7 +4250,7 @@ for economy in Economy_codes:
         netz_enint_sup3 = netz_enint_sup2.append(netz_series2, ignore_index = True).reset_index(drop = True)
 
         # Remove CN historical
-        netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+        netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
 
         netz_enint_sup3_rows = netz_enint_sup3.shape[0]
         netz_enint_sup3_cols = netz_enint_sup3.shape[1]
@@ -4489,10 +4618,10 @@ for economy in Economy_codes:
     emiss_total_1 = emiss_total_1.append(netz_emiss_fuel_1[netz_emiss_fuel_1['fuel_code'] == 'Total'].copy())\
         .reset_index(drop = True) 
 
-    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Total', 'fuel_code'] = 'Carbon neutrality'
+    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Total', 'fuel_code'] = 'Carbon Neutrality'
 
     # Remove historical from carbon neutrality
-    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+    emiss_total_1.loc[emiss_total_1['fuel_code'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
 
     emiss_total_1_rows = emiss_total_1.shape[0]
     emiss_total_1_cols = emiss_total_1.shape[1]
@@ -4520,12 +4649,12 @@ for economy in Economy_codes:
     emissions_wedge_1 = emissions_wedge_1.append(emiss_total_1.copy()).reset_index(drop = True)
 
     emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Reference', 'item_code_new'] = 'Reference'
-    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Carbon neutrality', 'item_code_new'] = 'Carbon neutrality'
+    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Carbon Neutrality', 'item_code_new'] = 'Carbon Neutrality'
     emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Reference', 'fuel_code'] = '19_total'
-    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon neutrality', 'fuel_code'] = '19_total'
+    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon Neutrality', 'fuel_code'] = '19_total'
 
     # Get rid of data for CN for historical
-    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
 
     emissions_wedge_1_rows = emissions_wedge_1.shape[0]
     emissions_wedge_1_cols = emissions_wedge_1.shape[1]
@@ -4550,10 +4679,10 @@ for economy in Economy_codes:
 
     emissions_wedge_2 = emissions_wedge_2.append(emiss_total_1.copy()).reset_index(drop = True)
 
-    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon neutrality', 'fuel_code'] = 'Carbon neutrality'
+    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon Neutrality', 'fuel_code'] = 'Carbon Neutrality'
 
     # Get rid of data for CN for historical
-    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
 
     emissions_wedge_2_rows = emissions_wedge_2.shape[0]
     emissions_wedge_2_cols = emissions_wedge_2.shape[1]
@@ -6390,13 +6519,13 @@ for economy in Economy_codes:
 
     netz_co2int_1 = netz_co2int_1.append(netz_tpes_1[netz_tpes_1['fuel_code'] == 'Total']).copy().reset_index(drop = True)
 
-    netz_calc1 = ['Carbon neutrality', 'CO2 intensity'] + list(netz_co2int_1.iloc[0, 2:] / netz_co2int_1.iloc[1, 2:])
+    netz_calc1 = ['Carbon Neutrality', 'CO2 intensity'] + list(netz_co2int_1.iloc[0, 2:] / netz_co2int_1.iloc[1, 2:])
     netz_series1 = pd.Series(netz_calc1, index = netz_co2int_1.columns)
 
     netz_co2int_2 = netz_co2int_1.append(netz_series1, ignore_index = True).reset_index(drop = True)
 
     # Remove 2000 to 2017 data from CN
-    netz_co2int_2.loc[netz_co2int_2['fuel_code'] == 'Carbon neutrality', '2000':'2017'] = np.nan
+    netz_co2int_2.loc[netz_co2int_2['fuel_code'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
 
     netz_co2int_2_rows = netz_co2int_2.shape[0]
     netz_co2int_2_cols = netz_co2int_2.shape[1]
@@ -6487,7 +6616,7 @@ for economy in Economy_codes:
         gdp_pc_growth = (macro_1.loc[macro_1['Series'] == 'GDP per capita', '2050'] / macro_1.loc[macro_1['Series'] == 'GDP per capita', '2018']).to_numpy()
         ref_ei_growth = (ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2050'] / ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2018']).to_numpy()
         ref_co2i_growth = (ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
-        netz_ei_growth = (netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon neutrality', '2050'] / netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon neutrality', '2018']).to_numpy()
+        netz_ei_growth = (netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon Neutrality', '2050'] / netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon Neutrality', '2018']).to_numpy()
         netz_co2i_growth = (netz_co2int_2.loc[netz_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / netz_co2int_2.loc[netz_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
 
         if (pop_growth >= 1) & (ref_co2i_growth < 1) & (ref_ei_growth < 1):
@@ -6698,16 +6827,16 @@ for economy in Economy_codes:
         if (pop_growth >= 1) & (netz_co2i_growth < 1):
 
             netz_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Carbon neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
+                                    columns = ['Carbon Neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
                                                 'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
 
-            netz_kaya_1.loc[0, 'Carbon neutrality'] = 'initial'
-            netz_kaya_1.loc[1, 'Carbon neutrality'] = 'empty'
-            netz_kaya_1.loc[2, 'Carbon neutrality'] = 'no improve'
-            netz_kaya_1.loc[3, 'Carbon neutrality'] = 'empty'
-            netz_kaya_1.loc[4, 'Carbon neutrality'] = 'no improve'
-            netz_kaya_1.loc[5, 'Carbon neutrality'] = 'improve'
-            netz_kaya_1.loc[6, 'Carbon neutrality'] = 'improve'
+            netz_kaya_1.loc[0, 'Carbon Neutrality'] = 'initial'
+            netz_kaya_1.loc[1, 'Carbon Neutrality'] = 'empty'
+            netz_kaya_1.loc[2, 'Carbon Neutrality'] = 'no improve'
+            netz_kaya_1.loc[3, 'Carbon Neutrality'] = 'empty'
+            netz_kaya_1.loc[4, 'Carbon Neutrality'] = 'no improve'
+            netz_kaya_1.loc[5, 'Carbon Neutrality'] = 'improve'
+            netz_kaya_1.loc[6, 'Carbon Neutrality'] = 'improve'
 
             # Emissions 2018 column
             netz_kaya_1.loc[0, 'Emissions 2018'] = netz_emissions_2018
@@ -6738,16 +6867,16 @@ for economy in Economy_codes:
         elif (pop_growth < 1) & (netz_co2i_growth < 1):
 
             netz_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Carbon neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
+                                    columns = ['Carbon Neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
                                                 'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
 
-            netz_kaya_1.loc[0, 'Carbon neutrality'] = 'initial'
-            netz_kaya_1.loc[1, 'Carbon neutrality'] = 'empty'
-            netz_kaya_1.loc[2, 'Carbon neutrality'] = 'improve'
-            netz_kaya_1.loc[3, 'Carbon neutrality'] = 'empty'
-            netz_kaya_1.loc[4, 'Carbon neutrality'] = 'no improve'
-            netz_kaya_1.loc[5, 'Carbon neutrality'] = 'improve'
-            netz_kaya_1.loc[6, 'Carbon neutrality'] = 'improve'
+            netz_kaya_1.loc[0, 'Carbon Neutrality'] = 'initial'
+            netz_kaya_1.loc[1, 'Carbon Neutrality'] = 'empty'
+            netz_kaya_1.loc[2, 'Carbon Neutrality'] = 'improve'
+            netz_kaya_1.loc[3, 'Carbon Neutrality'] = 'empty'
+            netz_kaya_1.loc[4, 'Carbon Neutrality'] = 'no improve'
+            netz_kaya_1.loc[5, 'Carbon Neutrality'] = 'improve'
+            netz_kaya_1.loc[6, 'Carbon Neutrality'] = 'improve'
 
             # Emissions 2018 column
             netz_kaya_1.loc[0, 'Emissions 2018'] = netz_emissions_2018
@@ -6778,16 +6907,16 @@ for economy in Economy_codes:
         elif (pop_growth >= 1) & (netz_co2i_growth >= 1):
 
             netz_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Carbon neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
+                                    columns = ['Carbon Neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
                                                 'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
 
-            netz_kaya_1.loc[0, 'Carbon neutrality'] = 'initial'
-            netz_kaya_1.loc[1, 'Carbon neutrality'] = 'empty'
-            netz_kaya_1.loc[2, 'Carbon neutrality'] = 'no improve'
-            netz_kaya_1.loc[3, 'Carbon neutrality'] = 'empty'
-            netz_kaya_1.loc[4, 'Carbon neutrality'] = 'no improve'
-            netz_kaya_1.loc[5, 'Carbon neutrality'] = 'improve'
-            netz_kaya_1.loc[6, 'Carbon neutrality'] = 'no improve'
+            netz_kaya_1.loc[0, 'Carbon Neutrality'] = 'initial'
+            netz_kaya_1.loc[1, 'Carbon Neutrality'] = 'empty'
+            netz_kaya_1.loc[2, 'Carbon Neutrality'] = 'no improve'
+            netz_kaya_1.loc[3, 'Carbon Neutrality'] = 'empty'
+            netz_kaya_1.loc[4, 'Carbon Neutrality'] = 'no improve'
+            netz_kaya_1.loc[5, 'Carbon Neutrality'] = 'improve'
+            netz_kaya_1.loc[6, 'Carbon Neutrality'] = 'no improve'
 
             # Emissions 2018 column
             netz_kaya_1.loc[0, 'Emissions 2018'] = netz_emissions_2018
@@ -6818,16 +6947,16 @@ for economy in Economy_codes:
         elif (pop_growth < 1) & (netz_co2i_growth >= 1):
 
             netz_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Carbon neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
+                                    columns = ['Carbon Neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
                                                 'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
 
-            netz_kaya_1.loc[0, 'Carbon neutrality'] = 'initial'
-            netz_kaya_1.loc[1, 'Carbon neutrality'] = 'empty'
-            netz_kaya_1.loc[2, 'Carbon neutrality'] = 'improve'
-            netz_kaya_1.loc[3, 'Carbon neutrality'] = 'empty'
-            netz_kaya_1.loc[4, 'Carbon neutrality'] = 'no improve'
-            netz_kaya_1.loc[5, 'Carbon neutrality'] = 'improve'
-            netz_kaya_1.loc[6, 'Carbon neutrality'] = 'no improve'
+            netz_kaya_1.loc[0, 'Carbon Neutrality'] = 'initial'
+            netz_kaya_1.loc[1, 'Carbon Neutrality'] = 'empty'
+            netz_kaya_1.loc[2, 'Carbon Neutrality'] = 'improve'
+            netz_kaya_1.loc[3, 'Carbon Neutrality'] = 'empty'
+            netz_kaya_1.loc[4, 'Carbon Neutrality'] = 'no improve'
+            netz_kaya_1.loc[5, 'Carbon Neutrality'] = 'improve'
+            netz_kaya_1.loc[6, 'Carbon Neutrality'] = 'no improve'
 
             # Emissions 2018 column
             netz_kaya_1.loc[0, 'Emissions 2018'] = netz_emissions_2018
@@ -6931,6 +7060,10 @@ for economy in Economy_codes:
     netz_elecgen_2.to_excel(writer, sheet_name = 'Generation', index = False, startrow = (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + 6)
     ref_elecgen_3.to_excel(writer, sheet_name = 'Generation', index = False, startrow = chart_height + ref_elecgen_2_rows + 3)
     netz_elecgen_3.to_excel(writer, sheet_name = 'Generation', index = False, startrow = (2 * chart_height) + ref_elecgen_2_rows + ref_elecgen_3_rows + netz_elecgen_2_rows + 9)
+    ref_elecgen_4.to_excel(writer, sheet_name = 'Generation_VER2', index = False, startrow = chart_height)
+    netz_elecgen_4.to_excel(writer, sheet_name = 'Generation_VER2', index = False, startrow = (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + 6)
+    ref_elecgen_5.to_excel(writer, sheet_name = 'Generation_VER2', index = False, startrow = chart_height + ref_elecgen_4_rows + 3)
+    netz_elecgen_5.to_excel(writer, sheet_name = 'Generation_VER2', index = False, startrow = (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + 9)
     ref_powcap_1.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = chart_height)
     netz_powcap_1.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = (2 * chart_height) + ref_powcap_1_rows + ref_powcap_2_rows + 6)
     ref_powcap_2.to_excel(writer, sheet_name = 'Capacity', index = False, startrow = chart_height + ref_powcap_1_rows + 3)
@@ -11788,6 +11921,173 @@ for economy in Economy_codes:
     else:
         pass
 
+    # Access the workbook and second sheet
+    ref_worksheet62 = writer.sheets['Generation_VER2']
+    
+    # Apply comma format and header format to relevant data rows
+    ref_worksheet62.set_column(2, ref_elecgen_4_cols + 1, None, space_format)
+    ref_worksheet62.set_row(chart_height, None, header_format)
+    ref_worksheet62.set_row(chart_height + ref_elecgen_4_rows + 3, None, header_format)
+    ref_worksheet62.set_row((2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + 6, None, header_format)
+    ref_worksheet62.set_row((2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + 9, None, header_format)
+    ref_worksheet62.write(0, 0, economy + ' electricity generation Reference (higher level aggregation)', cell_format1)
+    ref_worksheet62.write(chart_height + ref_elecgen_4_rows + ref_elecgen_5_rows + 6, 0, economy + ' electricity generation Carbon Neutrality (higher level aggregation)', cell_format1)
+    ref_worksheet62.write(1, 0, 'Units: Terrawatt hours', cell_format2)
+
+    # Create a electricity production area chart
+    if ref_elecgen_4_rows > 0:
+        prodelec_bytech_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        prodelec_bytech_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        prodelec_bytech_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        prodelec_bytech_chart3.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'crossing': 19,
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        prodelec_bytech_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'label_position': 'low',
+            # 'name': 'TWh',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
+        })
+            
+        prodelec_bytech_chart3.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        prodelec_bytech_chart3.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_elecgen_4_rows):
+            if not ref_elecgen_4['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
+                prodelec_bytech_chart3.add_series({
+                    'name':       ['Generation_VER2', chart_height + i + 1, 0],
+                    'categories': ['Generation_VER2', chart_height, 2, chart_height, ref_elecgen_4_cols - 1],
+                    'values':     ['Generation_VER2', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_4_cols - 1],
+                    'fill':       {'color': ref_elecgen_4['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                if not ref_elecgen_4['TECHNOLOGY'].iloc[i] in ['Total']:
+                    prodelec_bytech_chart3.add_series({
+                        'name':       ['Generation_VER2', chart_height + i + 1, 0],
+                        'categories': ['Generation_VER2', chart_height, 2, chart_height, ref_elecgen_4_cols - 1],
+                        'values':     ['Generation_VER2', chart_height + i + 1, 2, chart_height + i + 1, ref_elecgen_4_cols - 1],
+                        'pattern':    {'fg_color': ref_elecgen_4['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass
+            
+        ref_worksheet62.insert_chart('B3', prodelec_bytech_chart3)
+
+    else: 
+        pass
+
+    # Create a chart
+    if ref_elecgen_5_rows > 0:
+        prodelec_bytech_chart4 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        prodelec_bytech_chart4.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        prodelec_bytech_chart4.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        prodelec_bytech_chart4.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        prodelec_bytech_chart4.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'TWh',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        prodelec_bytech_chart4.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        prodelec_bytech_chart4.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(ref_elecgen_5_rows):
+            if not ref_elecgen_5['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
+                prodelec_bytech_chart4.add_series({
+                    'name':       ['Generation_VER2', chart_height + ref_elecgen_4_rows + i + 4, 0],
+                    'categories': ['Generation_VER2', chart_height + ref_elecgen_4_rows + 3, 2, chart_height + ref_elecgen_4_rows + 3, ref_elecgen_5_cols - 1],
+                    'values':     ['Generation_VER2', chart_height + ref_elecgen_4_rows + i + 4, 2, chart_height + ref_elecgen_4_rows + i + 4, ref_elecgen_5_cols - 1],
+                    'fill':       {'color': ref_elecgen_5['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                if not ref_elecgen_5['TECHNOLOGY'].iloc[i] in ['Total']:
+                    prodelec_bytech_chart4.add_series({
+                        'name':       ['Generation_VER2', chart_height + ref_elecgen_4_rows + i + 4, 0],
+                        'categories': ['Generation_VER2', chart_height + ref_elecgen_4_rows + 3, 2, chart_height + ref_elecgen_4_rows + 3, ref_elecgen_5_cols - 1],
+                        'values':     ['Generation_VER2', chart_height + ref_elecgen_4_rows + i + 4, 2, chart_height + ref_elecgen_4_rows + i + 4, ref_elecgen_5_cols - 1],
+                        'pattern':    {'fg_color': ref_elecgen_5['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })
+                
+                else:
+                    pass
+            
+        ref_worksheet62.insert_chart('J3', prodelec_bytech_chart4)
+    
+    else:
+        pass
+
     #################################################################################################################################################
 
     ## Refining sheet
@@ -13284,6 +13584,165 @@ for economy in Economy_codes:
     else:
         pass
 
+    # Create a electricity production area chart
+    if netz_elecgen_4_rows > 0:
+        netz_prodelec_bytech_chart3 = workbook.add_chart({'type': 'area', 'subtype': 'stacked'})
+        netz_prodelec_bytech_chart3.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_prodelec_bytech_chart3.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_prodelec_bytech_chart3.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'crossing': 19,
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'position_axis': 'on_tick',
+            'interval_unit': 10,
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_prodelec_bytech_chart3.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            'label_position': 'low',
+            # 'name': 'TWh',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#323232',
+                     'width': 1,
+                     'dash_type': 'square_dot'}
+        })
+            
+        netz_prodelec_bytech_chart3.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        netz_prodelec_bytech_chart3.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_elecgen_4_rows):
+            if not netz_elecgen_4['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:    
+                netz_prodelec_bytech_chart3.add_series({
+                    'name':       ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + i + 7, 0],
+                    'categories': ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + 6, 2,\
+                        (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + 6, netz_elecgen_4_cols - 1],
+                    'values':     ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + i + 7, 2,\
+                        (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + i + 7, netz_elecgen_4_cols - 1],
+                    'fill':       {'color': netz_elecgen_4['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True}
+                })
+
+            else:
+                if not netz_elecgen_4['TECHNOLOGY'].iloc[i] in ['Total']:
+                    netz_prodelec_bytech_chart3.add_series({
+                        'name':       ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + i + 7, 0],
+                        'categories': ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + 6, 2,\
+                            (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + 6, netz_elecgen_4_cols - 1],
+                        'values':     ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + i + 7, 2,\
+                            (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + i + 7, netz_elecgen_4_cols - 1],
+                        'pattern':    {'fg_color': netz_elecgen_4['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True}
+                    })
+
+                else:
+                    pass
+           
+        ref_worksheet62.insert_chart('B' + str(chart_height + ref_elecgen_4_rows + ref_elecgen_5_rows + 9), netz_prodelec_bytech_chart3)
+
+    else: 
+        pass
+
+    # Create a industry subsector FED chart
+    if netz_elecgen_5_rows > 0:
+        netz_prodelec_bytech_chart4 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
+        netz_prodelec_bytech_chart4.set_size({
+            'width': 500,
+            'height': 300
+        })
+        
+        netz_prodelec_bytech_chart4.set_chartarea({
+            'border': {'none': True}
+        })
+        
+        netz_prodelec_bytech_chart4.set_x_axis({
+            # 'name': 'Year',
+            'label_position': 'low',
+            'major_tick_mark': 'none',
+            'minor_tick_mark': 'none',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_prodelec_bytech_chart4.set_y_axis({
+            'major_tick_mark': 'none', 
+            'minor_tick_mark': 'none',
+            # 'name': 'TWh',
+            'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
+            'num_format': '# ### ### ##0',
+            'major_gridlines': {
+                'visible': True,
+                'line': {'color': '#bebebe'}
+            },
+            'line': {'color': '#bebebe'}
+        })
+            
+        netz_prodelec_bytech_chart4.set_legend({
+            'font': {'name': 'Segoe UI', 'size': 9}
+            #'none': True
+        })
+            
+        netz_prodelec_bytech_chart4.set_title({
+            'none': True
+        })
+        
+        # Configure the series of the chart from the dataframe data.
+        for i in range(netz_elecgen_5_rows):
+            if not netz_elecgen_5['TECHNOLOGY'].iloc[i] in ['Coal CCS', 'Gas CCS', 'Total']:
+                netz_prodelec_bytech_chart4.add_series({
+                    'name':       ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + i + 10, 0],
+                    'categories': ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + 9, 2,\
+                        (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + 9, netz_elecgen_5_cols - 1],
+                    'values':     ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + i + 10, 2,\
+                        (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + i + 10, netz_elecgen_5_cols - 1],
+                    'fill':       {'color': netz_elecgen_5['TECHNOLOGY'].map(colours_dict).loc[i]},
+                    'border':     {'none': True},
+                    'gap':        100
+                })
+
+            else:
+                if not netz_elecgen_5['TECHNOLOGY'].iloc[i] in ['Total']: 
+                    netz_prodelec_bytech_chart4.add_series({
+                        'name':       ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + i + 10, 0],
+                        'categories': ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + 9, 2,\
+                            (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + 9, netz_elecgen_5_cols - 1],
+                        'values':     ['Generation_VER2', (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + i + 10, 2,\
+                            (2 * chart_height) + ref_elecgen_4_rows + ref_elecgen_5_rows + netz_elecgen_4_rows + i + 10, netz_elecgen_5_cols - 1],
+                        'pattern':    {'fg_color': netz_elecgen_5['TECHNOLOGY'].map(colours_dict).loc[i],
+                                    'pattern': 'wide_downward_diagonal'},
+                        'border':     {'none': True},
+                        'gap':        100
+                    })   
+            
+        ref_worksheet62.insert_chart('J' + str(chart_height + ref_elecgen_4_rows + ref_elecgen_5_rows + 9), netz_prodelec_bytech_chart4)
+    
+    else:
+        pass
+
     #################################################################################################################################################
 
     ## Refining sheet
@@ -14454,7 +14913,7 @@ for economy in Economy_codes:
             'line':       {'color': ref_modren_4['item_code_new'].map(colours_dict).loc[i],
                             'width': 1.5}
         })
-        j = netz_modren_4[netz_modren_4['item_code_new'] == 'Carbon neutrality'].index[0]
+        j = netz_modren_4[netz_modren_4['item_code_new'] == 'Carbon Neutrality'].index[0]
         modren_chart1.add_series({
             'name':       ['Modern renewables', chart_height + ref_modren_4_rows + j + 4, 1],
             'categories': ['Modern renewables', chart_height + ref_modren_4_rows + 3, 2, chart_height + ref_modren_4_rows + 3, netz_modren_4_cols - 1],
@@ -14652,7 +15111,7 @@ for economy in Economy_codes:
             'line':       {'color': ref_enint_3['Series'].map(colours_dict).loc[i],
                             'width': 1.5}
         })
-        j = netz_enint_3[netz_enint_3['Series'] == 'Carbon neutrality'].index[0]
+        j = netz_enint_3[netz_enint_3['Series'] == 'Carbon Neutrality'].index[0]
         enint_chart1.add_series({
             'name':       ['Energy intensity', chart_height + ref_enint_3_rows + j + 4, 1],
             'categories': ['Energy intensity', chart_height + ref_enint_3_rows + 3, 2, chart_height + ref_enint_3_rows + 3, netz_enint_3_cols - 1],
@@ -14737,7 +15196,7 @@ for economy in Economy_codes:
 
             })
 
-        j = netz_enint_sup3[netz_enint_sup3['Series'] == 'Carbon neutrality'].index[0]
+        j = netz_enint_sup3[netz_enint_sup3['Series'] == 'Carbon Neutrality'].index[0]
         enint_chart2.add_series({
             'name':       ['Energy intensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + j + 10, 1],
             'categories': ['Energy intensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + ref_enint_sup3_rows + 9, 2,\
@@ -19858,7 +20317,7 @@ for economy in Economy_codes:
                        'width': 1.5}
         })
 
-    j = netz_co2int_2[netz_co2int_2['fuel_code'] == 'Carbon neutrality'].index[0]
+    j = netz_co2int_2[netz_co2int_2['fuel_code'] == 'Carbon Neutrality'].index[0]
     co2int_chart1.add_series({
         'name':       ['CO2 intensity', chart_height + ref_co2int_2_rows + j + 4, 0],
         'categories': ['CO2 intensity', chart_height + ref_co2int_2_rows + 3, 2,\
@@ -20017,7 +20476,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })
 
-        elif emissions_wedge_1['item_code_new'].iloc[i] in ['Reference', 'Carbon neutrality']:
+        elif emissions_wedge_1['item_code_new'].iloc[i] in ['Reference', 'Carbon Neutrality']:
             emiss_line_1.add_series({
                 'name':       ['CO2 wedge', chart_height + i + 1, 1],
                 'categories': ['CO2 wedge', chart_height, 2, chart_height, emissions_wedge_1_cols - 1],
@@ -20110,7 +20569,7 @@ for economy in Economy_codes:
                 'border':     {'none': True}
             })
 
-        elif emissions_wedge_2['fuel_code'].iloc[i] in ['Reference', 'Carbon neutrality']:
+        elif emissions_wedge_2['fuel_code'].iloc[i] in ['Reference', 'Carbon Neutrality']:
             emiss_line_2.add_series({
                 'name':       ['CO2 wedge', chart_height + emissions_wedge_1_rows + i + 4, 0],
                 'categories': ['CO2 wedge', chart_height + emissions_wedge_1_rows + 3, 2,\
@@ -20265,22 +20724,22 @@ for economy in Economy_codes:
         
         # Configure the series of the chart from the dataframe data.    
         for i in range(netz_kaya_1_rows):
-            if netz_kaya_1['Carbon neutrality'].iloc[i] in ['initial']:
+            if netz_kaya_1['Carbon Neutrality'].iloc[i] in ['initial']:
                 netz_kaya_chart1.add_series({
                     'name':       ['CO2 breakdown', chart_height + ref_kaya_1_rows + i + 4, 0],
                     'categories': ['CO2 breakdown', chart_height + ref_kaya_1_rows + 3, 1, chart_height + ref_kaya_1_rows + 3, netz_kaya_1_cols - 1],
                     'values':     ['CO2 breakdown', chart_height + ref_kaya_1_rows + i + 4, 1, chart_height + ref_kaya_1_rows + i + 4, netz_kaya_1_cols - 1],
-                    'fill':       {'color': netz_kaya_1['Carbon neutrality'].map(colours_dict).loc[i]},
+                    'fill':       {'color': netz_kaya_1['Carbon Neutrality'].map(colours_dict).loc[i]},
                     'border':     {'none': True},
                     'gap':        50
                 })
 
-            elif netz_kaya_1['Carbon neutrality'].iloc[i] in ['improve', 'no improve']:
+            elif netz_kaya_1['Carbon Neutrality'].iloc[i] in ['improve', 'no improve']:
                 netz_kaya_chart1.add_series({
                     'name':       ['CO2 breakdown', chart_height + ref_kaya_1_rows + i + 4, 0],
                     'categories': ['CO2 breakdown', chart_height + ref_kaya_1_rows + 3, 1, chart_height + ref_kaya_1_rows + 3, netz_kaya_1_cols - 1],
                     'values':     ['CO2 breakdown', chart_height + ref_kaya_1_rows + i + 4, 1, chart_height + ref_kaya_1_rows + i + 4, netz_kaya_1_cols - 1],
-                    'fill':       {'color': netz_kaya_1['Carbon neutrality'].map(colours_dict).loc[i],
+                    'fill':       {'color': netz_kaya_1['Carbon Neutrality'].map(colours_dict).loc[i],
                                    'transparency': 50},
                     'border':     {'none': True},
                     'gap':        50
