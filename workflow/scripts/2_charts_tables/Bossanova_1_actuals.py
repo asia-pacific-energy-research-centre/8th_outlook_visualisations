@@ -397,7 +397,7 @@ pow_capacity_agg = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hyd
 pow_capacity_agg2 = ['Coal', 'Coal CCS', 'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 
                      'Solar', 'Geothermal', 'Waste', 'Storage', 'Other']
 
-pow_capacity_agg3 = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Other']
+pow_capacity_agg3 = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Other', 'Total']
 
 # Heat power plants
 
@@ -2914,13 +2914,13 @@ for economy in Economy_codes:
 
     ref_powcap_NEW = ref_powcap_NEW[['TECHNOLOGY'] + list(ref_powcap_NEW.loc[:, '2018':'2050'])]
 
+    ref_powcap_NEW.loc['Total'] = ref_powcap_NEW.sum(numeric_only = True)
+
+    ref_powcap_NEW.loc['Total', 'TECHNOLOGY'] = 'Total'
+
     ref_powcap_NEW['TECHNOLOGY'] = pd.Categorical(ref_powcap_NEW['TECHNOLOGY'], pow_capacity_agg3)
 
     ref_powcap_3 = ref_powcap_NEW.sort_values('TECHNOLOGY').reset_index(drop = True)
-
-    ref_powcap_3.loc['Total'] = ref_powcap_3.sum(numeric_only = True)
-
-    ref_powcap_3.loc['Total', 'TECHNOLOGY'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (ref_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
@@ -3639,13 +3639,13 @@ for economy in Economy_codes:
 
     netz_powcap_NEW = netz_powcap_NEW[['TECHNOLOGY'] + list(netz_powcap_NEW.loc[:, '2018':'2050'])]
 
+    netz_powcap_NEW.loc['Total'] = netz_powcap_NEW.sum(numeric_only = True)
+
+    netz_powcap_NEW.loc['Total', 'TECHNOLOGY'] = 'Total'
+
     netz_powcap_NEW['TECHNOLOGY'] = pd.Categorical(netz_powcap_NEW['TECHNOLOGY'], pow_capacity_agg3)
 
     netz_powcap_3 = netz_powcap_NEW.sort_values('TECHNOLOGY').reset_index(drop = True)
-
-    netz_powcap_3.loc['Total'] = netz_powcap_3.sum(numeric_only = True)
-
-    netz_powcap_3.loc['Total', 'TECHNOLOGY'] = 'Total'
 
     # Get rid of zero rows
     non_zero = (netz_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
