@@ -4273,12 +4273,12 @@ for economy in Economy_codes:
 
         ref_enint_sup1 = ref_enint_sup1[['Economy', 'Series'] + list(ref_enint_sup1.loc[:, '2000':'2050'])]
 
-        ref_calc1 = [economy, 'Reference'] + list(ref_enint_sup1.iloc[0, 2:] / ref_enint_sup1.iloc[1, 2:])
+        ref_calc1 = [economy, 'TPES energy intensity'] + list(ref_enint_sup1.iloc[0, 2:] / ref_enint_sup1.iloc[1, 2:])
         ref_series1 = pd.Series(ref_calc1, index = ref_enint_sup1.columns)
 
         ref_enint_sup2 = ref_enint_sup1.append(ref_series1, ignore_index = True).reset_index(drop = True)
 
-        ref_calc2 = [economy, 'Reference (indexed)'] + list(ref_enint_sup2.iloc[2, 2:] / ref_enint_sup2.iloc[2, 7] * 100)
+        ref_calc2 = [economy, 'Reference'] + list(ref_enint_sup2.iloc[2, 2:] / ref_enint_sup2.iloc[2, 7] * 100)
         ref_series2 = pd.Series(ref_calc2, index = ref_enint_sup2.columns)
 
         ref_enint_sup3 = ref_enint_sup2.append(ref_series2, ignore_index = True).reset_index(drop = True)
@@ -4295,12 +4295,12 @@ for economy in Economy_codes:
 
         netz_enint_sup1 = netz_enint_sup1[['Economy', 'Series'] + list(netz_enint_sup1.loc[:, '2000':'2050'])]
 
-        netz_calc1 = [economy, 'Carbon Neutrality'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
+        netz_calc1 = [economy, 'TPES energy intensity'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
         netz_series1 = pd.Series(netz_calc1, index = netz_enint_sup1.columns)
 
         netz_enint_sup2 = netz_enint_sup1.append(netz_series1, ignore_index = True).reset_index(drop = True)
 
-        netz_calc2 = [economy, 'Carbon neutrality (indexed)'] + list(netz_enint_sup2.iloc[2, 2:] / netz_enint_sup2.iloc[2, 7] * 100)
+        netz_calc2 = [economy, 'Carbon Neutrality'] + list(netz_enint_sup2.iloc[2, 2:] / netz_enint_sup2.iloc[2, 7] * 100)
         netz_series2 = pd.Series(netz_calc2, index = netz_enint_sup2.columns)
 
         netz_enint_sup3 = netz_enint_sup2.append(netz_series2, ignore_index = True).reset_index(drop = True)
