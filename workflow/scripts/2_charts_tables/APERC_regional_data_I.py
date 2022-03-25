@@ -6790,6 +6790,36 @@ for economy in Economy_codes:
         netz_kaya_1_rows = netz_kaya_1.shape[0]
         netz_kaya_1_cols = netz_kaya_1.shape[1]
 
+    # Change bunkers dataframes
+
+    # REF
+    ref_bunkers_m = ref_bunkers_1[ref_bunkers_1['fuel_code'].isin(['Gas diesel oil', 'Fuel oil'])].groupby('item_code_new').sum().reset_index()
+    
+    ref_bunkers_a = ref_bunkers_2[ref_bunkers_2['fuel_code'].isin(['Aviation gasoline', 'Jet fuel'])].groupby('item_code_new').sum().reset_index()
+
+    ref_bunkers_agg = ref_bunkers_m.append(ref_bunkers_a).reset_index(drop = True)
+
+    ref_bunkers_agg.loc['Oil'] = ref_bunkers_agg.sum(numeric_only = True)
+
+    ref_bunkers_agg = ref_bunkers_agg.reset_index(drop = False).rename(columns = {'index': 'fuel_code'})
+    ref_bunkers_agg.loc[ref_bunkers_agg['fuel_code'] == 'Oil', 'item_code_new'] = 'Oil_bunkers_ref'
+
+    ref_bunkers_agg = ref_bunkers_agg[ref_bunkers_agg['fuel_code'] == 'Oil'].copy().reset_index(drop = True)
+
+    # NETZ
+    netz_bunkers_m = netz_bunkers_1[netz_bunkers_1['fuel_code'].isin(['Gas diesel oil', 'Fuel oil'])].groupby('item_code_new').sum().reset_index()
+    
+    netz_bunkers_a = netz_bunkers_2[netz_bunkers_2['fuel_code'].isin(['Aviation gasoline', 'Jet fuel'])].groupby('item_code_new').sum().reset_index()
+
+    netz_bunkers_agg = netz_bunkers_m.append(netz_bunkers_a).reset_index(drop = True)
+
+    netz_bunkers_agg.loc['Oil'] = netz_bunkers_agg.sum(numeric_only = True)
+
+    netz_bunkers_agg = netz_bunkers_agg.reset_index(drop = False).rename(columns = {'index': 'fuel_code'})
+    netz_bunkers_agg.loc[netz_bunkers_agg['fuel_code'] == 'Oil', 'item_code_new'] = 'Oil_bunkers_cn'
+
+    bunkers_agg = netz_bunkers_agg[netz_bunkers_agg['fuel_code'] == 'Oil'].copy().append(ref_bunkers_agg).reset_index(drop = True)
+    
     # Df builds are complete
 
     ##############################################################################################################################
@@ -6891,6 +6921,7 @@ for economy in Economy_codes:
     netz_crudecons_1.to_excel(writer, sheet_name = economy + ' dfI', index = False, startrow = ref_tpes_1_rows + netz_tpes_1_rows + ref_prod_1_rows + netz_prod_1_rows + ref_imports_1_rows + netz_imports_1_rows + ref_exports_1_rows + netz_exports_1_rows + ref_coalcons_1_rows + netz_coalcons_1_rows + ref_gascons_1_rows + netz_gascons_1_rows + ref_crudecons_1_rows + 42)
     ref_petprodcons_1.to_excel(writer, sheet_name = economy + ' dfI', index = False, startrow = ref_tpes_1_rows + netz_tpes_1_rows + ref_prod_1_rows + netz_prod_1_rows + ref_imports_1_rows + netz_imports_1_rows + ref_exports_1_rows + netz_exports_1_rows + ref_coalcons_1_rows + netz_coalcons_1_rows + ref_gascons_1_rows + netz_gascons_1_rows + ref_crudecons_1_rows + netz_crudecons_1_rows + 45)
     netz_petprodcons_1.to_excel(writer, sheet_name = economy + ' dfI', index = False, startrow = ref_tpes_1_rows + netz_tpes_1_rows + ref_prod_1_rows + netz_prod_1_rows + ref_imports_1_rows + netz_imports_1_rows + ref_exports_1_rows + netz_exports_1_rows + ref_coalcons_1_rows + netz_coalcons_1_rows + ref_gascons_1_rows + netz_gascons_1_rows + ref_crudecons_1_rows + netz_crudecons_1_rows + ref_petprodcons_1_rows + 48)
+    bunkers_agg.to_excel(writer, sheet_name = economy + ' dfI', index = False, startrow = ref_tpes_1_rows + netz_tpes_1_rows + ref_prod_1_rows + netz_prod_1_rows + ref_imports_1_rows + netz_imports_1_rows + ref_exports_1_rows + netz_exports_1_rows + ref_coalcons_1_rows + netz_coalcons_1_rows + ref_gascons_1_rows + netz_gascons_1_rows + ref_crudecons_1_rows + netz_crudecons_1_rows + ref_petprodcons_1_rows + netz_petprodcons_1_rows + 51)
 
     ################################################################################################################################
 
@@ -6916,4 +6947,16 @@ for economy in Economy_codes:
     writer.save()
 
 print('Bling blang blaow, you have some dataframes now')
+
+# Now consolidate the workbooks for each of the economies into one workbook
+
+excel_filenames = glob.glob("./results/APEC_regional/*.xlsx")
+
+writer3 = pd.ExcelWriter('./results/APEC_regional/combined.xlsx', engine = 'xlsxwriter')
+
+for index, file in enumerate(excel_filenames):
+    temp_1 = pd.read_excel(file)
+    temp_1.to_excel(writer3, sheet_name = Economy_codes[index], index = False)
+
+writer3.save()
 

@@ -960,7 +960,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+Economy_codes = ['APEC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -4283,6 +4283,15 @@ for economy in Economy_codes:
 
         ref_enint_sup3 = ref_enint_sup2.append(ref_series2, ignore_index = True).reset_index(drop = True)
 
+        if economy == 'APEC':
+            target_row = ['APEC', 'Target'] + [55] * 51
+            target_series = pd.Series(target_row, index = ref_enint_sup3.columns)
+
+            ref_enint_sup3 = ref_enint_sup3.append(target_series, ignore_index = True).reset_index(drop = True)
+
+        else:
+            pass
+
         ref_enint_sup3_rows = ref_enint_sup3.shape[0]
         ref_enint_sup3_cols = ref_enint_sup3.shape[1]
 
@@ -4307,6 +4316,15 @@ for economy in Economy_codes:
 
         # Remove CN historical
         netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
+
+        if economy == 'APEC':
+            target_row2 = ['APEC', 'Target'] + [55] * 51
+            target_series2 = pd.Series(target_row2, index = netz_enint_sup3.columns)
+
+            netz_enint_sup3 = netz_enint_sup3.append(target_series2, ignore_index = True).reset_index(drop = True)
+
+        else:
+            pass
 
         netz_enint_sup3_rows = netz_enint_sup3.shape[0]
         netz_enint_sup3_cols = netz_enint_sup3.shape[1]
@@ -15588,6 +15606,18 @@ for economy in Economy_codes:
                             'width': 1.5}
 
             })
+
+        if economy == 'APEC':
+            k = ref_enint_sup3[ref_enint_sup3['Series'] == 'Target'].index[0]
+            enint_chart2.add_series({
+                'name':       ['Energy intensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + k + 7, 1],
+                'categories': ['Energy intensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + 6, 2,\
+                    chart_height + ref_enint_3_rows + netz_enint_3_rows + 6, ref_enint_sup3_cols - 1],
+                'values':     ['Energy intensity', chart_height + ref_enint_3_rows + netz_enint_3_rows + k + 7, 2,\
+                    chart_height + ref_enint_3_rows + netz_enint_3_rows + k + 7, ref_enint_sup3_cols - 1],
+                'line':       {'color': ref_enint_sup3['Series'].map(colours_dict).loc[k],
+                                'width': 1.5}
+            }) 
                         
         both_worksheet37.insert_chart('J3', enint_chart2)
 
