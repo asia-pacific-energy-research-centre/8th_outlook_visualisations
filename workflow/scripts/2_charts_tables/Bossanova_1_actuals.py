@@ -348,7 +348,7 @@ prod_agg_tech2 = ['Coal', 'Coal CCS', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Hydro
                  'Bio', 'Geothermal', 'Waste', 'Storage', 'Other', 'Imports', 'Total']
 prod_agg_tech3 = ['Coal', 'Coal CCS', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Wind', 'Solar', 'Other', 'Imports', 'Total']
 
-heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Nuclear', 'Biomass', 'Waste', 'Non-specified', 'Heat only units', 'Total']
+heat_prod_tech = ['Coal', 'Lignite', 'Oil', 'Gas', 'Gas CCS', 'Nuclear', 'Biomass', 'Waste', 'Non-specified', 'Other', 'Total']
 
 # Power input fuel categories
 
@@ -3086,7 +3086,7 @@ for economy in Economy_codes:
     nuclear_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(nuke_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     waste_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
-    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only units')
+    comb_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
     nons_hp = ref_heatgen_1[ref_heatgen_1['TECHNOLOGY'].isin(nons_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Non-specified')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
@@ -3781,7 +3781,7 @@ for economy in Economy_codes:
     nuclear_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(nuke_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Nuclear')
     bio_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(bio_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Biomass')
     waste_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(waste_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Waste')
-    comb_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Heat only units')
+    comb_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(combination_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Other')
     nons_hp = netz_heatgen_1[netz_heatgen_1['TECHNOLOGY'].isin(nons_heat)].groupby(['economy']).sum().assign(TECHNOLOGY = 'Non-specified')
 
     # Generation of electricity by tech dataframe (with the above aggregations added)
@@ -13126,9 +13126,9 @@ for economy in Economy_codes:
     ref_worksheet27.set_row(chart_height + ref_heatgen_2_rows + 3, None, header_format)
     ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, None, header_format)
     ref_worksheet27.set_row((2 * chart_height) + ref_heatgen_2_rows + ref_heatgen_3_rows + netz_heatgen_2_rows + 9, None, header_format)
-    ref_worksheet27.write(0, 0, economy + ' heat generation Reference (note: the category "heat only units" consume multiple different fuels, depending on the economy)', cell_format1)
+    ref_worksheet27.write(0, 0, economy + ' heat generation Reference (note: the category "Other" consume multiple different fuels, depending on the economy)', cell_format1)
     ref_worksheet27.write(chart_height + ref_heatgen_2_rows + ref_heatgen_3_rows + 6, 0, economy +\
-        ' heat generation Carbon Neutrality (note: the category "heat only units" consume multiple different fuels, depending on the economy)', cell_format1)
+        ' heat generation Carbon Neutrality (note: the category "Other" consume multiple different fuels, depending on the economy)', cell_format1)
     ref_worksheet27.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a electricity production area chart
