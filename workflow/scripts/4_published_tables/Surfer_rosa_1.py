@@ -7096,21 +7096,21 @@ for economy in Economy_codes:
     # TPES per capita
     # TPES per GDP
 
-    ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'] == 'Total'].copy().\
+    ref_tpes_3 = ref_tpes_1[ref_tpes_1['fuel_code'] == 'Total'].copy().\
         rename(columns = {'item_code_new': 'Series'}).iloc[:, 1:].reset_index(drop = True)
 
-    ref_tpes_1.loc[ref_tpes_1['Series'] == '7_total_primary_energy_supply', 'Series'] = 'Total primary energy supply (PJ)'
+    ref_tpes_3.loc[ref_tpes_3['Series'] == '7_total_primary_energy_supply', 'Series'] = 'Total primary energy supply (PJ)'
 
-    ref_tpes_calcs = ref_tpes_1.append(macro_1[macro_1['Series'].isin(['Population (millions)', 'GDP (2018 USD billion PPP)'])])\
+    ref_tpes_calcs = ref_tpes_3.append(macro_1[macro_1['Series'].isin(['Population (millions)', 'GDP (2018 USD billion PPP)'])])\
         .copy().reset_index(drop = True)
 
     ref_tpes_pc = ['TPES per capita (GJ per person)'] + list(ref_tpes_calcs.iloc[0, 1:] / ref_tpes_calcs.iloc[2, 1:])
-    ref_tpes_pc_series = pd.Series(ref_tpes_pc, index = ref_tpes_1.columns)
+    ref_tpes_pc_series = pd.Series(ref_tpes_pc, index = ref_tpes_3.columns)
 
     ref_tpes_pGDP = ['TPES per GDP (MJ per 2018 USD PPP)'] + list(ref_tpes_calcs.iloc[0, 1:] / ref_tpes_calcs.iloc[1, 1:])
-    ref_tpes_pGDP_series = pd.Series(ref_tpes_pGDP, index = ref_tpes_1.columns)
+    ref_tpes_pGDP_series = pd.Series(ref_tpes_pGDP, index = ref_tpes_3.columns)
 
-    ref_tpes_1 = ref_tpes_1.append([ref_tpes_pc_series, ref_tpes_pGDP_series], ignore_index = True).reset_index(drop = True)
+    ref_tpes_3 = ref_tpes_3.append([ref_tpes_pc_series, ref_tpes_pGDP_series], ignore_index = True).reset_index(drop = True)
 
     ## FED
     # Final energy intensity per capita
@@ -7202,14 +7202,74 @@ for economy in Economy_codes:
     ref_nettrade_1.loc[ref_nettrade_1['Series'] == 'Trade balance', 'Series'] = 'Net energy imports (PJ)'
 
     ## INTERNATIONAL TRANSPORT
-    # Aviation
+    
     # Marine
+    ref_bunkers_1.loc['Total'] = ref_bunkers_1.sum(numeric_only = True)
+    ref_bunkers_1.loc['Total', 'fuel_code'] = 'Marine'
+    ref_bunkers_1.loc['Total', 'item_code_new'] = '4_international_marine_bunkers'    
+    
+    ref_bunkers_1 = ref_bunkers_1.copy().reset_index(drop = True)
+
+    ref_bunkers_marine = ref_bunkers_1.drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})
+
+    # Aviation
+    ref_bunkers_2.loc['Total'] = ref_bunkers_2.sum(numeric_only = True)
+    ref_bunkers_2.loc['Total', 'fuel_code'] = 'Aviation'
+    ref_bunkers_2.loc['Total', 'item_code_new'] = '5_international_aviation_bunkers'    
+    
+    ref_bunkers_2 = ref_bunkers_2.copy().reset_index(drop = True)
+
+    ref_bunkers_aviation = ref_bunkers_2.drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})
+
+    # aggregate
+
+    ref_bunkers_3 = ref_bunkers_marine[ref_bunkers_marine['Series'] == 'Marine'].copy()\
+        .append(ref_bunkers_aviation[ref_bunkers_aviation['Series'] == 'Aviation'].copy()).reset_index(drop = True)
+
+    ref_bunkers_3.loc['Total'] = ref_bunkers_3.sum(numeric_only = True)
+
+    ref_bunkers_3.loc['Total', 'Series'] = 'International transport (PJ)'
+
+    negative = ref_bunkers_3.copy().set_index(['Series']) * -1
+
+    ref_bunkers_3 = negative.reset_index().iloc[[2, 0, 1]].reset_index(drop = True)
 
     ## STOCK CHANGE (Only really historical but a little bit in early model years)
     # Coal
     # Oil
     # Gas
     # Other?
+
+    ref_stock_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                        (EGEDA_years_reference['item_code_new'].isin(['6_stock_change'])) &
+                                        (EGEDA_years_reference['fuel_code'].isin(['1_coal', '2_coal_products', 
+                                        '3_peat','4_peat_products', '6_crude_oil_and_ngl', '7_petroleum_products', 
+                                        '8_gas']))].copy().replace(np.nan, 0)
+
+    ref_stock_coal = ref_stock_1[ref_stock_1['fuel_code'].isin(['1_coal', '2_coal_products', '3_peat','4_peat_products'])]\
+        .groupby(['economy', 'item_code_new']).sum().reset_index()
+
+    ref_stock_coal['fuel_code'] = 'Coal'
+
+    ref_stock_oil = ref_stock_1[ref_stock_1['fuel_code'].isin(['6_crude_oil_and_ngl', '7_petroleum_products'])]\
+        .groupby(['economy', 'item_code_new']).sum().reset_index()
+
+    ref_stock_oil['fuel_code'] = 'Oil'
+
+    ref_stock_1 = ref_stock_1.append([ref_stock_coal, ref_stock_oil]).reset_index(drop = True)
+
+    ref_stock_1 = ref_stock_1.drop(['economy', 'item_code_new'], axis = 1).rename(columns = {'fuel_code': 'Series'})
+
+    ref_stock_1 = ref_stock_1[['Series'] + list(ref_stock_1.loc[:, '2000':'2050'])].reset_index(drop = True)
+
+    ref_stock_1 = ref_stock_1.set_index('Series').loc[['Coal', 'Oil', '8_gas']].reset_index()
+
+    ref_stock_1.loc[ref_stock_1['Series'] == '8_gas', 'Series'] = 'Gas'
+
+    ref_stock_1.loc['Total'] = ref_stock_1.sum(numeric_only = True)
+
+    ref_stock_1.loc['Total', 'Series'] = 'Stock change (PJ)'
+    ref_stock_1 = ref_stock_1.copy().reset_index(drop = True).iloc[[3, 0, 1, 2]].reset_index(drop = True)    
 
     ## TOTAL PRIMARY ENERGY SUPPLY
     # Coal
@@ -7219,6 +7279,44 @@ for economy in Economy_codes:
     # Hydro
     # Non-hydro renewables (split-up?)
     # Other
+
+    ref_tpes_df = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                          (EGEDA_years_reference['item_code_new'] == '7_total_primary_energy_supply') &
+                          (EGEDA_years_reference['fuel_code'].isin(Required_fuels))].loc[:, 'fuel_code':]
+
+    coal = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Coal_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Coal',
+                                                                                                  item_code_new = '7_total_primary_energy_supply')
+    
+    oil = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Oil_fuels)].groupby(['item_code_new']).sum().assign(fuel_code = 'Oil',
+                                                                                                item_code_new = '7_total_primary_energy_supply')
+    
+    renewables = ref_tpes_df[ref_tpes_df['fuel_code'].isin(['11_geothermal', '12_solar', '13_tide_wave_ocean', '14_wind', '15_solid_biomass', 
+                                                            '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
+                                                            '16_6_biodiesel', '16_7_bio_jet_kerosene', '16_8_other_liquid_biofuels'])].groupby(['item_code_new']).sum().assign(fuel_code = 'Other renewables',
+                                                                                                              item_code_new = '7_total_primary_energy_supply')
+    
+    others = ref_tpes_df[ref_tpes_df['fuel_code'].isin(Other_fuels_TPES)].groupby(['item_code_new']).sum().assign(fuel_code = 'Other',
+                                                                                                     item_code_new = '7_total_primary_energy_supply')
+    
+    ref_tpes_1 = ref_tpes_df.append([coal, oil, renewables, others])[['fuel_code', 
+                                                                'item_code_new'] + list(ref_tpes_df.loc[:, '2000':])].reset_index(drop = True)
+
+    ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
+    ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
+    ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '10_hydro', 'fuel_code'] = 'Hydro'
+    ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
+    ref_tpes_1.loc[ref_tpes_1['fuel_code'] == '16_x_hydrogen', 'fuel_code'] = 'Hydrogen'
+
+    ref_tpes_1 = ref_tpes_1[ref_tpes_1['fuel_code'].isin(['Coal', 'Oil', 'Gas', 'Nuclear', 'Hydro', 'Other renewables', 'Electricity', 'Hydrogen', 'Other'])]\
+        .set_index('fuel_code').loc[['Coal', 'Oil', 'Gas', 'Nuclear', 'Hydro', 'Other renewables', 'Electricity', 'Hydrogen', 'Other']].reset_index().replace(np.nan, 0)
+
+    ref_tpes_1.loc['Total'] = ref_tpes_1.sum(numeric_only = True)
+
+    ref_tpes_1.loc['Total', 'fuel_code'] = 'Total primary energy supply (PJ)'
+    ref_tpes_1.loc['Total', 'item_code_new'] = '7_total_primary_energy_supply'
+
+    ref_tpes_1 = ref_tpes_1.drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
+        .iloc[[9, 0, 1, 2, 3, 4, 5, 6, 7, 8], :].reset_index(drop = True)
 
     ###################################################
 
