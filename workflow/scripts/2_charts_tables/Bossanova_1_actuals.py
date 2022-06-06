@@ -447,7 +447,7 @@ TPES_agg_fuels1 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Electricity',
 TPES_agg_fuels2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
 TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 
                   'Renewables', 'Electricity', 'Hydrogen', 'Other fuels']
-avi_bunker = ['Aviation gasoline', 'Jet fuel']
+avi_bunker = ['Aviation gasoline', 'Jet fuel', 'Biojet kerosene', 'Hydrogen']
 
 ########################### Create historical electricity generation dataframe for use later ###########################
 
@@ -960,7 +960,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+Economy_codes = ['APEC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
