@@ -34,6 +34,11 @@ netz_trans_df1 = pd.read_csv('./data/4_Joined/OSeMOSYS_transformation_netzero.cs
 ref_gastrade_df1 = pd.read_csv('./data/4_Joined/lngpipe_reference.csv').loc[:,:'2050']
 netz_gastrade_df1 = pd.read_csv('./data/4_Joined/lngpipe_netzero.csv').loc[:,:'2050']
 
+# Captured emissions dataframes
+
+ref_capemiss_df1 = pd.read_csv('./data/4_Joined/captured_ref.csv').loc[:,:'2050']
+netz_capemiss_df1 = pd.read_csv('./data/4_Joined/captured_cn.csv').loc[:,:'2050']
+
 # Emissions dataframe 
 
 EGEDA_emissions_reference = pd.read_csv('./data/4_Joined/OSeMOSYS_to_EGEDA_emissions_2018_reference.csv')
@@ -82,12 +87,16 @@ macro_GDPpc = macro_GDPpc[['Economy', 'Series'] + list(macro_GDPpc.loc[:, '2000'
 # only looking at one dataframe which should be sufficient as both have same structure
 
 Economy_codes = EGEDA_years_reference.economy.unique()
+Economy_codes = np.delete(Economy_codes, [23, 25])
 Fuels = EGEDA_years_reference.fuel_code.unique()
 Items = EGEDA_years_reference.item_code_new.unique()
 
 # Define colour palette
 
 colours_dict = pd.read_csv('./data/2_Mapping_and_other/colours_dict.csv',\
+    header = None, index_col = 0, squeeze = True).to_dict()
+
+APEC_economies = pd.read_csv('./data/2_Mapping_and_other/APEC_economies.csv',\
     header = None, index_col = 0, squeeze = True).to_dict()
 
 # FED and TPES: vectors for impending df builds
@@ -833,6 +842,16 @@ EGEDA_hist_refining[neg_to_pos.columns] = neg_to_pos
 EGEDA_hist_refining.to_csv('./data/4_Joined/EGEDA_hist_refining.csv', index = False)
 EGEDA_hist_refining = pd.read_csv('./data/4_Joined/EGEDA_hist_refining.csv')
 
+# Refinery Output historical
+EGEDA_hist_refiningout = EGEDA_data[(EGEDA_data['item_code_new'].isin(['9_4_oil_refineries'])) &
+                                    (EGEDA_data['fuel_code'].isin(['7_petroleum_products']))].copy().reset_index(drop = True)
+
+EGEDA_hist_refiningout = EGEDA_hist_refiningout[['economy', 'fuel_code', 'item_code_new'] + list(range(2000, 2019))]\
+                        .copy().reset_index(drop = True)
+
+EGEDA_hist_refiningout.to_csv('./data/4_Joined/EGEDA_hist_refiningout.csv', index = False)
+EGEDA_hist_refiningout = pd.read_csv('./data/4_Joined/EGEDA_hist_refiningout.csv')
+
 # liquid and solid renewables historical
 
 EGEDA_hist_own_renew = EGEDA_data[(EGEDA_data['item_code_new'].isin(['10_losses_and_own_use'])) &
@@ -961,7 +980,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-Economy_codes = ['APEC']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1052,8 +1071,8 @@ for economy in Economy_codes:
     ref_fedfuel_1.loc['Total', 'item_code_new'] = '12_total_final_consumption'
 
     # Get rid of zero rows
-    non_zero = (ref_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
-    ref_fedfuel_1 = ref_fedfuel_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_fedfuel_1 = ref_fedfuel_1.loc[non_zero].reset_index(drop = True)
 
     ref_fedfuel_1_rows = ref_fedfuel_1.shape[0]
     ref_fedfuel_1_cols = ref_fedfuel_1.shape[1]
@@ -1099,8 +1118,8 @@ for economy in Economy_codes:
     ref_fedsector_2.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
-    non_zero = (ref_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
-    ref_fedsector_2 = ref_fedsector_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_fedsector_2 = ref_fedsector_2.loc[non_zero].reset_index(drop = True)
 
     ref_fedsector_2_rows = ref_fedsector_2.shape[0]
     ref_fedsector_2_cols = ref_fedsector_2.shape[1]
@@ -1168,8 +1187,8 @@ for economy in Economy_codes:
     ref_bld_2.loc['Total', 'item_code_new'] = '16_x_buildings'
 
     # Get rid of zero rows
-    non_zero = (ref_bld_2.loc[:,'2000':] != 0).any(axis = 1)
-    ref_bld_2 = ref_bld_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_bld_2.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_bld_2 = ref_bld_2.loc[non_zero].reset_index(drop = True)
 
     ref_bld_2_rows = ref_bld_2.shape[0]
     ref_bld_2_cols = ref_bld_2.shape[1]
@@ -1255,8 +1274,8 @@ for economy in Economy_codes:
     ref_ind_2.loc['Total', 'item_code_new'] = '14_industry_sector'
 
     # Get rid of zero rows
-    non_zero = (ref_ind_2.loc[:,'2000':] != 0).any(axis = 1)
-    ref_ind_2 = ref_ind_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_ind_2.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_ind_2 = ref_ind_2.loc[non_zero].reset_index(drop = True)
     
     ref_ind_2_rows = ref_ind_2.shape[0]
     ref_ind_2_cols = ref_ind_2.shape[1]
@@ -1298,8 +1317,8 @@ for economy in Economy_codes:
     ref_trn_1.loc['Total', 'item_code_new'] = '15_transport_sector'
 
     # Get rid of zero rows
-    non_zero = (ref_trn_1.loc[:,'2000':] != 0).any(axis = 1)
-    ref_trn_1 = ref_trn_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_trn_1.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_trn_1 = ref_trn_1.loc[non_zero].reset_index(drop = True)
 
     ref_trn_1_rows = ref_trn_1.shape[0]
     ref_trn_1_cols = ref_trn_1.shape[1]
@@ -1500,8 +1519,8 @@ for economy in Economy_codes:
     netz_fedfuel_1.loc['Total', 'item_code_new'] = '12_total_final_consumption'
 
     # Get rid of zero rows
-    non_zero = (netz_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
-    netz_fedfuel_1 = netz_fedfuel_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_fedfuel_1.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_fedfuel_1 = netz_fedfuel_1.loc[non_zero].reset_index(drop = True)
 
     netz_fedfuel_1_rows = netz_fedfuel_1.shape[0]
     netz_fedfuel_1_cols = netz_fedfuel_1.shape[1]
@@ -1547,8 +1566,8 @@ for economy in Economy_codes:
     netz_fedsector_2.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
-    non_zero = (netz_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
-    netz_fedsector_2 = netz_fedsector_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_fedsector_2.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_fedsector_2 = netz_fedsector_2.loc[non_zero].reset_index(drop = True)
 
     netz_fedsector_2_rows = netz_fedsector_2.shape[0]
     netz_fedsector_2_cols = netz_fedsector_2.shape[1]
@@ -1614,8 +1633,8 @@ for economy in Economy_codes:
     netz_bld_2.loc['Total', 'item_code_new'] = '16_x_buildings'
 
     # Get rid of zero rows
-    non_zero = (netz_bld_2.loc[:,'2000':] != 0).any(axis = 1)
-    netz_bld_2 = netz_bld_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_bld_2.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_bld_2 = netz_bld_2.loc[non_zero].reset_index(drop = True)
 
     netz_bld_2_rows = netz_bld_2.shape[0]
     netz_bld_2_cols = netz_bld_2.shape[1]
@@ -1703,8 +1722,8 @@ for economy in Economy_codes:
     netz_ind_2.loc['Total', 'item_code_new'] = '14_industry_sector'
     
     # Get rid of zero rows
-    non_zero = (netz_ind_2.loc[:,'2000':] != 0).any(axis = 1)
-    netz_ind_2 = netz_ind_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_ind_2.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_ind_2 = netz_ind_2.loc[non_zero].reset_index(drop = True)
 
     netz_ind_2_rows = netz_ind_2.shape[0]
     netz_ind_2_cols = netz_ind_2.shape[1]
@@ -1746,8 +1765,8 @@ for economy in Economy_codes:
     netz_trn_1.loc['Total', 'item_code_new'] = '15_transport_sector'
 
     # Get rid of zero rows
-    non_zero = (netz_trn_1.loc[:,'2000':] != 0).any(axis = 1)
-    netz_trn_1 = netz_trn_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_trn_1.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_trn_1 = netz_trn_1.loc[non_zero].reset_index(drop = True)
 
     netz_trn_1_rows = netz_trn_1.shape[0]
     netz_trn_1_cols = netz_trn_1.shape[1]
@@ -2072,16 +2091,16 @@ for economy in Economy_codes:
 
     # Temporary exports file to get net trade dataframe
 
-    ref_exports_temp1 = ref_exports_2.copy().select_dtypes(include = [np.number]) * -1
-    ref_exports_temp2 = ref_exports_2.copy()
+    ref_exports_temp1 = ref_exports_1.copy().select_dtypes(include = [np.number]) * -1
+    ref_exports_temp2 = ref_exports_1.copy()
     ref_exports_temp2[ref_exports_temp1.columns] = ref_exports_temp1
 
     # Net trade
 
-    ref_nettrade_1 = ref_imports_2.copy().append(ref_exports_temp2).groupby('fuel_code').sum()\
+    ref_nettrade_1 = ref_imports_1.copy().append(ref_exports_temp2).groupby('fuel_code').sum()\
         .assign(item_code_new = 'Net trade').reset_index()
 
-    ref_nettrade_1 = ref_nettrade_1[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_nettrade_1 = ref_nettrade_1[['fuel_code', 'item_code_new'] + list(ref_nettrade_1.loc[:, '2000': '2050'])]
 
     ref_nettrade_1.loc[ref_nettrade_1['fuel_code'] == 'Total', 'fuel_code'] = 'Trade balance'
 
@@ -2549,8 +2568,8 @@ for economy in Economy_codes:
     ref_pow_use_2 = ref_pow_use_2.sort_values('FUEL').reset_index(drop = True)
 
     # Get rid of zero rows
-    non_zero = (ref_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
-    ref_pow_use_2 = ref_pow_use_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_pow_use_2 = ref_pow_use_2.loc[non_zero].reset_index(drop = True)
 
     ref_pow_use_2_rows = ref_pow_use_2.shape[0]
     ref_pow_use_2_cols = ref_pow_use_2.shape[1]
@@ -2655,8 +2674,8 @@ for economy in Economy_codes:
     ref_elecgen_2.loc['Total', 'Generation'] = 'Electricity'
 
     # Get rid of zero rows
-    non_zero = (ref_elecgen_2.loc[:,'2000':] != 0).any(axis = 1)
-    ref_elecgen_2 = ref_elecgen_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_elecgen_2.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_elecgen_2 = ref_elecgen_2.loc[non_zero].reset_index(drop = True)
 
     ref_elecgen_2_rows = ref_elecgen_2.shape[0]
     ref_elecgen_2_cols = ref_elecgen_2.shape[1]
@@ -2719,9 +2738,9 @@ for economy in Economy_codes:
     ref_refinery_1.loc['Total', 'FUEL'] = 'Total'
     ref_refinery_1.loc['Total', 'Transformation'] = 'Input to refinery'
 
-    # Get rid of zero rows
-    non_zero = (ref_refinery_1.loc[:,'2017':] != 0).any(axis = 1)
-    ref_refinery_1 = ref_refinery_1.loc[non_zero].reset_index(drop = True)
+    # # Get rid of zero rows
+    # non_zero = (ref_refinery_1.loc[:,'2017':] != 0).any(axis = 1)
+    # ref_refinery_1 = ref_refinery_1.loc[non_zero].reset_index(drop = True)
 
     ref_refinery_1_rows = ref_refinery_1.shape[0]
     ref_refinery_1_cols = ref_refinery_1.shape[1]
@@ -2895,14 +2914,14 @@ for economy in Economy_codes:
 
     # Capacity by tech dataframe (with the above aggregations added)
 
-    ref_powcap_1 = ref_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
+    ref_powcap_1 = ref_powcap_1.append([thermal_capacity, coal_ccs_capacity, lignite_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
                                             storage_capacity, geo_capacity, waste_capacity, other_capacity])\
         [['TECHNOLOGY'] + list(ref_powcap_1.loc[:, '2018':'2050'])].reset_index(drop = True) 
 
-    ref_powcap_1 = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
+    ref_powcap_1 = ref_powcap_1[ref_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg2)].reset_index(drop = True)
 
-    ref_powcap_1['TECHNOLOGY'] = pd.Categorical(ref_powcap_1['TECHNOLOGY'], prod_agg_tech)
+    ref_powcap_1['TECHNOLOGY'] = pd.Categorical(ref_powcap_1['TECHNOLOGY'], pow_capacity_agg2)
 
     ref_powcap_1 = ref_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
@@ -2924,8 +2943,8 @@ for economy in Economy_codes:
     ref_powcap_3 = ref_powcap_NEW.sort_values('TECHNOLOGY').reset_index(drop = True)
 
     # Get rid of zero rows
-    non_zero = (ref_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
-    ref_powcap_1 = ref_powcap_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
+    # ref_powcap_1 = ref_powcap_1.loc[non_zero].reset_index(drop = True)
 
     ref_powcap_1_rows = ref_powcap_1.shape[0]
     ref_powcap_1_cols = ref_powcap_1.shape[1]
@@ -3058,8 +3077,8 @@ for economy in Economy_codes:
     ref_ownuse_1.loc['Total', 'Sector'] = 'Own-use and losses'
 
     # Get rid of zero rows
-    non_zero = (ref_ownuse_1.loc[:,'2000':] != 0).any(axis = 1)
-    ref_ownuse_1 = ref_ownuse_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_ownuse_1.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_ownuse_1 = ref_ownuse_1.loc[non_zero].reset_index(drop = True)
 
     ref_ownuse_1_rows = ref_ownuse_1.shape[0]
     ref_ownuse_1_cols = ref_ownuse_1.shape[1]
@@ -3125,9 +3144,9 @@ for economy in Economy_codes:
     ref_heatgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
     ref_heatgen_2.loc['Total', 'Generation'] = 'Heat'
 
-    # Get rid of zero rows
-    non_zero = (ref_heatgen_2.loc[:,'2000':] != 0).any(axis = 1)
-    ref_heatgen_2 = ref_heatgen_2.loc[non_zero].reset_index(drop = True)
+    # # Get rid of zero rows
+    # non_zero = (ref_heatgen_2.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_heatgen_2 = ref_heatgen_2.loc[non_zero].reset_index(drop = True)
 
     ref_heatgen_2_rows = ref_heatgen_2.shape[0]
     ref_heatgen_2_cols = ref_heatgen_2.shape[1]
@@ -3281,8 +3300,8 @@ for economy in Economy_codes:
     netz_pow_use_2.loc['Total', 'Transformation'] = 'Input fuel'
 
     # Get rid of zero rows
-    non_zero = (netz_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
-    netz_pow_use_2 = netz_pow_use_2.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_pow_use_2.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_pow_use_2 = netz_pow_use_2.loc[non_zero].reset_index(drop = True)
 
     netz_pow_use_2_rows = netz_pow_use_2.shape[0]
     netz_pow_use_2_cols = netz_pow_use_2.shape[1]
@@ -3450,9 +3469,9 @@ for economy in Economy_codes:
     netz_refinery_1.loc['Total', 'FUEL'] = 'Total'
     netz_refinery_1.loc['Total', 'Transformation'] = 'Input to refinery'
 
-    # Get rid of zero rows
-    non_zero = (netz_refinery_1.loc[:,'2017':] != 0).any(axis = 1)
-    netz_refinery_1 = netz_refinery_1.loc[non_zero].reset_index(drop = True)
+    # # Get rid of zero rows
+    # non_zero = (netz_refinery_1.loc[:,'2017':] != 0).any(axis = 1)
+    # netz_refinery_1 = netz_refinery_1.loc[non_zero].reset_index(drop = True)
 
     netz_refinery_1_rows = netz_refinery_1.shape[0]
     netz_refinery_1_cols = netz_refinery_1.shape[1]
@@ -3620,14 +3639,14 @@ for economy in Economy_codes:
 
     # Capacity by tech dataframe (with the above aggregations added)
 
-    netz_powcap_1 = netz_powcap_1.append([coal_capacity, coal_ccs_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
+    netz_powcap_1 = netz_powcap_1.append([thermal_capacity, coal_ccs_capacity, lignite_capacity, gas_capacity, gas_ccs_capacity, oil_capacity, nuclear_capacity,
                                             hydro_capacity, bio_capacity, wind_capacity, solar_capacity, 
                                             storage_capacity, geo_capacity, waste_capacity, other_capacity])\
         [['TECHNOLOGY'] + list(netz_powcap_1.loc[:,'2018':'2050'])].reset_index(drop = True) 
 
-    netz_powcap_1 = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg)].reset_index(drop = True)
+    netz_powcap_1 = netz_powcap_1[netz_powcap_1['TECHNOLOGY'].isin(pow_capacity_agg2)].reset_index(drop = True)
 
-    netz_powcap_1['TECHNOLOGY'] = pd.Categorical(netz_powcap_1['TECHNOLOGY'], prod_agg_tech)
+    netz_powcap_1['TECHNOLOGY'] = pd.Categorical(netz_powcap_1['TECHNOLOGY'], pow_capacity_agg2)
 
     netz_powcap_1 = netz_powcap_1.sort_values('TECHNOLOGY').reset_index(drop = True)
 
@@ -3649,8 +3668,8 @@ for economy in Economy_codes:
     netz_powcap_3 = netz_powcap_NEW.sort_values('TECHNOLOGY').reset_index(drop = True)
 
     # Get rid of zero rows
-    non_zero = (netz_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
-    netz_powcap_1 = netz_powcap_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_powcap_1.loc[:,'2018':] != 0).any(axis = 1)
+    # netz_powcap_1 = netz_powcap_1.loc[non_zero].reset_index(drop = True)
 
     netz_powcap_1_rows = netz_powcap_1.shape[0]
     netz_powcap_1_cols = netz_powcap_1.shape[1]
@@ -3753,8 +3772,8 @@ for economy in Economy_codes:
     netz_ownuse_1.loc['Total', 'Sector'] = 'Own-use and losses'
 
     # Get rid of zero rows
-    non_zero = (netz_ownuse_1.loc[:,'2000':] != 0).any(axis = 1)
-    netz_ownuse_1 = netz_ownuse_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_ownuse_1.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_ownuse_1 = netz_ownuse_1.loc[non_zero].reset_index(drop = True)
 
     netz_ownuse_1_rows = netz_ownuse_1.shape[0]
     netz_ownuse_1_cols = netz_ownuse_1.shape[1]
@@ -3820,9 +3839,9 @@ for economy in Economy_codes:
     netz_heatgen_2.loc['Total', 'TECHNOLOGY'] = 'Total'
     netz_heatgen_2.loc['Total', 'Generation'] = 'Heat'
 
-    # Get rid of zero rows
-    non_zero = (netz_heatgen_2.loc[:,'2000':] != 0).any(axis = 1)
-    netz_heatgen_2 = netz_heatgen_2.loc[non_zero].reset_index(drop = True)
+    # # Get rid of zero rows
+    # non_zero = (netz_heatgen_2.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_heatgen_2 = netz_heatgen_2.loc[non_zero].reset_index(drop = True)
 
     netz_heatgen_2_rows = netz_heatgen_2.shape[0]
     netz_heatgen_2_cols = netz_heatgen_2.shape[1]
@@ -4183,309 +4202,12 @@ for economy in Economy_codes:
 
     #############################################################################################################
 
-    # Energy intensity
-    # REFERENCE
+    # # Energy intensity removed
 
-    if any(economy in s for s in list(macro_GDP['Economy'])):
-
-        ref_enint_1 = ref_tfec_1.copy()
-        ref_enint_1['Economy'] = economy
-        ref_enint_1['Series'] = 'TFEC'
-
-        ref_enint_1 = ref_enint_1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
-
-        ref_enint_1 = ref_enint_1[['Economy', 'Series'] + list(ref_enint_1.loc[:,'2000':'2050'])]
-
-        ref_ei_calc1 = [economy, 'TFEC energy intensity'] + list(ref_enint_1.iloc[0, 2:] / ref_enint_1.iloc[1, 2:])
-        ref_ei_series1 = pd.Series(ref_ei_calc1, index = ref_enint_1.columns)
-
-        ref_enint_2 = ref_enint_1.append(ref_ei_series1, ignore_index = True).reset_index(drop = True)
-
-        ref_ei_calc2 = [economy, 'Reference'] + list(ref_enint_2.iloc[2, 2:] / ref_enint_2.iloc[2, 7] * 100)
-        ref_ei_series2 = pd.Series(ref_ei_calc2, index = ref_enint_2.columns)
-
-        ref_enint_3 = ref_enint_2.append(ref_ei_series2, ignore_index = True).reset_index(drop = True)
-
-        if economy == 'APEC':
-            target_row = ['APEC', 'Target'] + [55] * 51
-            target_series = pd.Series(target_row, index = ref_enint_3.columns)
-
-            ref_enint_3 = ref_enint_3.append(target_series, ignore_index = True).reset_index(drop = True)
-
-        else:
-            pass
-
-        ref_enint_3_rows = ref_enint_3.shape[0]
-        ref_enint_3_cols = ref_enint_3.shape[1]
-
-        # CARBON NEUTRALITY
-
-        netz_enint_1 = netz_tfec_1.copy()
-        netz_enint_1['Economy'] = economy
-        netz_enint_1['Series'] = 'TFEC'
-
-        netz_enint_1 = netz_enint_1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
-
-        netz_enint_1 = netz_enint_1[['Economy', 'Series'] + list(netz_enint_1.loc[:,'2000':'2050'])]
-
-        netz_ei_calc1 = [economy, 'TFEC energy intensity'] + list(netz_enint_1.iloc[0, 2:] / netz_enint_1.iloc[1, 2:])
-        netz_ei_series1 = pd.Series(netz_ei_calc1, index = netz_enint_1.columns)
-
-        netz_enint_2 = netz_enint_1.append(netz_ei_series1, ignore_index = True).reset_index(drop = True)
-
-        netz_ei_calc2 = [economy, 'Carbon Neutrality'] + list(netz_enint_2.iloc[2, 2:] / netz_enint_2.iloc[2, 7] * 100)
-        netz_ei_series2 = pd.Series(netz_ei_calc2, index = netz_enint_2.columns)
-
-        netz_enint_3 = netz_enint_2.append(netz_ei_series2, ignore_index = True).reset_index(drop = True)
-
-        netz_enint_3.loc[netz_enint_3['Series'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
-
-        if economy == 'APEC':
-            target_row2 = ['APEC', 'Target'] + [55] * 51
-            target_series2 = pd.Series(target_row2, index = netz_enint_3.columns)
-
-            netz_enint_3 = netz_enint_3.append(target_series2, ignore_index = True).reset_index(drop = True)
-
-        else:
-            pass
-
-        netz_enint_3_rows = netz_enint_3.shape[0]
-        netz_enint_3_cols = netz_enint_3.shape[1]
-
-    else:
-        ref_enint_3 = pd.DataFrame()
-        ref_enint_3_rows = ref_enint_3.shape[0]
-        ref_enint_3_cols = ref_enint_3.shape[1]
-
-        netz_enint_3 = pd.DataFrame()
-        netz_enint_3_rows = netz_enint_3.shape[0]
-        netz_enint_3_cols = netz_enint_3.shape[1]
-
-    # Energy supply intensity
-
-    if any(economy in s for s in list(macro_GDP['Economy'])):
-
-        # REFERENCE
-        ref_enint_sup1 = ref_tpes_1[ref_tpes_1['fuel_code'] == 'Total'].copy().reset_index(drop = True)
-        ref_enint_sup1['Economy'] = economy
-        ref_enint_sup1['Series'] = 'TPES'
-
-        ref_enint_sup1 = ref_enint_sup1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
-
-        ref_enint_sup1 = ref_enint_sup1[['Economy', 'Series'] + list(ref_enint_sup1.loc[:, '2000':'2050'])]
-
-        ref_calc1 = [economy, 'TPES energy intensity'] + list(ref_enint_sup1.iloc[0, 2:] / ref_enint_sup1.iloc[1, 2:])
-        ref_series1 = pd.Series(ref_calc1, index = ref_enint_sup1.columns)
-
-        ref_enint_sup2 = ref_enint_sup1.append(ref_series1, ignore_index = True).reset_index(drop = True)
-
-        ref_calc2 = [economy, 'Reference'] + list(ref_enint_sup2.iloc[2, 2:] / ref_enint_sup2.iloc[2, 7] * 100)
-        ref_series2 = pd.Series(ref_calc2, index = ref_enint_sup2.columns)
-
-        ref_enint_sup3 = ref_enint_sup2.append(ref_series2, ignore_index = True).reset_index(drop = True)
-
-        if economy == 'APEC':
-            target_row = ['APEC', 'Target'] + [55] * 51
-            target_series = pd.Series(target_row, index = ref_enint_sup3.columns)
-
-            ref_enint_sup3 = ref_enint_sup3.append(target_series, ignore_index = True).reset_index(drop = True)
-
-        else:
-            pass
-
-        ref_enint_sup3_rows = ref_enint_sup3.shape[0]
-        ref_enint_sup3_cols = ref_enint_sup3.shape[1]
-
-        # CARBON NEUTRALITY
-        netz_enint_sup1 = netz_tpes_1[netz_tpes_1['fuel_code'] == 'Total'].copy().reset_index(drop = True)
-        netz_enint_sup1['Economy'] = economy
-        netz_enint_sup1['Series'] = 'TPES'
-
-        netz_enint_sup1 = netz_enint_sup1.append(macro_1[macro_1['Series'] == 'GDP 2018 USD PPP']).copy().reset_index(drop = True)
-
-        netz_enint_sup1 = netz_enint_sup1[['Economy', 'Series'] + list(netz_enint_sup1.loc[:, '2000':'2050'])]
-
-        netz_calc1 = [economy, 'TPES energy intensity'] + list(netz_enint_sup1.iloc[0, 2:] / netz_enint_sup1.iloc[1, 2:])
-        netz_series1 = pd.Series(netz_calc1, index = netz_enint_sup1.columns)
-
-        netz_enint_sup2 = netz_enint_sup1.append(netz_series1, ignore_index = True).reset_index(drop = True)
-
-        netz_calc2 = [economy, 'Carbon Neutrality'] + list(netz_enint_sup2.iloc[2, 2:] / netz_enint_sup2.iloc[2, 7] * 100)
-        netz_series2 = pd.Series(netz_calc2, index = netz_enint_sup2.columns)
-
-        netz_enint_sup3 = netz_enint_sup2.append(netz_series2, ignore_index = True).reset_index(drop = True)
-
-        # Remove CN historical
-        netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
-
-        if economy == 'APEC':
-            target_row2 = ['APEC', 'Target'] + [55] * 51
-            target_series2 = pd.Series(target_row2, index = netz_enint_sup3.columns)
-
-            netz_enint_sup3 = netz_enint_sup3.append(target_series2, ignore_index = True).reset_index(drop = True)
-
-        else:
-            pass
-
-        netz_enint_sup3_rows = netz_enint_sup3.shape[0]
-        netz_enint_sup3_cols = netz_enint_sup3.shape[1]
-
-    else:
-        ref_enint_sup3 = pd.DataFrame()
-        ref_enint_sup3_rows = ref_enint_sup3.shape[0]
-        ref_enint_sup3_cols = ref_enint_3.shape[1]
-
-        netz_enint_sup3 = pd.DataFrame()
-        netz_enint_sup3_rows = netz_enint_sup3.shape[0]
-        netz_enint_sup3_cols = netz_enint_sup3.shape[1]
 
     ##############################################################################################################
 
-    # OSeMOSYS datafrane builds
-
-    # REFERENCE
-    # Steel
-    if any(economy in s for s in list(ref_steel_2['REGION'])):
-        
-        ref_steel_3 = ref_steel_2[ref_steel_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(ref_steel_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        ref_steel_3_rows = ref_steel_3.shape[0]
-        ref_steel_3_cols = ref_steel_3.shape[1]
-
-    else:
-        ref_steel_3 = pd.DataFrame()
-        ref_steel_3_rows = ref_steel_3.shape[0]
-        ref_steel_3_cols = ref_steel_3.shape[1]
-
-    # Chemicals
-    if any(economy in s for s in list(ref_chem_2['REGION'])):
-        
-        ref_chem_3 = ref_chem_2[ref_chem_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(ref_chem_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        ref_chem_3_rows = ref_chem_3.shape[0]
-        ref_chem_3_cols = ref_chem_3.shape[1]
-
-    else:
-        ref_chem_3 = pd.DataFrame()
-        ref_chem_3_rows = ref_chem_3.shape[0]
-        ref_chem_3_cols = ref_chem_3.shape[1]
-
-    # Cement
-    if any(economy in s for s in list(ref_cement_2['REGION'])):
-        
-        ref_cement_3 = ref_cement_2[ref_cement_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(ref_cement_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        ref_cement_3_rows = ref_cement_3.shape[0]
-        ref_cement_3_cols = ref_cement_3.shape[1]
-
-    else:
-        ref_cement_3 = pd.DataFrame()
-        ref_cement_3_rows = ref_cement_3.shape[0]
-        ref_cement_3_cols = ref_cement_3.shape[1]
-
-    # CARBON NEUTRALITY
-    # Steel
-    if any(economy in s for s in list(netz_steel_2['REGION'])):
-        
-        netz_steel_3 = netz_steel_2[netz_steel_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(netz_steel_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        netz_steel_3_rows = netz_steel_3.shape[0]
-        netz_steel_3_cols = netz_steel_3.shape[1]
-
-    else:
-        netz_steel_3 = pd.DataFrame()
-        netz_steel_3_rows = netz_steel_3.shape[0]
-        netz_steel_3_cols = netz_steel_3.shape[1]
-
-    # Chemicals
-    if any(economy in s for s in list(netz_chem_2['REGION'])):
-        
-        netz_chem_3 = netz_chem_2[netz_chem_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(netz_chem_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        netz_chem_3_rows = netz_chem_3.shape[0]
-        netz_chem_3_cols = netz_chem_3.shape[1]
-
-    else:
-        netz_chem_3 = pd.DataFrame()
-        netz_chem_3_rows = netz_chem_3.shape[0]
-        netz_chem_3_cols = netz_chem_3.shape[1]
-
-    # Cement
-    if any(economy in s for s in list(netz_cement_2['REGION'])):
-        
-        netz_cement_3 = netz_cement_2[netz_cement_2['REGION'] == economy].copy()\
-            [['Industry', 'tech_mix'] + list(netz_cement_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        netz_cement_3_rows = netz_cement_3.shape[0]
-        netz_cement_3_cols = netz_cement_3.shape[1]
-
-    else:
-        netz_cement_3 = pd.DataFrame()
-        netz_cement_3_rows = netz_cement_3.shape[0]
-        netz_cement_3_cols = netz_cement_3.shape[1]
-
-    # TRANSPORT REFERENCE
-    # Road modality 
-    if any(economy in s for s in list(ref_roadmodal_2['REGION'])):
-
-        ref_roadmodal_3 = ref_roadmodal_2[ref_roadmodal_2['REGION'] == economy].copy()\
-            [['Transport', 'modality'] + list(ref_roadmodal_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        ref_roadmodal_3_rows = ref_roadmodal_3.shape[0]
-        ref_roadmodal_3_cols = ref_roadmodal_3.shape[1]
-
-    else:
-        ref_roadmodal_3 = pd.DataFrame()
-        ref_roadmodal_3_rows = ref_roadmodal_3.shape[0]
-        ref_roadmodal_3_cols = ref_roadmodal_3.shape[1]
-
-    # Fuel modality 
-    if any(economy in s for s in list(ref_roadfuel_2['REGION'])):
-
-        ref_roadfuel_3 = ref_roadfuel_2[ref_roadfuel_2['REGION'] == economy].copy()\
-            [['Transport', 'modality'] + list(ref_roadfuel_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        ref_roadfuel_3_rows = ref_roadfuel_3.shape[0]
-        ref_roadfuel_3_cols = ref_roadfuel_3.shape[1]
-
-    else:
-        ref_roadfuel_3 = pd.DataFrame()
-        ref_roadfuel_3_rows = ref_roadfuel_3.shape[0]
-        ref_roadfuel_3_cols = ref_roadfuel_3.shape[1]
-
-    # TRANSPORT CARBON NEUTRALITY
-    # Road modality 
-    if any(economy in s for s in list(netz_roadmodal_2['REGION'])):
-
-        netz_roadmodal_3 = netz_roadmodal_2[netz_roadmodal_2['REGION'] == economy].copy()\
-            [['Transport', 'modality'] + list(netz_roadmodal_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        netz_roadmodal_3_rows = netz_roadmodal_3.shape[0]
-        netz_roadmodal_3_cols = netz_roadmodal_3.shape[1]
-
-    else:
-        netz_roadmodal_3 = pd.DataFrame()
-        netz_roadmodal_3_rows = netz_roadmodal_3.shape[0]
-        netz_roadmodal_3_cols = netz_roadmodal_3.shape[1]
-
-    # Fuel modality 
-    if any(economy in s for s in list(netz_roadfuel_2['REGION'])):
-
-        netz_roadfuel_3 = netz_roadfuel_2[netz_roadfuel_2['REGION'] == economy].copy()\
-            [['Transport', 'modality'] + list(netz_roadfuel_2.loc[:, '2018':'2050'])].reset_index(drop = True)
-
-        netz_roadfuel_3_rows = netz_roadfuel_3.shape[0]
-        netz_roadfuel_3_cols = netz_roadfuel_3.shape[1]
-
-    else:
-        netz_roadfuel_3 = pd.DataFrame()
-        netz_roadfuel_3_rows = netz_roadfuel_3.shape[0]
-        netz_roadfuel_3_cols = netz_roadfuel_3.shape[1]
+    # # OSeMOSYS datafrane builds removed (transport modality and heavy industry)
 
 
     ######################################################################
@@ -4525,8 +4247,8 @@ for economy in Economy_codes:
     ref_emiss_fuel_1.loc['Total', 'item_code_new'] = 'Emissions'
 
     # Get rid of zero rows
-    non_zero = (ref_emiss_fuel_1.loc[:,'2000':] != 0).any(axis = 1)
-    ref_emiss_fuel_1 = ref_emiss_fuel_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_emiss_fuel_1.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_emiss_fuel_1 = ref_emiss_fuel_1.loc[non_zero].reset_index(drop = True)
 
     ref_emiss_fuel_1_rows = ref_emiss_fuel_1.shape[0]
     ref_emiss_fuel_1_cols = ref_emiss_fuel_1.shape[1]
@@ -4576,8 +4298,8 @@ for economy in Economy_codes:
     ref_emiss_sector_1.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
-    non_zero = (ref_emiss_sector_1.loc[:,'2000':] != 0).any(axis = 1)
-    ref_emiss_sector_1 = ref_emiss_sector_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (ref_emiss_sector_1.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_emiss_sector_1 = ref_emiss_sector_1.loc[non_zero].reset_index(drop = True)
 
     ref_emiss_sector_1_rows = ref_emiss_sector_1.shape[0]
     ref_emiss_sector_1_cols = ref_emiss_sector_1.shape[1]
@@ -4622,8 +4344,8 @@ for economy in Economy_codes:
     netz_emiss_fuel_1.loc['Total', 'item_code_new'] = 'Emissions'
 
     # Get rid of zero rows
-    non_zero = (netz_emiss_fuel_1.loc[:,'2000':] != 0).any(axis = 1)
-    netz_emiss_fuel_1 = netz_emiss_fuel_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_emiss_fuel_1.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_emiss_fuel_1 = netz_emiss_fuel_1.loc[non_zero].reset_index(drop = True)
 
     netz_emiss_fuel_1_rows = netz_emiss_fuel_1.shape[0]
     netz_emiss_fuel_1_cols = netz_emiss_fuel_1.shape[1]
@@ -4673,8 +4395,8 @@ for economy in Economy_codes:
     netz_emiss_sector_1.loc['Total', 'item_code_new'] = 'Total'
 
     # Get rid of zero rows
-    non_zero = (netz_emiss_sector_1.loc[:,'2000':] != 0).any(axis = 1)
-    netz_emiss_sector_1 = netz_emiss_sector_1.loc[non_zero].reset_index(drop = True)
+    # non_zero = (netz_emiss_sector_1.loc[:,'2000':] != 0).any(axis = 1)
+    # netz_emiss_sector_1 = netz_emiss_sector_1.loc[non_zero].reset_index(drop = True)
 
     netz_emiss_sector_1_rows = netz_emiss_sector_1.shape[0]
     netz_emiss_sector_1_cols = netz_emiss_sector_1.shape[1]
@@ -4701,839 +4423,15 @@ for economy in Economy_codes:
     emiss_total_1_rows = emiss_total_1.shape[0]
     emiss_total_1_cols = emiss_total_1.shape[1]
 
-    # New emissions dataframe (for wedge chart)
-
-    # SECTOR
-
-    # Carbon neutrality emissions minus Reference emissions
-
-    emiss_diff_sector = netz_emiss_sector_1.iloc[:-1,:].select_dtypes(include = [np.number]) - \
-        ref_emiss_sector_1.iloc[:-1,:].select_dtypes(include = [np.number])
-
-    emissions_wedge_1 = ref_emiss_sector_1.iloc[:-1,:].copy()
-
-    emissions_wedge_1[emiss_diff_sector.columns] = emiss_diff_sector
-
-    # Now add phantom row for wedge
-
-    emissions_wedge_1 = emissions_wedge_1.append(emiss_total_1.iloc[0,:].copy()).reset_index(drop = True)
-
-    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Reference', 'fuel_code'] = np.nan
-    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Emissions', 'item_code_new'] = np.nan
-
-    emissions_wedge_1 = emissions_wedge_1.append(emiss_total_1.copy()).reset_index(drop = True)
-
-    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Reference', 'item_code_new'] = 'Reference'
-    emissions_wedge_1.loc[emissions_wedge_1['fuel_code'] == 'Carbon Neutrality', 'item_code_new'] = 'Carbon Neutrality'
-    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Reference', 'fuel_code'] = '19_total'
-    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon Neutrality', 'fuel_code'] = '19_total'
-
-    # Get rid of data for CN for historical
-    emissions_wedge_1.loc[emissions_wedge_1['item_code_new'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
-
-    emissions_wedge_1_rows = emissions_wedge_1.shape[0]
-    emissions_wedge_1_cols = emissions_wedge_1.shape[1]
-
-    # FUEL
-
-    # Carbon neutrality emissions minus Reference emissions
-
-    emiss_diff_fuel = netz_emiss_fuel_1.iloc[:-1,:].select_dtypes(include = [np.number]) - \
-        ref_emiss_fuel_1.iloc[:-1,:].select_dtypes(include = [np.number])
-
-    emissions_wedge_2 = ref_emiss_fuel_1.iloc[:-1,:].copy()
-
-    emissions_wedge_2[emiss_diff_fuel.columns] = emiss_diff_fuel
-
-    # Now add phantom row for wedge
-
-    emissions_wedge_2 = emissions_wedge_2.append(emiss_total_1.iloc[0,:].copy()).reset_index(drop = True)
-
-    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Reference', 'fuel_code'] = np.nan
-    emissions_wedge_2.loc[emissions_wedge_2['item_code_new'] == 'Emissions', 'item_code_new'] = np.nan
-
-    emissions_wedge_2 = emissions_wedge_2.append(emiss_total_1.copy()).reset_index(drop = True)
-
-    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon Neutrality', 'fuel_code'] = 'Carbon Neutrality'
-
-    # Get rid of data for CN for historical
-    emissions_wedge_2.loc[emissions_wedge_2['fuel_code'] == 'Carbon Neutrality', '2000':'2017'] = np.nan
-
-    emissions_wedge_2_rows = emissions_wedge_2.shape[0]
-    emissions_wedge_2_cols = emissions_wedge_2.shape[1]
-
+    # Wedge chart removed
 
     ##################################################################################################
 
-    # Fuel dataframe builds
-
-    # ref_coal_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-    #                                    (EGEDA_years_reference['item_code_new'].isin(no_trad_bio_sectors)) &
-    #                                    (EGEDA_years_reference['fuel_code'] == '1_coal')]\
-    #                                        .loc[:, 'fuel_code':].reset_index(drop = True)
-
-    # REFERENCE
-
-    # Coal
-    ref_coal_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                       (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                       (EGEDA_years_reference['fuel_code'].isin(['1_coal', '2_coal_products']))]\
-                                           .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Coal').reset_index()\
-                                           [['fuel_code', 'item_code_new'] + col_chart_years] 
-
-    ref_coal_1.loc[ref_coal_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    ref_coal_1.loc[ref_coal_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_coal_1.loc[ref_coal_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_coal_1.loc[ref_coal_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_coal_1.loc[ref_coal_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    ref_coal_1 = ref_coal_1[ref_coal_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
-
-    ref_coal_1['item_code_new'] = pd.Categorical(
-        ref_coal_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
-        ordered = True)
-
-    ref_coal_1 = ref_coal_1.sort_values('item_code_new').reset_index(drop = True)
-
-    ref_coal_1_rows = ref_coal_1.shape[0]
-    ref_coal_1_cols = ref_coal_1.shape[1]
-
-    # split into thermal and metallurgical
-
-    ref_coal_2 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                       (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                       (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                            '1_x_coal_thermal', '2_coal_products']))]\
-                                                .copy().reset_index(drop = True)
-
-    met_coal = ref_coal_2[ref_coal_2['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
-        .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Metallurgical coal').reset_index()
-
-    ref_coaltype_1 = ref_coal_2.append(met_coal).reset_index(drop = True)
-
-    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_coaltype_1.loc[ref_coaltype_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-    ref_coaltype_1.loc[ref_coaltype_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
-    ref_coaltype_1.loc[ref_coaltype_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
-
-    ref_coaltype_1 = ref_coaltype_1[ref_coaltype_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
-    ref_coaltype_1 = ref_coaltype_1[ref_coaltype_1['fuel_code'].isin(['Thermal coal', 'Lignite', 'Metallurgical coal'])].reset_index(drop = True)
-
-    ref_coaltype_1['item_code_new'] = pd.Categorical(
-        ref_coaltype_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
-        ordered = True)
-
-    ref_coaltype_1 = ref_coaltype_1.sort_values('item_code_new').reset_index(drop = True)
-
-    ref_coaltype_1['fuel_code'] = pd.Categorical(
-        ref_coaltype_1['fuel_code'], 
-        categories = ['Thermal coal', 'Lignite', 'Metallurgical coal'], 
-        ordered = True)
-
-    ref_coaltype_1 = ref_coaltype_1.sort_values('fuel_code').reset_index(drop = True)
-
-    ref_coaltype_1 = ref_coaltype_1[['fuel_code', 'item_code_new'] + list(ref_coaltype_1.loc[:,'2000':'2050'])]\
-        .replace(np.nan, 0)
-
-    # Get rid of zero rows
-    non_zero = (ref_coaltype_1.loc[:,'2000':] != 0).any(axis = 1)
-    ref_coaltype_1 = ref_coaltype_1.loc[non_zero].reset_index(drop = True)
-
-    ref_ct_prod1 = ref_coaltype_1[ref_coaltype_1['item_code_new'] == 'Production'].copy().reset_index(drop = True)
-
-    ref_ct_prod1_rows = ref_ct_prod1.shape[0]
-    ref_ct_prod1_cols = ref_ct_prod1.shape[1]
-
-    ref_ct_imports1 = ref_coaltype_1[ref_coaltype_1['item_code_new'] == 'Imports'].copy().reset_index(drop = True)
-
-    ref_ct_imports1_rows = ref_ct_imports1.shape[0]
-    ref_ct_imports1_cols = ref_ct_imports1.shape[1]
-
-    ref_ct_exports1 = ref_coaltype_1[ref_coaltype_1['item_code_new'] == 'Exports'].copy().reset_index(drop = True)
-
-    neg_to_pos = ref_ct_exports1.select_dtypes(include = [np.number]) * -1  
-    ref_ct_exports1[neg_to_pos.columns] = neg_to_pos
-
-    ref_ct_exports1_rows = ref_ct_exports1.shape[0]
-    ref_ct_exports1_cols = ref_ct_exports1.shape[1]
-
-    # Crude
-
-    ref_crude_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_reference['fuel_code'] == '6_crude_oil_and_ngl')].copy()\
-                                            [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                .reset_index(drop = True)
-    
-    ref_crude_1['fuel_code'].replace({'6_crude_oil_and_ngl': 'Crude oil and NGL'}, inplace=True)
-
-    ref_crude_1.loc[ref_crude_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    ref_crude_1.loc[ref_crude_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_crude_1.loc[ref_crude_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_crude_1.loc[ref_crude_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_crude_1.loc[ref_crude_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    ref_crude_1 = ref_crude_1[ref_crude_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
-
-    ref_crude_1['item_code_new'] = pd.Categorical(
-        ref_crude_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
-        ordered = True)
-
-    ref_crude_1 = ref_crude_1.sort_values('item_code_new').reset_index(drop = True)
-
-    ref_crude_1_rows = ref_crude_1.shape[0]
-    ref_crude_1_cols = ref_crude_1.shape[1]
-
-    # Petprod moved below crudecons
-
-    ref_gas_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_reference['fuel_code'] == '8_gas')].copy()\
-                                            [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                .reset_index(drop = True)
-
-    gas_bunkers = ref_gas_1[ref_gas_1['item_code_new'].isin(['4_international_marine_bunkers',
-                                                             '5_international_aviation_bunkers'])]\
-                                                                 .groupby(['fuel_code']).sum().assign(fuel_code = '8_gas', item_code_new = 'Bunkers')
-
-    ref_gas_1 = ref_gas_1.append([gas_bunkers]).reset_index(drop = True)
-    
-    ref_gas_1['fuel_code'].replace({'8_gas': 'Gas'}, inplace = True)
-
-    ref_gas_1.loc[ref_gas_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    ref_gas_1.loc[ref_gas_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_gas_1.loc[ref_gas_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_gas_1.loc[ref_gas_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_gas_1.loc[ref_gas_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    ref_gas_1 = ref_gas_1[ref_gas_1['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
-
-    ref_gas_1['item_code_new'] = pd.Categorical(
-        ref_gas_1['item_code_new'], 
-        categories = fuel_final_bunk, 
-        ordered = True)
-
-    ref_gas_1 = ref_gas_1.sort_values('item_code_new').reset_index(drop = True)
-
-    ref_gas_1_rows = ref_gas_1.shape[0]
-    ref_gas_1_cols = ref_gas_1.shape[1]
-
-    # LNG and pipe
-    # Imports
-    ref_gasim_1 = ref_gastrade_df1[(ref_gastrade_df1['REGION'] == economy) &
-                                   (ref_gastrade_df1['TECHNOLOGY'].str.contains('import'))].copy()\
-                                       .rename(columns = {'TECHNOLOGY': 'Imports'})\
-                                           [['Imports'] + list(ref_gastrade_df1.loc[:, '2018': '2050'])]\
-                                               .reset_index(drop = True)
-
-    ref_gasim_1.loc[ref_gasim_1['Imports'] == 'SUP_8_1_natural_gas_import', 'Imports'] = 'Pipeline'
-    ref_gasim_1.loc[ref_gasim_1['Imports'] == 'SUP_8_2_lng_import', 'Imports'] = 'LNG'
-
-    ref_gasim_1_rows = ref_gasim_1.shape[0]
-    ref_gasim_1_cols = ref_gasim_1.shape[1]
-    
-    # Exports
-    ref_gasex_1 = ref_gastrade_df1[(ref_gastrade_df1['REGION'] == economy) &
-                                   (ref_gastrade_df1['TECHNOLOGY'].str.contains('export'))].copy()\
-                                       .rename(columns = {'TECHNOLOGY': 'Exports'})\
-                                           [['Exports'] + list(ref_gastrade_df1.loc[:, '2018': '2050'])]\
-                                               .reset_index(drop = True)
-
-    ref_gasex_1.loc[ref_gasex_1['Exports'] == 'SUP_8_1_natural_gas_export', 'Exports'] = 'Pipeline'
-    ref_gasex_1.loc[ref_gasex_1['Exports'] == 'SUP_8_2_lng_export', 'Exports'] = 'LNG'
-
-    ref_gasex_1_rows = ref_gasex_1.shape[0]
-    ref_gasex_1_cols = ref_gasex_1.shape[1]
-
-    # Nuclear 
-
-    ref_nuke_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_reference['fuel_code'] == '9_nuclear')].copy()\
-                                            [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                .reset_index(drop = True)
-    
-    ref_nuke_1['fuel_code'].replace({'9_nuclear': 'Nuclear'}, inplace=True)
-
-    ref_nuke_1.loc[ref_nuke_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    ref_nuke_1.loc[ref_nuke_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_nuke_1.loc[ref_nuke_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_nuke_1.loc[ref_nuke_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_nuke_1.loc[ref_nuke_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    ref_nuke_1 = ref_nuke_1[ref_nuke_1['item_code_new'].isin(['Production'])].reset_index(drop = True)
-
-    ref_nuke_1_rows = ref_nuke_1.shape[0]
-    ref_nuke_1_cols = ref_nuke_1.shape[1]
-
-    ref_biomass_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                          (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                          (EGEDA_years_reference['fuel_code'] == '15_solid_biomass')].copy()\
-                                              [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                  .reset_index(drop = True)
-    
-    ref_biomass_1['fuel_code'].replace({'15_solid_biomass': 'Biomass'}, inplace=True)
-
-    ref_biomass_1.loc[ref_biomass_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    ref_biomass_1.loc[ref_biomass_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_biomass_1.loc[ref_biomass_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_biomass_1.loc[ref_biomass_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_biomass_1.loc[ref_biomass_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    ref_biomass_1 = ref_biomass_1[ref_biomass_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
-
-    ref_biomass_1['item_code_new'] = pd.Categorical(
-        ref_biomass_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
-        ordered = True)
-
-    ref_biomass_1 = ref_biomass_1.sort_values('item_code_new').reset_index(drop = True)
-
-    ref_biomass_1_rows = ref_biomass_1.shape[0]
-    ref_biomass_1_cols = ref_biomass_1.shape[1]
-
-    ref_biofuel_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                          (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                          (EGEDA_years_reference['fuel_code'].isin(['16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))]\
-                                              .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Biofuels').reset_index()\
-                                              [['fuel_code', 'item_code_new'] + col_chart_years]
-
-    biofuel_bunkers = ref_biofuel_1[ref_biofuel_1['item_code_new'].isin(['4_international_marine_bunkers',
-                                                                         '5_international_aviation_bunkers'])]\
-                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Biofuels',
-                                                                                                                  item_code_new = 'Bunkers')
-
-    ref_biofuel_2 = ref_biofuel_1.append([biofuel_bunkers]).reset_index(drop = True)
-
-    ref_biofuel_2.loc[ref_biofuel_2['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    ref_biofuel_2.loc[ref_biofuel_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_biofuel_2.loc[ref_biofuel_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_biofuel_2.loc[ref_biofuel_2['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_biofuel_2.loc[ref_biofuel_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    ref_biofuel_2 = ref_biofuel_2[ref_biofuel_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
-
-    ref_biofuel_2['item_code_new'] = pd.Categorical(
-        ref_biofuel_2['item_code_new'], 
-        categories = fuel_final_bunk, 
-        ordered = True)
-
-    ref_biofuel_2 = ref_biofuel_2.sort_values('item_code_new').reset_index(drop = True)
-
-    ref_biofuel_2_rows = ref_biofuel_2.shape[0]
-    ref_biofuel_2_cols = ref_biofuel_2.shape[1]
-
-    # liquid and solid renewables
-
-    ref_renew_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable',
-                                                                                  '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                  '16_8_other_liquid_biofuels']))]\
-                                           .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Liquid and solid renewables').reset_index()\
-                                           [['fuel_code', 'item_code_new'] + col_chart_years] 
-
-    renew_bunkers = ref_renew_1[ref_renew_1['item_code_new'].isin(['4_international_marine_bunkers',
-                                                                         '5_international_aviation_bunkers'])]\
-                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Liquid and solid renewables',
-                                                                                                                  item_code_new = 'Bunkers')
-
-    ref_renew_2 = ref_renew_1.append([renew_bunkers]).reset_index(drop = True)
-
-    ref_renew_2.loc[ref_renew_2['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    ref_renew_2.loc[ref_renew_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_renew_2.loc[ref_renew_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_renew_2.loc[ref_renew_2['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_renew_2.loc[ref_renew_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    ref_renew_2 = ref_renew_2[ref_renew_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
-
-    ref_renew_2['item_code_new'] = pd.Categorical(
-        ref_renew_2['item_code_new'], 
-        categories = fuel_final_bunk, 
-        ordered = True)
-
-    ref_renew_2 = ref_renew_2.sort_values('item_code_new').reset_index(drop = True)
-
-    ref_renew_2_rows = ref_renew_2.shape[0]
-    ref_renew_2_cols = ref_renew_2.shape[1]
-
-    # CARBON NEUTRALITY
-
-    netz_coal_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                       (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                       (EGEDA_years_netzero['fuel_code'].isin(['1_coal', '2_coal_products']))]\
-                                           .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Coal').reset_index()\
-                                           [['fuel_code', 'item_code_new'] + col_chart_years] 
-
-    netz_coal_1.loc[netz_coal_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    netz_coal_1.loc[netz_coal_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_coal_1.loc[netz_coal_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_coal_1.loc[netz_coal_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_coal_1.loc[netz_coal_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    netz_coal_1 = netz_coal_1[netz_coal_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
-
-    netz_coal_1['item_code_new'] = pd.Categorical(
-        netz_coal_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
-        ordered = True)
-
-    netz_coal_1 = netz_coal_1.sort_values('item_code_new').reset_index(drop = True)
-
-    netz_coal_1_rows = netz_coal_1.shape[0]
-    netz_coal_1_cols = netz_coal_1.shape[1]
-
-    # split into thermal and metallurgical
-
-    netz_coal_2 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                       (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                       (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                            '1_x_coal_thermal', '2_coal_products']))]\
-                                                .copy().reset_index(drop = True)
-
-    met_coal = netz_coal_2[netz_coal_2['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
-        .groupby(['economy', 'item_code_new']).sum().assign(fuel_code = 'Metallurgical coal').reset_index()
-
-    netz_coaltype_1 = netz_coal_2.append(met_coal).reset_index(drop = True)
-
-    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_coaltype_1.loc[netz_coaltype_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-    netz_coaltype_1.loc[netz_coaltype_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
-    netz_coaltype_1.loc[netz_coaltype_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
-
-    netz_coaltype_1 = netz_coaltype_1[netz_coaltype_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
-    netz_coaltype_1 = netz_coaltype_1[netz_coaltype_1['fuel_code'].isin(['Thermal coal', 'Lignite', 'Metallurgical coal'])].reset_index(drop = True)
-
-    netz_coaltype_1['item_code_new'] = pd.Categorical(
-        netz_coaltype_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
-        ordered = True)
-
-    netz_coaltype_1 = netz_coaltype_1.sort_values('item_code_new').reset_index(drop = True)
-
-    netz_coaltype_1['fuel_code'] = pd.Categorical(
-        netz_coaltype_1['fuel_code'], 
-        categories = ['Thermal coal', 'Lignite', 'Metallurgical coal'], 
-        ordered = True)
-
-    netz_coaltype_1 = netz_coaltype_1.sort_values('fuel_code').reset_index(drop = True)
-
-    netz_coaltype_1 = netz_coaltype_1[['fuel_code', 'item_code_new'] + list(netz_coaltype_1.loc[:,'2000':'2050'])]\
-        .replace(np.nan, 0)
-
-    # Get rid of zero rows
-    non_zero = (netz_coaltype_1.loc[:,'2000':] != 0).any(axis = 1)
-    netz_coaltype_1 = netz_coaltype_1.loc[non_zero].reset_index(drop = True)
-
-    netz_ct_prod1 = netz_coaltype_1[netz_coaltype_1['item_code_new'] == 'Production'].copy().reset_index(drop = True)
-
-    netz_ct_prod1_rows = netz_ct_prod1.shape[0]
-    netz_ct_prod1_cols = netz_ct_prod1.shape[1]
-
-    netz_ct_imports1 = netz_coaltype_1[netz_coaltype_1['item_code_new'] == 'Imports'].copy().reset_index(drop = True)
-
-    netz_ct_imports1_rows = netz_ct_imports1.shape[0]
-    netz_ct_imports1_cols = netz_ct_imports1.shape[1]
-
-    netz_ct_exports1 = netz_coaltype_1[netz_coaltype_1['item_code_new'] == 'Exports'].copy().reset_index(drop = True)
-
-    neg_to_pos = netz_ct_exports1.select_dtypes(include = [np.number]) * -1  
-    netz_ct_exports1[neg_to_pos.columns] = neg_to_pos
-
-    netz_ct_exports1_rows = netz_ct_exports1.shape[0]
-    netz_ct_exports1_cols = netz_ct_exports1.shape[1]
-
-    # Crude
-    netz_crude_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_netzero['fuel_code'] == '6_crude_oil_and_ngl')].copy()\
-                                            [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                .reset_index(drop = True)
-    
-    netz_crude_1['fuel_code'].replace({'6_crude_oil_and_ngl': 'Crude oil and NGL'}, inplace=True)
-
-    netz_crude_1.loc[netz_crude_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    netz_crude_1.loc[netz_crude_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_crude_1.loc[netz_crude_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_crude_1.loc[netz_crude_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_crude_1.loc[netz_crude_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    netz_crude_1 = netz_crude_1[netz_crude_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
-
-    netz_crude_1['item_code_new'] = pd.Categorical(
-        netz_crude_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
-        ordered = True)
-
-    netz_crude_1 = netz_crude_1.sort_values('item_code_new').reset_index(drop = True)
-
-    netz_crude_1_rows = netz_crude_1.shape[0]
-    netz_crude_1_cols = netz_crude_1.shape[1]
-
-    ## Petprod moved below crudecons
-
-    netz_gas_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_netzero['fuel_code'] == '8_gas')].copy()\
-                                            [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                .reset_index(drop = True)
-
-    gas_bunkers = netz_gas_1[netz_gas_1['item_code_new'].isin(['4_international_marine_bunkers',
-                                                             '5_international_aviation_bunkers'])]\
-                                                                 .groupby(['fuel_code']).sum().assign(fuel_code = '8_gas', item_code_new = 'Bunkers')
-
-    netz_gas_1 = netz_gas_1.append([gas_bunkers]).reset_index(drop = True)
-    
-    netz_gas_1['fuel_code'].replace({'8_gas': 'Gas'}, inplace=True)
-
-    netz_gas_1.loc[netz_gas_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    netz_gas_1.loc[netz_gas_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_gas_1.loc[netz_gas_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_gas_1.loc[netz_gas_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_gas_1.loc[netz_gas_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    netz_gas_1 = netz_gas_1[netz_gas_1['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
-
-    netz_gas_1['item_code_new'] = pd.Categorical(
-        netz_gas_1['item_code_new'], 
-        categories = fuel_final_bunk, 
-        ordered = True)
-
-    netz_gas_1 = netz_gas_1.sort_values('item_code_new').reset_index(drop = True)
-
-    netz_gas_1_rows = netz_gas_1.shape[0]
-    netz_gas_1_cols = netz_gas_1.shape[1]
-
-    # LNG and pipe
-    # Imports
-    netz_gasim_1 = netz_gastrade_df1[(netz_gastrade_df1['REGION'] == economy) &
-                                   (netz_gastrade_df1['TECHNOLOGY'].str.contains('import'))].copy()\
-                                       .rename(columns = {'TECHNOLOGY': 'Imports'})\
-                                           [['Imports'] + list(netz_gastrade_df1.loc[:, '2018': '2050'])]\
-                                               .reset_index(drop = True)
-
-    netz_gasim_1.loc[netz_gasim_1['Imports'] == 'SUP_8_1_natural_gas_import', 'Imports'] = 'Pipeline'
-    netz_gasim_1.loc[netz_gasim_1['Imports'] == 'SUP_8_2_lng_import', 'Imports'] = 'LNG'
-
-    netz_gasim_1_rows = netz_gasim_1.shape[0]
-    netz_gasim_1_cols = netz_gasim_1.shape[1]
-    
-    # Exports
-    netz_gasex_1 = netz_gastrade_df1[(netz_gastrade_df1['REGION'] == economy) &
-                                   (netz_gastrade_df1['TECHNOLOGY'].str.contains('export'))].copy()\
-                                       .rename(columns = {'TECHNOLOGY': 'Exports'})\
-                                           [['Exports'] + list(netz_gastrade_df1.loc[:, '2018': '2050'])]\
-                                               .reset_index(drop = True)
-
-    netz_gasex_1.loc[netz_gasex_1['Exports'] == 'SUP_8_1_natural_gas_export', 'Exports'] = 'Pipeline'
-    netz_gasex_1.loc[netz_gasex_1['Exports'] == 'SUP_8_2_lng_export', 'Exports'] = 'LNG'
-
-    netz_gasex_1_rows = netz_gasex_1.shape[0]
-    netz_gasex_1_cols = netz_gasex_1.shape[1]
-
-    # Nuclear
-
-    netz_nuke_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_netzero['fuel_code'] == '9_nuclear')].copy()\
-                                            [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                .reset_index(drop = True)
-    
-    netz_nuke_1['fuel_code'].replace({'9_nuclear': 'Nuclear'}, inplace=True)
-
-    netz_nuke_1.loc[netz_nuke_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    netz_nuke_1.loc[netz_nuke_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_nuke_1.loc[netz_nuke_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_nuke_1.loc[netz_nuke_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_nuke_1.loc[netz_nuke_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    netz_nuke_1 = netz_nuke_1[netz_nuke_1['item_code_new'].isin(['Production'])].reset_index(drop = True)
-
-    netz_nuke_1_rows = netz_nuke_1.shape[0]
-    netz_nuke_1_cols = netz_nuke_1.shape[1]
-
-    netz_biomass_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                          (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                          (EGEDA_years_netzero['fuel_code'] == '15_solid_biomass')].copy()\
-                                              [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                  .reset_index(drop = True)
-    
-    netz_biomass_1['fuel_code'].replace({'15_solid_biomass': 'Biomass'}, inplace=True)
-
-    netz_biomass_1.loc[netz_biomass_1['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    netz_biomass_1.loc[netz_biomass_1['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_biomass_1.loc[netz_biomass_1['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_biomass_1.loc[netz_biomass_1['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_biomass_1.loc[netz_biomass_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    netz_biomass_1 = netz_biomass_1[netz_biomass_1['item_code_new'].isin(fuel_final_nobunk)].reset_index(drop = True)
-
-    netz_biomass_1['item_code_new'] = pd.Categorical(
-        netz_biomass_1['item_code_new'], 
-        categories = fuel_final_nobunk, 
-        ordered = True)
-
-    netz_biomass_1 = netz_biomass_1.sort_values('item_code_new').reset_index(drop = True)
-
-    netz_biomass_1_rows = netz_biomass_1.shape[0]
-    netz_biomass_1_cols = netz_biomass_1.shape[1]
-
-    netz_biofuel_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                          (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                          (EGEDA_years_netzero['fuel_code'].isin(['16_1_biogas', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))]\
-                                              .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Biofuels').reset_index()\
-                                              [['fuel_code', 'item_code_new'] + col_chart_years]
-
-    biofuel_bunkers = netz_biofuel_1[netz_biofuel_1['item_code_new'].isin(['4_international_marine_bunkers',
-                                                                         '5_international_aviation_bunkers'])]\
-                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Biofuels',
-                                                                                                                  item_code_new = 'Bunkers')
-
-    netz_biofuel_2 = netz_biofuel_1.append([biofuel_bunkers]).reset_index(drop = True)
-
-    netz_biofuel_2.loc[netz_biofuel_2['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    netz_biofuel_2.loc[netz_biofuel_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_biofuel_2.loc[netz_biofuel_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_biofuel_2.loc[netz_biofuel_2['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_biofuel_2.loc[netz_biofuel_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    netz_biofuel_2 = netz_biofuel_2[netz_biofuel_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
-
-    netz_biofuel_2['item_code_new'] = pd.Categorical(
-        netz_biofuel_2['item_code_new'], 
-        categories = fuel_final_bunk, 
-        ordered = True)
-
-    netz_biofuel_2 = netz_biofuel_2.sort_values('item_code_new').reset_index(drop = True)
-
-    netz_biofuel_2_rows = netz_biofuel_2.shape[0]
-    netz_biofuel_2_cols = netz_biofuel_2.shape[1]
-
-    # liquid and solid renewables
-
-    netz_renew_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_1)) &
-                                        (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
-                                                                                '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                '16_8_other_liquid_biofuels']))]\
-                                           .copy().groupby(['item_code_new']).sum().assign(fuel_code = 'Liquid and solid renewables').reset_index()\
-                                           [['fuel_code', 'item_code_new'] + col_chart_years] 
-
-    renew_bunkers = netz_renew_1[netz_renew_1['item_code_new'].isin(['4_international_marine_bunkers',
-                                                                         '5_international_aviation_bunkers'])]\
-                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Liquid and solid renewables',
-                                                                                                                  item_code_new = 'Bunkers')
-
-    netz_renew_2 = netz_renew_1.append([renew_bunkers]).reset_index(drop = True)
-
-    netz_renew_2.loc[netz_renew_2['item_code_new'] == '1_indigenous_production', 'item_code_new'] = 'Production'
-    netz_renew_2.loc[netz_renew_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_renew_2.loc[netz_renew_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_renew_2.loc[netz_renew_2['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_renew_2.loc[netz_renew_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    netz_renew_2 = netz_renew_2[netz_renew_2['item_code_new'].isin(fuel_final_bunk)].reset_index(drop = True)
-
-    netz_renew_2['item_code_new'] = pd.Categorical(
-        netz_renew_2['item_code_new'], 
-        categories = fuel_final_bunk, 
-        ordered = True)
-
-    netz_renew_2 = netz_renew_2.sort_values('item_code_new').reset_index(drop = True)
-
-    netz_renew_2_rows = netz_renew_2.shape[0]
-    netz_renew_2_cols = netz_renew_2.shape[1]
+    # Removed fuel supply
 
     ###########################################################################################
 
     # Fuel consummption data frame builds
-    # REFERENCE
-
-    # Industry
-    # Transport
-    # Buildings
-    # Agriculture
-    # Non-specified
-    # Non-energy
-    # Own-use
-    # Power (including heat)
-    # Total
-
-    # Coal
-
-    ref_coal_ind = ref_ind_2[ref_ind_2['fuel_code'] == 'Coal']
-    ref_coal_bld = ref_bld_2[ref_bld_2['fuel_code'] == 'Coal']
-    ref_coal_ag = ref_ag_1[ref_ag_1['fuel_code'] == 'Coal']
-
-    ref_coal_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                         (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
-                                         (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Coal')
-
-    ref_coal_trn = ref_coal_trn[['fuel_code', 'item_code_new'] + list(ref_coal_trn.loc[:, '2000':'2050'])]
-
-    ref_coal_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
-                                        (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Coal')
-
-    ref_coal_ne = ref_coal_ne[['fuel_code', 'item_code_new'] + list(ref_coal_ne.loc[:, '2000':'2050'])]
-
-    ref_coal_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                        (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Coal')
-
-    ref_coal_ns = ref_coal_ns[['fuel_code', 'item_code_new'] + list(ref_coal_ns.loc[:, '2000':'2050'])]
-
-    ref_coal_own = ref_ownuse_1[ref_ownuse_1['FUEL'] == 'Coal']
-    ref_coal_own = ref_coal_own.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
-
-    ref_coal_pow = ref_pow_use_2[ref_pow_use_2['FUEL'].isin(['Coal', 'Lignite'])].copy().groupby(['Transformation']).sum()\
-                        .reset_index(drop = True).assign(fuel_code = 'Coal', item_code_new = 'Power')
-
-    ref_coal_pow = ref_coal_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
-
-    # Hydrogen
-    ref_coal_hyd = ref_hyd_use_1[ref_hyd_use_1['FUEL'] == 'Coal'].copy()\
-        .rename(columns = {'FUEL': 'fuel_code', 'TECHNOLOGY': 'item_code_new'})\
-            .reset_index(drop = True)
-
-    ref_coal_hyd.loc[ref_coal_hyd['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Hydrogen'
-
-    if ref_coal_hyd.empty:
-        hyd_series = ['Coal', 'Hydrogen'] + [0] * 33
-        hyd_grab = pd.Series(hyd_series, index = ref_coal_hyd.columns)
-        ref_coal_hyd = ref_coal_hyd.append(hyd_grab, ignore_index = True)
-
-    else:
-        pass
-
-    ref_coalcons_1 = ref_coal_ind.append([ref_coal_bld, ref_coal_ag, ref_coal_trn, ref_coal_ne, 
-                                          ref_coal_ns, ref_coal_own, ref_coal_pow, ref_coal_hyd])\
-                                              .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
-    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
-    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
-    ref_coalcons_1.loc[ref_coalcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
-
-    ref_coalcons_1.loc['Total'] = ref_coalcons_1.sum(numeric_only = True)
-
-    ref_coalcons_1.loc['Total', 'fuel_code'] = 'Coal'
-    ref_coalcons_1.loc['Total', 'item_code_new'] = 'Total'
-
-    ref_coalcons_1 = ref_coalcons_1.copy().reset_index(drop = True)
-
-    ref_coalcons_1_rows = ref_coalcons_1.shape[0]
-    ref_coalcons_1_cols = ref_coalcons_1.shape[1]
-
-    # Coal consumption by type
-
-    # Grabbing TPES as a proxy for demand
-
-    ref_coaltpes_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                           (EGEDA_years_reference['item_code_new'].isin(['7_total_primary_energy_supply'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                               '1_x_coal_thermal']))].copy().reset_index(drop = True)
-    
-    met_coal = ref_coaltpes_1[ref_coaltpes_1['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
-         .groupby(['item_code_new']).sum().assign(fuel_code = 'Metallurgical coal', economy = economy).reset_index()
-
-    ref_coaltpes_1 = ref_coaltpes_1.append(met_coal).reset_index(drop = True)
-
-    ref_coaltpes_1.loc[ref_coaltpes_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
-    ref_coaltpes_1.loc[ref_coaltpes_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
-    ref_coaltpes_1.loc[ref_coaltpes_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'TPES'    
-
-    ref_coaltpes_2 = ref_coaltpes_1[['economy', 'fuel_code', 'item_code_new'] + list(ref_coaltpes_1.loc[:,'2000':'2050'])]
-
-    ref_coaltpes_2 = ref_coaltpes_2[ref_coaltpes_2['fuel_code'].isin(['Thermal coal', 'Lignite', 'Metallurgical coal'])]\
-        .copy().reset_index(drop = True)
-
-    ref_coaltpes_2_rows = ref_coaltpes_2.shape[0]
-    ref_coaltpes_2_cols = ref_coaltpes_2.shape[1]
-
-    # Natural gas
-
-    ref_gas_ind = ref_ind_2[ref_ind_2['fuel_code'] == 'Gas']
-    ref_gas_bld = ref_bld_2[ref_bld_2['fuel_code'] == 'Gas']
-    ref_gas_ag = ref_ag_1[ref_ag_1['fuel_code'] == 'Gas']
-    ref_gas_trn = ref_trn_1[ref_trn_1['fuel_code'] == 'Gas']
-
-    ref_gas_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
-                                        (EGEDA_years_reference['fuel_code'].isin(['8_gas']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Gas')
-
-    ref_gas_ne = ref_gas_ne[['fuel_code', 'item_code_new'] + list(ref_gas_ne.loc[:, '2000':'2050'])]
-
-    ref_gas_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                        (EGEDA_years_reference['fuel_code'].isin(['8_gas']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Gas')
-
-    ref_gas_ns = ref_gas_ns[['fuel_code', 'item_code_new'] + list(ref_gas_ns.loc[:, '2000':'2050'])]
-
-    ref_gas_own = ref_ownuse_1[ref_ownuse_1['FUEL'] == 'Gas']
-    ref_gas_own = ref_gas_own.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
-
-    ref_gas_pow = ref_pow_use_2[ref_pow_use_2['FUEL'] == 'Gas']
-    ref_gas_pow = ref_gas_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
-
-    # Hydrogen
-    ref_gas_hyd = ref_hyd_use_1[ref_hyd_use_1['FUEL'] == 'Gas'].copy()\
-        .rename(columns = {'FUEL': 'fuel_code', 'TECHNOLOGY': 'item_code_new'})\
-            .reset_index(drop = True)
-
-    ref_gas_hyd.loc[ref_gas_hyd['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Hydrogen'
-
-    if ref_gas_hyd.empty:
-        hyd_series = ['Gas', 'Hydrogen'] + [0] * 33
-        hyd_grab = pd.Series(hyd_series, index = ref_gas_hyd.columns)
-        ref_gas_hyd = ref_gas_hyd.append(hyd_grab, ignore_index = True)
-
-    else:
-        pass
-
-    ref_gascons_1 = ref_gas_ind.append([ref_gas_bld, ref_gas_ag, ref_gas_trn, ref_gas_ne, 
-                                          ref_gas_ns, ref_gas_own, ref_gas_pow, ref_gas_hyd])\
-                                              .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
-    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
-    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
-    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
-    ref_gascons_1.loc[ref_gascons_1['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Power'
-
-    ref_gascons_1.loc['Total'] = ref_gascons_1.sum(numeric_only = True)
-
-    ref_gascons_1.loc['Total', 'fuel_code'] = 'Gas'
-    ref_gascons_1.loc['Total', 'item_code_new'] = 'Total'
-
-    ref_gascons_1 = ref_gascons_1.copy().reset_index(drop = True)
-
-    ref_gascons_1_rows = ref_gascons_1.shape[0]
-    ref_gascons_1_cols = ref_gascons_1.shape[1]
 
     # Crude oil
 
@@ -5659,443 +4557,7 @@ for economy in Economy_codes:
     ref_crudecons_1_rows = ref_crudecons_1.shape[0]
     ref_crudecons_1_cols = ref_crudecons_1.shape[1]
 
-    # Petroleum products
-
-    ref_petprod_ind = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                            (EGEDA_years_reference['item_code_new'].isin(['14_industry_sector'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))]\
-                                                .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    ref_petprod_ind = ref_petprod_ind[['fuel_code', 'item_code_new'] + list(ref_petprod_ind.loc[:, '2000':'2050'])]
-    ref_petprod_ind.loc[ref_petprod_ind['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-
-    ref_petprod_bld = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                            (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Buildings')
-
-    ref_petprod_bld = ref_petprod_bld[['fuel_code', 'item_code_new'] + list(ref_petprod_bld.loc[:, '2000':'2050'])]
-
-    ref_petprod_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                           (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Agriculture')
-
-    ref_petprod_ag = ref_petprod_ag[['fuel_code', 'item_code_new'] + list(ref_petprod_ag.loc[:, '2000':'2050'])]
-
-    ref_petprod_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                            (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))]\
-                                                .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    ref_petprod_trn = ref_petprod_trn[['fuel_code', 'item_code_new'] + list(ref_petprod_trn.loc[:, '2000':'2050'])]
-    ref_petprod_trn.loc[ref_petprod_trn['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-
-    ref_petprod_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                           (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))]\
-                                               .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    ref_petprod_ne = ref_petprod_ne[['fuel_code', 'item_code_new'] + list(ref_petprod_ne.loc[:, '2000':'2050'])]
-    ref_petprod_ne.loc[ref_petprod_ne['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-
-    ref_petprod_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                           (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))]\
-                                               .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    ref_petprod_ns = ref_petprod_ns[['fuel_code', 'item_code_new'] + list(ref_petprod_ns.loc[:, '2000':'2050'])]
-    ref_petprod_ns.loc[ref_petprod_ns['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-
-    # Own-use
-    ref_petprod_own = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
-                                    (ref_trans_df1['Sector'] == 'OWN') &
-                                    (ref_trans_df1['FUEL'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha',
-                                                                 '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
-                                                                 '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane',
-                                                                 '7_x_other_petroleum_products']))]\
-                                                                     .copy().reset_index(drop = True)
-
-    ref_petprod_own = ref_petprod_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                        .assign(fuel_code = 'Petroleum products', item_code_new = '10_losses_and_own_use')
-
-    #################################################################################
-    hist_ownoil = EGEDA_hist_own_oil[(EGEDA_hist_own_oil['economy'] == economy) &
-                                     (EGEDA_hist_own_oil['FUEL'] == 'Petroleum products')].copy().\
-                                        iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_hist_own_oil.loc[:, '2000':'2018'])]\
-                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
-
-    ref_petprod_own = hist_ownoil.merge(ref_petprod_own[['fuel_code', 'item_code_new'] + list(ref_petprod_own.loc[:,'2019': '2050'])],\
-        how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
-
-    ref_petprod_own = ref_petprod_own[['fuel_code', 'item_code_new'] + list(ref_petprod_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
-
-    # Power
-    ref_petprod_power = ref_power_df1[(ref_power_df1['economy'] == economy) &
-                                    (ref_power_df1['FUEL'].isin(['7_3_naphtha', '7_7_gas_diesel_oil', '7_8_fuel_oil',
-                                                                 '7_9_lpg', '7_10_refinery_gas_not_liquefied',
-                                                                 '7_x_other_petroleum_products', '7_16_petroleum_coke']))]\
-                                                                     .copy().reset_index(drop = True)
-
-    ref_petprod_power = ref_petprod_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                            .assign(fuel_code = 'Petroleum products', item_code_new = 'Power')
-
-    #################################################################################
-    hist_poweroil = EGEDA_histpower_oil[(EGEDA_histpower_oil['economy'] == economy) &
-                                        (EGEDA_histpower_oil['FUEL'] == 'Petroleum products')].copy()\
-                                            .iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_histpower_oil.loc[:, '2000':'2018'])]\
-                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
-
-    ref_petprod_power = hist_poweroil.merge(ref_petprod_power[['fuel_code', 'item_code_new'] + list(ref_petprod_power.loc[:,'2019': '2050'])],\
-        how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
-
-    ref_petprod_power = ref_petprod_power[['fuel_code', 'item_code_new'] + list(ref_petprod_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
-
-    ref_petprodcons_1 = ref_petprod_ind.append([ref_petprod_bld, ref_petprod_ag, ref_petprod_trn, ref_petprod_ne, 
-                                                ref_petprod_ns, ref_petprod_own, ref_petprod_power])\
-                                                    .copy().reset_index(drop = True)
-
-    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
-    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
-    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
-    ref_petprodcons_1.loc[ref_petprodcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
-
-    ref_petprodcons_1.loc['Total'] = ref_petprodcons_1.sum(numeric_only = True)
-
-    ref_petprodcons_1.loc['Total', 'fuel_code'] = 'Petroleum products'
-    ref_petprodcons_1.loc['Total', 'item_code_new'] = 'Total'
-
-    ref_petprodcons_1 = ref_petprodcons_1.copy().reset_index(drop = True)
-    
-    ref_petprodcons_1_rows = ref_petprodcons_1.shape[0]
-    ref_petprodcons_1_cols = ref_petprodcons_1.shape[1]
-
-    # Liquid and solid renewables
-
-    ref_renew_ind = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                            (EGEDA_years_reference['item_code_new'].isin(['14_industry_sector'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
-                                                                                      '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                      '16_8_other_liquid_biofuels']))]\
-                                                .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index(drop = True)\
-                                                    .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Industry')
-
-    ref_renew_ind = ref_renew_ind[['fuel_code', 'item_code_new'] + list(ref_renew_ind.loc[:, '2000':'2050'])]
-
-    ref_renew_bld = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                            (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['16_1_biogas', '16_3_municipal_solid_waste_renewable', 
-                                                                                      '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                      '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
-
-    ref_renew_bld = ref_renew_bld[['fuel_code', 'item_code_new'] + list(ref_renew_bld.loc[:, '2000':'2050'])]
-
-    ref_renew_bldtrad = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                              (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                              (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings (biomass)')
-
-    ref_renew_bldtrad = ref_renew_bldtrad[['fuel_code', 'item_code_new'] + list(ref_renew_bldtrad.loc[:, '2000':'2050'])]
-
-    # Independent build for ref_renewcons_2 #######################################################################################################################
-    ref_renew_bldall = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                             (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                             (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
-                                                                                       '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                       '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                 .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
-
-    ref_renew_bldall = ref_renew_bldall[['fuel_code', 'item_code_new'] + list(ref_renew_bldall.loc[:, '2000':'2050'])]
-    ###############################################################################################################################################################
-
-    ref_renew_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                           (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas','16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
-                                                                                     '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Agriculture')
-
-    ref_renew_ag = ref_renew_ag[['fuel_code', 'item_code_new'] + list(ref_renew_ag.loc[:, '2000':'2050'])]
-
-    ref_renew_trn = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                            (EGEDA_years_reference['item_code_new'].isin(['15_transport_sector'])) &
-                                            (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
-                                                                                      '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                      '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Transport')
-
-    ref_renew_trn = ref_renew_trn[['fuel_code', 'item_code_new'] + list(ref_renew_trn.loc[:, '2000':'2050'])]
-
-    ref_renew_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                           (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
-                                                                                     '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-energy')
-
-    ref_renew_ne = ref_renew_ne[['fuel_code', 'item_code_new'] + list(ref_renew_ne.loc[:, '2000':'2050'])]
-    
-    ref_renew_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                           (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                           (EGEDA_years_reference['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', 
-                                                                                     '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                     '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-specified')
-
-    ref_renew_ns = ref_renew_ns[['fuel_code', 'item_code_new'] + list(ref_renew_ns.loc[:, '2000':'2050'])]
-
-    # Own-use
-    ref_renew_own = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
-                                    (ref_trans_df1['Sector'] == 'OWN') &
-                                    (ref_trans_df1['FUEL'].isin(['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_5_other_biomass', 
-                                                                 '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                 '16_8_other_liquid_biofuels']))]\
-                                                                     .copy().reset_index(drop = True)
-                                                                     
-    ref_renew_own = ref_renew_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                        .assign(fuel_code = 'Liquid and solid renewables', item_code_new = '10_losses_and_own_use')
-
-    #################################################################################
-    hist_ownrenew = EGEDA_hist_own_renew[(EGEDA_hist_own_renew['economy'] == economy) &
-                                         (EGEDA_hist_own_renew['FUEL'] == 'Liquid and solid renewables')].copy().reset_index(drop = True)\
-                                             .groupby(['economy']).sum().reset_index(drop = True)\
-                                                 .assign(fuel_code = 'Liquid and solid renewables', item_code_new = '10_losses_and_own_use')\
-                                                     [['fuel_code', 'item_code_new'] + list(EGEDA_hist_own_renew.loc[:, '2000':'2018'])]
-
-    ref_renew_own = hist_ownrenew.merge(ref_renew_own[['fuel_code', 'item_code_new'] + list(ref_renew_own.loc[:,'2019': '2050'])],\
-        how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
-
-    ref_renew_own = ref_renew_own[['fuel_code', 'item_code_new'] + list(ref_renew_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
-
-    # Power
-    ref_renew_power = ref_power_df1[(ref_power_df1['economy'] == economy) &
-                                    (ref_power_df1['FUEL'].isin(['15_4_black_liquor', '15_5_other_biomass', '16_3_municipal_solid_waste_renewable']))]\
-                                                                     .copy().reset_index(drop = True)
-
-    ref_renew_power = ref_renew_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                            .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Power')
-
-    #################################################################################
-    hist_powerrenew = EGEDA_histpower_renew[(EGEDA_histpower_renew['economy'] == economy) &
-                                        (EGEDA_histpower_renew['FUEL'] == 'Liquid and solid renewables')].copy()\
-                                            .iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_histpower_renew.loc[:, '2000':'2018'])]\
-                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
-
-    ref_renew_power = hist_powerrenew.merge(ref_renew_power[['fuel_code', 'item_code_new'] + list(ref_renew_power.loc[:,'2019': '2050'])],\
-        how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
-
-    ref_renew_power = ref_renew_power[['fuel_code', 'item_code_new'] + list(ref_renew_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
-
-    ref_renewcons_1 = ref_renew_ind.append([ref_renew_bld, ref_renew_bldtrad, ref_renew_ag, ref_renew_trn, ref_renew_ne, 
-                                                ref_renew_ns, ref_renew_own, ref_renew_power])\
-                                                    .copy().reset_index(drop = True)
-
-    ref_renewcons_1.loc[ref_renewcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
-
-    ref_renewcons_1.loc['Total'] = ref_renewcons_1.sum(numeric_only = True)
-
-    ref_renewcons_1.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
-    ref_renewcons_1.loc['Total', 'item_code_new'] = 'Total'
-
-    ref_renewcons_1 = ref_renewcons_1.copy().reset_index(drop = True)
-    
-    ref_renewcons_1_rows = ref_renewcons_1.shape[0]
-    ref_renewcons_1_cols = ref_renewcons_1.shape[1]
-
-    # Alternative that just has buildings as one category
-
-    ref_renewcons_2 = ref_renew_ind.append([ref_renew_bldall, ref_renew_ag, ref_renew_trn, ref_renew_ne, 
-                                                ref_renew_ns, ref_renew_own, ref_renew_power])\
-                                                    .copy().reset_index(drop = True)
-
-    ref_renewcons_2.loc[ref_renewcons_2['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
-
-    ref_renewcons_2.loc['Total'] = ref_renewcons_2.sum(numeric_only = True)
-
-    ref_renewcons_2.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
-    ref_renewcons_2.loc['Total', 'item_code_new'] = 'Total'
-
-    ref_renewcons_2 = ref_renewcons_2.copy().reset_index(drop = True)
-    
-    ref_renewcons_2_rows = ref_renewcons_2.shape[0]
-    ref_renewcons_2_cols = ref_renewcons_2.shape[1]
-
-    ##########
-    # CARBON NEUTRALITY
-
-    # Industry
-    # Transport
-    # Buildings
-    # Agriculture
-    # Non-specified
-    # Non-energy
-    # Own-use
-    # Power (including heat)
-    # Refining for petroleum products
-    # Total
-
-    # Coal
-
-    netz_coal_ind = netz_ind_2[netz_ind_2['fuel_code'] == 'Coal']
-    netz_coal_bld = netz_bld_2[netz_bld_2['fuel_code'] == 'Coal']
-    netz_coal_ag = netz_ag_1[netz_ag_1['fuel_code'] == 'Coal']
-
-    netz_coal_trn = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                         (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
-                                         (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Coal')
-
-    netz_coal_trn = netz_coal_trn[['fuel_code', 'item_code_new'] + list(netz_coal_trn.loc[:, '2000':'2050'])]
-
-    netz_coal_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
-                                        (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Coal')
-
-    netz_coal_ne = netz_coal_ne[['fuel_code', 'item_code_new'] + list(netz_coal_ne.loc[:, '2000':'2050'])]
-
-    netz_coal_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                        (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                            '1_x_coal_thermal', '2_coal_products']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Coal')
-
-    netz_coal_ns = netz_coal_ns[['fuel_code', 'item_code_new'] + list(netz_coal_ns.loc[:, '2000':'2050'])]
-
-    netz_coal_own = netz_ownuse_1[netz_ownuse_1['FUEL'] == 'Coal']
-    netz_coal_own = netz_coal_own.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
-
-    netz_coal_pow = netz_pow_use_2[netz_pow_use_2['FUEL'].isin(['Coal', 'Lignite'])].copy().groupby(['Transformation']).sum()\
-                        .reset_index(drop = True).assign(fuel_code = 'Coal', item_code_new = 'Power')
-
-    netz_coal_pow = netz_coal_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
-
-    # Hydrogen
-    netz_coal_hyd = netz_hyd_use_1[netz_hyd_use_1['FUEL'] == 'Coal'].copy()\
-        .rename(columns = {'FUEL': 'fuel_code', 'TECHNOLOGY': 'item_code_new'})\
-            .reset_index(drop = True)
-
-    netz_coal_hyd.loc[netz_coal_hyd['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Hydrogen'
-
-    if netz_coal_hyd.empty:
-        hyd_series = ['Coal', 'Hydrogen'] + [0] * 33
-        hyd_grab = pd.Series(hyd_series, index = netz_coal_hyd.columns)
-        netz_coal_hyd = netz_coal_hyd.append(hyd_grab, ignore_index = True)
-
-    else:
-        pass
-
-    netz_coalcons_1 = netz_coal_ind.append([netz_coal_bld, netz_coal_ag, netz_coal_trn, netz_coal_ne, 
-                                          netz_coal_ns, netz_coal_own, netz_coal_pow, netz_coal_hyd])\
-                                              .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
-    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
-    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
-    netz_coalcons_1.loc[netz_coalcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
-
-    netz_coalcons_1.loc['Total'] = netz_coalcons_1.sum(numeric_only = True)
-
-    netz_coalcons_1.loc['Total', 'fuel_code'] = 'Coal'
-    netz_coalcons_1.loc['Total', 'item_code_new'] = 'Total'
-
-    netz_coalcons_1 = netz_coalcons_1.copy().reset_index(drop = True)
-
-    netz_coalcons_1_rows = netz_coalcons_1.shape[0]
-    netz_coalcons_1_cols = netz_coalcons_1.shape[1]
-
-    # Grabbing TPES as a proxy for demand
-
-    netz_coaltpes_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                           (EGEDA_years_netzero['item_code_new'].isin(['7_total_primary_energy_supply'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['1_1_coking_coal', '1_5_lignite',\
-                                               '1_x_coal_thermal']))].copy().reset_index(drop = True)
-    
-    met_coal = netz_coaltpes_1[netz_coaltpes_1['fuel_code'].isin(['1_1_coking_coal', '2_coal_products'])].copy()\
-         .groupby(['item_code_new']).sum().assign(fuel_code = 'Metallurgical coal', economy = economy).reset_index()
-
-    netz_coaltpes_1 = netz_coaltpes_1.append(met_coal).reset_index(drop = True)
-
-    netz_coaltpes_1.loc[netz_coaltpes_1['fuel_code'] == '1_x_coal_thermal', 'fuel_code'] = 'Thermal coal'
-    netz_coaltpes_1.loc[netz_coaltpes_1['fuel_code'] == '1_5_lignite', 'fuel_code'] = 'Lignite'
-    netz_coaltpes_1.loc[netz_coaltpes_1['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'TPES'
-
-    netz_coaltpes_2 = netz_coaltpes_1[['economy', 'fuel_code', 'item_code_new'] + list(netz_coaltpes_1.loc[:,'2000':'2050'])]
-
-    netz_coaltpes_2 = netz_coaltpes_2[netz_coaltpes_2['fuel_code'].isin(['Thermal coal', 'Lignite', 'Metallurgical coal'])]\
-        .copy().reset_index(drop = True)
-
-    netz_coaltpes_2_rows = netz_coaltpes_2.shape[0]
-    netz_coaltpes_2_cols = netz_coaltpes_2.shape[1]
-
-    # Natural gas
-
-    netz_gas_ind = netz_ind_2[netz_ind_2['fuel_code'] == 'Gas']
-    netz_gas_bld = netz_bld_2[netz_bld_2['fuel_code'] == 'Gas']
-    netz_gas_ag = netz_ag_1[netz_ag_1['fuel_code'] == 'Gas']
-    netz_gas_trn = netz_trn_1[netz_trn_1['fuel_code'] == 'Gas']
-
-    netz_gas_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
-                                        (EGEDA_years_netzero['fuel_code'].isin(['8_gas']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Gas')
-
-    netz_gas_ne = netz_gas_ne[['fuel_code', 'item_code_new'] + list(netz_gas_ne.loc[:, '2000':'2050'])]
-
-    netz_gas_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                        (EGEDA_years_netzero['fuel_code'].isin(['8_gas']))].copy().groupby(['item_code_new'])\
-                                                .sum().reset_index().assign(fuel_code = 'Gas')
-
-    netz_gas_ns = netz_gas_ns[['fuel_code', 'item_code_new'] + list(netz_gas_ns.loc[:, '2000':'2050'])]
-
-    netz_gas_own = netz_ownuse_1[netz_ownuse_1['FUEL'] == 'Gas']
-    netz_gas_own = netz_gas_own.rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'})
-
-    netz_gas_pow = netz_pow_use_2[netz_pow_use_2['FUEL'] == 'Gas']
-    netz_gas_pow = netz_gas_pow.rename(columns = {'FUEL': 'fuel_code', 'Transformation': 'item_code_new'})
-
-    # Hydrogen
-    netz_gas_hyd = netz_hyd_use_1[netz_hyd_use_1['FUEL'] == 'Gas'].copy()\
-        .rename(columns = {'FUEL': 'fuel_code', 'TECHNOLOGY': 'item_code_new'})\
-            .reset_index(drop = True)
-
-    netz_gas_hyd.loc[netz_gas_hyd['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Hydrogen'
-
-    if netz_gas_hyd.empty:
-        hyd_series = ['Gas', 'Hydrogen'] + [0] * 33
-        hyd_grab = pd.Series(hyd_series, index = netz_gas_hyd.columns)
-        netz_gas_hyd = netz_gas_hyd.append(hyd_grab, ignore_index = True)
-
-    else:
-        pass
-
-    netz_gascons_1 = netz_gas_ind.append([netz_gas_bld, netz_gas_ag, netz_gas_trn, netz_gas_ne, 
-                                          netz_gas_ns, netz_gas_own, netz_gas_pow, netz_gas_hyd])\
-                                              .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
-    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
-    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
-    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
-    netz_gascons_1.loc[netz_gascons_1['item_code_new'] == 'Input fuel', 'item_code_new'] = 'Power'
-
-    netz_gascons_1.loc['Total'] = netz_gascons_1.sum(numeric_only = True)
-
-    netz_gascons_1.loc['Total', 'fuel_code'] = 'Gas'
-    netz_gascons_1.loc['Total', 'item_code_new'] = 'Total'
-
-    netz_gascons_1 = netz_gascons_1.copy().reset_index(drop = True)
-
-    netz_gascons_1_rows = netz_gascons_1.shape[0]
-    netz_gascons_1_cols = netz_gascons_1.shape[1]
-
+    ## CARBON NEUTRALITY
     # Crude oil
 
     netz_crude_ind = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
@@ -6220,357 +4682,10 @@ for economy in Economy_codes:
     netz_crudecons_1_rows = netz_crudecons_1.shape[0]
     netz_crudecons_1_cols = netz_crudecons_1.shape[1]
 
-    # Petroleum products
-
-    netz_petprod_ind = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                            (EGEDA_years_netzero['item_code_new'].isin(['14_industry_sector'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))]\
-                                                .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    netz_petprod_ind = netz_petprod_ind[['fuel_code', 'item_code_new'] + list(netz_petprod_ind.loc[:, '2000':'2050'])]
-    netz_petprod_ind.loc[netz_petprod_ind['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-
-    netz_petprod_bld = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                            (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Buildings')
-
-    netz_petprod_bld = netz_petprod_bld[['fuel_code', 'item_code_new'] + list(netz_petprod_bld.loc[:, '2000':'2050'])]
-
-    netz_petprod_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                           (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Agriculture')
-
-    netz_petprod_ag = netz_petprod_ag[['fuel_code', 'item_code_new'] + list(netz_petprod_ag.loc[:, '2000':'2050'])]
-
-    netz_petprod_trn = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                            (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))]\
-                                                .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    netz_petprod_trn = netz_petprod_trn[['fuel_code', 'item_code_new'] + list(netz_petprod_trn.loc[:, '2000':'2050'])]
-    netz_petprod_trn.loc[netz_petprod_trn['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-
-    netz_petprod_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                           (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))]\
-                                               .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    netz_petprod_ne = netz_petprod_ne[['fuel_code', 'item_code_new'] + list(netz_petprod_ne.loc[:, '2000':'2050'])]
-    netz_petprod_ne.loc[netz_petprod_ne['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-
-    netz_petprod_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                           (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))]\
-                                               .copy().replace(np.nan, 0).reset_index(drop = True)
-
-    netz_petprod_ns = netz_petprod_ns[['fuel_code', 'item_code_new'] + list(netz_petprod_ns.loc[:, '2000':'2050'])]
-    netz_petprod_ns.loc[netz_petprod_ns['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
-
-    # Own-use
-    netz_petprod_own = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
-                                    (netz_trans_df1['Sector'] == 'OWN') &
-                                    (netz_trans_df1['FUEL'].isin(['7_1_motor_gasoline', '7_2_aviation_gasoline', '7_3_naphtha',
-                                                                 '7_x_jet_fuel', '7_6_kerosene', '7_7_gas_diesel_oil', '7_8_fuel_oil',
-                                                                 '7_9_lpg', '7_10_refinery_gas_not_liquefied', '7_11_ethane',
-                                                                 '7_x_other_petroleum_products']))]\
-                                                                     .copy().reset_index(drop = True)
-
-    netz_petprod_own = netz_petprod_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                        .assign(fuel_code = 'Petroleum products', item_code_new = '10_losses_and_own_use')
-
-    #################################################################################
-    hist_ownoil = EGEDA_hist_own_oil[(EGEDA_hist_own_oil['economy'] == economy) &
-                                     (EGEDA_hist_own_oil['FUEL'] == 'Petroleum products')].copy().\
-                                        iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_hist_own_oil.loc[:, '2000':'2018'])]\
-                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
-
-    netz_petprod_own = hist_ownoil.merge(netz_petprod_own[['fuel_code', 'item_code_new'] + list(netz_petprod_own.loc[:,'2019': '2050'])],\
-        how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
-
-    netz_petprod_own = netz_petprod_own[['fuel_code', 'item_code_new'] + list(netz_petprod_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
-
-    # Power
-    netz_petprod_power = netz_power_df1[(netz_power_df1['economy'] == economy) &
-                                    (netz_power_df1['FUEL'].isin(['7_3_naphtha', '7_7_gas_diesel_oil', '7_8_fuel_oil',
-                                                                 '7_9_lpg', '7_10_refinery_gas_not_liquefied',
-                                                                 '7_x_other_petroleum_products', '7_16_petroleum_coke']))]\
-                                                                     .copy().reset_index(drop = True)
-
-    netz_petprod_power = netz_petprod_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                            .assign(fuel_code = 'Petroleum products', item_code_new = 'Power')
-
-    #################################################################################
-    hist_poweroil = EGEDA_histpower_oil[(EGEDA_histpower_oil['economy'] == economy) &
-                                        (EGEDA_histpower_oil['FUEL'] == 'Petroleum products')].copy()\
-                                            .iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_histpower_oil.loc[:, '2000':'2018'])]\
-                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
-
-    netz_petprod_power = hist_poweroil.merge(netz_petprod_power[['fuel_code', 'item_code_new'] + list(netz_petprod_power.loc[:,'2019': '2050'])],\
-        how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
-
-    netz_petprod_power = netz_petprod_power[['fuel_code', 'item_code_new'] + list(netz_petprod_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
-
-    netz_petprodcons_1 = netz_petprod_ind.append([netz_petprod_bld, netz_petprod_ag, netz_petprod_trn, netz_petprod_ne, 
-                                                netz_petprod_ns, netz_petprod_own, netz_petprod_power])\
-                                                    .copy().reset_index(drop = True)
-
-    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
-    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
-    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '17_nonenergy_use', 'item_code_new'] = 'Non-energy'
-    netz_petprodcons_1.loc[netz_petprodcons_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
-
-    netz_petprodcons_1.loc['Total'] = netz_petprodcons_1.sum(numeric_only = True)
-
-    netz_petprodcons_1.loc['Total', 'fuel_code'] = 'Petroleum products'
-    netz_petprodcons_1.loc['Total', 'item_code_new'] = 'Total'
-
-    netz_petprodcons_1 = netz_petprodcons_1.copy().reset_index(drop = True)
     
-    netz_petprodcons_1_rows = netz_petprodcons_1.shape[0]
-    netz_petprodcons_1_cols = netz_petprodcons_1.shape[1]
-
     # Liquid and solid renewables
 
-    netz_renew_ind = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                            (EGEDA_years_netzero['item_code_new'].isin(['14_industry_sector'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))]\
-                                                .copy().replace(np.nan, 0).groupby(['item_code_new']).sum().reset_index(drop = True)\
-                                                    .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Industry')
-
-    netz_renew_ind = netz_renew_ind[['fuel_code', 'item_code_new'] + list(netz_renew_ind.loc[:, '2000':'2050'])]
-
-    netz_renew_bld = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                            (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
-
-    netz_renew_bld = netz_renew_bld[['fuel_code', 'item_code_new'] + list(netz_renew_bld.loc[:, '2000':'2050'])]
-
-    netz_renew_bldtrad = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                              (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                              (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings (biomass)')
-
-    netz_renew_bldtrad = netz_renew_bldtrad[['fuel_code', 'item_code_new'] + list(netz_renew_bldtrad.loc[:, '2000':'2050'])]
-
-    # Independent build for netz_renewcons_2 #############################################################################################################################
-    netz_renew_bldall = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                            (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                  .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Buildings')
-
-    netz_renew_bldall = netz_renew_bldall[['fuel_code', 'item_code_new'] + list(netz_renew_bldall.loc[:, '2000':'2050'])]
-    #####################################################################################################################################################################
-
-    netz_renew_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                           (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Agriculture')
-
-    netz_renew_ag = netz_renew_ag[['fuel_code', 'item_code_new'] + list(netz_renew_ag.loc[:, '2000':'2050'])]
-
-    netz_renew_trn = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                            (EGEDA_years_netzero['item_code_new'].isin(['15_transport_sector'])) &
-                                            (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Transport')
-
-    netz_renew_trn = netz_renew_trn[['fuel_code', 'item_code_new'] + list(netz_renew_trn.loc[:, '2000':'2050'])]
-
-    netz_renew_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                           (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-energy')
-
-    netz_renew_ne = netz_renew_ne[['fuel_code', 'item_code_new'] + list(netz_renew_ne.loc[:, '2000':'2050'])]
-    
-    netz_renew_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                           (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                           (EGEDA_years_netzero['fuel_code'].isin(['15_solid_biomass', '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', 
-                                                                                    '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                                    '16_8_other_liquid_biofuels']))].copy().replace(np.nan, 0).groupby(['economy'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Non-specified')
-
-    netz_renew_ns = netz_renew_ns[['fuel_code', 'item_code_new'] + list(netz_renew_ns.loc[:, '2000':'2050'])]
-
-    # Own-use
-    netz_renew_own = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
-                                    (netz_trans_df1['Sector'] == 'OWN') &
-                                    (netz_trans_df1['FUEL'].isin(['15_1_fuelwood_and_woodwaste', '15_2_bagasse', '15_3_charcoal', '15_5_other_biomass', 
-                                                                 '16_1_biogas', '16_3_municipal_solid_waste_renewable', '16_5_biogasoline', '16_6_biodiesel', '16_7_bio_jet_kerosene', 
-                                                                 '16_8_other_liquid_biofuels']))]\
-                                                                     .copy().reset_index(drop = True)
-                                                                     
-    netz_renew_own = netz_renew_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                        .assign(fuel_code = 'Liquid and solid renewables', item_code_new = '10_losses_and_own_use')
-
-    #################################################################################
-    hist_ownrenew = EGEDA_hist_own_renew[(EGEDA_hist_own_renew['economy'] == economy) &
-                                         (EGEDA_hist_own_renew['FUEL'] == 'Liquid and solid renewables')].copy().reset_index(drop = True)\
-                                             .groupby(['economy']).sum().reset_index(drop = True)\
-                                                 .assign(fuel_code = 'Liquid and solid renewables', item_code_new = '10_losses_and_own_use')\
-                                                     [['fuel_code', 'item_code_new'] + list(EGEDA_hist_own_renew.loc[:, '2000':'2018'])]
-
-    netz_renew_own = hist_ownrenew.merge(netz_renew_own[['fuel_code', 'item_code_new'] + list(netz_renew_own.loc[:,'2019': '2050'])],\
-        how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
-
-    netz_renew_own = netz_renew_own[['fuel_code', 'item_code_new'] + list(netz_renew_own.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
-
-    # Power
-    netz_renew_power = netz_power_df1[(netz_power_df1['economy'] == economy) &
-                                    (netz_power_df1['FUEL'].isin(['15_4_black_liquor', '15_5_other_biomass', '16_3_municipal_solid_waste_renewable']))]\
-                                                                     .copy().reset_index(drop = True)
-
-    netz_renew_power = netz_renew_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                            .assign(fuel_code = 'Liquid and solid renewables', item_code_new = 'Power')
-
-    #################################################################################
-    hist_powerrenew = EGEDA_histpower_renew[(EGEDA_histpower_renew['economy'] == economy) &
-                                        (EGEDA_histpower_renew['FUEL'] == 'Liquid and solid renewables')].copy()\
-                                            .iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_histpower_renew.loc[:, '2000':'2018'])]\
-                                            .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
-
-    netz_renew_power = hist_powerrenew.merge(netz_renew_power[['fuel_code', 'item_code_new'] + list(netz_renew_power.loc[:,'2019': '2050'])],\
-        how = 'right', on = ['fuel_code', 'item_code_new']).replace(np.nan, 0)
-
-    netz_renew_power = netz_renew_power[['fuel_code', 'item_code_new'] + list(netz_renew_power.loc[:, '2000':'2050'])].copy().reset_index(drop = True)
-
-    netz_renewcons_1 = netz_renew_ind.append([netz_renew_bld, netz_renew_bldtrad, netz_renew_ag, netz_renew_trn, netz_renew_ne, 
-                                                netz_renew_ns, netz_renew_own, netz_renew_power])\
-                                                    .copy().reset_index(drop = True)
-
-    netz_renewcons_1.loc[netz_renewcons_1['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
-
-    netz_renewcons_1.loc['Total'] = netz_renewcons_1.sum(numeric_only = True)
-
-    netz_renewcons_1.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
-    netz_renewcons_1.loc['Total', 'item_code_new'] = 'Total'
-
-    netz_renewcons_1 = netz_renewcons_1.copy().reset_index(drop = True)
-    
-    netz_renewcons_1_rows = netz_renewcons_1.shape[0]
-    netz_renewcons_1_cols = netz_renewcons_1.shape[1]
-
-    # Build for buildings in one category
-    netz_renewcons_2 = netz_renew_ind.append([netz_renew_bldall, netz_renew_ag, netz_renew_trn, netz_renew_ne, 
-                                                netz_renew_ns, netz_renew_own, netz_renew_power])\
-                                                    .copy().reset_index(drop = True)
-
-    netz_renewcons_2.loc[netz_renewcons_2['item_code_new'] == '10_losses_and_own_use', 'item_code_new'] = 'Own-use and losses'
-
-    netz_renewcons_2.loc['Total'] = netz_renewcons_2.sum(numeric_only = True)
-
-    netz_renewcons_2.loc['Total', 'fuel_code'] = 'Liquid and solid renewables'
-    netz_renewcons_2.loc['Total', 'item_code_new'] = 'Total'
-
-    netz_renewcons_2 = netz_renewcons_2.copy().reset_index(drop = True)
-    
-    netz_renewcons_2_rows = netz_renewcons_2.shape[0]
-    netz_renewcons_2_cols = netz_renewcons_2.shape[1]
-
-    ##########################
-
-    ref_petprod_1 = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
-                                        (EGEDA_years_reference['item_code_new'].isin(fuel_vector_ref)) &
-                                        (EGEDA_years_reference['fuel_code'] == '7_petroleum_products')].copy()\
-                                            [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                .reset_index(drop = True)
-    
-    ref_petprod_1['fuel_code'].replace({'7_petroleum_products': 'Petroleum products'}, inplace=True)
-
-    petprod_bunkers = ref_petprod_1[ref_petprod_1['item_code_new'].isin(['4_international_marine_bunkers',
-                                                                         '5_international_aviation_bunkers'])]\
-                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Petroleum products',
-                                                                                                                  item_code_new = 'Bunkers')
-    
-    ref_petprod_2 = ref_petprod_1.append([petprod_bunkers]).reset_index(drop = True)
-
-    if 'Refining' in list(ref_crudecons_1['item_code_new']):
-        refining_grab = ref_crudecons_1[ref_crudecons_1['item_code_new'] == 'Refining'][['fuel_code', 'item_code_new'] + col_chart_years].copy()
-
-    else:
-        refining_series = ['Crude oil & NGL', 'Refining'] + [0] * 7
-        refining_grab = pd.Series(refining_series, index = ref_petprod_1.columns)
-
-    ref_petprod_2 = ref_petprod_2.append(refining_grab, ignore_index = True).reset_index(drop = True)
-
-    ref_petprod_2.loc[ref_petprod_2['fuel_code'] == 'Crude oil & NGL', 'fuel_code'] = 'Petroleum products'
-    ref_petprod_2.loc[ref_petprod_2['item_code_new'] == 'Refining', 'item_code_new'] = 'Domestic refining'
-    ref_petprod_2.loc[ref_petprod_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    ref_petprod_2.loc[ref_petprod_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    ref_petprod_2.loc[ref_petprod_2['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    ref_petprod_2.loc[ref_petprod_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    ref_petprod_2 = ref_petprod_2[ref_petprod_2['item_code_new'].isin(fuel_final_ref)].reset_index(drop = True)
-
-    ref_petprod_2['item_code_new'] = pd.Categorical(
-        ref_petprod_2['item_code_new'], 
-        categories = fuel_final_ref, 
-        ordered = True)
-
-    ref_petprod_2 = ref_petprod_2.sort_values('item_code_new').reset_index(drop = True)
-
-    ref_petprod_2_rows = ref_petprod_2.shape[0]
-    ref_petprod_2_cols = ref_petprod_2.shape[1]
-
-    #######################
-
-    netz_petprod_1 = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
-                                        (EGEDA_years_netzero['item_code_new'].isin(fuel_vector_ref)) &
-                                        (EGEDA_years_netzero['fuel_code'] == '7_petroleum_products')].copy()\
-                                            [['fuel_code', 'item_code_new'] + col_chart_years]\
-                                                .reset_index(drop = True)
-    
-    netz_petprod_1['fuel_code'].replace({'7_petroleum_products': 'Petroleum products'}, inplace=True)
-
-    petprod_bunkers = netz_petprod_1[netz_petprod_1['item_code_new'].isin(['4_international_marine_bunkers',
-                                                                         '5_international_aviation_bunkers'])]\
-                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Petroleum products',
-                                                                                                                  item_code_new = 'Bunkers')
-
-    netz_petprod_2 = netz_petprod_1.append([petprod_bunkers]).reset_index(drop = True)
-
-    if 'Refining' in list(netz_crudecons_1['item_code_new']):
-        refining_grab = netz_crudecons_1[netz_crudecons_1['item_code_new'] == 'Refining'][['fuel_code', 'item_code_new'] + col_chart_years].copy()
-
-    else:
-        refining_series = ['Crude oil & NGL', 'Refining'] + [0] * 7
-        refining_grab = pd.Series(refining_series, index = netz_petprod_1.columns)
-
-    netz_petprod_2 = netz_petprod_2.append(refining_grab, ignore_index = True).reset_index(drop = True)
-
-    netz_petprod_2.loc[netz_petprod_2['fuel_code'] == 'Crude oil & NGL', 'fuel_code'] = 'Petroleum products'
-    netz_petprod_2.loc[netz_petprod_2['item_code_new'] == 'Refining', 'item_code_new'] = 'Domestic refining'
-    netz_petprod_2.loc[netz_petprod_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
-    netz_petprod_2.loc[netz_petprod_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
-    netz_petprod_2.loc[netz_petprod_2['item_code_new'] == '6_stock_change', 'item_code_new'] = 'Stock change'
-    netz_petprod_2.loc[netz_petprod_2['item_code_new'] == '7_total_primary_energy_supply', 'item_code_new'] = 'Total primary energy supply'
-
-    netz_petprod_2 = netz_petprod_2[netz_petprod_2['item_code_new'].isin(fuel_final_ref)].reset_index(drop = True)
-
-    netz_petprod_2['item_code_new'] = pd.Categorical(
-        netz_petprod_2['item_code_new'], 
-        categories = fuel_final_ref, 
-        ordered = True)
-
-    netz_petprod_2 = netz_petprod_2.sort_values('item_code_new').reset_index(drop = True)
-
-    netz_petprod_2_rows = netz_petprod_2.shape[0]
-    netz_petprod_2_cols = netz_petprod_2.shape[1]
+    # Renew and petprod gone
 
     ##################################################################################################################
 
@@ -6607,469 +4722,7 @@ for economy in Economy_codes:
 
     # Electricity by sector
 
-    # REFERENCE
-    ref_elec_1 = ref_bld_2[ref_bld_2['fuel_code'] == 'Electricity'].copy()\
-        .append(ref_ind_2[ref_ind_2['fuel_code'] == 'Electricity'].copy())\
-            .append(ref_trn_1[ref_trn_1['fuel_code'] == 'Electricity'].copy())\
-                .append(ref_ag_1[ref_ag_1['fuel_code'] == 'Electricity'].copy()).reset_index(drop = True)
-
-    ref_elec_nons1 = EGEDA_years_reference[(EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                           (EGEDA_years_reference['fuel_code'] == '17_electricity') & 
-                                           (EGEDA_years_reference['economy'] == economy)].copy()\
-                                               [['fuel_code', 'item_code_new'] + list(EGEDA_years_reference.loc[:,'2000':'2050'])]
-
-    ref_elec_1 = ref_elec_1.append(ref_elec_nons1.copy()).reset_index(drop = True)
-
-    ref_elec_own1 = ref_ownuse_1[ref_ownuse_1['FUEL'] == 'Electricity'].copy()\
-        .rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'}).reset_index(drop = True)
-
-    ref_elec_1 = ref_elec_1.append(ref_elec_own1.copy()).replace(np.nan, 0).reset_index(drop = True)
-
-    ref_elec_1.loc[ref_elec_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
-    ref_elec_1.loc[ref_elec_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
-    ref_elec_1.loc[ref_elec_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    ref_elec_1.loc[ref_elec_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
-    ref_elec_1.loc[ref_elec_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
-
-    ref_elec_1.loc['Total'] = ref_elec_1.sum(numeric_only = True)
-
-    ref_elec_1.loc['Total', 'fuel_code'] = 'Electricity'
-    ref_elec_1.loc['Total', 'item_code_new'] = 'Total'
-
-    ref_elec_1 = ref_elec_1.copy().reset_index(drop = True)
-
-    ref_elec_1_rows = ref_elec_1.shape[0]
-    ref_elec_1_cols = ref_elec_1.shape[1]
-
-    # CARBON NEUTRALITY
-    netz_elec_1 = netz_bld_2[netz_bld_2['fuel_code'] == 'Electricity'].copy()\
-        .append(netz_ind_2[netz_ind_2['fuel_code'] == 'Electricity'].copy())\
-            .append(netz_trn_1[netz_trn_1['fuel_code'] == 'Electricity'].copy())\
-                .append(netz_ag_1[netz_ag_1['fuel_code'] == 'Electricity'].copy()).reset_index(drop = True)
-
-    netz_elec_nons1 = EGEDA_years_netzero[(EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
-                                           (EGEDA_years_netzero['fuel_code'] == '17_electricity') & 
-                                           (EGEDA_years_netzero['economy'] == economy)].copy()\
-                                               [['fuel_code', 'item_code_new'] + list(EGEDA_years_netzero.loc[:,'2000':'2050'])]
-
-    netz_elec_1 = netz_elec_1.append(netz_elec_nons1.copy()).reset_index(drop = True)
-
-    netz_elec_own1 = netz_ownuse_1[netz_ownuse_1['FUEL'] == 'Electricity'].copy()\
-        .rename(columns = {'FUEL': 'fuel_code', 'Sector': 'item_code_new'}).reset_index(drop = True)
-
-    netz_elec_1 = netz_elec_1.append(netz_elec_own1.copy()).replace(np.nan, 0).reset_index(drop = True)
-
-    netz_elec_1.loc[netz_elec_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
-    netz_elec_1.loc[netz_elec_1['item_code_new'] == '16_x_buildings', 'item_code_new'] = 'Buildings'
-    netz_elec_1.loc[netz_elec_1['item_code_new'] == '14_industry_sector', 'item_code_new'] = 'Industry'
-    netz_elec_1.loc[netz_elec_1['item_code_new'] == '15_transport_sector', 'item_code_new'] = 'Transport'
-    netz_elec_1.loc[netz_elec_1['item_code_new'] == '16_5_nonspecified_others', 'item_code_new'] = 'Non-specified'
-
-    netz_elec_1.loc['Total'] = netz_elec_1.sum(numeric_only = True)
-
-    netz_elec_1.loc['Total', 'fuel_code'] = 'Electricity'
-    netz_elec_1.loc['Total', 'item_code_new'] = 'Total'
-
-    netz_elec_1 = netz_elec_1.copy().reset_index(drop = True)
-
-    netz_elec_1_rows = netz_elec_1.shape[0]
-    netz_elec_1_cols = netz_elec_1.shape[1]
-
-    # Building some waterfall data frames
-
-    if economy in ['01_AUS', '02_BD', '03_CDA', '04_CHL', '05_PRC', '06_HKC',
-                   '07_INA', '08_JPN', '09_ROK', '10_MAS', '11_MEX', '12_NZ',
-                   '13_PNG', '14_PE', '15_RP', '16_RUS', '17_SIN', '18_CT', '19_THA',
-                   '20_USA', '21_VN', 'APEC']:
-
-        # Some key variable for the dataframe constructions to populate dataframe
-        ref_emissions_2018 = emiss_total_1.loc[0, '2018']
-        ref_emissions_2050 = emiss_total_1.loc[0, '2050']
-        netz_emissions_2018 = emiss_total_1.loc[1, '2018']
-        netz_emissions_2050 = emiss_total_1.loc[1, '2050']
-        pop_growth = (macro_1.loc[macro_1['Series'] == 'Population', '2050'] / macro_1.loc[macro_1['Series'] == 'Population', '2018']).to_numpy()
-        gdp_pc_growth = (macro_1.loc[macro_1['Series'] == 'GDP per capita', '2050'] / macro_1.loc[macro_1['Series'] == 'GDP per capita', '2018']).to_numpy()
-        ref_ei_growth = (ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2050'] / ref_enint_sup3.loc[ref_enint_sup3['Series'] == 'Reference', '2018']).to_numpy()
-        ref_co2i_growth = (ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / ref_co2int_2.loc[ref_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
-        netz_ei_growth = (netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon Neutrality', '2050'] / netz_enint_sup3.loc[netz_enint_sup3['Series'] == 'Carbon Neutrality', '2018']).to_numpy()
-        netz_co2i_growth = (netz_co2int_2.loc[netz_co2int_2['item_code_new'] == 'CO2 intensity', '2050'] / netz_co2int_2.loc[netz_co2int_2['item_code_new'] == 'CO2 intensity', '2018']).to_numpy()
-
-        if (pop_growth >= 1) & (ref_co2i_growth < 1) & (ref_ei_growth < 1):
-
-            ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            ref_kaya_1.loc[0, 'Reference'] = 'initial'
-            ref_kaya_1.loc[1, 'Reference'] = 'empty'
-            ref_kaya_1.loc[2, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[3, 'Reference'] = 'empty'
-            ref_kaya_1.loc[4, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[5, 'Reference'] = 'improve'
-            ref_kaya_1.loc[6, 'Reference'] = 'improve'
-
-            # Emissions 2018 column
-            ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
-            ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018
-            ref_kaya_1.loc[2, 'Population'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
-
-            # GDP per capita column
-            ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018
-            ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
-            ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-            ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-
-            # Emissions intensity column
-            ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
-            ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
-
-            ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            ref_kaya_1_rows = ref_kaya_1.shape[0]
-            ref_kaya_1_cols = ref_kaya_1.shape[1]
-
-        elif (pop_growth < 1) & (ref_co2i_growth < 1) & (ref_ei_growth < 1):
-
-            ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            ref_kaya_1.loc[0, 'Reference'] = 'initial'
-            ref_kaya_1.loc[1, 'Reference'] = 'empty'
-            ref_kaya_1.loc[2, 'Reference'] = 'improve'
-            ref_kaya_1.loc[3, 'Reference'] = 'empty'
-            ref_kaya_1.loc[4, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[5, 'Reference'] = 'improve'
-            ref_kaya_1.loc[6, 'Reference'] = 'improve'
-
-            # Emissions 2018 column
-            ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
-            ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018 * pop_growth
-            ref_kaya_1.loc[2, 'Population'] = ref_emissions_2018 - (ref_emissions_2018 * pop_growth)  
-
-            # GDP per capita column
-            ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018 * pop_growth
-            # ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
-            ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-            ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-
-            # Emissions intensity column
-            ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
-            ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth)
-
-            ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            ref_kaya_1_rows = ref_kaya_1.shape[0]
-            ref_kaya_1_cols = ref_kaya_1.shape[1]
-
-        elif (pop_growth >= 1) & (ref_co2i_growth >= 1) & (ref_ei_growth < 1):
-
-            ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            ref_kaya_1.loc[0, 'Reference'] = 'initial'
-            ref_kaya_1.loc[1, 'Reference'] = 'empty'
-            ref_kaya_1.loc[2, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[3, 'Reference'] = 'empty'
-            ref_kaya_1.loc[4, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[5, 'Reference'] = 'improve'
-            ref_kaya_1.loc[6, 'Reference'] = 'no improve'
-
-            # Emissions 2018 column
-            ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
-            ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018
-            ref_kaya_1.loc[2, 'Population'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
-
-            # GDP per capita column
-            ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018
-            ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
-            ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-            ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-
-            # Emissions intensity column
-            ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
-            ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
-
-            ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            ref_kaya_1_rows = ref_kaya_1.shape[0]
-            ref_kaya_1_cols = ref_kaya_1.shape[1]
-
-        elif (pop_growth < 1) & (ref_co2i_growth >= 1) & (ref_ei_growth < 1):
-
-            ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            ref_kaya_1.loc[0, 'Reference'] = 'initial'
-            ref_kaya_1.loc[1, 'Reference'] = 'empty'
-            ref_kaya_1.loc[2, 'Reference'] = 'improve'
-            ref_kaya_1.loc[3, 'Reference'] = 'empty'
-            ref_kaya_1.loc[4, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[5, 'Reference'] = 'improve'
-            ref_kaya_1.loc[6, 'Reference'] = 'no improve'
-
-            # Emissions 2018 column
-            ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
-            ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018 * pop_growth
-            ref_kaya_1.loc[2, 'Population'] = ref_emissions_2018 - (ref_emissions_2018 * pop_growth)  
-
-            # GDP per capita column
-            ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018 * pop_growth
-            # ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
-            ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-            ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth)
-
-            # Emissions intensity column
-            ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
-            ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
-
-            ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            ref_kaya_1_rows = ref_kaya_1.shape[0]
-            ref_kaya_1_cols = ref_kaya_1.shape[1]
-
-        elif (pop_growth >= 1) & (ref_co2i_growth >= 1) & (ref_ei_growth >= 1):
-
-            ref_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Reference', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            ref_kaya_1.loc[0, 'Reference'] = 'initial'
-            ref_kaya_1.loc[1, 'Reference'] = 'empty'
-            ref_kaya_1.loc[2, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[3, 'Reference'] = 'empty'
-            ref_kaya_1.loc[4, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[5, 'Reference'] = 'no improve'
-            ref_kaya_1.loc[6, 'Reference'] = 'no improve'
-
-            # Emissions 2018 column
-            ref_kaya_1.loc[0, 'Emissions 2018'] = ref_emissions_2018
-            ref_kaya_1.loc[0, 'Emissions 2050'] = ref_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            ref_kaya_1.loc[1, 'Population'] = ref_emissions_2018
-            ref_kaya_1.loc[2, 'Population'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018   
-
-            # GDP per capita column
-            ref_kaya_1.loc[1, 'GDP per capita'] = ref_emissions_2018
-            ref_kaya_1.loc[3, 'GDP per capita'] = (ref_emissions_2018 * pop_growth) - ref_emissions_2018
-            ref_kaya_1.loc[4, 'GDP per capita'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth) - (ref_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            ref_kaya_1.loc[1, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth)
-            ref_kaya_1.loc[5, 'Energy intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth)
-
-            # Emissions intensity column
-            ref_kaya_1.loc[1, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
-            ref_kaya_1.loc[6, 'Emissions intensity'] = (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth * ref_co2i_growth) - (ref_emissions_2018 * pop_growth * gdp_pc_growth * ref_ei_growth) 
-
-            ref_kaya_1 = ref_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            ref_kaya_1_rows = ref_kaya_1.shape[0]
-            ref_kaya_1_cols = ref_kaya_1.shape[1]
-
-        else:
-            pass
-
-        # Now if statements for Carbon neutrality data frame builds
-
-        if (pop_growth >= 1) & (netz_co2i_growth < 1):
-
-            netz_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Carbon Neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            netz_kaya_1.loc[0, 'Carbon Neutrality'] = 'initial'
-            netz_kaya_1.loc[1, 'Carbon Neutrality'] = 'empty'
-            netz_kaya_1.loc[2, 'Carbon Neutrality'] = 'no improve'
-            netz_kaya_1.loc[3, 'Carbon Neutrality'] = 'empty'
-            netz_kaya_1.loc[4, 'Carbon Neutrality'] = 'no improve'
-            netz_kaya_1.loc[5, 'Carbon Neutrality'] = 'improve'
-            netz_kaya_1.loc[6, 'Carbon Neutrality'] = 'improve'
-
-            # Emissions 2018 column
-            netz_kaya_1.loc[0, 'Emissions 2018'] = netz_emissions_2018
-            netz_kaya_1.loc[0, 'Emissions 2050'] = netz_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            netz_kaya_1.loc[1, 'Population'] = netz_emissions_2018
-            netz_kaya_1.loc[2, 'Population'] = (netz_emissions_2018 * pop_growth) - netz_emissions_2018
-
-            # GDP per capita column
-            netz_kaya_1.loc[1, 'GDP per capita'] = netz_emissions_2018
-            netz_kaya_1.loc[3, 'GDP per capita'] = (netz_emissions_2018 * pop_growth) - netz_emissions_2018
-            netz_kaya_1.loc[4, 'GDP per capita'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth) - (netz_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            netz_kaya_1.loc[1, 'Energy intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth)
-            netz_kaya_1.loc[5, 'Energy intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth) - (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth)
-
-            # Emissions intensity column
-            netz_kaya_1.loc[1, 'Emissions intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth * netz_co2i_growth)
-            netz_kaya_1.loc[6, 'Emissions intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth) - (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth * netz_co2i_growth)
-
-            netz_kaya_1 = netz_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            netz_kaya_1_rows = netz_kaya_1.shape[0]
-            netz_kaya_1_cols = netz_kaya_1.shape[1]
-
-        elif (pop_growth < 1) & (netz_co2i_growth < 1):
-
-            netz_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Carbon Neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            netz_kaya_1.loc[0, 'Carbon Neutrality'] = 'initial'
-            netz_kaya_1.loc[1, 'Carbon Neutrality'] = 'empty'
-            netz_kaya_1.loc[2, 'Carbon Neutrality'] = 'improve'
-            netz_kaya_1.loc[3, 'Carbon Neutrality'] = 'empty'
-            netz_kaya_1.loc[4, 'Carbon Neutrality'] = 'no improve'
-            netz_kaya_1.loc[5, 'Carbon Neutrality'] = 'improve'
-            netz_kaya_1.loc[6, 'Carbon Neutrality'] = 'improve'
-
-            # Emissions 2018 column
-            netz_kaya_1.loc[0, 'Emissions 2018'] = netz_emissions_2018
-            netz_kaya_1.loc[0, 'Emissions 2050'] = netz_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            netz_kaya_1.loc[1, 'Population'] = netz_emissions_2018 * pop_growth
-            netz_kaya_1.loc[2, 'Population'] = netz_emissions_2018 - (netz_emissions_2018 * pop_growth)  
-
-            # GDP per capita column
-            netz_kaya_1.loc[1, 'GDP per capita'] = netz_emissions_2018 * pop_growth
-            # netz_kaya_1.loc[3, 'GDP per capita'] = (netz_emissions_2018 * pop_growth) - netz_emissions_2018
-            netz_kaya_1.loc[4, 'GDP per capita'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth) - (netz_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            netz_kaya_1.loc[1, 'Energy intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth)
-            netz_kaya_1.loc[5, 'Energy intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth) - (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth)
-
-            # Emissions intensity column
-            netz_kaya_1.loc[1, 'Emissions intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth * netz_co2i_growth)
-            netz_kaya_1.loc[6, 'Emissions intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth) - (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth * netz_co2i_growth)
-
-            netz_kaya_1 = netz_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            netz_kaya_1_rows = netz_kaya_1.shape[0]
-            netz_kaya_1_cols = netz_kaya_1.shape[1]
-
-        elif (pop_growth >= 1) & (netz_co2i_growth >= 1):
-
-            netz_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Carbon Neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            netz_kaya_1.loc[0, 'Carbon Neutrality'] = 'initial'
-            netz_kaya_1.loc[1, 'Carbon Neutrality'] = 'empty'
-            netz_kaya_1.loc[2, 'Carbon Neutrality'] = 'no improve'
-            netz_kaya_1.loc[3, 'Carbon Neutrality'] = 'empty'
-            netz_kaya_1.loc[4, 'Carbon Neutrality'] = 'no improve'
-            netz_kaya_1.loc[5, 'Carbon Neutrality'] = 'improve'
-            netz_kaya_1.loc[6, 'Carbon Neutrality'] = 'no improve'
-
-            # Emissions 2018 column
-            netz_kaya_1.loc[0, 'Emissions 2018'] = netz_emissions_2018
-            netz_kaya_1.loc[0, 'Emissions 2050'] = netz_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            netz_kaya_1.loc[1, 'Population'] = netz_emissions_2018
-            netz_kaya_1.loc[2, 'Population'] = (netz_emissions_2018 * pop_growth) - netz_emissions_2018
-
-            # GDP per capita column
-            netz_kaya_1.loc[1, 'GDP per capita'] = netz_emissions_2018
-            netz_kaya_1.loc[3, 'GDP per capita'] = (netz_emissions_2018 * pop_growth) - netz_emissions_2018
-            netz_kaya_1.loc[4, 'GDP per capita'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth) - (netz_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            netz_kaya_1.loc[1, 'Energy intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth)
-            netz_kaya_1.loc[5, 'Energy intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth) - (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth)
-
-            # Emissions intensity column
-            netz_kaya_1.loc[1, 'Emissions intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth) 
-            netz_kaya_1.loc[6, 'Emissions intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth * netz_co2i_growth) - (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth) 
-
-            netz_kaya_1 = netz_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            netz_kaya_1_rows = netz_kaya_1.shape[0]
-            netz_kaya_1_cols = netz_kaya_1.shape[1]
-
-        elif (pop_growth < 1) & (netz_co2i_growth >= 1):
-
-            netz_kaya_1 = pd.DataFrame(index = [list(range(7))], 
-                                    columns = ['Carbon Neutrality', 'Emissions 2018', 'Population', 'GDP per capita',\
-                                                'Energy intensity', 'Emissions intensity', 'Emissions 2050'])
-
-            netz_kaya_1.loc[0, 'Carbon Neutrality'] = 'initial'
-            netz_kaya_1.loc[1, 'Carbon Neutrality'] = 'empty'
-            netz_kaya_1.loc[2, 'Carbon Neutrality'] = 'improve'
-            netz_kaya_1.loc[3, 'Carbon Neutrality'] = 'empty'
-            netz_kaya_1.loc[4, 'Carbon Neutrality'] = 'no improve'
-            netz_kaya_1.loc[5, 'Carbon Neutrality'] = 'improve'
-            netz_kaya_1.loc[6, 'Carbon Neutrality'] = 'no improve'
-
-            # Emissions 2018 column
-            netz_kaya_1.loc[0, 'Emissions 2018'] = netz_emissions_2018
-            netz_kaya_1.loc[0, 'Emissions 2050'] = netz_emissions_2050
-            
-            # Population column (Emissions multiplied by population factor split into two data points)
-            netz_kaya_1.loc[1, 'Population'] = netz_emissions_2018 * pop_growth
-            netz_kaya_1.loc[2, 'Population'] = netz_emissions_2018 - (netz_emissions_2018 * pop_growth)  
-
-            # GDP per capita column
-            netz_kaya_1.loc[1, 'GDP per capita'] = netz_emissions_2018 * pop_growth
-            # netz_kaya_1.loc[3, 'GDP per capita'] = (netz_emissions_2018 * pop_growth) - netz_emissions_2018
-            netz_kaya_1.loc[4, 'GDP per capita'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth) - (netz_emissions_2018 * pop_growth)
-
-            # Energy intensity column
-            netz_kaya_1.loc[1, 'Energy intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth)
-            netz_kaya_1.loc[5, 'Energy intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth) - (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth)
-
-            # Emissions intensity column
-            netz_kaya_1.loc[1, 'Emissions intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth) 
-            netz_kaya_1.loc[6, 'Emissions intensity'] = (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth * netz_co2i_growth) - (netz_emissions_2018 * pop_growth * gdp_pc_growth * netz_ei_growth) 
-
-            netz_kaya_1 = netz_kaya_1.copy().replace(np.nan, 0).reset_index(drop = True)
-
-            netz_kaya_1_rows = netz_kaya_1.shape[0]
-            netz_kaya_1_cols = netz_kaya_1.shape[1]
-
-        else:
-            pass
-
-    else:
-        ref_kaya_1 = pd.DataFrame()
-        ref_kaya_1_rows = ref_kaya_1.shape[0]
-        ref_kaya_1_cols = ref_kaya_1.shape[1]
-
-        netz_kaya_1 = pd.DataFrame()
-        netz_kaya_1_rows = netz_kaya_1.shape[0]
-        netz_kaya_1_cols = netz_kaya_1.shape[1]
+    ## REMOVED
 
     # Df builds are complete
 
@@ -7116,7 +4769,6 @@ for economy in Economy_codes:
     # Final energy intensity per capita
     # Final energy intensity per GDP
 
-
     ref_tfec_1 = ref_tfec_1.copy().rename(columns = {'item_code_new': 'Series'}).iloc[:, 1:]
 
     ref_tfec_1 = ref_fedfuel_1[ref_fedfuel_1['fuel_code'] == 'Total'].copy()\
@@ -7136,6 +4788,26 @@ for economy in Economy_codes:
     ref_tfec_pGDP_series = pd.Series(ref_tfec_pGDP, index = ref_tfec_1.columns)
 
     ref_tfec_1 = ref_tfec_1.append([ref_tfec_pc_series, ref_tfec_pGDP_series], ignore_index = True).reset_index(drop = True)
+
+    ########## CO2 intensity
+
+    ref_co2int = ref_co2int_2.copy().drop('fuel_code', axis = 1).rename(columns = {'item_code_new': 'Series'})
+
+    ref_co2int = ref_co2int[ref_co2int['Series'].isin(['Emissions', 'CO2 intensity'])].reset_index(drop = True)
+
+    ref_co2int_calc1 = ['CO2 intensity (tonnes per thousand 2018 USD PPP)'] + list(ref_co2int.iloc[0, 1:] / ref_tfec_calcs.iloc[2, 1:])
+    ref_co2int_calc1_series = pd.Series(ref_co2int_calc1, index = ref_co2int.columns)
+
+    ref_co2int_calc2 = ['CO2 emissions per capita (tonnes per person)'] + list(ref_co2int.iloc[0, 1:] / ref_tfec_calcs.iloc[3, 1:])
+    ref_co2int_calc2_series = pd.Series(ref_co2int_calc2, index = ref_co2int.columns)
+
+    ref_co2int = ref_co2int.append([ref_co2int_calc1_series, ref_co2int_calc2_series], ignore_index = True)\
+        .reset_index(drop = True)
+
+    ref_co2int.loc[ref_co2int['Series'] == 'Emissions', 'Series'] = 'CO2 emissions (million tonnes)'
+    ref_co2int.loc[ref_co2int['Series'] == 'CO2 intensity', 'Series'] = 'CO2 intensity (tonnes per GJ of TPES)'
+
+    ref_co2int = ref_co2int.iloc[[0, 3, 1, 2]].reset_index(drop = True)
 
     #########################################
     ### PRODUCTION, TRADE, AND SUPPLY
@@ -7330,15 +5002,88 @@ for economy in Economy_codes:
     # Hydro
     # Non-hydro renewables
     # Other
+
+    ref_powuse = ref_pow_use_2.copy()
+
+    coal_pow = ref_powuse[ref_powuse['FUEL'].isin(['Coal', 'Lignite'])].groupby(['Transformation']).sum().assign(FUEL = 'Coal')
+
+    renew_pow = ref_powuse[ref_powuse['FUEL'].isin(['Solar', 'Wind', 'Biomass', 'Geothermal', 'Other renewables'])].groupby(['Transformation']).sum().assign(FUEL = 'Other renewables')
+
+    ref_powuse = ref_powuse[ref_powuse['FUEL'].isin(['Oil', 'Gas', 'Nuclear', 'Hydro', 'Other'])].copy()\
+        .drop('Transformation', axis = 1).reset_index(drop = True)
+
+    ref_powuse = ref_powuse.append([coal_pow, renew_pow]).rename(columns = {'FUEL': 'Series'}).reset_index(drop = True)
+
+    ref_powuse = ref_powuse.iloc[[5, 0, 1, 2, 3, 6, 4]].reset_index(drop = True)
+
+    pos_to_neg = ref_powuse.select_dtypes(include = [np.number]) * -1
+    ref_powuse[pos_to_neg.columns] = pos_to_neg
+
+    ref_powuse_rows = ref_powuse.shape[0]
+    ref_powuse_cols = ref_powuse.shape[1]
+
     ## OUTPUT FUEL
     # Electricity
     # Heat
+
+    ref_elecout = ref_elecgen_2[ref_elecgen_2['TECHNOLOGY'] == 'Total'].copy().drop('Generation', axis = 1)\
+        .rename(columns = {'TECHNOLOGY': 'Series'}).reset_index(drop = True)
+
+    s = ref_elecout.select_dtypes(include=[np.number]) * 3.6 
+    ref_elecout[s.columns] = s
+
+    ref_elecout.loc[ref_elecout['Series'] == 'Total', 'Series'] = 'Electricity'
+
+    ref_heatout = ref_heatgen_2[ref_heatgen_2['TECHNOLOGY'] == 'Total'].copy().drop('Generation', axis = 1)\
+        .rename(columns = {'TECHNOLOGY': 'Series'}).reset_index(drop = True)
+
+    ref_heatout.loc[ref_heatout['Series'] == 'Total', 'Series'] = 'Heat'
+
+    ref_elecheat = ref_elecout.append(ref_heatout).reset_index(drop = True)
+
+    ref_elecheat_rows = ref_elecheat.shape[0]
+    ref_elecheat_cols = ref_elecheat.shape[1]
+
+    # Sum of input and output
+    ref_powsum = ref_powuse.copy().append([pd.Series(ref_powuse.sum() + ref_elecheat.sum())], ignore_index = True).iloc[[7]]\
+        .reset_index(drop = True)
+
+    ref_powsum.iloc[0, 0] = 'Electricity and heat generation (PJ)'
 
     ### REFINERIES
     ## INPUT FUEL
     # Crude oil
     ## OUTPUT FUEL
     # Refined products
+
+    ref_refineryin = ref_crudecons_1[ref_crudecons_1['item_code_new'] == 'Refining'].copy().drop('fuel_code', axis = 1)\
+        .rename(columns = {'item_code_new': 'Series'}).reset_index(drop = True)
+
+    ref_refineryin.loc[ref_refineryin['Series'] == 'Refining', 'Series'] = 'Crude oil'
+
+    pos_to_neg = ref_refineryin.select_dtypes(include = [np.number]) * -1
+    ref_refineryin[pos_to_neg.columns] = pos_to_neg
+
+    # Output
+
+    ref_refiningout = pd.concat([EGEDA_hist_refiningout[EGEDA_hist_refiningout['economy'] == economy].copy().reset_index(drop = True),\
+        ref_refinery_2[ref_refinery_2['FUEL'] == 'Total'][list(ref_refinery_2.loc[:, '2019':'2050'])].copy().reset_index(drop = True)], axis = 1)
+
+    ref_refiningout = ref_refiningout.drop(['economy', 'item_code_new'], axis = 1).rename(columns = {'fuel_code': 'Series'})
+
+    ref_refiningout.loc[ref_refiningout['Series'] == '7_petroleum_products', 'Series'] = 'Petroleum products'
+
+    ref_refining = ref_refineryin.append(ref_refiningout).reset_index(drop = True)
+
+    ref_refining = ref_refining.copy().append(ref_refining.sum(numeric_only = True), ignore_index = True)
+
+    ref_refining.iloc[2, 0] = 'Refineries (PJ)'
+
+    ref_refining = ref_refining.iloc[[2, 0, 1]].reset_index(drop = True)
+
+    ref_refining_1 = ref_refining.copy().iloc[[0]].reset_index(drop = True)
+    ref_refining_2 = ref_refining.copy().iloc[[1]].reset_index(drop = True)
+    ref_refining_3 = ref_refining.copy().iloc[[2]].reset_index(drop = True)
 
     ### ENERGY INDUSTRY OWN-USE
     ## INPUT FUEL
@@ -7349,6 +5094,19 @@ for economy in Economy_codes:
     # Electricity
     # Heat 
     # Other
+
+    ref_ownloss = ref_ownuse_1.copy().drop('Sector', axis = 1).rename(columns = {'FUEL': 'Series'}).reset_index(drop = True)
+
+    ref_ownloss.loc[ref_ownloss['Series'] == 'Waste', 'Series'] = 'Other'
+    ref_ownloss.loc[ref_ownloss['Series'] == 'Total', 'Series'] = 'Own-use and losses (PJ)'
+
+    ref_ownloss = ref_ownloss.iloc[[7, 0, 1, 2, 3, 4, 5, 6]].reset_index(drop = True)
+
+    pos_to_neg = ref_ownloss.select_dtypes(include = [np.number]) * -1
+    ref_ownloss[pos_to_neg.columns] = pos_to_neg
+
+    ref_ownloss_rows = ref_ownloss.shape[0]
+    ref_ownloss_cols = ref_ownloss.shape[1]
     
     ### DISTRIBUTION LOSSES
     # Coal
@@ -7358,6 +5116,20 @@ for economy in Economy_codes:
     # Heat
 
     ### TRANSFERS
+
+    ref_transtat = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) &
+                                         (EGEDA_years_reference['item_code_new'].isin(['8_transfers', '11_statistical_discrepancy'])) &
+                                         (EGEDA_years_reference['fuel_code'] == '19_total')]\
+                                             .replace(np.nan, 0).drop(['economy', 'fuel_code'], axis = 1)\
+                                                 .rename(columns = {'item_code_new': 'Series'}).reset_index(drop = True)
+
+    ref_transtat = ref_transtat[['Series'] + list(ref_transtat.loc[:, '2000': '2050'])].reset_index(drop = True)
+
+    ref_transtat.loc[ref_transtat['Series'] == '8_transfers', 'Series'] = 'Transfers'
+    ref_transtat.loc[ref_transtat['Series'] == '11_statistical_discrepancy', 'Series'] = 'Statistical discrepancy'
+
+    ref_transtat_rows = ref_transtat.shape[0]
+    ref_transtat_cols = ref_transtat.shape[1]
 
     ### STATISTICAL DISCREPANCIES (only historical in 7th)
 
@@ -7371,6 +5143,11 @@ for economy in Economy_codes:
     # Transport (domestic)
     # Non-energy
 
+    ref_fedsector = ref_fedsector_2.copy().drop('fuel_code', axis = 1).rename(columns = {'item_code_new': 'Series'})\
+        .iloc[[6, 0, 1, 2, 3, 4, 5]].reset_index(drop = True)
+
+    ref_fedsector.loc[ref_fedsector['Series'] == 'Total', 'Series'] = 'Final energy demand by sector (PJ)'
+
     ## FED by fuel
     # Coal
     # Oil
@@ -7381,6 +5158,12 @@ for economy in Economy_codes:
     # Cooling (lol?)
     # Hydrogen
     # Other
+
+    ref_fedfuel = ref_fedfuel_1.copy().drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
+        .iloc[[9, 0, 1, 2, 4, 3, 5, 6, 7, 8]].reset_index(drop = True)
+
+    ref_fedfuel.loc[ref_fedfuel['Series'] == 'Total', 'Series'] = 'Final energy demand by fuel (PJ)'
+    ref_fedfuel.loc[ref_fedfuel['Series'] == 'Others', 'Series'] = 'Other'
 
     ## AGRICULTURE and NON-SPECIFIED (split?)
     # Coal
@@ -7402,6 +5185,19 @@ for economy in Economy_codes:
     # Hydrogen
     # Other
 
+    ref_build = ref_bld_2.copy()
+
+    renew = ref_build[ref_build['fuel_code'].isin(['Other renewables', 'Biomass'])].copy().groupby(['item_code_new'])\
+        .sum().assign(fuel_code = 'Renewables').reset_index(drop = True)
+
+    ref_build = ref_build[ref_build['fuel_code'].isin(['Coal', 'Oil', 'Gas', 'Hydrogen', 'Electricity', 'Heat', 'Others', 'Total'])]\
+        .append([renew]).drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'}).reset_index(drop = True)
+
+    ref_build.loc[ref_build['Series'] == 'Others', 'Series'] = 'Other'
+    ref_build.loc[ref_build['Series'] == 'Total', 'Series'] = 'Buildings (PJ)'
+
+    ref_build = ref_build.iloc[[7, 0, 1, 2, 8, 3, 4, 5, 6]].reset_index(drop = True)
+
     ## INDUSTRY
     # Coal
     # Oil
@@ -7411,6 +5207,14 @@ for economy in Economy_codes:
     # Heat
     # Hydrogen
     # Other
+
+    ref_ind = ref_ind_2.copy().drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'}).reset_index(drop = True)
+
+    ref_ind.loc[ref_ind['Series'] == 'Others', 'Series'] = 'Other'
+    ref_ind.loc[ref_ind['Series'] == 'Total', 'Series'] = 'Industry (PJ)'
+    ref_ind.loc[ref_ind['Series'] == 'Others', 'Series'] = 'Other'
+
+    ref_ind = ref_ind.iloc[[8, 0, 1, 2, 3, 4, 5, 6, 7]].reset_index(drop = True)
 
     ## TRANSPORT
     # Coal
@@ -7422,76 +5226,64 @@ for economy in Economy_codes:
     # Hydrogen
     # Other
 
+    ref_trn = ref_trn_1.copy().drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'}).reset_index(drop = True)
+
+    ref_trn.loc[ref_trn['Series'] == 'Total', 'Series'] = 'Transport (PJ)'
+
+    ref_trn = ref_trn.iloc[[9, 0, 1, 2, 3, 4, 5, 6, 7, 8]].reset_index(drop = True)
+
     ## NON-ENERGY
     # Coal
     # Oil
     # Gas
 
+    ref_nonen = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
+                                      (EGEDA_years_reference['item_code_new'] == '17_nonenergy_use') &
+                                      (EGEDA_years_reference['fuel_code'].isin(['1_coal', '2_coal_products',
+                                       '3_peat', '4_peat_products', '6_crude_oil_and_ngl',
+                                       '7_petroleum_products', '8_gas', '19_total']))].loc[:, 'fuel_code':].copy().reset_index(drop = True)
+
+    coal_ne = ref_nonen[ref_nonen['fuel_code'].isin(['1_coal', '2_coal_products', '3_peat', '4_peat_products'])].copy()\
+        .groupby(['item_code_new']).sum().assign(fuel_code = 'Coal').reset_index(drop = True)
+
+    oil_ne = ref_nonen[ref_nonen['fuel_code'].isin(['6_crude_oil_and_ngl', '7_petroleum_products'])].copy()\
+        .groupby(['item_code_new']).sum().assign(fuel_code = 'Oil').reset_index(drop = True)
+
+    gas_ne = ref_nonen[ref_nonen['fuel_code'].isin(['8_gas'])].copy()\
+        .groupby(['item_code_new']).sum().assign(fuel_code = 'Gas').reset_index(drop = True)
+
+    ref_nonen = ref_nonen.append([coal_ne, oil_ne, gas_ne]).reset_index(drop = True)
+
+    ref_nonen = ref_nonen[ref_nonen['fuel_code'].isin(['Coal', 'Oil', 'Gas', '19_total'])].drop('item_code_new', axis = 1)\
+        .rename(columns = {'fuel_code': 'Series'}).reset_index(drop = True)
+
+    ref_nonen.loc[ref_nonen['Series'] == '19_total', 'Series'] = 'Non-energy (PJ)'
+
+    ref_nonen = ref_nonen[['Series'] + list(ref_stock_1.loc[:, '2000':'2050'])].reset_index(drop = True)
+
     ###############################################################
 
     #### ELECTRICITY
     ### CAPACITY
-    ## COAL
-    # Subcritical
-    # Supercritical and USC
-    # Advanced USC and integrated gasification combined cycle
-    # Coal CHP
-    # Coal with CCS
-    # 
-    ## OIL
-    # Non-CHP
-    # Oil CHP
-    #
-    ## GAS
-    # Combined cycle
-    # Turbine
-    # Gas CHP
-    # Gas with CCS
-    # 
-    ## Nuclear
-    # 
-    ## RENEWABLES
-    # Hydro
-    # Wind 
-    # Solar
-    # Bioenergy
-    # Geothermal
-    # Other renewables
-    # 
-    ## OTHER
-    ## STORAGE
-    # 
+
+    ref_powcap = pd.DataFrame(['Coal', 'Coal CCS',\
+        'Lignite', 'Gas', 'Gas CCS', 'Oil', 'Nuclear', 'Hydro', 'Bio', 'Wind', 'Solar', 'Geothermal',\
+            'Waste', 'Storage', 'Other'], columns = ['TECHNOLOGY']).merge(ref_powcap_1.copy(),\
+                on = 'TECHNOLOGY', how = 'outer').replace(np.nan, 0).rename(columns = {'TECHNOLOGY': 'Series'})\
+                    .reset_index(drop = True)
+
+    ref_powcap.loc[ref_powcap['Series'] == 'Total', 'Series'] = 'Total capacity (GW)' 
+
+    ref_powcap = ref_powcap.iloc[[15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]].reset_index(drop = True)
+
     ###################################
     ### GENERATION 
-    ## COAL
-    # Subcritical
-    # Supercritical and USC
-    # Advanced USC and integrated gasification combined cycle
-    # Coal CHP
-    # Coal with CCS
-    # 
-    ## OIL
-    # Non-CHP
-    # Oil CHP
-    #
-    ## GAS
-    # Combined cycle
-    # Turbine
-    # Gas CHP
-    # Gas with CCS
-    # 
-    ## Nuclear
-    # 
-    ## RENEWABLES
-    # Hydro
-    # Wind 
-    # Solar
-    # Bioenergy
-    # Geothermal
-    # Other renewables
-    # 
-    ## OTHER
-    ## STORAGE
+
+    ref_elecgen = ref_elecgen_2.copy().drop('Generation', axis = 1).rename(columns = {'TECHNOLOGY': 'Series'})
+
+    ref_elecgen.loc[ref_elecgen['Series'] == 'Total', 'Series'] = 'Electricity generation (TWh)'
+
+    ref_elecgen = ref_elecgen.iloc[[16, 0, 1, 2, 4, 5, 3, 7, 6, 10, 8, 9, 11, 12, 13, 14, 15]].reset_index(drop = True)
 
     ######################################
     ### EMISSIONS
@@ -7499,6 +5291,18 @@ for economy in Economy_codes:
     # Coal
     # Oil
     # Gas
+
+    ref_emfuel = ref_emiss_fuel_1.copy().drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
+        .reset_index(drop = True)
+
+    ref_emfuel.loc[ref_emfuel['Series'] == 'Heat & others', 'Series'] = 'Other'
+    ref_emfuel.loc[ref_emfuel['Series'] == 'Total', 'Series'] = 'Energy sector CO2 emissions (million tonnes)'
+
+    ref_emfuel = ref_emfuel[ref_emfuel['Series']\
+        .isin(['Coal', 'Oil', 'Gas', 'Other', 'Energy sector CO2 emissions (million tonnes)'])]\
+            .reset_index(drop = True)
+
+    ref_emfuel = ref_emfuel.iloc[[4, 0, 1, 2, 3]].reset_index(drop = True)
 
     ## BY SECTOR
     # Power
@@ -7510,26 +5314,223 @@ for economy in Economy_codes:
     # Non-energy
     # Non-specified
 
+    ref_emsector = ref_emiss_sector_1.copy().drop('fuel_code', axis = 1).rename(columns = {'item_code_new': 'Series'})\
+        .reset_index(drop = True)
+
+    ref_emsector.loc[ref_emsector['Series'] == 'Total', 'Series'] = 'CO2 emissions by sector (million tonnes)'
+
+    ref_emsector = ref_emsector.iloc[[7, 0, 1, 2, 3, 4, 5, 6]].reset_index(drop = True)
+
+    ######################## Captured emissions
+
+    # emissions factors
+    hyd_coal = 0.094686
+    hyd_gas = 0.056151
+
+    ref_capemiss = ref_capemiss_df1[ref_capemiss_df1['REGION'] == economy].drop(['REGION', 'EMISSION'], axis = 1)\
+        .reset_index(drop = True)
+
+    # Coal
+    ref_hydcoal = ref_hydrogen_1[ref_hydrogen_1['Technology'] == 'Coal gasification CCS'].copy().reset_index(drop = True)
+    
+    ref_hydcoal_captured = ref_hydcoal.select_dtypes(include = [np.number]) * hyd_coal
+
+    ref_hydcoal[ref_hydcoal_captured.columns] = ref_hydcoal_captured
+    ref_hydcoal = ref_hydcoal.rename(columns = {'Fuel': 'Series'})
+
+    # Gas
+    ref_hydgas = ref_hydrogen_1[ref_hydrogen_1['Technology'] == 'Steam methane reforming CCS'].copy().reset_index(drop = True)
+    
+    ref_hydgas_captured = ref_hydgas.select_dtypes(include = [np.number]) * hyd_gas
+
+    ref_hydgas[ref_hydgas_captured.columns] = ref_hydgas_captured
+    ref_hydgas = ref_hydgas.rename(columns = {'Fuel': 'Series'})
+
+    ref_hydcap = pd.DataFrame(columns = ref_emsector.columns).append([ref_hydcoal, ref_hydgas])\
+        .replace(np.nan, 0).drop('Technology', axis = 1).reset_index(drop = True)
+
+    if ref_hydcap.empty:
+        new_row = ['Hydrogen'] + [0] * 51
+        new_series = pd.Series(new_row, index = ref_emsector.columns)
+        ref_hydcap = ref_hydcap.append(new_series, ignore_index = True)
+
+    else:
+        ref_hydcap = ref_hydcap.copy().groupby('Series').sum().reset_index()
+
+    ######################################################
+
+    industry = ref_capemiss[ref_capemiss['TECHNOLOGY'].str.startswith('IND')].reset_index(drop = True)
+    industry['Series'] = 'Industry'
+
+    industry = industry.copy().drop('TECHNOLOGY', axis = 1).groupby('Series').sum().reset_index()
+
+    ref_industry_cap = pd.DataFrame(columns = ref_emsector.columns)
+
+    if industry.empty:
+        new_row = ['Industry'] + [0] * 51
+        new_series = pd.Series(new_row, index = ref_emsector.columns)
+        ref_industry_cap = ref_industry_cap.append(new_series, ignore_index = True)
+
+    else:
+        ref_industry_cap = ref_industry_cap.append(industry).replace(np.nan, 0).reset_index(drop = True)
+
+    power = ref_capemiss[ref_capemiss['TECHNOLOGY'].str.startswith('POW')].reset_index(drop = True)
+    power['Series'] = 'Power'
+
+    power = power.copy().drop('TECHNOLOGY', axis = 1).groupby('Series').sum().reset_index()
+
+    ref_power_cap = pd.DataFrame(columns = ref_emsector.columns)
+
+    if power.empty:
+        new_row = ['Power'] + [0] * 51
+        new_series = pd.Series(new_row, index = ref_emsector.columns)
+        ref_power_cap = ref_power_cap.append(new_series, ignore_index = True)
+
+    else:
+        ref_power_cap = ref_power_cap.append(power).replace(np.nan, 0).reset_index(drop = True)
+    
+    ownuse = ref_capemiss[ref_capemiss['TECHNOLOGY'].str.startswith('OWN')].reset_index(drop = True)
+    ownuse['Series'] = 'Own-use'
+
+    ownuse = ownuse.copy().drop('TECHNOLOGY', axis = 1).groupby('Series').sum().reset_index()
+
+    ref_ownuse_cap = pd.DataFrame(columns = ref_emsector.columns)
+
+    if power.empty:
+        new_row = ['Own-use'] + [0] * 51
+        new_series = pd.Series(new_row, index = ref_emsector.columns)
+        ref_ownuse_cap = ref_ownuse_cap.append(new_series, ignore_index = True)
+
+    else:
+        ref_ownuse_cap = ref_ownuse_cap.append(power).replace(np.nan, 0).reset_index(drop = True)
+
+    # Captured emissions
+
+    ref_captured = ref_industry_cap.append([ref_hydcap, ref_power_cap, ref_ownuse_cap]).reset_index(drop = True)
+
+    cols = ref_captured.columns[1:]
+
+    ref_captured[cols] = ref_captured[cols].apply(pd.to_numeric)
+
+    ref_captured.loc['Total'] = ref_captured.sum(numeric_only = True)
+
+    ref_captured.loc['Total', 'Series'] = 'Captured CO2 emissions (million tonnes)'
+    ref_captured = ref_captured.copy().reset_index(drop = True).iloc[[4, 0, 1, 2, 3]].reset_index(drop = True)
+
+    # Join relevant dataframes together
+
+    ref_top_df = macro_1.append([ref_tpes_3, ref_tfec_1, ref_co2int]).reset_index(drop = True)
+
+    ref_top_rows = ref_top_df.shape[0]
+    ref_top_cols = ref_top_df.shape[1]
+
+    ref_supply_df = ref_prod_1.append([ref_nettrade_1, ref_bunkers_3, ref_stock_1, ref_tpes_1]).reset_index(drop = True)
+
+    ref_supply_rows = ref_supply_df.shape[0]
+    ref_supply_cols = ref_supply_df.shape[1]
+
+    # ref_powsum
+    # 'Input fuel'
+    # ref_powuse 
+    # 'Output fuel'
+    # ref_elecheat
+    # ref_refining_1
+    # 'Input fuel'
+    # ref_refining_2
+    # 'Output fuel'
+    # ref_refining_3
+    # ref_ownloss
+    # ref_transtat
+
+    ref_demand_df = ref_fedsector.copy().append([ref_fedfuel, ref_ind, ref_trn, ref_build, ref_nonen]).reset_index(drop = True)
+
+    ref_demand_rows = ref_demand_df.shape[0]
+    ref_demand_cols = ref_demand_df.shape[1]
+
+    ref_electricity = ref_elecgen.append(ref_powcap).reset_index(drop = True)
+    # ref_powcap
+    # ref_elecgen
+
+    ref_electricity_rows = ref_electricity.shape[0]
+
+    # ref_emfuel
+    # 'By sector'
+    # ref_emsector
+
+    ref_emfuel_rows = ref_emfuel.shape[0]
+    ref_emsector_rows = ref_emsector.shape[0]
 
     # Define directory to save charts and tables workbook
     script_dir = './results/'
-    results_dir = os.path.join(script_dir, economy)
+    results_dir = os.path.join(script_dir, 'Appendix/Reference')
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
         
     # Create a Pandas excel writer workbook using xlsxwriter as the engine and save it in the directory created above
-    writer = pd.ExcelWriter(results_dir + '/' + economy + '_charts_' + day_month_year + '.xlsx', engine = 'xlsxwriter')
+    writer = pd.ExcelWriter(results_dir + '/' + economy + '_appendix.xlsx', engine = 'xlsxwriter')
     workbook = writer.book
     pandas.io.formats.excel.ExcelFormatter.header_style = None
 
     # Insert the various dataframes into different sheets of the workbook
     # REFERENCE and NETZERO
 
-    # Macro
-    macro_1.to_excel(writer, sheet_name = 'Macro', index = False, startrow = chart_height)
+    # Data frames needed for appendix
+    ref_top_df.to_excel(writer, sheet_name = economy, index = False, startrow = 4)
+    ref_supply_df.to_excel(writer, sheet_name = economy, index = False, startrow = ref_top_rows + 8)
+    ref_powsum.to_excel(writer, sheet_name = economy, index = False, startrow = ref_top_rows + ref_supply_rows + 12)
+    ref_powuse.to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + 15)
+    ref_elecheat.to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + 16)
+    ref_refining_1.to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + 16)
+    ref_refining_2.to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + 18)
+    ref_refining_3.to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + 20)
+    ref_ownloss.to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + 21)
+    ref_transtat.to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + 21)
+    ref_demand_df.to_excel(writer, sheet_name = economy, index = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + ref_transtat_rows + 24)
+    ref_electricity.to_excel(writer, sheet_name = economy, index = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + ref_transtat_rows + ref_demand_rows + 28)
+    ref_emfuel.to_excel(writer, sheet_name = economy, index = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + ref_transtat_rows + ref_demand_rows + ref_electricity_rows + 32)
+    # Remove total first row of emissions by sector because already provided in emissions by fuel
+    ref_emsector.iloc[1:,:].to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + ref_transtat_rows + ref_demand_rows + ref_electricity_rows + ref_emfuel_rows + 34)
+    ref_captured.to_excel(writer, sheet_name = economy, index = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + ref_transtat_rows + ref_demand_rows + ref_electricity_rows + ref_emfuel_rows + ref_emsector_rows + 36)
 
+    ref_worksheet1 = writer.sheets[economy]
+
+    # Comma format and header format        
+    space_format = workbook.add_format({'num_format': '# ### ### ##0.0;-# ### ### ##0.0;-'})
+    percentage_format = workbook.add_format({'num_format': '0.0%'})
+    header_format = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'bold': True})
+    cell_format1 = workbook.add_format({'bold': True})
+    cell_format2 = workbook.add_format({'font_size': 9})
+
+    ref_worksheet1.write(0, 0, APEC_economies[economy], cell_format1)
+    ref_worksheet1.write(3, 0, 'Summary')
+    ref_worksheet1.write(21, 0, 'Production, trade, and supply')
+    ref_worksheet1.write(59, 0, 'Transformation')
+    ref_worksheet1.write(62, 0, 'Input')
+    ref_worksheet1.write(70, 0, 'Output')
+    ref_worksheet1.write(74, 0, 'Input')
+    ref_worksheet1.write(76, 0, 'Output')
+    ref_worksheet1.write(90, 0, 'Demand')
+    ref_worksheet1.write(143, 0, 'Electricity')
+    ref_worksheet1.write(180, 0, 'CO2 emissions')
+    ref_worksheet1.write(187, 0, 'By sector')
+    ref_worksheet1.write(197, 0, 'Carbon, capture, and storage technologies')
         
     writer.save()
 
-print('Bling blang blaow, you have some charts now')
+print('Economy appendices are saved in the folder.')
+
+# Now consolidate the workbooks for each of the economies into one workbook
+
+excel_filenames = glob.glob("./results/Appendix/Reference/*.xlsx")
+
+writer3 = pd.ExcelWriter('./results/Appendix/Reference/Outlook_appendix.xlsx', engine = 'xlsxwriter')
+
+for index, file in enumerate(excel_filenames):
+    temp_1 = pd.read_excel(file)
+    temp_1.to_excel(writer3, sheet_name = Economy_codes[index], index = False)
+
+writer3.save()    
+
+print('The individual appendix workbooks have been stitched together into one appendix file with no formatting.')
+
 
