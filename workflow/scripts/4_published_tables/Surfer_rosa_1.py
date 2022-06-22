@@ -6363,7 +6363,7 @@ print('Economy appendices are saved in the results folder specified.')
 
 excel_filenames = glob.glob("./results/Appendix/*.xlsx")
 
-writer3 = pd.ExcelWriter('./results/Appendix/Outlook_appendix.xlsx', engine = 'xlsxwriter')
+writer3 = pd.ExcelWriter('./results/Appendix/Joined_file/Outlook_appendix.xlsx', engine = 'xlsxwriter')
 
 for index, file in enumerate(excel_filenames):
     temp_1 = pd.read_excel(file)
