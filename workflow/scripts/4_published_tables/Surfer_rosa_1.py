@@ -5424,23 +5424,28 @@ for economy in Economy_codes:
     ref_modren = ref_modren_4[ref_modren_4['item_code_new'].isin(['Total', 'Reference'])].copy()\
         .drop('fuel_code', axis = 1).rename(columns = {'item_code_new': 'Series'}).reset_index(drop = True)
 
-    ref_modren.loc[ref_modren['Series'] == 'Total', 'Series'] = 'Modern renewables (PJ)'
+    ref_modren.loc[ref_modren['Series'] == 'Total', 'Series'] = 'Modern renewables in FED (PJ)'
     ref_modren.loc[ref_modren['Series'] == 'Reference', 'Series'] = 'Modern renewables share of final energy demand'
 
     # More comprehensive modern renewables breakdown
 
-    ref_modren_breakdown = ref_modren_4.copy().iloc[[0, 1, 2, 3, 4, 5, 6, 9, 11]].drop('fuel_code', axis = 1)\
+    ref_modren_breakdown = ref_modren_4.copy().iloc[[6, 0, 1, 2, 3, 4, 5, 9, 11]].drop('fuel_code', axis = 1)\
         .rename(columns = {'item_code_new': 'Series'}).reset_index(drop = True)
 
     ref_modren_breakdown.loc[ref_modren_breakdown['Series'] == 'Electricity and heat TFEC', 'Series'] = 'Electricity and heat (not including own-use and losses)'
-    ref_modren_breakdown.loc[ref_modren_breakdown['Series'] == 'TFEC', 'Series'] = 'Final energy demand'
+    ref_modren_breakdown.loc[ref_modren_breakdown['Series'] == 'Total', 'Series'] = 'Modern renewables in FED (PJ)'
+    ref_modren_breakdown.loc[ref_modren_breakdown['Series'] == 'TFEC', 'Series'] = 'Final energy demand (PJ)'
     ref_modren_breakdown.loc[ref_modren_breakdown['Series'] == 'Reference', 'Series'] = 'Modern renewables share of FED'
 
     ref_modren_gen = ref_modren_4.copy().iloc[7:9].drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
         .reset_index(drop = True)
 
-    ref_modren_gen.loc[ref_modren_gen['Series'] == 'Modern renewables', 'Series'] = 'Renewable generation'
-    ref_modren_gen.loc[ref_modren_gen['Series'] == 'Total', 'Series'] = 'Total generation'
+    ref_modren_gen.loc[ref_modren_gen['Series'] == 'Modern renewables', 'Series'] = 'Renewable generation (TWh)'
+    ref_modren_gen.loc[ref_modren_gen['Series'] == 'Total', 'Series'] = 'Total generation (TWh)'
+
+    cols = ref_modren_gen.columns[1:]
+
+    ref_modren_gen[cols] = ref_modren_gen[cols] / 3.6
 
     ref_modren_gencalc = ['Renewable generation share'] + list(ref_modren_gen.iloc[0, 1:] / ref_modren_gen.iloc[1, 1:])
     ref_modren_gencalc_series = pd.Series(ref_modren_gencalc, index = ref_modren_gen.columns)
@@ -6176,23 +6181,29 @@ for economy in Economy_codes:
     netz_modren = netz_modren_4[netz_modren_4['item_code_new'].isin(['Total', 'Carbon Neutrality'])].copy()\
         .drop('fuel_code', axis = 1).rename(columns = {'item_code_new': 'Series'}).reset_index(drop = True)
 
-    netz_modren.loc[netz_modren['Series'] == 'Total', 'Series'] = 'Modern renewables (PJ)'
+    netz_modren.loc[netz_modren['Series'] == 'Total', 'Series'] = 'Modern renewables in FED (PJ)'
     netz_modren.loc[netz_modren['Series'] == 'Carbon Neutrality', 'Series'] = 'Modern renewables share of final energy demand'
 
     # More comprehensive modern renewables breakdown
 
-    netz_modren_breakdown = netz_modren_4.copy().iloc[[0, 1, 2, 3, 4, 5, 6, 9, 11]].drop('fuel_code', axis = 1)\
+    netz_modren_breakdown = netz_modren_4.copy().iloc[[6, 0, 1, 2, 3, 4, 5, 9, 11]].drop('fuel_code', axis = 1)\
         .rename(columns = {'item_code_new': 'Series'}).reset_index(drop = True)
 
     netz_modren_breakdown.loc[netz_modren_breakdown['Series'] == 'Electricity and heat TFEC', 'Series'] = 'Electricity and heat (not including own-use and losses)'
-    netz_modren_breakdown.loc[netz_modren_breakdown['Series'] == 'TFEC', 'Series'] = 'Final energy demand'
+    netz_modren_breakdown.loc[netz_modren_breakdown['Series'] == 'Total', 'Series'] = 'Modern renewables in FED (PJ)'
+    netz_modren_breakdown.loc[netz_modren_breakdown['Series'] == 'TFEC', 'Series'] = 'Final energy demand (PJ)'
     netz_modren_breakdown.loc[netz_modren_breakdown['Series'] == 'Carbon Neutrality', 'Series'] = 'Modern renewables share of FED'
 
     netz_modren_gen = netz_modren_4.copy().iloc[7:9].drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
         .reset_index(drop = True)
 
-    netz_modren_gen.loc[netz_modren_gen['Series'] == 'Modern renewables', 'Series'] = 'Renewable generation'
-    netz_modren_gen.loc[netz_modren_gen['Series'] == 'Total', 'Series'] = 'Total generation'
+    netz_modren_gen.loc[netz_modren_gen['Series'] == 'Modern renewables', 'Series'] = 'Renewable generation (TWh)'
+    netz_modren_gen.loc[netz_modren_gen['Series'] == 'Total', 'Series'] = 'Total generation (TWh)'
+
+    # Convert power PJ to TWh
+    cols = netz_modren_gen.columns[1:]
+
+    netz_modren_gen[cols] = netz_modren_gen[cols] / 3.6
 
     netz_modren_gencalc = ['Renewable generation share'] + list(netz_modren_gen.iloc[0, 1:] / netz_modren_gen.iloc[1, 1:])
     netz_modren_gencalc_series = pd.Series(netz_modren_gencalc, index = netz_modren_gen.columns)
