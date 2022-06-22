@@ -5146,7 +5146,7 @@ for economy in Economy_codes:
     ref_fedsector = ref_fedsector_2.copy().drop('fuel_code', axis = 1).rename(columns = {'item_code_new': 'Series'})\
         .iloc[[6, 0, 1, 2, 3, 4, 5]].reset_index(drop = True)
 
-    ref_fedsector.loc[ref_fedsector['Series'] == 'Total', 'Series'] = 'Final energy demand by sector (PJ)'
+    ref_fedsector.loc[ref_fedsector['Series'] == 'Total', 'Series'] = 'Final consumption by sector (PJ)'
 
     ## FED by fuel
     # Coal
@@ -5162,7 +5162,7 @@ for economy in Economy_codes:
     ref_fedfuel = ref_fedfuel_1.copy().drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
         .iloc[[9, 0, 1, 2, 4, 3, 5, 6, 7, 8]].reset_index(drop = True)
 
-    ref_fedfuel.loc[ref_fedfuel['Series'] == 'Total', 'Series'] = 'Final energy demand by fuel (PJ)'
+    ref_fedfuel.loc[ref_fedfuel['Series'] == 'Total', 'Series'] = 'Final consumption by fuel (PJ)'
     ref_fedfuel.loc[ref_fedfuel['Series'] == 'Others', 'Series'] = 'Other'
 
     ## AGRICULTURE and NON-SPECIFIED (split?)
@@ -5903,7 +5903,7 @@ for economy in Economy_codes:
     netz_fedsector = netz_fedsector_2.copy().drop('fuel_code', axis = 1).rename(columns = {'item_code_new': 'Series'})\
         .iloc[[6, 0, 1, 2, 3, 4, 5]].reset_index(drop = True)
 
-    netz_fedsector.loc[netz_fedsector['Series'] == 'Total', 'Series'] = 'Final energy demand by sector (PJ)'
+    netz_fedsector.loc[netz_fedsector['Series'] == 'Total', 'Series'] = 'Final consumption by sector (PJ)'
 
     ## FED by fuel
     # Coal
@@ -5919,7 +5919,7 @@ for economy in Economy_codes:
     netz_fedfuel = netz_fedfuel_1.copy().drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
         .iloc[[9, 0, 1, 2, 4, 3, 5, 6, 7, 8]].reset_index(drop = True)
 
-    netz_fedfuel.loc[netz_fedfuel['Series'] == 'Total', 'Series'] = 'Final energy demand by fuel (PJ)'
+    netz_fedfuel.loc[netz_fedfuel['Series'] == 'Total', 'Series'] = 'Final consumption by fuel (PJ)'
     netz_fedfuel.loc[netz_fedfuel['Series'] == 'Others', 'Series'] = 'Other'
 
     ## AGRICULTURE and NON-SPECIFIED (split?)
