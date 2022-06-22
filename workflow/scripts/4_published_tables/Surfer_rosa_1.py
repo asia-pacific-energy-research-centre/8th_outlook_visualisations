@@ -1385,9 +1385,9 @@ for economy in Economy_codes:
     ref_ag_1.loc['Total', 'fuel_code'] = 'Total'
     ref_ag_1.loc['Total', 'item_code_new'] = 'Agriculture'
 
-    # Get rid of zero rows
-    non_zero = (ref_ag_1.loc[:,'2000':] != 0).any(axis = 1)
-    ref_ag_1 = ref_ag_1.loc[non_zero].reset_index(drop = True)
+    # # Get rid of zero rows
+    # non_zero = (ref_ag_1.loc[:,'2000':] != 0).any(axis = 1)
+    # ref_ag_1 = ref_ag_1.loc[non_zero].reset_index(drop = True)
     
     ref_ag_1_rows = ref_ag_1.shape[0]
     ref_ag_1_cols = ref_ag_1.shape[1]
@@ -5417,6 +5417,8 @@ for economy in Economy_codes:
     ref_captured.loc['Total', 'Series'] = 'Captured CO2 emissions (million tonnes)'
     ref_captured = ref_captured.copy().reset_index(drop = True).iloc[[4, 0, 1, 2, 3]].reset_index(drop = True)
 
+    ref_captured_rows = ref_captured.shape[0]
+
     # Modern renewables
 
     ref_modren = ref_modren_4[ref_modren_4['item_code_new'].isin(['Total', 'Reference'])].copy()\
@@ -5424,6 +5426,31 @@ for economy in Economy_codes:
 
     ref_modren.loc[ref_modren['Series'] == 'Total', 'Series'] = 'Modern renewables (PJ)'
     ref_modren.loc[ref_modren['Series'] == 'Reference', 'Series'] = 'Modern renewables share of final energy demand'
+
+    # More comprehensive modern renewables breakdown
+
+    ref_modren_breakdown = ref_modren_4.copy().iloc[[0, 1, 2, 3, 4, 5, 6, 9, 11]].drop('fuel_code', axis = 1)\
+        .rename(columns = {'item_code_new': 'Series'}).reset_index(drop = True)
+
+    ref_modren_breakdown.loc[ref_modren_breakdown['Series'] == 'Electricity and heat TFEC', 'Series'] = 'Electricity and heat (not including own-use and losses)'
+    ref_modren_breakdown.loc[ref_modren_breakdown['Series'] == 'TFEC', 'Series'] = 'Final energy demand'
+    ref_modren_breakdown.loc[ref_modren_breakdown['Series'] == 'Reference', 'Series'] = 'Modern renewables share of FED'
+
+    ref_modren_gen = ref_modren_4.copy().iloc[7:9].drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
+        .reset_index(drop = True)
+
+    ref_modren_gen.loc[ref_modren_gen['Series'] == 'Modern renewables', 'Series'] = 'Renewable generation'
+    ref_modren_gen.loc[ref_modren_gen['Series'] == 'Total', 'Series'] = 'Total generation'
+
+    ref_modren_gencalc = ['Renewable generation share'] + list(ref_modren_gen.iloc[0, 1:] / ref_modren_gen.iloc[1, 1:])
+    ref_modren_gencalc_series = pd.Series(ref_modren_gencalc, index = ref_modren_gen.columns)
+
+    ref_modren_gen = ref_modren_gen.copy().append(ref_modren_gencalc_series, ignore_index = True).reset_index(drop = True)
+
+    # Join the data
+    ref_modren_A = ref_modren_breakdown.append(ref_modren_gen).reset_index(drop = True)
+
+    ref_modren_A_rows = ref_modren_A.shape[0]
 
     # Join relevant dataframes together
 
@@ -6142,6 +6169,8 @@ for economy in Economy_codes:
     netz_captured.loc['Total', 'Series'] = 'Captured CO2 emissions (million tonnes)'
     netz_captured = netz_captured.copy().reset_index(drop = True).iloc[[4, 0, 1, 2, 3]].reset_index(drop = True)
 
+    netz_captured_rows = netz_captured.shape[0]
+
     # Modern renewables
 
     netz_modren = netz_modren_4[netz_modren_4['item_code_new'].isin(['Total', 'Carbon Neutrality'])].copy()\
@@ -6149,6 +6178,31 @@ for economy in Economy_codes:
 
     netz_modren.loc[netz_modren['Series'] == 'Total', 'Series'] = 'Modern renewables (PJ)'
     netz_modren.loc[netz_modren['Series'] == 'Carbon Neutrality', 'Series'] = 'Modern renewables share of final energy demand'
+
+    # More comprehensive modern renewables breakdown
+
+    netz_modren_breakdown = netz_modren_4.copy().iloc[[0, 1, 2, 3, 4, 5, 6, 9, 11]].drop('fuel_code', axis = 1)\
+        .rename(columns = {'item_code_new': 'Series'}).reset_index(drop = True)
+
+    netz_modren_breakdown.loc[netz_modren_breakdown['Series'] == 'Electricity and heat TFEC', 'Series'] = 'Electricity and heat (not including own-use and losses)'
+    netz_modren_breakdown.loc[netz_modren_breakdown['Series'] == 'TFEC', 'Series'] = 'Final energy demand'
+    netz_modren_breakdown.loc[netz_modren_breakdown['Series'] == 'Carbon Neutrality', 'Series'] = 'Modern renewables share of FED'
+
+    netz_modren_gen = netz_modren_4.copy().iloc[7:9].drop('item_code_new', axis = 1).rename(columns = {'fuel_code': 'Series'})\
+        .reset_index(drop = True)
+
+    netz_modren_gen.loc[netz_modren_gen['Series'] == 'Modern renewables', 'Series'] = 'Renewable generation'
+    netz_modren_gen.loc[netz_modren_gen['Series'] == 'Total', 'Series'] = 'Total generation'
+
+    netz_modren_gencalc = ['Renewable generation share'] + list(netz_modren_gen.iloc[0, 1:] / netz_modren_gen.iloc[1, 1:])
+    netz_modren_gencalc_series = pd.Series(netz_modren_gencalc, index = netz_modren_gen.columns)
+
+    netz_modren_gen = netz_modren_gen.copy().append(netz_modren_gencalc_series, ignore_index = True).reset_index(drop = True)
+
+    # Join the data
+    netz_modren_A = netz_modren_breakdown.append(netz_modren_gen).reset_index(drop = True)
+
+    netz_modren_A_rows = netz_modren_A.shape[0]
 
     # Join relevant dataframes together
 
@@ -6224,9 +6278,10 @@ for economy in Economy_codes:
     # Remove total first row of emissions by sector because already provided in emissions by fuel
     ref_emsector.iloc[1:,:].to_excel(writer, sheet_name = economy, index = False, header = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + ref_transtat_rows + ref_demand_rows + ref_electricity_rows + ref_emfuel_rows + 35)
     ref_captured.to_excel(writer, sheet_name = economy, index = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + ref_transtat_rows + ref_demand_rows + ref_electricity_rows + ref_emfuel_rows + ref_emsector_rows + 37)
+    ref_modren_A.to_excel(writer, sheet_name = economy, index = False, startrow = ref_top_rows + ref_supply_rows + ref_powuse_rows + ref_elecheat_rows + ref_ownloss_rows + ref_transtat_rows + ref_demand_rows + ref_electricity_rows + ref_emfuel_rows + ref_emsector_rows + ref_captured_rows + 41)
 
     # Reference rows
-    ref_rows = 207 
+    ref_rows = 223 
     
     # Carbon neutrality
     # Data frames needed for appendix - Carbon neutrality
@@ -6246,6 +6301,7 @@ for economy in Economy_codes:
     # Remove total first row of emissions by sector because already provided in emissions by fuel
     netz_emsector.iloc[1:,:].to_excel(writer, sheet_name = economy, index = False, header = False, startrow = netz_top_rows + netz_supply_rows + netz_powuse_rows + netz_elecheat_rows + netz_ownloss_rows + netz_transtat_rows + netz_demand_rows + netz_electricity_rows + netz_emfuel_rows + 35 + ref_rows)
     netz_captured.to_excel(writer, sheet_name = economy, index = False, startrow = netz_top_rows + netz_supply_rows + netz_powuse_rows + netz_elecheat_rows + netz_ownloss_rows + netz_transtat_rows + netz_demand_rows + netz_electricity_rows + netz_emfuel_rows + netz_emsector_rows + 37 + ref_rows)
+    netz_modren_A.to_excel(writer, sheet_name = economy, index = False, startrow = netz_top_rows + netz_supply_rows + netz_powuse_rows + netz_elecheat_rows + netz_ownloss_rows + netz_transtat_rows + netz_demand_rows + netz_electricity_rows + netz_emfuel_rows + netz_emsector_rows + netz_captured_rows + 41 + ref_rows)
 
     worksheet1 = writer.sheets[economy]
 
@@ -6270,6 +6326,7 @@ for economy in Economy_codes:
     worksheet1.write(183, 0, 'CO2 emissions - Reference')
     worksheet1.write(190, 0, 'By sector')
     worksheet1.write(200, 0, 'Carbon, capture, and storage technologies - Reference')
+    worksheet1.write(209, 0, 'Modern renewables breakdown - Reference')
 
     # worksheet1.write(0, 0, APEC_economies[economy], cell_format1)
     worksheet1.write(2 + ref_rows, 0, 'Carbon Neutrality scenario')
@@ -6285,6 +6342,7 @@ for economy in Economy_codes:
     worksheet1.write(183 + ref_rows, 0, 'CO2 emissions - Carbon Neutrality')
     worksheet1.write(190 + ref_rows, 0, 'By sector')
     worksheet1.write(200 + ref_rows, 0, 'Carbon, capture, and storage technologies - Carbon Neutrality')
+    worksheet1.write(209 + ref_rows, 0, 'Modern renewables breakdown - Carbon Neutrality')
         
     writer.save()
 
