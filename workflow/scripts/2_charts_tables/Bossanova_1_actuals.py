@@ -445,9 +445,11 @@ Transport_modal_agg = ['Aviation', 'Road', 'Rail' ,'Marine', 'Pipeline', 'Non-sp
 
 TPES_agg_fuels1 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Electricity', 'Hydrogen', 'Other fuels']
 TPES_agg_fuels2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
-TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 
+TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Refined products', 'Gas', 
                   'Renewables', 'Electricity', 'Hydrogen', 'Other fuels']
 avi_bunker = ['Aviation gasoline', 'Jet fuel', 'Biojet kerosene', 'Hydrogen']
+
+nettrade_order = ['Coal', 'Crude oil & NGL', 'Refined products', 'Gas', 'Renewables', 'Electricity', 'Hydrogen', 'Trade balance']
 
 ########################### Create historical electricity generation dataframe for use later ###########################
 
@@ -696,7 +698,7 @@ EGEDA_histpower_oil = EGEDA_data[(EGEDA_data['item_code_new'].isin(['9_1_main_ac
                                     .copy().reset_index(drop = True)
 
 EGEDA_histpower_oil['FUEL'] = EGEDA_histpower_oil['fuel_code'].map({'6_crude_oil_and_ngl': 'Crude oil & NGL',
-                                                                    '7_petroleum_products': 'Petroleum products'})
+                                                                    '7_petroleum_products': 'Refined products'})
 
 EGEDA_histpower_oil = EGEDA_histpower_oil.groupby(['economy', 'FUEL']).sum().reset_index().assign(item_code_new = 'Power')\
     [['economy', 'FUEL', 'item_code_new'] + list(range(2000, 2019))]\
@@ -807,7 +809,7 @@ EGEDA_hist_own_oil = EGEDA_data[(EGEDA_data['item_code_new'].isin(['10_losses_an
                                   .copy().reset_index(drop = True)
 
 EGEDA_hist_own_oil['FUEL'] = EGEDA_hist_own_oil['fuel_code'].map({'6_crude_oil_and_ngl': 'Crude oil & NGL',
-                                                                  '7_petroleum_products': 'Petroleum products'})
+                                                                  '7_petroleum_products': 'Refined products'})
 
 EGEDA_hist_own_oil = EGEDA_hist_own_oil[['economy', 'FUEL', 'item_code_new'] + list(range(2000, 2019))]\
                         .copy().reset_index(drop = True)
@@ -960,7 +962,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-Economy_codes = ['APEC']
+# Economy_codes = ['01_AUS']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -1995,7 +1997,7 @@ for economy in Economy_codes:
     ref_imports_1 = ref_imports_1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    ref_imports_1.loc[ref_imports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_imports_1.loc[ref_imports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -2042,7 +2044,7 @@ for economy in Economy_codes:
     ref_exports_1 = ref_exports_1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    ref_exports_1.loc[ref_exports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_exports_1.loc[ref_exports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -2083,6 +2085,8 @@ for economy in Economy_codes:
     ref_nettrade_1 = ref_nettrade_1[['fuel_code', 'item_code_new'] + col_chart_years]
 
     ref_nettrade_1.loc[ref_nettrade_1['fuel_code'] == 'Total', 'fuel_code'] = 'Trade balance'
+
+    ref_nettrade_1 = ref_nettrade_1.set_index('fuel_code').loc[nettrade_order].reset_index()[['fuel_code', 'item_code_new'] + col_chart_years]
 
     ref_nettrade_1_rows = ref_nettrade_1.shape[0]
     ref_nettrade_1_cols = ref_nettrade_1.shape[1]
@@ -2296,7 +2300,7 @@ for economy in Economy_codes:
     netz_imports_1 = netz_imports_1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    netz_imports_1.loc[netz_imports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_imports_1.loc[netz_imports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -2343,7 +2347,7 @@ for economy in Economy_codes:
     netz_exports_1 = netz_exports_1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    netz_exports_1.loc[netz_exports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_exports_1.loc[netz_exports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -2384,6 +2388,8 @@ for economy in Economy_codes:
     netz_nettrade_1 = netz_nettrade_1[['fuel_code', 'item_code_new'] + col_chart_years]
 
     netz_nettrade_1.loc[netz_nettrade_1['fuel_code'] == 'Total', 'fuel_code'] = 'Trade balance'
+
+    netz_nettrade_1 = netz_nettrade_1.set_index('fuel_code').loc[nettrade_order].reset_index()[['fuel_code', 'item_code_new'] + col_chart_years]
 
     netz_nettrade_1_rows = netz_nettrade_1.shape[0]
     netz_nettrade_1_cols = netz_nettrade_1.shape[1] 
@@ -5658,7 +5664,7 @@ for economy in Economy_codes:
     ref_crudecons_1_rows = ref_crudecons_1.shape[0]
     ref_crudecons_1_cols = ref_crudecons_1.shape[1]
 
-    # Petroleum products
+    # Refined products
 
     ref_petprod_ind = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                             (EGEDA_years_reference['item_code_new'].isin(['14_industry_sector'])) &
@@ -5666,19 +5672,19 @@ for economy in Economy_codes:
                                                 .copy().replace(np.nan, 0).reset_index(drop = True)
 
     ref_petprod_ind = ref_petprod_ind[['fuel_code', 'item_code_new'] + list(ref_petprod_ind.loc[:, '2000':'2050'])]
-    ref_petprod_ind.loc[ref_petprod_ind['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_petprod_ind.loc[ref_petprod_ind['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
 
     ref_petprod_bld = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                             (EGEDA_years_reference['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
                                             (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Buildings')
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Refined products', item_code_new = 'Buildings')
 
     ref_petprod_bld = ref_petprod_bld[['fuel_code', 'item_code_new'] + list(ref_petprod_bld.loc[:, '2000':'2050'])]
 
     ref_petprod_ag = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
                                            (EGEDA_years_reference['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Agriculture')
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Refined products', item_code_new = 'Agriculture')
 
     ref_petprod_ag = ref_petprod_ag[['fuel_code', 'item_code_new'] + list(ref_petprod_ag.loc[:, '2000':'2050'])]
 
@@ -5688,7 +5694,7 @@ for economy in Economy_codes:
                                                 .copy().replace(np.nan, 0).reset_index(drop = True)
 
     ref_petprod_trn = ref_petprod_trn[['fuel_code', 'item_code_new'] + list(ref_petprod_trn.loc[:, '2000':'2050'])]
-    ref_petprod_trn.loc[ref_petprod_trn['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_petprod_trn.loc[ref_petprod_trn['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
 
     ref_petprod_ne = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['17_nonenergy_use'])) &
@@ -5696,7 +5702,7 @@ for economy in Economy_codes:
                                                .copy().replace(np.nan, 0).reset_index(drop = True)
 
     ref_petprod_ne = ref_petprod_ne[['fuel_code', 'item_code_new'] + list(ref_petprod_ne.loc[:, '2000':'2050'])]
-    ref_petprod_ne.loc[ref_petprod_ne['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_petprod_ne.loc[ref_petprod_ne['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
 
     ref_petprod_ns = EGEDA_years_reference[(EGEDA_years_reference['economy'] == economy) & 
                                            (EGEDA_years_reference['item_code_new'].isin(['16_5_nonspecified_others'])) &
@@ -5704,7 +5710,7 @@ for economy in Economy_codes:
                                                .copy().replace(np.nan, 0).reset_index(drop = True)
 
     ref_petprod_ns = ref_petprod_ns[['fuel_code', 'item_code_new'] + list(ref_petprod_ns.loc[:, '2000':'2050'])]
-    ref_petprod_ns.loc[ref_petprod_ns['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_petprod_ns.loc[ref_petprod_ns['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
 
     # Own-use
     ref_petprod_own = ref_trans_df1[(ref_trans_df1['economy'] == economy) & 
@@ -5716,11 +5722,11 @@ for economy in Economy_codes:
                                                                      .copy().reset_index(drop = True)
 
     ref_petprod_own = ref_petprod_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                        .assign(fuel_code = 'Petroleum products', item_code_new = '10_losses_and_own_use')
+                        .assign(fuel_code = 'Refined products', item_code_new = '10_losses_and_own_use')
 
     #################################################################################
     hist_ownoil = EGEDA_hist_own_oil[(EGEDA_hist_own_oil['economy'] == economy) &
-                                     (EGEDA_hist_own_oil['FUEL'] == 'Petroleum products')].copy().\
+                                     (EGEDA_hist_own_oil['FUEL'] == 'Refined products')].copy().\
                                         iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_hist_own_oil.loc[:, '2000':'2018'])]\
                                             .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
 
@@ -5737,11 +5743,11 @@ for economy in Economy_codes:
                                                                      .copy().reset_index(drop = True)
 
     ref_petprod_power = ref_petprod_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                            .assign(fuel_code = 'Petroleum products', item_code_new = 'Power')
+                            .assign(fuel_code = 'Refined products', item_code_new = 'Power')
 
     #################################################################################
     hist_poweroil = EGEDA_histpower_oil[(EGEDA_histpower_oil['economy'] == economy) &
-                                        (EGEDA_histpower_oil['FUEL'] == 'Petroleum products')].copy()\
+                                        (EGEDA_histpower_oil['FUEL'] == 'Refined products')].copy()\
                                             .iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_histpower_oil.loc[:, '2000':'2018'])]\
                                             .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
 
@@ -5762,7 +5768,7 @@ for economy in Economy_codes:
 
     ref_petprodcons_1.loc['Total'] = ref_petprodcons_1.sum(numeric_only = True)
 
-    ref_petprodcons_1.loc['Total', 'fuel_code'] = 'Petroleum products'
+    ref_petprodcons_1.loc['Total', 'fuel_code'] = 'Refined products'
     ref_petprodcons_1.loc['Total', 'item_code_new'] = 'Total'
 
     ref_petprodcons_1 = ref_petprodcons_1.copy().reset_index(drop = True)
@@ -5932,7 +5938,7 @@ for economy in Economy_codes:
     # Non-energy
     # Own-use
     # Power (including heat)
-    # Refining for petroleum products
+    # Refining for Refined products
     # Total
 
     # Coal
@@ -6219,7 +6225,7 @@ for economy in Economy_codes:
     netz_crudecons_1_rows = netz_crudecons_1.shape[0]
     netz_crudecons_1_cols = netz_crudecons_1.shape[1]
 
-    # Petroleum products
+    # Refined products
 
     netz_petprod_ind = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                             (EGEDA_years_netzero['item_code_new'].isin(['14_industry_sector'])) &
@@ -6227,19 +6233,19 @@ for economy in Economy_codes:
                                                 .copy().replace(np.nan, 0).reset_index(drop = True)
 
     netz_petprod_ind = netz_petprod_ind[['fuel_code', 'item_code_new'] + list(netz_petprod_ind.loc[:, '2000':'2050'])]
-    netz_petprod_ind.loc[netz_petprod_ind['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_petprod_ind.loc[netz_petprod_ind['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
 
     netz_petprod_bld = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                             (EGEDA_years_netzero['item_code_new'].isin(['16_1_commercial_and_public_services', '16_2_residential'])) &
                                             (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Buildings')
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Refined products', item_code_new = 'Buildings')
 
     netz_petprod_bld = netz_petprod_bld[['fuel_code', 'item_code_new'] + list(netz_petprod_bld.loc[:, '2000':'2050'])]
 
     netz_petprod_ag = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                            (EGEDA_years_netzero['item_code_new'].isin(['16_3_agriculture', '16_4_fishing'])) &
                                            (EGEDA_years_netzero['fuel_code'].isin(['7_petroleum_products']))].copy().replace(np.nan, 0).groupby(['fuel_code'])\
-                                                .sum().reset_index(drop = True).assign(fuel_code = 'Petroleum products', item_code_new = 'Agriculture')
+                                                .sum().reset_index(drop = True).assign(fuel_code = 'Refined products', item_code_new = 'Agriculture')
 
     netz_petprod_ag = netz_petprod_ag[['fuel_code', 'item_code_new'] + list(netz_petprod_ag.loc[:, '2000':'2050'])]
 
@@ -6249,7 +6255,7 @@ for economy in Economy_codes:
                                                 .copy().replace(np.nan, 0).reset_index(drop = True)
 
     netz_petprod_trn = netz_petprod_trn[['fuel_code', 'item_code_new'] + list(netz_petprod_trn.loc[:, '2000':'2050'])]
-    netz_petprod_trn.loc[netz_petprod_trn['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_petprod_trn.loc[netz_petprod_trn['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
 
     netz_petprod_ne = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                            (EGEDA_years_netzero['item_code_new'].isin(['17_nonenergy_use'])) &
@@ -6257,7 +6263,7 @@ for economy in Economy_codes:
                                                .copy().replace(np.nan, 0).reset_index(drop = True)
 
     netz_petprod_ne = netz_petprod_ne[['fuel_code', 'item_code_new'] + list(netz_petprod_ne.loc[:, '2000':'2050'])]
-    netz_petprod_ne.loc[netz_petprod_ne['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_petprod_ne.loc[netz_petprod_ne['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
 
     netz_petprod_ns = EGEDA_years_netzero[(EGEDA_years_netzero['economy'] == economy) & 
                                            (EGEDA_years_netzero['item_code_new'].isin(['16_5_nonspecified_others'])) &
@@ -6265,7 +6271,7 @@ for economy in Economy_codes:
                                                .copy().replace(np.nan, 0).reset_index(drop = True)
 
     netz_petprod_ns = netz_petprod_ns[['fuel_code', 'item_code_new'] + list(netz_petprod_ns.loc[:, '2000':'2050'])]
-    netz_petprod_ns.loc[netz_petprod_ns['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_petprod_ns.loc[netz_petprod_ns['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
 
     # Own-use
     netz_petprod_own = netz_trans_df1[(netz_trans_df1['economy'] == economy) & 
@@ -6277,11 +6283,11 @@ for economy in Economy_codes:
                                                                      .copy().reset_index(drop = True)
 
     netz_petprod_own = netz_petprod_own.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                        .assign(fuel_code = 'Petroleum products', item_code_new = '10_losses_and_own_use')
+                        .assign(fuel_code = 'Refined products', item_code_new = '10_losses_and_own_use')
 
     #################################################################################
     hist_ownoil = EGEDA_hist_own_oil[(EGEDA_hist_own_oil['economy'] == economy) &
-                                     (EGEDA_hist_own_oil['FUEL'] == 'Petroleum products')].copy().\
+                                     (EGEDA_hist_own_oil['FUEL'] == 'Refined products')].copy().\
                                         iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_hist_own_oil.loc[:, '2000':'2018'])]\
                                             .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
 
@@ -6298,11 +6304,11 @@ for economy in Economy_codes:
                                                                      .copy().reset_index(drop = True)
 
     netz_petprod_power = netz_petprod_power.groupby(['economy']).sum().copy().reset_index(drop = True)\
-                            .assign(fuel_code = 'Petroleum products', item_code_new = 'Power')
+                            .assign(fuel_code = 'Refined products', item_code_new = 'Power')
 
     #################################################################################
     hist_poweroil = EGEDA_histpower_oil[(EGEDA_histpower_oil['economy'] == economy) &
-                                        (EGEDA_histpower_oil['FUEL'] == 'Petroleum products')].copy()\
+                                        (EGEDA_histpower_oil['FUEL'] == 'Refined products')].copy()\
                                             .iloc[:,:][['FUEL', 'item_code_new'] + list(EGEDA_histpower_oil.loc[:, '2000':'2018'])]\
                                             .rename(columns = {'FUEL': 'fuel_code'}).reset_index(drop = True)
 
@@ -6323,7 +6329,7 @@ for economy in Economy_codes:
 
     netz_petprodcons_1.loc['Total'] = netz_petprodcons_1.sum(numeric_only = True)
 
-    netz_petprodcons_1.loc['Total', 'fuel_code'] = 'Petroleum products'
+    netz_petprodcons_1.loc['Total', 'fuel_code'] = 'Refined products'
     netz_petprodcons_1.loc['Total', 'item_code_new'] = 'Total'
 
     netz_petprodcons_1 = netz_petprodcons_1.copy().reset_index(drop = True)
@@ -6489,11 +6495,11 @@ for economy in Economy_codes:
                                             [['fuel_code', 'item_code_new'] + col_chart_years]\
                                                 .reset_index(drop = True)
     
-    ref_petprod_1['fuel_code'].replace({'7_petroleum_products': 'Petroleum products'}, inplace=True)
+    ref_petprod_1['fuel_code'].replace({'7_petroleum_products': 'Refined products'}, inplace=True)
 
     petprod_bunkers = ref_petprod_1[ref_petprod_1['item_code_new'].isin(['4_international_marine_bunkers',
                                                                          '5_international_aviation_bunkers'])]\
-                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Petroleum products',
+                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Refined products',
                                                                                                                   item_code_new = 'Bunkers')
     
     ref_petprod_2 = ref_petprod_1.append([petprod_bunkers]).reset_index(drop = True)
@@ -6507,7 +6513,7 @@ for economy in Economy_codes:
 
     ref_petprod_2 = ref_petprod_2.append(refining_grab, ignore_index = True).reset_index(drop = True)
 
-    ref_petprod_2.loc[ref_petprod_2['fuel_code'] == 'Crude oil & NGL', 'fuel_code'] = 'Petroleum products'
+    ref_petprod_2.loc[ref_petprod_2['fuel_code'] == 'Crude oil & NGL', 'fuel_code'] = 'Refined products'
     ref_petprod_2.loc[ref_petprod_2['item_code_new'] == 'Refining', 'item_code_new'] = 'Domestic refining'
     ref_petprod_2.loc[ref_petprod_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
     ref_petprod_2.loc[ref_petprod_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
@@ -6534,11 +6540,11 @@ for economy in Economy_codes:
                                             [['fuel_code', 'item_code_new'] + col_chart_years]\
                                                 .reset_index(drop = True)
     
-    netz_petprod_1['fuel_code'].replace({'7_petroleum_products': 'Petroleum products'}, inplace=True)
+    netz_petprod_1['fuel_code'].replace({'7_petroleum_products': 'Refined products'}, inplace=True)
 
     petprod_bunkers = netz_petprod_1[netz_petprod_1['item_code_new'].isin(['4_international_marine_bunkers',
                                                                          '5_international_aviation_bunkers'])]\
-                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Petroleum products',
+                                                                             .groupby(['fuel_code']).sum().assign(fuel_code = 'Refined products',
                                                                                                                   item_code_new = 'Bunkers')
 
     netz_petprod_2 = netz_petprod_1.append([petprod_bunkers]).reset_index(drop = True)
@@ -6552,7 +6558,7 @@ for economy in Economy_codes:
 
     netz_petprod_2 = netz_petprod_2.append(refining_grab, ignore_index = True).reset_index(drop = True)
 
-    netz_petprod_2.loc[netz_petprod_2['fuel_code'] == 'Crude oil & NGL', 'fuel_code'] = 'Petroleum products'
+    netz_petprod_2.loc[netz_petprod_2['fuel_code'] == 'Crude oil & NGL', 'fuel_code'] = 'Refined products'
     netz_petprod_2.loc[netz_petprod_2['item_code_new'] == 'Refining', 'item_code_new'] = 'Domestic refining'
     netz_petprod_2.loc[netz_petprod_2['item_code_new'] == '2_imports', 'item_code_new'] = 'Imports'
     netz_petprod_2.loc[netz_petprod_2['item_code_new'] == '3_exports', 'item_code_new'] = 'Exports'
@@ -7213,8 +7219,8 @@ for economy in Economy_codes:
     ref_gasex_1.to_excel(writer, sheet_name = 'Gas trade', index = False, startrow = chart_height + ref_gasim_1_rows + 3)
     ref_crudecons_1.to_excel(writer, sheet_name = 'Crude & NGL', index = False, startrow = chart_height)
     ref_crude_1.to_excel(writer, sheet_name = 'Crude & NGL', index = False, startrow = chart_height + ref_crudecons_1_rows + 3)
-    ref_petprodcons_1.to_excel(writer, sheet_name = 'Petroleum products', index = False, startrow = chart_height)
-    ref_petprod_2.to_excel(writer, sheet_name = 'Petroleum products', index = False, startrow = chart_height + ref_petprodcons_1_rows + 3)
+    ref_petprodcons_1.to_excel(writer, sheet_name = 'Refined products', index = False, startrow = chart_height)
+    ref_petprod_2.to_excel(writer, sheet_name = 'Refined products', index = False, startrow = chart_height + ref_petprodcons_1_rows + 3)
     netz_coalcons_1.to_excel(writer, sheet_name = 'Coal', index = False, startrow = (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + 6)
     netz_coal_1.to_excel(writer, sheet_name = 'Coal', index = False, startrow = (2 * chart_height) + ref_coalcons_1_rows + ref_coal_1_rows + netz_coalcons_1_rows + 9)
     netz_ct_prod1.to_excel(writer, sheet_name = 'Coal by type', index = False, startrow = (2 * chart_height) + ref_ct_prod1_rows + ref_ct_imports1_rows + ref_ct_exports1_rows + 9)
@@ -7228,8 +7234,8 @@ for economy in Economy_codes:
     netz_gasex_1.to_excel(writer, sheet_name = 'Gas trade', index = False, startrow = (2 * chart_height) + ref_gasim_1_rows + ref_gasex_1_rows + netz_gasim_1_rows + 9)
     netz_crudecons_1.to_excel(writer, sheet_name = 'Crude & NGL', index = False, startrow = (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + 6)
     netz_crude_1.to_excel(writer, sheet_name = 'Crude & NGL', index = False, startrow = (2 * chart_height) + ref_crudecons_1_rows + ref_crude_1_rows + netz_crudecons_1_rows + 9)
-    netz_petprodcons_1.to_excel(writer, sheet_name = 'Petroleum products', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6)
-    netz_petprod_2.to_excel(writer, sheet_name = 'Petroleum products', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9)
+    netz_petprodcons_1.to_excel(writer, sheet_name = 'Refined products', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6)
+    netz_petprod_2.to_excel(writer, sheet_name = 'Refined products', index = False, startrow = (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9)
     ref_renewcons_1.to_excel(writer, sheet_name = 'Renewable fuels', index = False, startrow = chart_height)
     ref_renew_2.to_excel(writer, sheet_name = 'Renewable fuels', index = False, startrow = chart_height + ref_renewcons_1_rows + 3)
     netz_renewcons_1.to_excel(writer, sheet_name = 'Renewable fuels', index = False, startrow = (2 * chart_height) + ref_renewcons_1_rows + ref_renew_2_rows + 6)
@@ -18590,10 +18596,10 @@ for economy in Economy_codes:
         pass
 
     ##############
-    # Petroleum products
+    # Refined products
     
     # Access the workbook and second sheet with data from df2
-    ref_worksheet44 = writer.sheets['Petroleum products']
+    ref_worksheet44 = writer.sheets['Refined products']
         
     # Apply comma format and header format to relevant data rows
     ref_worksheet44.set_column(1, ref_petprodcons_1_cols + 1, None, space_format)
@@ -18601,8 +18607,8 @@ for economy in Economy_codes:
     ref_worksheet44.set_row(chart_height + ref_petprodcons_1_rows + 3, None, header_format)
     ref_worksheet44.set_row((2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, None, header_format)
     ref_worksheet44.set_row((2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, None, header_format)
-    ref_worksheet44.write(0, 0, economy + ' petroleum products Reference', cell_format1)
-    ref_worksheet44.write(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 0, economy + ' petroleum products Carbon Neutrality', cell_format1)
+    ref_worksheet44.write(0, 0, economy + ' Refined products Reference', cell_format1)
+    ref_worksheet44.write(chart_height + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 0, economy + ' Refined products Carbon Neutrality', cell_format1)
     ref_worksheet44.write(1, 0, 'Units: Petajoules', cell_format2)
 
     # Create a FED sector area chart
@@ -18658,9 +18664,9 @@ for economy in Economy_codes:
         for i in range(ref_petprodcons_1_rows):
             if not ref_petprodcons_1['item_code_new'].iloc[i] in ['Total']:
                 ref_petprodcons_chart1.add_series({
-                    'name':       ['Petroleum products', chart_height + i + 1, 1],
-                    'categories': ['Petroleum products', chart_height, 2, chart_height, ref_petprodcons_1_cols - 1],
-                    'values':     ['Petroleum products', chart_height + i + 1, 2, chart_height + i + 1, ref_petprodcons_1_cols - 1],
+                    'name':       ['Refined products', chart_height + i + 1, 1],
+                    'categories': ['Refined products', chart_height, 2, chart_height, ref_petprodcons_1_cols - 1],
+                    'values':     ['Refined products', chart_height + i + 1, 2, chart_height + i + 1, ref_petprodcons_1_cols - 1],
                     'fill':       {'color': ref_petprodcons_1['item_code_new'].map(colours_dict).loc[i]},
                     'border':     {'none': True}
                 })
@@ -18673,7 +18679,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Create a TPES petroleum products chart
+    # Create a TPES Refined products chart
     if ref_petprod_2_rows > 0:
         ref_tpes_petprod_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         ref_tpes_petprod_chart1.set_size({
@@ -18697,7 +18703,7 @@ for economy in Economy_codes:
         ref_tpes_petprod_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            # 'name': 'Petroleum products (PJ)',
+            # 'name': 'Refined products (PJ)',
             'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -18720,10 +18726,10 @@ for economy in Economy_codes:
         for component in fuel_final_ref[:-1]:
             i = ref_petprod_2[ref_petprod_2['item_code_new'] == component].index[0]
             ref_tpes_petprod_chart1.add_series({
-                'name':       ['Petroleum products', chart_height + ref_petprodcons_1_rows + i + 4, 1],
-                'categories': ['Petroleum products', chart_height + ref_petprodcons_1_rows + 3, 2,\
+                'name':       ['Refined products', chart_height + ref_petprodcons_1_rows + i + 4, 1],
+                'categories': ['Refined products', chart_height + ref_petprodcons_1_rows + 3, 2,\
                     chart_height + ref_petprodcons_1_rows + 3, ref_petprod_2_cols - 1],
-                'values':     ['Petroleum products', chart_height + ref_petprodcons_1_rows + i + 4, 2,\
+                'values':     ['Refined products', chart_height + ref_petprodcons_1_rows + i + 4, 2,\
                     chart_height + ref_petprodcons_1_rows + i + 4, ref_petprod_2_cols - 1],
                 'fill':       {'color': ref_petprod_2['item_code_new'].map(colours_dict).loc[i]},
                 'border':     {'none': True},
@@ -18790,10 +18796,10 @@ for economy in Economy_codes:
         for i in range(netz_petprodcons_1_rows):
             if not netz_petprodcons_1['item_code_new'].iloc[i] in ['Total']:
                 netz_petprodcons_chart1.add_series({
-                    'name':       ['Petroleum products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 1],
-                    'categories': ['Petroleum products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 2,\
+                    'name':       ['Refined products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 1],
+                    'categories': ['Refined products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, 2,\
                         (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + 6, netz_petprodcons_1_cols - 1],
-                    'values':     ['Petroleum products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 2,\
+                    'values':     ['Refined products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, 2,\
                         (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + i + 7, netz_petprodcons_1_cols - 1],
                     'fill':       {'color': netz_petprodcons_1['item_code_new'].map(colours_dict).loc[i]},
                     'border':     {'none': True}
@@ -18807,7 +18813,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Create a TPES petroleum products chart
+    # Create a TPES Refined products chart
     if netz_petprod_2_rows > 0:
         netz_tpes_petprod_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         netz_tpes_petprod_chart1.set_size({
@@ -18831,7 +18837,7 @@ for economy in Economy_codes:
         netz_tpes_petprod_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            # 'name': 'Petroleum products (PJ)',
+            # 'name': 'Refined products (PJ)',
             'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -18854,10 +18860,10 @@ for economy in Economy_codes:
         for component in fuel_final_ref[:-1]:
             i = netz_petprod_2[netz_petprod_2['item_code_new'] == component].index[0]
             netz_tpes_petprod_chart1.add_series({
-                'name':       ['Petroleum products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, 1],
-                'categories': ['Petroleum products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, 2,\
+                'name':       ['Refined products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, 1],
+                'categories': ['Refined products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, 2,\
                     (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + 9, netz_petprod_2_cols - 1],
-                'values':     ['Petroleum products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, 2,\
+                'values':     ['Refined products', (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, 2,\
                     (2 * chart_height) + ref_petprodcons_1_rows + ref_petprod_2_rows + netz_petprodcons_1_rows + i + 10, netz_petprod_2_cols - 1],
                 'fill':       {'color': netz_petprod_2['item_code_new'].map(colours_dict).loc[i]},
                 'border':     {'none': True},
@@ -19371,7 +19377,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Create a TPES petroleum products chart
+    # Create a TPES Refined products chart
     if ref_renew_2_rows > 0:
         ref_tpes_renew_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         ref_tpes_renew_chart1.set_size({
@@ -19395,7 +19401,7 @@ for economy in Economy_codes:
         ref_tpes_renew_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            # 'name': 'Petroleum products (PJ)',
+            # 'name': 'Refined products (PJ)',
             'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -19519,7 +19525,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Create a TPES petroleum products chart
+    # Create a TPES Refined products chart
     if netz_renew_2_rows > 0:
         netz_tpes_renew_chart1 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         netz_tpes_renew_chart1.set_size({
@@ -19543,7 +19549,7 @@ for economy in Economy_codes:
         netz_tpes_renew_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            # 'name': 'Petroleum products (PJ)',
+            # 'name': 'Refined products (PJ)',
             'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -19668,7 +19674,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Create a TPES petroleum products chart
+    # Create a TPES Refined products chart
     if ref_renew_2_rows > 0:
         ref_tpes_renew_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         ref_tpes_renew_chart2.set_size({
@@ -19692,7 +19698,7 @@ for economy in Economy_codes:
         ref_tpes_renew_chart2.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            # 'name': 'Petroleum products (PJ)',
+            # 'name': 'Refined products (PJ)',
             'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -19802,7 +19808,7 @@ for economy in Economy_codes:
     else:
         pass
 
-    # Create a TPES petroleum products chart
+    # Create a TPES Refined products chart
     if netz_renew_2_rows > 0:
         netz_tpes_renew_chart2 = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})
         netz_tpes_renew_chart2.set_size({
@@ -19826,7 +19832,7 @@ for economy in Economy_codes:
         netz_tpes_renew_chart2.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            # 'name': 'Petroleum products (PJ)',
+            # 'name': 'Refined products (PJ)',
             'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -21033,7 +21039,7 @@ for economy in Economy_codes:
         ref_kaya_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            # 'name': 'Petroleum products (PJ)',
+            # 'name': 'Refined products (PJ)',
             'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
@@ -21114,7 +21120,7 @@ for economy in Economy_codes:
         netz_kaya_chart1.set_y_axis({
             'major_tick_mark': 'none', 
             'minor_tick_mark': 'none',
-            # 'name': 'Petroleum products (PJ)',
+            # 'name': 'Refined products (PJ)',
             'num_font': {'name': 'Segoe UI', 'size': 9, 'color': '#323232'},
             'num_format': '# ### ### ##0',
             'major_gridlines': {
