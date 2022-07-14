@@ -455,7 +455,7 @@ Transport_modal_agg = ['Aviation', 'Road', 'Rail' ,'Marine', 'Pipeline', 'Non-sp
 
 TPES_agg_fuels1 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Electricity', 'Hydrogen', 'Other fuels']
 TPES_agg_fuels2 = ['Coal', 'Oil', 'Gas', 'Nuclear', 'Renewables', 'Other fuels']
-TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Petroleum products', 'Gas', 
+TPES_agg_trade = ['Coal', 'Crude oil & NGL', 'Refined products', 'Gas', 
                   'Renewables', 'Electricity', 'Hydrogen', 'Other fuels']
 avi_bunker = ['Aviation gasoline', 'Jet fuel', 'Biojet kerosene', 'Hydrogen']
 
@@ -706,7 +706,7 @@ EGEDA_histpower_oil = EGEDA_data[(EGEDA_data['item_code_new'].isin(['9_1_main_ac
                                     .copy().reset_index(drop = True)
 
 EGEDA_histpower_oil['FUEL'] = EGEDA_histpower_oil['fuel_code'].map({'6_crude_oil_and_ngl': 'Crude oil & NGL',
-                                                                    '7_petroleum_products': 'Petroleum products'})
+                                                                    '7_petroleum_products': 'Refined products'})
 
 EGEDA_histpower_oil = EGEDA_histpower_oil.groupby(['economy', 'FUEL']).sum().reset_index().assign(item_code_new = 'Power')\
     [['economy', 'FUEL', 'item_code_new'] + list(range(2000, 2019))]\
@@ -817,7 +817,7 @@ EGEDA_hist_own_oil = EGEDA_data[(EGEDA_data['item_code_new'].isin(['10_losses_an
                                   .copy().reset_index(drop = True)
 
 EGEDA_hist_own_oil['FUEL'] = EGEDA_hist_own_oil['fuel_code'].map({'6_crude_oil_and_ngl': 'Crude oil & NGL',
-                                                                  '7_petroleum_products': 'Petroleum products'})
+                                                                  '7_petroleum_products': 'Refined products'})
 
 EGEDA_hist_own_oil = EGEDA_hist_own_oil[['economy', 'FUEL', 'item_code_new'] + list(range(2000, 2019))]\
                         .copy().reset_index(drop = True)
@@ -2015,7 +2015,7 @@ for economy in Economy_codes:
     ref_imports_1 = ref_imports_1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    ref_imports_1.loc[ref_imports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_imports_1.loc[ref_imports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     ref_imports_1.loc[ref_imports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -2062,7 +2062,7 @@ for economy in Economy_codes:
     ref_exports_1 = ref_exports_1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    ref_exports_1.loc[ref_exports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    ref_exports_1.loc[ref_exports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     ref_exports_1.loc[ref_exports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -2316,7 +2316,7 @@ for economy in Economy_codes:
     netz_imports_1 = netz_imports_1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    netz_imports_1.loc[netz_imports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_imports_1.loc[netz_imports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     netz_imports_1.loc[netz_imports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -2363,7 +2363,7 @@ for economy in Economy_codes:
     netz_exports_1 = netz_exports_1.append([coal, oil, renewables, others]).reset_index(drop = True)
 
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '6_crude_oil_and_ngl', 'fuel_code'] = 'Crude oil & NGL'
-    netz_exports_1.loc[netz_exports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Petroleum products'
+    netz_exports_1.loc[netz_exports_1['fuel_code'] == '7_petroleum_products', 'fuel_code'] = 'Refined products'
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '8_gas', 'fuel_code'] = 'Gas'
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '9_nuclear', 'fuel_code'] = 'Nuclear'
     netz_exports_1.loc[netz_exports_1['fuel_code'] == '17_electricity', 'fuel_code'] = 'Electricity'
@@ -5071,7 +5071,7 @@ for economy in Economy_codes:
 
     ref_refiningout = ref_refiningout.drop(['economy', 'item_code_new'], axis = 1).rename(columns = {'fuel_code': 'Series'})
 
-    ref_refiningout.loc[ref_refiningout['Series'] == '7_petroleum_products', 'Series'] = 'Petroleum products'
+    ref_refiningout.loc[ref_refiningout['Series'] == '7_petroleum_products', 'Series'] = 'Refined products'
 
     ref_refining = ref_refineryin.append(ref_refiningout).reset_index(drop = True)
 
@@ -5828,7 +5828,7 @@ for economy in Economy_codes:
 
     netz_refiningout = netz_refiningout.drop(['economy', 'item_code_new'], axis = 1).rename(columns = {'fuel_code': 'Series'})
 
-    netz_refiningout.loc[netz_refiningout['Series'] == '7_petroleum_products', 'Series'] = 'Petroleum products'
+    netz_refiningout.loc[netz_refiningout['Series'] == '7_petroleum_products', 'Series'] = 'Refined products'
 
     netz_refining = netz_refineryin.append(netz_refiningout).reset_index(drop = True)
 
