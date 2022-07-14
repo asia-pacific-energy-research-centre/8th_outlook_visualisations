@@ -2086,7 +2086,7 @@ for economy in Economy_codes:
 
     ref_nettrade_1.loc[ref_nettrade_1['fuel_code'] == 'Total', 'fuel_code'] = 'Trade balance'
 
-    ref_nettrade_1 = ref_nettrade_1.set_index('fuel_code').loc[nettrade_order].reset_index()[['fuel_code', 'item_code_new'] + col_chart_years]
+    ref_nettrade_1 = ref_nettrade_1.set_index('fuel_code').reindex(nettrade_order).dropna().reset_index()[['fuel_code', 'item_code_new'] + col_chart_years]
 
     ref_nettrade_1_rows = ref_nettrade_1.shape[0]
     ref_nettrade_1_cols = ref_nettrade_1.shape[1]
@@ -2389,7 +2389,7 @@ for economy in Economy_codes:
 
     netz_nettrade_1.loc[netz_nettrade_1['fuel_code'] == 'Total', 'fuel_code'] = 'Trade balance'
 
-    netz_nettrade_1 = netz_nettrade_1.set_index('fuel_code').loc[nettrade_order].reset_index()[['fuel_code', 'item_code_new'] + col_chart_years]
+    netz_nettrade_1 = netz_nettrade_1.set_index('fuel_code').reindex(nettrade_order).dropna().reset_index()[['fuel_code', 'item_code_new'] + col_chart_years]
 
     netz_nettrade_1_rows = netz_nettrade_1.shape[0]
     netz_nettrade_1_cols = netz_nettrade_1.shape[1] 
