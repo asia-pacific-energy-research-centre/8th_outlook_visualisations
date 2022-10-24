@@ -49,7 +49,7 @@ Copy the following files from the Charts and tables\Mapping:
 
 Save those files in 8th_outlook_visualisations\data\2_Mapping_and_other.
 
-Take your results files and save them in 8th_outlook_visualisations\data\3_OSeMOSYS_output.
+Take your OSeMOSYS results files (both reference and carbon neutrality xlsx workbooks) and save them in 8th_outlook_visualisations\data\3_OSeMOSYS_output.
 
 ### 4. Run the script
 
