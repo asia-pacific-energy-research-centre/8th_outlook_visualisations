@@ -52,6 +52,8 @@ Take your results files and save them in 8th_outlook_visualisations\data\3_OSeMO
 
 ### 4. Run the script
 
+### UPDATE: THERE ARE NEW SCRIPTS THAT INCORPORATE 2020 EGEDA data
+
 Ensure that the environment is activated by executing at the command line: 'soure activate ./env' (you should already have changed the directory to '8th_outlook_visualisations'
 
 For preparing relevant files that are used for charting, this script is common (run command):
@@ -61,6 +63,10 @@ Then to run the most sought after charts script:
 python ./workflow/scripts/2_charts_tables/Bossanova_1_actuals.py
 
 Note, there are other scripts available in the workflow folder (some are work in progress).
+
+THE 2020 EGEDA DATA SCRIPTS ARE:
+python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA_2020_actuals.py
+python ./workflow/scripts/2_charts_tables/Bossanova_1_with_2020_historical.py
 
 ### 5. View charts
 
