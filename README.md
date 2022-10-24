@@ -55,12 +55,18 @@ Take your OSeMOSYS results files (both reference and carbon neutrality xlsx work
 
 ### UPDATE: THERE ARE NEW SCRIPTS THAT INCORPORATE 2020 EGEDA data
 
-Ensure that the environment is activated by executing at the command line: 'soure activate ./env' (you should already have changed the directory to '8th_outlook_visualisations'
+Ensure that the environment is activated by executing at the command line: 
+
+'soure activate ./env' 
+
+(you should already have changed the directory to '8th_outlook_visualisations'
 
 For preparing relevant files that are used for charting, this script is common (run command):
+
 python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA_2018_actuals.py
 
 Then to run the most sought after charts script:
+
 python ./workflow/scripts/2_charts_tables/Bossanova_1_actuals.py
 
 Note, there are other scripts available in the workflow folder (some are work in progress).
