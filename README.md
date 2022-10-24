@@ -36,7 +36,7 @@ Copy the following files from the Integration\Historical Energy Balances\2018 fo
 - EGEDA_FC_CO2_Emissions_years_2018
 - NEW: EGEDA_2020_created_21102022
 
-(NEW EGEDA data set is from the Outlook 9h Modelling Teams channel)
+(NEW EGEDA data set is from the Outlook 9th Modelling Teams channel)
 
 Save those files in 8th_outlook_visualisations\data\1_EGEDA.
 
