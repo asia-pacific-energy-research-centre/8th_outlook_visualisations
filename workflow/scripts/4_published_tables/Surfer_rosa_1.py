@@ -980,7 +980,7 @@ netz_roadfuel_2 = netz_roadfuel_2[['REGION', 'Transport', 'modality'] + list(net
 # Now build the subset dataframes for charts and tables
 
 # Fix to do quicker one economy runs
-# Economy_codes = ['01_AUS']
+Economy_codes = ['APEC']
 
 for economy in Economy_codes:
     ################################################################### DATAFRAMES ###################################################################
@@ -5441,7 +5441,7 @@ for economy in Economy_codes:
         .reset_index(drop = True)
 
     ref_modren_gen.loc[ref_modren_gen['Series'] == 'Modern renewables', 'Series'] = 'Renewable generation (TWh)'
-    ref_modren_gen.loc[ref_modren_gen['Series'] == 'Total', 'Series'] = 'Total generation (TWh)'
+    ref_modren_gen.loc[ref_modren_gen['Series'] == 'Total', 'Series'] = 'Total electricity and heat generation (TWh)'
 
     cols = ref_modren_gen.columns[1:]
 
@@ -6198,7 +6198,7 @@ for economy in Economy_codes:
         .reset_index(drop = True)
 
     netz_modren_gen.loc[netz_modren_gen['Series'] == 'Modern renewables', 'Series'] = 'Renewable generation (TWh)'
-    netz_modren_gen.loc[netz_modren_gen['Series'] == 'Total', 'Series'] = 'Total generation (TWh)'
+    netz_modren_gen.loc[netz_modren_gen['Series'] == 'Total', 'Series'] = 'Total electricity and heat generation (TWh)'
 
     # Convert power PJ to TWh
     cols = netz_modren_gen.columns[1:]
