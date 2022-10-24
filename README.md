@@ -29,9 +29,12 @@ Create the environment using `conda env create --prefix ./env --file ./environme
 
 ### 3. Add the necessary files
 
+### 2020 UPDATE: YOU WILL NEED TO SAVE UPDATED EGEDA 2020 DATA AND NEW MAPPING FILE 
+
 Copy the following files from the Integration\Historical Energy Balances\2018 folder:
 - EGEDA_2018_years
 - EGEDA_FC_CO2_Emissions_years_2018
+- NEW: EGEDA_2020_created_21102022
 
 Save those files in 8th_outlook_visualisations\data\1_EGEDA.
 
@@ -40,6 +43,7 @@ Copy the following files from the Charts and tables\Mapping:
 - heavyind_mapping
 - macro_APEC
 - OSeMOSYS_mapping_2021
+- NEW: OSeMOSYS_mapping_for_2020_data
 
 Save those files in 8th_outlook_visualisations\data\2_Mapping_and_other.
 
