@@ -64,7 +64,7 @@ python ./workflow/scripts/2_charts_tables/Bossanova_1_actuals.py
 
 Note, there are other scripts available in the workflow folder (some are work in progress).
 
-THE 2020 EGEDA DATA SCRIPTS ARE:
+THE 2020 EGEDA DATA SCRIPTS ARE:\n
 python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA_2020_actuals.py
 python ./workflow/scripts/2_charts_tables/Bossanova_1_with_2020_historical.py
 
