@@ -68,6 +68,7 @@ Note, there are other scripts available in the workflow folder (some are work in
 THE 2020 EGEDA DATA SCRIPTS ARE:
 
 python ./workflow/scripts/1_historical_to_projected/OSeMOSYS_to_EGEDA_2020_actuals.py
+
 python ./workflow/scripts/2_charts_tables/Bossanova_1_with_2020_historical.py
 
 ### 5. View charts
