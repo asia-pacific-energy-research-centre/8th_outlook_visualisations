@@ -6,7 +6,7 @@ You will need several software programs on your computer:
 
 [Visual Studio Code](https://code.visualstudio.com/) – this is a text editor that makes it easy to modify the configuration files (more on this later).
 
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html) – this is a package manager for Python. We create a specific environment (set of programs and their versions) to run the code. You want the Python 3.8 version. During installation, the installer will ask if you want to add conda to the default PATH variable. Select **YES**.
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html) – this is a package manager for Python. We create a specific environment (set of programs and their versions) to run the code. You want the Python 3.8 version (edit: latest is now 3.10). During installation, the installer will ask if you want to add conda to the default PATH variable. Select **YES**.
 
 [GitHub Desktop](https://desktop.github.com/) – an easy way to grab code from GitHub. You will need to create a free account.
 
