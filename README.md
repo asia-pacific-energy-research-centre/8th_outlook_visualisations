@@ -1,4 +1,6 @@
-## Instructions for charting osemosys results (NOW UPDATED FOR 2018 BASIS YEAR)
+## Instructions for charting osemosys results 
+
+(2018 HISTORICAL YEAR FOR PUBLISHED RESULTS. SOME SCRIPTS INCORPORATE 2020 HISTORICAL DATA.)
 
 ### 0. Before you begin
 
